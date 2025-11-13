@@ -1,13 +1,13 @@
 //
-//  Overview.swift
+//  ProfileSettings.swift
 //  Hushtag
 //
-//  Created by SDC-USER on 12/11/25.
+//  Created by SDC-USER on 13/11/25.
 //
 
 import UIKit
 
-class Overview: UIViewController {
+class ProfileSettings: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

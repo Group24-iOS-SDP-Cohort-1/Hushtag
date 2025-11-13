@@ -1,13 +1,13 @@
 //
-//  Ideate.swift
+//  BrandDeals.swift
 //  Hushtag
 //
-//  Created by SDC-USER on 12/11/25.
+//  Created by SDC-USER on 13/11/25.
 //
 
 import UIKit
 
-class Ideate: UIViewController {
+class BrandDeals: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
