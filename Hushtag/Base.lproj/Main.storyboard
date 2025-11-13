@@ -45,10 +45,10 @@
             </objects>
             <point key="canvasLocation" x="-685" y="-25"/>
         </scene>
-        <!--IdeateVC-->
+        <!--Ideate-->
         <scene sceneID="zCY-2w-l4j">
             <objects>
-                <viewControllerPlaceholder storyboardName="Ideate" referencedIdentifier="IdeateVC" id="UCO-yZ-Wcy" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardIdentifier="IdeateVC" storyboardName="Ideate" id="UCO-yZ-Wcy" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Item" id="ilD-Vv-HLt"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Vb-DR-t3h" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
