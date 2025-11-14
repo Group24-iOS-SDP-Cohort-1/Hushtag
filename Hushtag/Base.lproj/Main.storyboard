@@ -43,7 +43,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1sr-JS-qaP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-685" y="-25"/>
+            <point key="canvasLocation" x="-414" y="-75"/>
         </scene>
         <!--Ideate-->
         <scene sceneID="zCY-2w-l4j">
@@ -53,7 +53,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Vb-DR-t3h" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1123" y="-25"/>
+            <point key="canvasLocation" x="-1057" y="-54"/>
         </scene>
     </scenes>
 </document>
