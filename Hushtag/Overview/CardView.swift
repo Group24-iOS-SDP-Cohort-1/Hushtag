@@ -5,18 +5,65 @@ class CardView: UIView {
     let timeLabel = UILabel()
     let dateLabel = UILabel()
     let titleLabel = UILabel()
-    let descriptionLabel = UILabel()
+    let platformLabel = UILabel()
+    
+    var onTap: (() -> Void)?   // callback
 
+    private func setupView() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapCard))
+        self.addGestureRecognizer(tap)
+        self.isUserInteractionEnabled = true
+    }
+        
+    @objc private func didTapCard() {
+        onTap?()   // Trigger callback
+    }
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCard()
         setupUI()
+        setupView()
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupCard()
         setupUI()
+        setupView()
+    }
+
+    convenience init(
+        time: String,
+        date: String,
+        title: String,
+        platform: String
+    ) {
+        self.init(frame: .zero)
+        configure(time: time, date: date, title: title, platform: platform)
+    }
+
+    func configure(
+        time: String,
+        date: String,
+        title: String,
+        platform: String
+    ) {
+        timeLabel.text = time
+        dateLabel.text = date
+        titleLabel.text = title
+        platformLabel.text = platform
+        
+        // Color coding
+        switch platform.lowercased() {
+                case "youtube":
+                    platformLabel.textColor = .systemRed
+                case "facebook":
+                    platformLabel.textColor = .systemBlue
+                case "instagram":
+                    platformLabel.textColor = .systemPurple
+                default:
+                    platformLabel.textColor = .darkGray   // fallback
+                }
     }
 
     private func setupCard() {
@@ -29,12 +76,11 @@ class CardView: UIView {
     }
 
     private func setupUI() {
-        // --- Line 1: Time + Date ---
-        timeLabel.text = "10:30"
+        // Time label
         timeLabel.font = .systemFont(ofSize: 14, weight: .regular)
         timeLabel.textColor = .darkGray
-
-        dateLabel.text = "Today"
+        
+        // Date label
         dateLabel.font = .systemFont(ofSize: 14, weight: .regular)
         dateLabel.textAlignment = .right
         dateLabel.textColor = .darkGray
@@ -43,18 +89,15 @@ class CardView: UIView {
         topRow.axis = .horizontal
         topRow.distribution = .equalSpacing
 
-        // --- Line 2: Title ---
-        titleLabel.text = "Makeup tutorial for festive season"
+        // Title
         titleLabel.font = .systemFont(ofSize: 18, weight: .regular)
         titleLabel.numberOfLines = 0
 
-        // --- Line 3: Description ---
-        descriptionLabel.text = "YouTube"
-        descriptionLabel.font = UIFont.systemFont(ofSize: 14)
-        descriptionLabel.textColor = .systemRed
+        // Platform
+        platformLabel.font = UIFont.systemFont(ofSize: 14)
+        platformLabel.textColor = .systemRed
 
-        // --- Main vertical stack ---
-        let stack = UIStackView(arrangedSubviews: [topRow, titleLabel, descriptionLabel])
+        let stack = UIStackView(arrangedSubviews: [topRow, titleLabel, platformLabel])
         stack.axis = .vertical
         stack.spacing = 8
         
