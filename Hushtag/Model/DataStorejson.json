@@ -1,0 +1,739 @@
+{
+  "ideas": [
+    {
+      "id" : "i1",
+      "trending": "fashion",
+      "title": "Unlock Your Style: Must-Known Fashion Hacks!",
+      "description": "Looking to level up your wardrobe without breaking the bank? In this video, we’re sharing 10 game-changing fashion style tips.",
+      "script": "",
+      "hashtag": [
+        "beauty",
+        "style"
+      ],
+      "videos": ["v1", "v2", "v3"],
+      "liked": false,
+      "tag": "",
+      "thumbnail": ""
+    },
+    {
+      "id" : "i2",
+      "trending": "lifestyle",
+      "title": "Morning Routine, Coffee Run, Studying | Vlog",
+      "description": "Make a video showing your productive morning routine",
+      "script": "",
+      "hashtag": [
+        "tips",
+        "coffee"
+      ],
+      "videos":  ["v1", "v2", "v3"],
+      "liked": false,
+      "tag": "",
+      "thumbnail": ""
+    },
+    {
+      "id" : "i3",
+      "trending": "fashion",
+      "title": "Unlock Your Style: Must-Known Fashion Hacks!",
+      "description": "Looking to level up your wardrobe without breaking the bank? In this video, we’re sharing 10 game-changing fashion hacks that’ll instantly upgrade your style!",
+      "script": "",
+      "hashtag": [
+        "beauty",
+        "style"
+      ],
+      "videos":  ["v1", "v2", "v3"],
+      "liked": false,
+      "tag": "",
+      "thumbnail": ""
+    },
+    {
+      "id" : "i4",
+      "trending": "fashion",
+      "title": "Unlock Your Style: Must-Known Fashion Hacks!",
+      "description": "Looking to level up your wardrobe without breaking the bank? In this video, we’re sharing 10 game-changing fashion style tips.",
+      "script": "",
+      "hashtag": [
+        "beauty",
+        "style"
+      ],
+      "videos": ["v1", "v2", "v3"],
+      "liked": false,
+      "tag": "",
+      "thumbnail": ""
+    }
+  ],
+  "videos": [
+    {
+      "id": "v1",
+      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "videoTitle": "5-Minute Morning Makeup Routine",
+      "views": "3.6M"
+    },
+    {
+      "id": "v2",
+      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "videoTitle": "5 Tips For Better Make Up",
+      "views": "2.3M"
+    },
+    {
+      "id": "v3",
+      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "videoTitle": "Buying everything in one colour",
+      "views": "1.4M"
+    }
+  ],
+  "tasks": [
+    {
+      "name": "Everyday Glam",
+      "startDate": {
+        "day": "Monday",
+        "date": "2025-11-19T00:00:00Z",
+        "time": {
+          "hour": 0,
+          "minute": 0
+        }
+      },
+      "endDate": {
+        "day": "Friday",
+        "date": "2025-11-19T00:00:00Z",
+        "time": {
+          "hour": 0,
+          "minute": 0
+        }
+      },
+      "description": "Create a soft, everyday glam look that enhances your natural features and feels effortless.",
+      "reminder": [
+        "1 hour before",
+        "1 day before"
+      ]
+    },
+    {
+      "name": "Unboxing Cosmetic Products",
+      "startDate": {
+        "day": "Monday",
+        "date": "2025-11-19T00:00:00Z",
+        "time": {
+          "hour": 0,
+          "minute": 0
+        }
+      },
+      "endDate": {
+        "day": "Friday",
+        "date": "2025-11-19T00:00:00Z",
+        "time": {
+          "hour": 0,
+          "minute": 0
+        }
+      },
+      "description": "Unbox and review new cosmetic products — capture photos/videos and schedule the post for publishing.",
+      "reminder": [
+        "1 hour before"
+      ]
+    },
+    {
+      "name": "Get the look of a model",
+      "startDate": {
+        "day": "Monday",
+        "date": "2025-11-19T00:00:00Z",
+        "time": {
+          "hour": 0,
+          "minute": 0
+        }
+      },
+      "endDate": {
+        "day": "Friday",
+        "date": "2025-11-19T00:00:00Z",
+        "time": {
+          "hour": 0,
+          "minute": 0
+        }
+      },
+      "description": "Showcase the full transformation with featured products and styling details.",
+      "reminder": [
+        "15 mins before"
+      ]
+    }
+  ],
+  "deals": [
+    {
+      "name": "NARS Cosmetics",
+      "deliverable": [
+        {
+          "name": "Draft concept for IG Post #1",
+          "deadline": {
+            "day": "Monday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 10,
+              "minute": 30
+            }
+          }
+        },
+        {
+          "name": "Final IG Carousel Post",
+          "deadline": {
+            "day": "Wednesday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 15,
+              "minute": 0
+            }
+          }
+        }
+      ],
+      "platform": [
+        "instagram",
+        "youtube"
+      ],
+      "phone": "9028399567",
+      "email": "nars.cosmetics@gmail.com",
+      "description": "Promotional campaign for new blush collection.",
+      "payment": 5000,
+      "selectedIdeaIndex": "i1"
+    },
+    {
+      "name": "H&M Lifestyle",
+      "deliverable": [
+        {
+          "name": "Reel Concept Ideation",
+          "deadline": {
+            "day": "Tuesday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 9,
+              "minute": 0
+            }
+          }
+        },
+        {
+          "name": "Final Reel Submission",
+          "deadline": {
+            "day": "Friday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 17,
+              "minute": 0
+            }
+          }
+        }
+      ],
+      "platform": [
+        "instagram"
+      ],
+      "phone": "9090909090",
+      "email": "hm.lifestyle@gmail.com",
+      "description": "Create a reel showcasing winter streetwear.",
+      "payment": 7000,
+      "selectedIdeaIndex": "i2"
+    },
+    {
+      "name": "Nykaa Beauty",
+      "deliverable": [
+        {
+          "name": "Makeup Tutorial Script",
+          "deadline": {
+            "day": "Monday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 12,
+              "minute": 45
+            }
+          }
+        },
+        {
+          "name": "Final Tutorial Video",
+          "deadline": {
+            "day": "Thursday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 17,
+              "minute": 15
+            }
+          }
+        }
+      ],
+      "platform": [
+        "instagram",
+        "facebook"
+      ],
+      "phone": "9345567890",
+      "email": "collabs@nykaa.com",
+      "description": "Tutorial using newly launched lipstick shades.",
+      "payment": 6000,
+      "selectedIdeaIndex": "i3"
+    },
+    {
+      "name": "Myntra",
+      "deliverable": [
+        {
+          "name": "Try-On Reel Shoot",
+          "deadline": {
+            "day": "Tuesday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 13,
+              "minute": 30
+            }
+          }
+        },
+        {
+          "name": "Final Reel Edit",
+          "deadline": {
+            "day": "Friday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 19,
+              "minute": 0
+            }
+          }
+        }
+      ],
+      "platform": [
+        "instagram"
+      ],
+      "phone": "9123456701",
+      "email": "campaign@myntra.com",
+      "description": "Try-on haul for winter jackets.",
+      "payment": 8000,
+      "selectedIdeaIndex": "i1"
+    }
+  ],
+  "posts": [
+    {
+      "name": "IG Reel – Morning Skincare Routine",
+      "postingTime": {
+        "day": "Monday",
+        "date": "2025-11-19T00:00:00Z",
+        "time": {
+          "hour": 10,
+          "minute": 0
+        }
+      },
+      "platform": [
+        "instagram"
+      ],
+      "description": "Posting a quick morning skincare routine reel for audience engagement.",
+      "reminder": [
+        "1 hour before",
+        "10 minutes before"
+      ]
+    },
+    {
+      "name": "YouTube Vlog – Week in My Life",
+      "postingTime": {
+        "day": "Wednesday",
+        "date": "2025-11-19T00:00:00Z",
+        "time": {
+          "hour": 18,
+          "minute": 30
+        }
+      },
+      "platform": [
+        "youtube"
+      ],
+      "description": "Full vlog showing weekly lifestyle, workouts, filming and routine.",
+      "reminder": [
+        "2 hours before"
+      ]
+    },
+    {
+      "name": "Instagram Carousel – Outfit Inspirations",
+      "postingTime": {
+        "day": "Friday",
+        "date": "2025-11-19T00:00:00Z",
+        "time": {
+          "hour": 14,
+          "minute": 0
+        }
+      },
+      "platform": [
+        "instagram"
+      ],
+      "description": "Aesthetic outfit inspiration carousel post.",
+      "reminder": [
+        "30 minutes before",
+        "5 minutes before"
+      ]
+    },
+    {
+      "name": "Facebook Update – Festival Sale Promo",
+      "postingTime": {
+        "day": "Tuesday",
+        "date": "2025-11-19T00:00:00Z",
+        "time": {
+          "hour": 11,
+          "minute": 15
+        }
+      },
+      "platform": [
+        "facebook"
+      ],
+      "description": "Short promotional post about the festival sale.",
+      "reminder": [
+        "1 hour before"
+      ]
+    },
+    {
+      "name": "YouTube Shorts – GRWM for Dinner",
+      "postingTime": {
+        "day": "Saturday",
+        "date": "2025-11-19T00:00:00Z",
+        "time": {
+          "hour": 17,
+          "minute": 45
+        }
+      },
+      "platform": [
+        "youtube",
+        "instagram"
+      ],
+      "description": "Short GRWM clip for dinner outing.",
+      "reminder": [
+        "15 minutes before"
+      ]
+    },
+    {
+      "name": "IG Story – New Product Sneak Peek",
+      "postingTime": {
+        "day": "Sunday",
+        "date": "2025-11-19T00:00:00Z",
+        "time": {
+          "hour": 9,
+          "minute": 30
+        }
+      },
+      "platform": [
+        "instagram"
+      ],
+      "description": "Teaser story showing behind-the-scenes of an upcoming product collab.",
+      "reminder": [
+        "1 hour before",
+        "10 minutes before"
+      ]
+    }
+  ],
+  "youtubeAnalysis": [
+    {
+      "views": 5.2,
+      "likes": 3.1,
+      "incFollowers": "8k",
+      "followers": "40k",
+      "ageGroup": [
+        "18",
+        "34"
+      ],
+      "gender": {
+        "M": 45.2,
+        "F": 54.8
+      },
+      "post": 5,
+      "optimalTime": [
+        {
+          "day": "Wednesday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "day": "Saturday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 10,
+            "minute": 30
+          }
+        }
+      ],
+      "engagementRate": 6.1
+    },
+    {
+      "views": 3.8,
+      "likes": 2.5,
+      "incFollowers": "3k",
+      "followers": "28k",
+      "ageGroup": [
+        "20",
+        "29"
+      ],
+      "gender": {
+        "M": 51,
+        "F": 49
+      },
+      "post": 4,
+      "optimalTime": [
+        {
+          "day": "Monday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 16,
+            "minute": 0
+          }
+        },
+        {
+          "day": "Thursday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 11,
+            "minute": 0
+          }
+        }
+      ],
+      "engagementRate": 4.8
+    },
+    {
+      "views": 7.4,
+      "likes": 5.6,
+      "incFollowers": "12k",
+      "followers": "55k",
+      "ageGroup": [
+        "25",
+        "40"
+      ],
+      "gender": {
+        "M": 40.4,
+        "F": 59.6
+      },
+      "post": 6,
+      "optimalTime": [
+        {
+          "day": "Tuesday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "day": "Friday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 15,
+            "minute": 0
+          }
+        }
+      ],
+      "engagementRate": 7.3
+    }
+  ],
+  "instagramAnalysis": [
+    {
+      "views": 4.5,
+      "likes": 3.9,
+      "incFollowers": "6k",
+      "followers": "30k",
+      "ageGroup": [
+        "18",
+        "29"
+      ],
+      "gender": {
+        "M": 33.1,
+        "F": 66.9
+      },
+      "post": 7,
+      "optimalTime": [
+        {
+          "day": "Monday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 9,
+            "minute": 0
+          }
+        },
+        {
+          "day": "Friday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 13,
+            "minute": 0
+          }
+        }
+      ],
+      "engagementRate": 5.7
+    },
+    {
+      "views": 6.1,
+      "likes": 4.8,
+      "incFollowers": "10k",
+      "followers": "52k",
+      "ageGroup": [
+        "21",
+        "35"
+      ],
+      "gender": {
+        "M": 41.7,
+        "F": 58.3
+      },
+      "post": 8,
+      "optimalTime": [
+        {
+          "day": "Tuesday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 17,
+            "minute": 0
+          }
+        },
+        {
+          "day": "Sunday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 11,
+            "minute": 0
+          }
+        }
+      ],
+      "engagementRate": 6.3
+    },
+    {
+      "views": 3.2,
+      "likes": 2.1,
+      "incFollowers": "2k",
+      "followers": "18k",
+      "ageGroup": [
+        "19",
+        "27"
+      ],
+      "gender": {
+        "M": 29.8,
+        "F": 70.2
+      },
+      "post": 3,
+      "optimalTime": [
+        {
+          "day": "Wednesday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 14,
+            "minute": 0
+          }
+        },
+        {
+          "day": "Saturday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 9,
+            "minute": 0
+          }
+        }
+      ],
+      "engagementRate": 3.9
+    }
+  ],
+  "facebookAnalysis": [
+    {
+      "views": 2.2,
+      "likes": 1.2,
+      "incFollowers": "1k",
+      "followers": "10k",
+      "ageGroup": [
+        "25",
+        "44"
+      ],
+      "gender": {
+        "M": 48,
+        "F": 52
+      },
+      "post": 2,
+      "optimalTime": [
+        {
+          "day": "Thursday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 19,
+            "minute": 0
+          }
+        },
+        {
+          "day": "Sunday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 12,
+            "minute": 0
+          }
+        }
+      ],
+      "engagementRate": 2.9
+    },
+    {
+      "views": 4.4,
+      "likes": 2.8,
+      "incFollowers": "3.4k",
+      "followers": "22k",
+      "ageGroup": [
+        "30",
+        "50"
+      ],
+      "gender": {
+        "M": 55.3,
+        "F": 44.7
+      },
+      "post": 3,
+      "optimalTime": [
+        {
+          "day": "Monday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 18,
+            "minute": 0
+          }
+        },
+        {
+          "day": "Friday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 14,
+            "minute": 0
+          }
+        }
+      ],
+      "engagementRate": 4.2
+    },
+    {
+      "views": 3.7,
+      "likes": 2,
+      "incFollowers": "1.8k",
+      "followers": "15k",
+      "ageGroup": [
+        "28",
+        "47"
+      ],
+      "gender": {
+        "M": 50.5,
+        "F": 49.5
+      },
+      "post": 4,
+      "optimalTime": [
+        {
+          "day": "Wednesday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 16,
+            "minute": 0
+          }
+        },
+        {
+          "day": "Saturday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 11,
+            "minute": 0
+          }
+        }
+      ],
+      "engagementRate": 3.5
+    }
+  ],
+  "niche": [
+    "beauty",
+    "fashion",
+    "lifestyle",
+    "sports",
+    "travel",
+    "food",
+    "tech",
+    "books",
+    "movies",
+    "music"
+  ]
+}
+
