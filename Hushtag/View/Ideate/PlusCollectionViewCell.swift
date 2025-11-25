@@ -16,29 +16,26 @@ class PlusCollectionViewCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        // Card Styling
-        contentView.layer.cornerRadius = 12
-        contentView.layer.masksToBounds = true
-        contentView.backgroundColor = .accent
-        layer.cornerRadius = 12
-        layer.shadowColor = UIColor.black.withAlphaComponent(0.2).cgColor
-        layer.shadowOpacity = 0.3
-        layer.shadowRadius = 6
-        layer.shadowOffset = CGSize(width: 0, height: 3)
-        layer.masksToBounds = false
+        self.layer.cornerRadius = 12
+       self.layer.masksToBounds = false
 
-        // Title Label (plusLabel)
-        plusLabel.font = UIFont.systemFont(ofSize: 10, weight: .regular)
-        plusLabel.textColor = UIColor.label
 
-        // Description Label
-        ideaDescription.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        self.layer.shadowColor = UIColor.black.cgColor
+         self.layer.shadowOpacity = 0.15
+         self.layer.shadowOffset = CGSize(width: 0, height: 0)
+         self.layer.shadowRadius = 6
+
+         self.backgroundColor = .white
         ideaDescription.textColor = UIColor.secondaryLabel
         ideaDescription.numberOfLines = 3
     }
-    func configureCell(idea : Idea) {
+    func configureCell() {
        
-        plusLabel.text = idea.title
-        ideaDescription.text = idea.description
+        plusLabel.text = "+"
+        plusLabel.textColor = .accent
+        plusLabel.font = UIFont.systemFont(ofSize: 80, weight: .regular)
+        plusLabel.textAlignment = .center
+        ideaDescription.text = "Your creative assistant for scripting, titles, descriptions, and thumbnails."
+
         }
 }
