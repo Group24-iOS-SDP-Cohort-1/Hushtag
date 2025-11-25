@@ -95,7 +95,7 @@ struct TaskResponse: Codable {
 }
 
 struct Task: Codable, Identifiable {
-    let id: String
+    let id = UUID()
     let name: String
     let startDate: String
     let endDate: String
@@ -103,7 +103,7 @@ struct Task: Codable, Identifiable {
     let reminder: [String]
 
     enum CodingKeys: String, CodingKey {
-        case id,name,startDate,endDate,description,reminder
+        case name,startDate,endDate,description,reminder
     }
 }
 
@@ -152,16 +152,16 @@ struct PostResponse: Codable {
 }
 
 struct Post: Codable, Identifiable {
-   let id: String
+   let id = UUID()
    let name: String
-   let postingTime: String
+    let postingTime: [String: Int]
    let platform: String
    let description: String
    let reminder: [String]
 
 
     enum CodingKeys: String, CodingKey {
-        case id,name,postingTime,platform,description,reminder
+        case name,postingTime,platform,description,reminder
     }
 }
 
@@ -210,7 +210,7 @@ struct DealResponse: Codable {
 }
 
 struct Deal: Codable, Identifiable {
-    let id: String
+    let id = UUID()
     let name: String
     let deliverable: String
     let platform: String
@@ -222,7 +222,7 @@ struct Deal: Codable, Identifiable {
 
 
     enum CodingKeys: String, CodingKey {
-        case id,name,deliverable,platform,phone,email,description,payment,selectedIdea
+        case name,deliverable,platform,phone,email,description,payment,selectedIdea
     }
 }
 
@@ -249,3 +249,65 @@ extension DealResponse {
         return try decoder.decode(DealResponse.self, from: data)
     }
 }
+
+// for analysis
+struct AnalysisResponse: Codable {
+    var analysis: [Analysis] = []
+
+
+    init() {
+        do {
+            let response = try load()
+            analysis = response.analysis
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
+    func getRandomIdea() -> Analysis? {
+        return analysis.randomElement()
+    }
+}
+
+struct Analysis: Codable, Identifiable {
+   let id = UUID()
+   let views: String
+   let likes: String
+   let incFollowers: String
+   let followers: String
+   let ageGroup: String
+    let gender: [String: String]
+   let post: String
+   let optimalTime: String
+   let engagementRate: String
+
+
+    enum CodingKeys: String, CodingKey {
+        case views,likes,incFollowers,followers,ageGroup,gender,optimalTime,engagementRate,post
+    }
+}
+
+
+extension AnalysisResponse {
+    func load(from filename: String = "DataStorejson") throws -> AnalysisResponse {
+        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
+            throw NSError(
+                domain: "AnalysisResponse",
+                code: 400,
+                userInfo: [NSLocalizedDescriptionKey: "DataSource.json not found"]
+            )
+        }
+
+        let data = try Data(contentsOf: url)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(AnalysisResponse.self, from: data)
+    }
+
+    func decode(from data: Data) throws -> AnalysisResponse {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(AnalysisResponse.self, from: data)
+    }
+}
+

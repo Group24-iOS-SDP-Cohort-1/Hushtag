@@ -141,7 +141,7 @@
                                                                         </collectionViewCellContentView>
                                                                         <size key="customSize" width="175" height="147"/>
                                                                         <connections>
-                                                                            <outlet property="ideaDescription" destination="GpD-Su-BzY" id="Lsy-DG-4cH"/>
+                                                                            <outlet property="ideaDescription" destination="GpD-Su-BzY" id="SlS-oq-NAn"/>
                                                                             <outlet property="plusLabel" destination="gwv-8l-2oV" id="M7m-4S-xyE"/>
                                                                         </connections>
                                                                     </collectionViewCell>

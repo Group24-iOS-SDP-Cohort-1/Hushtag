@@ -413,8 +413,8 @@
   ],
   "youtubeAnalysis": [
     {
-      "views": 5.2,
-      "likes": 3.1,
+      "views": "5.2",
+      "likes": "3.1",
       "incFollowers": "8k",
       "followers": "40k",
       "ageGroup": [
@@ -422,8 +422,8 @@
         "34"
       ],
       "gender": {
-        "M": 45.2,
-        "F": 54.8
+        "M": "45.2",
+        "F": "54.8"
       },
       "post": 5,
       "optimalTime": [
@@ -444,11 +444,11 @@
           }
         }
       ],
-      "engagementRate": 6.1
+      "engagementRate": "6.1"
     },
     {
-      "views": 3.8,
-      "likes": 2.5,
+      "views": "3.8",
+      "likes": "2.5",
       "incFollowers": "3k",
       "followers": "28k",
       "ageGroup": [
@@ -456,8 +456,8 @@
         "29"
       ],
       "gender": {
-        "M": 51,
-        "F": 49
+        "M": "51",
+        "F": "49"
       },
       "post": 4,
       "optimalTime": [
@@ -478,11 +478,11 @@
           }
         }
       ],
-      "engagementRate": 4.8
+      "engagementRate": "4.8"
     },
     {
-      "views": 7.4,
-      "likes": 5.6,
+      "views": "7.4",
+      "likes": "5.6",
       "incFollowers": "12k",
       "followers": "55k",
       "ageGroup": [
@@ -490,8 +490,8 @@
         "40"
       ],
       "gender": {
-        "M": 40.4,
-        "F": 59.6
+        "M": "40.4",
+        "F": "59.6"
       },
       "post": 6,
       "optimalTime": [
@@ -512,13 +512,13 @@
           }
         }
       ],
-      "engagementRate": 7.3
+      "engagementRate": "7.3"
     }
   ],
   "instagramAnalysis": [
     {
-      "views": 4.5,
-      "likes": 3.9,
+      "views": "4.5",
+      "likes": "3.9",
       "incFollowers": "6k",
       "followers": "30k",
       "ageGroup": [
@@ -526,8 +526,8 @@
         "29"
       ],
       "gender": {
-        "M": 33.1,
-        "F": 66.9
+        "M": "33.1",
+        "F": "66.9"
       },
       "post": 7,
       "optimalTime": [
@@ -548,11 +548,11 @@
           }
         }
       ],
-      "engagementRate": 5.7
+      "engagementRate": "5.7"
     },
     {
-      "views": 6.1,
-      "likes": 4.8,
+      "views": "6.1",
+      "likes": "4.8",
       "incFollowers": "10k",
       "followers": "52k",
       "ageGroup": [
@@ -560,8 +560,8 @@
         "35"
       ],
       "gender": {
-        "M": 41.7,
-        "F": 58.3
+        "M": "41.7",
+        "F": "58.3"
       },
       "post": 8,
       "optimalTime": [
@@ -582,11 +582,11 @@
           }
         }
       ],
-      "engagementRate": 6.3
+      "engagementRate": "6.3"
     },
     {
-      "views": 3.2,
-      "likes": 2.1,
+      "views": "3.2",
+      "likes": "2.1",
       "incFollowers": "2k",
       "followers": "18k",
       "ageGroup": [
@@ -594,8 +594,8 @@
         "27"
       ],
       "gender": {
-        "M": 29.8,
-        "F": 70.2
+        "M": "29.8",
+        "F": "70.2"
       },
       "post": 3,
       "optimalTime": [
@@ -616,13 +616,13 @@
           }
         }
       ],
-      "engagementRate": 3.9
+      "engagementRate": "3.9"
     }
   ],
   "facebookAnalysis": [
     {
-      "views": 2.2,
-      "likes": 1.2,
+      "views": "2.2",
+      "likes": "1.2",
       "incFollowers": "1k",
       "followers": "10k",
       "ageGroup": [
@@ -630,8 +630,8 @@
         "44"
       ],
       "gender": {
-        "M": 48,
-        "F": 52
+        "M": "48",
+        "F": "52"
       },
       "post": 2,
       "optimalTime": [
@@ -652,11 +652,11 @@
           }
         }
       ],
-      "engagementRate": 2.9
+      "engagementRate": "2.9"
     },
     {
-      "views": 4.4,
-      "likes": 2.8,
+      "views": "4.4",
+      "likes": "2.8",
       "incFollowers": "3.4k",
       "followers": "22k",
       "ageGroup": [
@@ -664,8 +664,8 @@
         "50"
       ],
       "gender": {
-        "M": 55.3,
-        "F": 44.7
+        "M": "55.3",
+        "F": "44.7"
       },
       "post": 3,
       "optimalTime": [
@@ -686,11 +686,11 @@
           }
         }
       ],
-      "engagementRate": 4.2
+      "engagementRate": "4.2"
     },
     {
-      "views": 3.7,
-      "likes": 2,
+      "views": "3.7",
+      "likes": "2",
       "incFollowers": "1.8k",
       "followers": "15k",
       "ageGroup": [
@@ -698,8 +698,8 @@
         "47"
       ],
       "gender": {
-        "M": 50.5,
-        "F": 49.5
+        "M": "50.5",
+        "F": "49.5"
       },
       "post": 4,
       "optimalTime": [
@@ -720,7 +720,7 @@
           }
         }
       ],
-      "engagementRate": 3.5
+      "engagementRate": "3.5"
     }
   ],
   "niche": [
@@ -734,6 +734,11 @@
     "books",
     "movies",
     "music"
-  ]
+  ],
+  "enagagement" : {
+      "youtube": 3.5,
+      "instagram": 5,
+      "facebook": 4.5
+  }
 }
 
