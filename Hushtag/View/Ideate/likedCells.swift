@@ -32,6 +32,8 @@ class likedCells: UICollectionViewCell {
          self.layer.shadowRadius = 6
 
          self.backgroundColor = .white
+
+        
         // Title Label (plusLabel)
         Title.font = .systemFont(ofSize: 14, weight: .regular)
         Title.textColor = UIColor.label
