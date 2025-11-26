@@ -128,13 +128,13 @@ class Ideate: UIViewController{
 
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .absolute(180),
-                heightDimension: .absolute(220)   
+                heightDimension: .absolute(190)
             )
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
             let groupSize = NSCollectionLayoutSize(
                 widthDimension: .absolute(180),
-                heightDimension: .absolute(220)
+                heightDimension: .absolute(190)
             )
             let group = NSCollectionLayoutGroup.horizontal(
                 layoutSize: groupSize,

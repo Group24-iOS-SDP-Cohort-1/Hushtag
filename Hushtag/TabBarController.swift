@@ -15,8 +15,8 @@ class MainTabBarController: UITabBarController {
             viewControllers[0].tabBarItem.title = "Home"
             viewControllers[0].tabBarItem.image = UIImage(systemName: "house.fill")
             
-            viewControllers[1].tabBarItem.title = "Ideate"
-            viewControllers[1].tabBarItem.image = UIImage(systemName: "sparkles.2")
+//            viewControllers[1].tabBarItem.title = "Ideate"
+//            viewControllers[1].tabBarItem.image = UIImage(systemName: "sparkles.2")
             
             viewControllers[2].tabBarItem.title = "Deals"
             viewControllers[2].tabBarItem.image = UIImage(systemName: "list.bullet")
