@@ -9,6 +9,7 @@ import UIKit
 
 class YoutubeAnalysis: UIViewController {
 
+    var analysis: Analysis?
     override func viewDidLoad() {
         super.viewDidLoad()
 

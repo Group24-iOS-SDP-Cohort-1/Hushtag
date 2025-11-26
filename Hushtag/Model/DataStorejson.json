@@ -10,7 +10,26 @@
         "beauty",
         "style"
       ],
-      "videos": ["v1", "v2", "v3"],
+      "videos": [
+          {
+              "id": "v1",
+              "url": "Image",
+              "videoTitle": "5-Minute Morning Makeup Routine",
+              "views": "3.6M"
+          },
+          {
+              "id": "v2",
+              "url": "Miniatura geométrica plana de beleza do youtube | Vetor Grátis",
+              "videoTitle": "5 Tips For Better Make Up",
+              "views": "2.3M"
+          },
+          {
+              "id": "v3",
+              "url": "Make Your Videos Stand Out with Creative Thumbnails",
+              "videoTitle": "Buying everything in one colour",
+              "views": "1.4M"
+          }
+      ],
       "liked": false,
       "tag": "",
       "thumbnail": ""
@@ -25,7 +44,26 @@
         "tips",
         "coffee"
       ],
-      "videos":  ["v1", "v2", "v3"],
+      "videos": [
+          {
+              "id": "v1",
+              "url": "Image",
+              "videoTitle": "5-Minute Morning Makeup Routine",
+              "views": "3.6M"
+          },
+          {
+              "id": "v2",
+              "url": "Miniatura geométrica plana de beleza do youtube | Vetor Grátis",
+              "videoTitle": "5 Tips For Better Make Up",
+              "views": "2.3M"
+          },
+          {
+              "id": "v3",
+              "url": "Make Your Videos Stand Out with Creative Thumbnails",
+              "videoTitle": "Buying everything in one colour",
+              "views": "1.4M"
+          }
+      ],
       "liked": false,
       "tag": "",
       "thumbnail": ""
@@ -40,7 +78,26 @@
         "beauty",
         "style"
       ],
-      "videos":  ["v1", "v2", "v3"],
+      "videos": [
+          {
+              "id": "v1",
+              "url": "Image",
+              "videoTitle": "5-Minute Morning Makeup Routine",
+              "views": "3.6M"
+          },
+          {
+              "id": "v2",
+              "url": "Miniatura geométrica plana de beleza do youtube | Vetor Grátis",
+              "videoTitle": "5 Tips For Better Make Up",
+              "views": "2.3M"
+          },
+          {
+              "id": "v3",
+              "url": "Make Your Videos Stand Out with Creative Thumbnails",
+              "videoTitle": "Buying everything in one colour",
+              "views": "1.4M"
+          }
+      ],
       "liked": false,
       "tag": "",
       "thumbnail": ""
@@ -55,31 +112,50 @@
         "beauty",
         "style"
       ],
-      "videos": ["v1", "v2", "v3"],
+      "videos": [
+          {
+              "id": "v1",
+              "url": "Image",
+              "videoTitle": "5-Minute Morning Makeup Routine",
+              "views": "3.6M"
+          },
+          {
+              "id": "v2",
+              "url": "Miniatura geométrica plana de beleza do youtube | Vetor Grátis",
+              "videoTitle": "5 Tips For Better Make Up",
+              "views": "2.3M"
+          },
+          {
+              "id": "v3",
+              "url": "Make Your Videos Stand Out with Creative Thumbnails",
+              "videoTitle": "Buying everything in one colour",
+              "views": "1.4M"
+          }
+      ],
       "liked": false,
       "tag": "",
       "thumbnail": ""
     }
   ],
   "videos": [
-    {
-      "id": "v1",
-      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      "videoTitle": "5-Minute Morning Makeup Routine",
-      "views": "3.6M"
-    },
-    {
-      "id": "v2",
-      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      "videoTitle": "5 Tips For Better Make Up",
-      "views": "2.3M"
-    },
-    {
-      "id": "v3",
-      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      "videoTitle": "Buying everything in one colour",
-      "views": "1.4M"
-    }
+      {
+          "id": "v1",
+          "url": "Image",
+          "videoTitle": "5-Minute Morning Makeup Routine",
+          "views": "3.6M"
+      },
+      {
+          "id": "v2",
+          "url": "Miniatura geométrica plana de beleza do youtube | Vetor Grátis",
+          "videoTitle": "5 Tips For Better Make Up",
+          "views": "2.3M"
+      },
+      {
+          "id": "v3",
+          "url": "Make Your Videos Stand Out with Creative Thumbnails",
+          "videoTitle": "Buying everything in one colour",
+          "views": "1.4M"
+      }
   ],
   "tasks": [
     {

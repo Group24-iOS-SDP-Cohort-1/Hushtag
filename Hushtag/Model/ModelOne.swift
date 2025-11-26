@@ -24,13 +24,13 @@ enum PlatformType:String{
 //for idea
 struct IdeaResponse: Codable {
     var ideas: [Idea] = []
-    var videos: [Video] = []
+    //var videos: [Video] = []
 
     init() {
         do {
             let response = try load()
             ideas = response.ideas
-            videos = response.videos
+            //videos = response.videos
         } catch {
             print(error.localizedDescription)
         }
@@ -48,7 +48,7 @@ struct Idea: Codable, Identifiable {
     let description: String
     let script: String
     let hashtag: [String]
-    let videos: [String]
+    let videos: [Video]
     let liked: Bool
     let tag: String
     let thumbnail: String

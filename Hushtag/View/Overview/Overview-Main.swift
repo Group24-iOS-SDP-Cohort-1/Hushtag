@@ -18,6 +18,7 @@ class Overview: UIViewController {
     var ideas: [Idea] = []
     var selectedIndexPath: IndexPath?
     var selectedIdeas: Idea?
+    var selectedVideos: Analysis?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -144,17 +145,22 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
 
             if segue.identifier == "goToAnalysis" {
                 let vc = segue.destination as! YoutubeAnalysis
+                vc.analysis = selectedVideos
 
             }
 
             if segue.identifier == "goToIdea" {
-                let vc = segue.destination as! ViewIdea
+                let nav = segue.destination as! UINavigationController
+                let vc = nav.topViewController as! ViewIdea
+                vc.ideas = selectedIdeas
                 vc.ideas = selectedIdeas
             }
+
     }
 
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectedIndexPath = indexPath
         switch indexPath.section {
             case 0:
                 performSegue(withIdentifier: "goToAnalysis", sender: nil)
