@@ -58,13 +58,9 @@ class Overview: UIViewController {
             UINib(nibName: "HeaderView",
                   bundle: nil),
             forSupplementaryViewOfKind: "header",
-            withReuseIdentifier: "header_cell")
-        
-        collectionView.register(
-            UINib(nibName: "HeaderButtonView",
-                  bundle: nil),
-            forSupplementaryViewOfKind: "headerbutton",
-            withReuseIdentifier: "headerbutton_cell")
+            withReuseIdentifier: "headerCell")
+
+
     }
     
     func generateLayout() -> UICollectionViewLayout {
@@ -250,8 +246,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         // create the header view
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: "header", withReuseIdentifier: "header_cell", for: indexPath) as! HeaderView
-        
+        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: "header", withReuseIdentifier: "headerCell", for: indexPath) as! HeaderView
         if indexPath.section == 0 {
             headerView.configureHeader(text: "Engagement Rates")
         }
