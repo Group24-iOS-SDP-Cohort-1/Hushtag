@@ -31,7 +31,7 @@ class likedCells: UICollectionViewCell {
          self.layer.shadowOffset = CGSize(width: 0, height: 0)
          self.layer.shadowRadius = 6
 
-         self.backgroundColor = .white
+         self.backgroundColor = .red
 
         
         // Title Label (plusLabel)
