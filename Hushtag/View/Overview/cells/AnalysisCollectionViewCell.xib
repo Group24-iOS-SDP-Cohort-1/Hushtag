@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="AnalysisCollectionViewCell" customModule="Hushtag" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="255" height="113"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="255" height="113"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u86-f9-QSI">
+                        <rect key="frame" x="0.0" y="24.999999999999996" width="255" height="33.666666666666657"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="74T-yY-mlA">
+                        <rect key="frame" x="0.0" y="72.333333333333329" width="255" height="15.666666666666671"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="u86-f9-QSI" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="25" id="3k2-7c-Xr3"/>
+                <constraint firstAttribute="trailing" secondItem="u86-f9-QSI" secondAttribute="trailing" id="Dqz-zI-C8Y"/>
+                <constraint firstItem="74T-yY-mlA" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="M38-Ne-NBF"/>
+                <constraint firstItem="u86-f9-QSI" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="YoY-u8-Eld"/>
+                <constraint firstAttribute="trailing" secondItem="74T-yY-mlA" secondAttribute="trailing" id="ZM3-Rl-hyh"/>
+                <constraint firstAttribute="bottom" secondItem="74T-yY-mlA" secondAttribute="bottom" constant="25" id="aYu-zY-tcG"/>
+            </constraints>
+            <size key="customSize" width="255" height="113"/>
+            <connections>
+                <outlet property="platformLabel" destination="74T-yY-mlA" id="le6-jd-phm"/>
+                <outlet property="valueLabel" destination="u86-f9-QSI" id="pIR-Zb-JRo"/>
+            </connections>
+            <point key="canvasLocation" x="295.41984732824426" y="175"/>
+        </collectionViewCell>
+    </objects>
+</document>
