@@ -166,6 +166,9 @@
                                                                                 </label>
                                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xr1-uN-jBJ">
                                                                                     <rect key="frame" x="10" y="10" width="133" height="18"/>
+                                                                                    <constraints>
+                                                                                        <constraint firstAttribute="width" constant="133" id="7sQ-X0-k11"/>
+                                                                                    </constraints>
                                                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                                                     <nil key="textColor"/>
                                                                                     <nil key="highlightedColor"/>

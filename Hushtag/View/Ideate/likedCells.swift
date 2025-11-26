@@ -12,7 +12,10 @@ class likedCells: UICollectionViewCell {
     @IBOutlet weak var Title: UILabel!
 
     @IBOutlet weak var Description: UILabel!
+
     
+    @IBOutlet weak var Hashtag: UILabel!
+
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -20,7 +23,7 @@ class likedCells: UICollectionViewCell {
 
 
         self.layer.cornerRadius = 12
-       self.layer.masksToBounds = false
+        self.layer.masksToBounds = false
 
 
         self.layer.shadowColor = UIColor.black.cgColor
@@ -32,17 +35,18 @@ class likedCells: UICollectionViewCell {
         // Title Label (plusLabel)
         Title.font = .systemFont(ofSize: 14, weight: .regular)
         Title.textColor = UIColor.label
-        Title.numberOfLines = 2
+        Title.numberOfLines = 3
         // Description Label
        
        Description.textColor = UIColor.secondaryLabel
-      Description.numberOfLines = 3
+      Description.numberOfLines = 2
     }
     func configureCell(idea : Idea) {
 
        Title.text = idea.title
         Description.text = idea.description
-
+        Hashtag.text = idea.hashtag.map { "#\($0)" }.joined(separator: " ")
+        Hashtag.textColor = .accent
 
         }
 

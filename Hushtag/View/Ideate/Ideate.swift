@@ -85,44 +85,70 @@ class Ideate: UIViewController{
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
 
+            // HEADER (common to both)
             let headerSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .absolute(50)
             )
-
             let header = NSCollectionLayoutBoundarySupplementaryItem(
                 layoutSize: headerSize,
                 elementKind: "header",
                 alignment: .top
             )
 
-            // Common item size
+            if sectionIndex == 0 {
+
+                let itemSize = NSCollectionLayoutSize(
+                    widthDimension: .absolute(180),
+                    heightDimension: .absolute(150)
+                )
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+                let groupSize = NSCollectionLayoutSize(
+                    widthDimension: .absolute(180),
+                    heightDimension: .absolute(150)
+                )
+                let group = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: groupSize,
+                    subitems: [item]
+                )
+                group.interItemSpacing = .fixed(10)
+
+                let section = NSCollectionLayoutSection(group: group)
+                section.orthogonalScrollingBehavior = .continuous
+                section.interGroupSpacing = 10
+                section.boundarySupplementaryItems = [header]
+                section.contentInsets = NSDirectionalEdgeInsets(
+                    top: 10, leading: 10, bottom: 10, trailing: 10
+                )
+
+                return section
+            }
+
+
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .absolute(180),
-                heightDimension: .absolute(150)
+                heightDimension: .absolute(220)   
             )
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-            // Group size
             let groupSize = NSCollectionLayoutSize(
-                widthDimension: .absolute(180), // same as item
-                heightDimension: .absolute(150)
+                widthDimension: .absolute(180),
+                heightDimension: .absolute(220)
             )
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+            let group = NSCollectionLayoutGroup.horizontal(
+                layoutSize: groupSize,
+                subitems: [item]
+            )
             group.interItemSpacing = .fixed(10)
 
-            // Section
             let section = NSCollectionLayoutSection(group: group)
             section.orthogonalScrollingBehavior = .continuous
             section.interGroupSpacing = 10
             section.boundarySupplementaryItems = [header]
-
-            // Section-specific content insets
-            if sectionIndex == 0 {
-                section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
-            } else {
-                section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
-            }
+            section.contentInsets = NSDirectionalEdgeInsets(
+                top: 10, leading: 10, bottom: 10, trailing: 10
+            )
 
             return section
         }
