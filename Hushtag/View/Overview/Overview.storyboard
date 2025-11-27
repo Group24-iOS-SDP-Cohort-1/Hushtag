@@ -67,8 +67,10 @@
                     <navigationItem key="navigationItem" title="Overview" id="ZZd-fl-5CJ"/>
                     <connections>
                         <outlet property="collectionView" destination="rWT-oj-zyq" id="LDk-n7-gth"/>
-                        <segue destination="8lP-8n-es5" kind="show" identifier="goToAnalysis" id="AKq-Nd-HCx"/>
+                        <segue destination="8lP-8n-es5" kind="show" identifier="goToYoutubeAnalysis" id="AKq-Nd-HCx"/>
                         <segue destination="KVU-qB-L83" kind="show" identifier="goToIdea" id="w62-kq-you"/>
+                        <segue destination="ebO-x5-Gco" kind="show" identifier="goToInstagramAnalysis" id="8Up-li-35O"/>
+                        <segue destination="1bs-Q7-Nyo" kind="show" identifier="goToFacebookAnalysis" id="rVJ-dg-WhJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -94,6 +96,26 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XbZ-da-EHU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="912" y="607"/>
+        </scene>
+        <!--InstagramAnalysis-->
+        <scene sceneID="vth-oR-50B">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="InstagramVC" storyboardName="InstagramAnalysis" id="ebO-x5-Gco" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="1xi-5l-UWn"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mUg-rO-0iP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1218" y="606"/>
+        </scene>
+        <!--FacebookAnalysis-->
+        <scene sceneID="8qV-pH-NMT">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="FacebookVC" storyboardName="FacebookAnalysis" id="1bs-Q7-Nyo" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="rwO-kw-HCw"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ddm-43-pud" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1511" y="606"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="I6x-YR-HNe">

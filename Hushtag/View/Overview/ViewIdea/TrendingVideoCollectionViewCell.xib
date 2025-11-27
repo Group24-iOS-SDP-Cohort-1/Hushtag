@@ -17,16 +17,19 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="0Sc-Yh-1GZ">
-                        <rect key="frame" x="0.0" y="0.0" width="538" height="328.33333333333331"/>
+                        <rect key="frame" x="0.0" y="0.0" width="538" height="150"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="150" id="lsX-hj-fXO"/>
+                        </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RWW-FB-KqC">
-                        <rect key="frame" x="0.0" y="348.33333333333331" width="538" height="18"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RWW-FB-KqC">
+                        <rect key="frame" x="0.0" y="358.33333333333331" width="538" height="18"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gp4-bE-Y6u">
-                        <rect key="frame" x="0.0" y="386.33333333333331" width="538" height="15.666666666666686"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gp4-bE-Y6u">
+                        <rect key="frame" x="0.0" y="396.33333333333326" width="538" height="15.666666666666686"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -40,8 +43,8 @@
                 <constraint firstAttribute="trailing" secondItem="0Sc-Yh-1GZ" secondAttribute="trailing" id="3eG-2o-LJf"/>
                 <constraint firstItem="RWW-FB-KqC" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="7AB-55-jf4"/>
                 <constraint firstItem="Gp4-bE-Y6u" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="8WT-16-Yjo"/>
-                <constraint firstItem="Gp4-bE-Y6u" firstAttribute="top" secondItem="RWW-FB-KqC" secondAttribute="bottom" constant="20" id="GyL-dE-mGZ"/>
-                <constraint firstAttribute="bottom" secondItem="Gp4-bE-Y6u" secondAttribute="bottom" constant="15" id="ZoA-r4-zsK"/>
+                <constraint firstItem="Gp4-bE-Y6u" firstAttribute="top" secondItem="RWW-FB-KqC" secondAttribute="bottom" constant="5" id="GyL-dE-mGZ"/>
+                <constraint firstAttribute="bottom" secondItem="Gp4-bE-Y6u" secondAttribute="bottom" constant="5" id="ZoA-r4-zsK"/>
                 <constraint firstItem="RWW-FB-KqC" firstAttribute="top" secondItem="0Sc-Yh-1GZ" secondAttribute="bottom" constant="20" id="j3j-iF-YGp"/>
                 <constraint firstItem="0Sc-Yh-1GZ" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="rfX-HU-LMf"/>
                 <constraint firstAttribute="trailing" secondItem="RWW-FB-KqC" secondAttribute="trailing" id="vKh-eE-bNl"/>

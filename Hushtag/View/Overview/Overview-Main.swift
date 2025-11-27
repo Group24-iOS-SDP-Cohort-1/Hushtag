@@ -143,35 +143,49 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let indexPath = selectedIndexPath else { return }
 
-            if segue.identifier == "goToAnalysis" {
-                let vc = segue.destination as! YoutubeAnalysis
-                vc.analysis = selectedVideos
+        if segue.identifier == "goToYoutubeAnalysis" {
+            let vc = segue.destination as! YoutubeAnalysis
+            vc.analysis = selectedVideos
+        }
+    
+        if segue.identifier == "goToInstagramAnalysis" {
+            let vc = segue.destination as! InstagramAnalysis
+            //vc.analysis = selectedVideos
+        }
+        
+        if segue.identifier == "goToFacebookAnalysis" {
+            let vc = segue.destination as! FacebookAnalysis
+            //vc.analysis = selectedVideos
+        }
 
-            }
-
-            if segue.identifier == "goToIdea" {
-                let nav = segue.destination as! UINavigationController
-                let vc = nav.topViewController as! ViewIdea
-                vc.ideas = selectedIdeas
-                vc.ideas = selectedIdeas
-            }
-
+        if segue.identifier == "goToIdea" {
+            let nav = segue.destination as! UINavigationController
+            let vc = nav.topViewController as! ViewIdea
+            vc.ideas = selectedIdeas
+        }
     }
 
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedIndexPath = indexPath
         switch indexPath.section {
             case 0:
-                performSegue(withIdentifier: "goToAnalysis", sender: nil)
-
+                switch indexPath.row {
+                    case 0:
+                        performSegue(withIdentifier: "goToYoutubeAnalysis", sender: nil)
+                    case 1:
+                        performSegue(withIdentifier: "goToInstagramAnalysis", sender: nil)
+                    case 2:
+                        performSegue(withIdentifier: "goToFacebookAnalysis", sender: nil)
+                    default:
+                        break
+                    }
             case 1:
-                performSegue(withIdentifier: "goToAnalysis", sender: nil)
+                performSegue(withIdentifier: "goToYoutubeAnalysis", sender: nil)
 
             case 2:
                 selectedIdeas = ideas[indexPath.row]
                 performSegue(withIdentifier: "goToIdea", sender: nil)
-
+            
             default:
                 break
             }

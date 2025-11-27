@@ -26,9 +26,9 @@ class ViewIdea: UIViewController {
         if let idea = ideas {
             titleLabel.text = idea.title
             titleLabel.numberOfLines = 0
-                descriptionLabel.text = idea.description
+            descriptionLabel.text = idea.description
             descriptionLabel.numberOfLines = 0
-                hashtagLabel.text = "#" +  idea.hashtag.joined(separator: " #")
+            hashtagLabel.text = "#" +  idea.hashtag.joined(separator: " #")
             video = idea.videos
             }
         videoView.setCollectionViewLayout(generateLayout(), animated: true)
@@ -58,14 +58,14 @@ class ViewIdea: UIViewController {
         
         let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "header", alignment: .top)
         
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(150))
         
         // create the item
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
         
         // create the group
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .estimated(150))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.75), heightDimension: .estimated(150))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
         
         //create the section
