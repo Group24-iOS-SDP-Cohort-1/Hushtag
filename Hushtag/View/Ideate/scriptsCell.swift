@@ -22,6 +22,8 @@ class scriptsCell: UICollectionViewCell {
 
     @IBOutlet weak var ContentView: UIView!
 
+    var onChevronTap: (() -> Void)?
+
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -51,5 +53,11 @@ class scriptsCell: UICollectionViewCell {
         Hashtag.text = idea.hashtag.map { "#\($0)" }.joined(separator: " ")
         Hashtag.textColor = .accent
         }
+
+
+    @IBAction func chevronTapped(_ sender: Any) {
+        onChevronTap?()
+    }
+    
 
 }

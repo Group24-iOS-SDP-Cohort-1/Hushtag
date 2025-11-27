@@ -27,50 +27,53 @@ class Ideate: UIViewController{
 
     var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
+    //var selectedIdea: Idea?
+
 
     override func viewDidLoad() {
 
         super.viewDidLoad()
 
+        //text box view for generate
         textBoxView.layer.borderWidth = 0.8
         textBoxView.layer.borderColor = UIColor.accent.cgColor
         textBoxView.layer.cornerRadius = 10
 
-        let layout = generateLayout()
-        PlusCollectionView.setCollectionViewLayout(layout, animated: true)
+        //button of textbox generate
         button.tintColor = .accent
         button.setImage(UIImage(systemName: "sparkles"), for: .normal)
      
-
+        //textfield of textbox generate
         textField.attributedPlaceholder = NSAttributedString(string: "Enter your keyword", attributes: [NSAttributedString.Key.foregroundColor: UIColor.accent])
         textField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
 
-        ideas = ideaResponse.ideas
+        //generate layout
+        let layout = generateLayout()
         PlusCollectionView.setCollectionViewLayout(generateLayout(), animated: true)
         PlusCollectionView.dataSource = self
-        print("Ideas loaded: \(ideas.count)")
-       PlusCollectionView.reloadData()
+        PlusCollectionView.delegate = self
+
+
+        ideas = ideaResponse.ideas
+
+        PlusCollectionView.reloadData()
         PlusCollectionView.clipsToBounds = false
 
+        //registering cells
         PlusCollectionView.register(UINib(nibName: "likedCells", bundle: nil), forCellWithReuseIdentifier: "likedCells")
         PlusCollectionView.register(UINib(nibName: "HeaderView", bundle:nil ),forSupplementaryViewOfKind: "header", withReuseIdentifier: "headerCell")
+
         PlusCollectionView.isScrollEnabled = false
         ScrollView.isScrollEnabled = true
         PlusCollectionView.heightAnchor.constraint(equalToConstant: 400).isActive = true
-//      
-
     }
 
+    //button change logic on input basis
     @objc func textDidChange() {
- let isEmpty = textField.text?.isEmpty ?? true
-
+        let isEmpty = textField.text?.isEmpty ?? true
         if isEmpty {
-
-
             button.setImage(UIImage(systemName: "sparkles"), for: .normal)
         } else {
-
-
             button.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
         }
     }
@@ -80,12 +83,9 @@ class Ideate: UIViewController{
         textDidChange()
     }
 
-    
-
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
 
-            // HEADER (common to both)
             let headerSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .absolute(50)
@@ -97,7 +97,6 @@ class Ideate: UIViewController{
             )
 
             if sectionIndex == 0 {
-
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .absolute(180),
                     heightDimension: .absolute(150)
@@ -124,7 +123,6 @@ class Ideate: UIViewController{
 
                 return section
             }
-
 
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .absolute(180),
@@ -154,17 +152,20 @@ class Ideate: UIViewController{
         }
     }
 
-
-
-
-
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toScriptedIdeas",
+           let destinationVC = segue.destination as? ScriptedIdeas,
+           let idea = sender as? Idea {
+            destinationVC.idea = idea
+        }
+    }
 }
 
 extension Ideate: UICollectionViewDataSource {
-
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
     }
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
              if section == 0 {
                  return 1 + ideas.count
@@ -184,6 +185,9 @@ extension Ideate: UICollectionViewDataSource {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scripts_cell", for: indexPath) as! scriptsCell
                 let idea = ideas[indexPath.row - 1]
                 cell.configureCell(idea: idea)
+                cell.onChevronTap = { [weak self] in
+                    self?.performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
+                }
                 return cell
             }
         } else
@@ -196,9 +200,6 @@ extension Ideate: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        //create header view
-
-
         let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: "header", withReuseIdentifier: "headerCell", for: indexPath) as! HeaderView
         if indexPath.section == 0 {
             headerView.configureHeader(text: "Your Scripts")
@@ -206,10 +207,25 @@ extension Ideate: UICollectionViewDataSource {
         } else  {
             headerView.configureHeader(text: "Liked Ideas")
         }
-
-
         return headerView
     }
+}
+
+extension Ideate: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch indexPath.section {
+        case 0:
+            if indexPath.row == 0 { return }
+            let idea = ideas[indexPath.row - 1]
+            performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
+
+        case 1:
+            let idea = ideas[indexPath.row]
+            performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
+        default:
+            return
+        }
 
 
+    }
 }
