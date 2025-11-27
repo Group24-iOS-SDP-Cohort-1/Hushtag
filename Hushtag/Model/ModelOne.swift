@@ -212,18 +212,34 @@ struct DealResponse: Codable {
 struct Deal: Codable, Identifiable {
     let id = UUID()
     let name: String
-    let deliverable: String
-    let platform: String
+    let deliverable: [Deliverable]
+    let platform: [String]
     let phone: String
     let email: String
     let description: String
     let payment: Int
-    let selectedIdea: String
+    let selectedIdeaIndex: String?
 
 
     enum CodingKeys: String, CodingKey {
-        case name,deliverable,platform,phone,email,description,payment,selectedIdea
+        case name,deliverable,platform,phone,email,description,payment, selectedIdeaIndex
     }
+}
+
+struct Deliverable: Codable {
+    let name: String
+    let deadline: Deadline
+}
+
+struct Deadline: Codable {
+    let day: String?
+    let date: String?
+    let time: Time?
+}
+
+struct Time: Codable {
+    let hour: Int?
+    let minute: Int?
 }
 
 
@@ -231,7 +247,7 @@ extension DealResponse {
     func load(from filename: String = "DataStorejson") throws -> DealResponse {
         guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
             throw NSError(
-                domain: "PostResponse",
+                domain: "DealResponse",
                 code: 400,
                 userInfo: [NSLocalizedDescriptionKey: "DataSource.json not found"]
             )
