@@ -32,14 +32,14 @@
       ],
       "liked": false,
       "tag": "",
-      "thumbnail": ""
+      "thumbnail": "Flat geometric beauty youtube thumbnail | Free Vector"
     },
     {
       "id" : "i2",
       "trending": "lifestyle",
       "title": "Morning Routine, Coffee Run, Studying | Vlog",
       "description": "Make a video showing your productive morning routine",
-      "script": "script01.html",
+      "script": "",
       "hashtag": [
         "tips",
         "coffee"
@@ -73,7 +73,7 @@
       "trending": "fashion",
       "title": "Unlock Your Style: Must-Known Fashion Hacks!",
       "description": "Looking to level up your wardrobe without breaking the bank? In this video, we’re sharing 10 game-changing fashion hacks that’ll instantly upgrade your style!",
-      "script": "script01.html",
+      "script": "",
       "hashtag": [
         "beauty",
         "style"
@@ -100,14 +100,14 @@
       ],
       "liked": false,
       "tag": "",
-      "thumbnail": ""
+      "thumbnail": "Make Your Videos Stand Out with Creative Thumbnails"
     },
     {
       "id" : "i4",
       "trending": "fashion",
       "title": "Unlock Your Style: Must-Known Fashion Hacks!",
       "description": "Looking to level up your wardrobe without breaking the bank? In this video, we’re sharing 10 game-changing fashion style tips.",
-      "script": "script01.html",
+      "script": "",
       "hashtag": [
         "beauty",
         "style"
@@ -134,7 +134,7 @@
       ],
       "liked": false,
       "tag": "",
-      "thumbnail": ""
+      "thumbnail": "Miniatura geométrica plana de beleza do youtube | Vetor Grátis"
     }
   ],
   

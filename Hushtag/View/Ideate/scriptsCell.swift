@@ -22,6 +22,9 @@ class scriptsCell: UICollectionViewCell {
 
     @IBOutlet weak var ContentView: UIView!
 
+
+    
+
     var onChevronTap: (() -> Void)?
 
     override func awakeFromNib() {
@@ -44,6 +47,7 @@ class scriptsCell: UICollectionViewCell {
       Title.numberOfLines = 3
       Description.numberOfLines = 2
     Description.textColor = .secondaryLabel
+        
     }
     func configureCell(idea : Idea) {
 
