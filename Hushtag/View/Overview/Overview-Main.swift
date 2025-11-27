@@ -268,16 +268,6 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             } else {
                 cell.configureCell(analysis: analysis, category: "FaceBook")
             }
-            cell.contentView.layer.cornerRadius = 12
-            cell.contentView.layer.masksToBounds = true
-            cell.layer.cornerRadius = 12
-            cell.layer.masksToBounds = false
-            cell.layer.shadowColor = UIColor.black.cgColor
-            cell.layer.shadowOpacity = 0.1
-            cell.layer.shadowOffset = CGSize(width: 0, height: 1)
-            cell.layer.shadowRadius = 8
-            cell.backgroundColor = .clear
-            cell.contentView.backgroundColor = .white
 
             return cell
         }
@@ -285,32 +275,13 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "schedule_cell", for: indexPath) as! ScheduleCollectionViewCell
             let schedule = schedule[indexPath.row]
             cell.configureCell(schedule: schedule)
-            cell.contentView.layer.cornerRadius = 12
-            cell.contentView.layer.masksToBounds = true
-            cell.layer.cornerRadius = 12
-            cell.layer.masksToBounds = false
-            cell.layer.shadowColor = UIColor.black.cgColor
-            cell.layer.shadowOpacity = 0.10
-            cell.layer.shadowOffset = CGSize(width: 0, height: 1)
-            cell.layer.shadowRadius = 8
-            cell.backgroundColor = .clear
-            cell.contentView.backgroundColor = .white
             
             return cell
         }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideas_cell", for: indexPath) as! IdeaCollectionViewCell
         let ideas = ideas[indexPath.row]
         cell.configureCell(ideas: ideas)
-        cell.contentView.layer.cornerRadius = 12
-        cell.contentView.layer.masksToBounds = true
-        cell.layer.cornerRadius = 12
-        cell.layer.masksToBounds = false
-        cell.layer.shadowColor = UIColor.black.cgColor
-        cell.layer.shadowOpacity = 0.15
-        cell.layer.shadowOffset = CGSize(width: 0, height: 2)
-        cell.layer.shadowRadius = 8
-        cell.backgroundColor = .clear
-        cell.contentView.backgroundColor = .white
+        
         return cell
     }
     
@@ -334,6 +305,12 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             ) as! HeaderChevronView
 
             headerView.configure(title: "Upcoming Schedule")
+            headerView.onTap = { [weak self] in
+                guard let self = self else { return }
+                let sb = UIStoryboard(name: "Schedule", bundle: nil)
+                let vc = sb.instantiateInitialViewController()!
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
             return headerView
         }
         

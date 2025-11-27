@@ -25,7 +25,7 @@ class ViewIdea: UIViewController {
 
         if let idea = ideas {
             titleLabel.text = idea.title
-            titleLabel.numberOfLines = 0
+            titleLabel.numberOfLines = 2
             descriptionLabel.text = idea.description
             descriptionLabel.numberOfLines = 0
             hashtagLabel.text = "#" +  idea.hashtag.joined(separator: " #")
@@ -58,7 +58,7 @@ class ViewIdea: UIViewController {
         
         let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "header", alignment: .top)
         
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(150))
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(150))
         
         // create the item
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
