@@ -7,6 +7,20 @@
 
 import Foundation
 
+struct TimeData: Codable{
+    let hour: Int
+    let minute: Int
+}
+
+struct DateData: Codable{
+    let day: String
+    let date: String
+    let time: TimeData
+}
+
+enum PlatformType:String{
+    case youtube,instagram,facebook
+}
 //for idea
 struct IdeaResponse: Codable {
     var ideas: [Idea] = []
@@ -74,12 +88,9 @@ extension IdeaResponse {
     }
 }
 
-
 // for tasks
 struct TaskResponse: Codable {
     var tasks: [Task] = []
-
-
     init() {
         do {
             let response = try load()
@@ -106,7 +117,6 @@ struct Task: Codable, Identifiable {
         case name,startDate,endDate,description,reminder
     }
 }
-
 
 extension TaskResponse {
     func load(from filename: String = "DataStorejson") throws -> TaskResponse {
@@ -135,8 +145,6 @@ extension TaskResponse {
 // for Post
 struct PostResponse: Codable {
     var posts: [Post] = []
-
-
     init() {
         do {
             let response = try load()
@@ -152,19 +160,26 @@ struct PostResponse: Codable {
 }
 
 struct Post: Codable, Identifiable {
-   let id = UUID()
-   let name: String
-    let postingTime: [String: Int]
-   let platform: String
-   let description: String
-   let reminder: [String]
-
+    let id = UUID()
+    let name: String
+    let postingTime: DateData
+    let platform: [String]
+    let description: String
+    let reminder: [String]
 
     enum CodingKeys: String, CodingKey {
         case name,postingTime,platform,description,reminder
     }
-}
 
+    var platformType: [PlatformType]{
+        switch platform.first{
+        case "youtube": return [.youtube]
+        case "instagram": return [.instagram]
+        case "facebook": return [.facebook]
+        default: return [.youtube]
+        }
+    }
+}
 
 extension PostResponse {
     func load(from filename: String = "DataStorejson") throws -> PostResponse {
@@ -193,8 +208,6 @@ extension PostResponse {
 // for deals
 struct DealResponse: Codable {
     var deals: [Deal] = []
-
-
     init() {
         do {
             let response = try load()
@@ -209,6 +222,11 @@ struct DealResponse: Codable {
     }
 }
 
+struct Deliverable: Codable {
+    let name: String
+    let deadline: DateData
+
+}
 struct Deal: Codable, Identifiable {
     let id = UUID()
     let name: String
@@ -219,7 +237,6 @@ struct Deal: Codable, Identifiable {
     let description: String
     let payment: Int
     let selectedIdeaIndex: String?
-
 
     enum CodingKeys: String, CodingKey {
         case name,deliverable,platform,phone,email,description,payment, selectedIdeaIndex
@@ -266,49 +283,45 @@ extension DealResponse {
     }
 }
 
-// for analysis
-struct AnalysisResponse: Codable {
-    var analysis: [Analysis] = []
-
-
+// for youtube analysis
+struct youtubeResponse: Codable {
+    var youtube: [Analysis] = []
     init() {
         do {
             let response = try load()
-            analysis = response.analysis
+            youtube = response.youtube
         } catch {
             print(error.localizedDescription)
         }
     }
 
     func getRandomIdea() -> Analysis? {
-        return analysis.randomElement()
+        return youtube.randomElement()
     }
 }
 
 struct Analysis: Codable, Identifiable {
-   let id = UUID()
-   let views: String
-   let likes: String
-   let incFollowers: String
-   let followers: String
-   let ageGroup: String
+    let id = UUID()
+    let views: String
+    let likes: String
+    let incFollowers: String
+    let followers: String
+    let ageGroup: [String]
     let gender: [String: String]
-   let post: String
-   let optimalTime: String
-   let engagementRate: String
-
+    let post: Int
+    let optimalTime: [DateData]
+    let engagementRate: String
 
     enum CodingKeys: String, CodingKey {
-        case views,likes,incFollowers,followers,ageGroup,gender,optimalTime,engagementRate,post
+        case id,views,likes,incFollowers,followers,ageGroup,gender,optimalTime,engagementRate,post
     }
 }
 
-
-extension AnalysisResponse {
-    func load(from filename: String = "DataStorejson") throws -> AnalysisResponse {
+extension youtubeResponse {
+    func load(from filename: String = "DataStorejson") throws -> youtubeResponse {
         guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
             throw NSError(
-                domain: "AnalysisResponse",
+                domain: "youtubeResponse",
                 code: 400,
                 userInfo: [NSLocalizedDescriptionKey: "DataSource.json not found"]
             )
@@ -317,13 +330,186 @@ extension AnalysisResponse {
         let data = try Data(contentsOf: url)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(AnalysisResponse.self, from: data)
+        return try decoder.decode(youtubeResponse.self, from: data)
     }
 
-    func decode(from data: Data) throws -> AnalysisResponse {
+    func decode(from data: Data) throws -> youtubeResponse {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(AnalysisResponse.self, from: data)
+        return try decoder.decode(youtubeResponse.self, from: data)
+    }
+}
+
+// for instagram analysis
+struct instagramResponse: Codable {
+    var instagram: [Analysis] = []
+    init() {
+        do {
+            let response = try load()
+            instagram = response.instagram
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
+    func getRandomIdea() -> Analysis? {
+        return instagram.randomElement()
+    }
+}
+
+extension instagramResponse {
+    func load(from filename: String = "DataStorejson") throws -> instagramResponse {
+        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
+            throw NSError(
+                domain: "instagramResponse",
+                code: 400,
+                userInfo: [NSLocalizedDescriptionKey: "DataSource.json not found"]
+            )
+        }
+
+        let data = try Data(contentsOf: url)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(instagramResponse.self, from: data)
+    }
+
+    func decode(from data: Data) throws -> instagramResponse {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(instagramResponse.self, from: data)
+    }
+}
+
+// for facebook analysis
+struct facebookResponse: Codable {
+    var facebook: [Analysis] = []
+    init() {
+        do {
+            let response = try load()
+            facebook = response.facebook
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
+    func getRandomIdea() -> Analysis? {
+        return facebook.randomElement()
+    }
+}
+
+extension facebookResponse {
+    func load(from filename: String = "DataStorejson") throws -> facebookResponse {
+        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
+            throw NSError(
+                domain: "facebookResponse",
+                code: 400,
+                userInfo: [NSLocalizedDescriptionKey: "DataSource.json not found"]
+            )
+        }
+
+        let data = try Data(contentsOf: url)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(facebookResponse.self, from: data)
+    }
+
+    func decode(from data: Data) throws -> facebookResponse {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(facebookResponse.self, from: data)
+    }
+}
+
+// preference
+struct PreferenceResponse: Codable {
+    var preferences: Preferences = Preferences()
+    init() {
+        do {
+            let response = try load()
+            preferences = response.preferences
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+}
+
+struct Preferences: Codable {
+    var pickYourNiche: PreferenceGroup = PreferenceGroup()
+    var setYourContentGoals: PreferenceGroup = PreferenceGroup()
+    var contentPreferences: ContentPreferenceGroup = ContentPreferenceGroup()
+}
+
+struct PreferenceItem {
+    let id: Int
+    let title: String
+    let subheading: String
+    let options: [String]?
+    let sections: [PreferenceSection]?
+}
+
+struct PreferenceGroup: Codable {
+    var title: String = ""
+    var subheading: String = ""
+    var options: [String] = []
+}
+
+struct ContentPreferenceGroup: Codable {
+    var title: String = ""
+    var subheading: String = ""
+    var sections: [PreferenceSection] = []
+}
+
+struct PreferenceSection: Codable {
+    var title: String = ""
+    var options: [String] = []
+}
+
+extension PreferenceResponse {
+    func load(from filename: String = "DataStorejson") throws -> PreferenceResponse {
+        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
+            throw NSError(
+                domain: "PreferenceResponse",
+                code: 400,
+                userInfo: [NSLocalizedDescriptionKey: "DataSource.json not found"]
+            )
+        }
+        let data = try Data(contentsOf: url)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(PreferenceResponse.self, from: data)
+    }
+    func decode(from data: Data) throws -> PreferenceResponse {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(PreferenceResponse.self, from: data)
+    }
+}
+
+extension Preferences {
+    func toPreferenceItems() -> [PreferenceItem] {
+        return [
+            PreferenceItem(
+                id: 1,
+                title: pickYourNiche.title,
+                subheading: pickYourNiche.subheading,
+                options: pickYourNiche.options,
+                sections: nil
+            ),
+            PreferenceItem(
+                id: 2,
+                title: setYourContentGoals.title,
+                subheading: setYourContentGoals.subheading,
+                options: setYourContentGoals.options,
+                sections: nil
+            ),
+            PreferenceItem(
+                id: 3,
+                title: contentPreferences.title,
+                subheading: contentPreferences.subheading,
+                options: nil,
+                sections: contentPreferences.sections
+            )
+        ]
     }
 }
 

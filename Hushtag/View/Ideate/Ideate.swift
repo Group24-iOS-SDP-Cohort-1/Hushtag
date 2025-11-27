@@ -11,7 +11,11 @@ import UIKit
 class Ideate: UIViewController{
 
 
+    @IBOutlet weak var stackView: UIStackView!
 
+    @IBOutlet weak var ContentView: UIView!
+
+    @IBOutlet weak var ScrollView: UIScrollView!
 
     @IBOutlet weak var PlusCollectionView: UICollectionView!
 
@@ -40,17 +44,21 @@ class Ideate: UIViewController{
 
         textField.attributedPlaceholder = NSAttributedString(string: "Enter your keyword", attributes: [NSAttributedString.Key.foregroundColor: UIColor.accent])
         textField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
-        
-       // ScrollView.contentSize = CGSize(width: 700, height: 147)
-
-
-//            Cards()
 
         ideas = ideaResponse.ideas
         PlusCollectionView.setCollectionViewLayout(generateLayout(), animated: true)
         PlusCollectionView.dataSource = self
-        print("Ideas loaded: \(ideas.count)")   // debug
+        print("Ideas loaded: \(ideas.count)")
        PlusCollectionView.reloadData()
+        PlusCollectionView.clipsToBounds = false
+
+        PlusCollectionView.register(UINib(nibName: "likedCells", bundle: nil), forCellWithReuseIdentifier: "likedCells")
+        PlusCollectionView.register(UINib(nibName: "HeaderView", bundle:nil ),forSupplementaryViewOfKind: "header", withReuseIdentifier: "headerCell")
+        PlusCollectionView.isScrollEnabled = false
+        ScrollView.isScrollEnabled = true
+        PlusCollectionView.heightAnchor.constraint(equalToConstant: 400).isActive = true
+//      
+
     }
 
     @objc func textDidChange() {
@@ -75,51 +83,76 @@ class Ideate: UIViewController{
     
 
     func generateLayout() -> UICollectionViewLayout {
+        return UICollectionViewCompositionalLayout { sectionIndex, environment in
 
-            //define the size of the compositional layout item
-            let size = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(0.5),
-                heightDimension: .fractionalHeight(1.0)
-            )
-
-            //create item using size
-            let item = NSCollectionLayoutItem(layoutSize: size)
-
-            //create size of the group
-            let groupSize = NSCollectionLayoutSize(
+            // HEADER (common to both)
+            let headerSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(1.0)
+                heightDimension: .absolute(50)
+            )
+            let header = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: headerSize,
+                elementKind: "header",
+                alignment: .top
             )
 
-            //create the group
+            if sectionIndex == 0 {
+
+                let itemSize = NSCollectionLayoutSize(
+                    widthDimension: .absolute(180),
+                    heightDimension: .absolute(150)
+                )
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+                let groupSize = NSCollectionLayoutSize(
+                    widthDimension: .absolute(180),
+                    heightDimension: .absolute(150)
+                )
+                let group = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: groupSize,
+                    subitems: [item]
+                )
+                group.interItemSpacing = .fixed(10)
+
+                let section = NSCollectionLayoutSection(group: group)
+                section.orthogonalScrollingBehavior = .continuous
+                section.interGroupSpacing = 10
+                section.boundarySupplementaryItems = [header]
+                section.contentInsets = NSDirectionalEdgeInsets(
+                    top: 10, leading: 10, bottom: 10, trailing: 10
+                )
+
+                return section
+            }
+
+
+            let itemSize = NSCollectionLayoutSize(
+                widthDimension: .absolute(180),
+                heightDimension: .absolute(220)   
+            )
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+            let groupSize = NSCollectionLayoutSize(
+                widthDimension: .absolute(180),
+                heightDimension: .absolute(220)
+            )
             let group = NSCollectionLayoutGroup.horizontal(
                 layoutSize: groupSize,
                 subitems: [item]
             )
-
-            //add spacing between the items of the group
             group.interItemSpacing = .fixed(10)
 
             let section = NSCollectionLayoutSection(group: group)
-           section.orthogonalScrollingBehavior = .groupPagingCentered
-
-            //add spacing between the horizontal groups
-            section.interGroupSpacing = 20
-
-            //give padding to the sections
+            section.orthogonalScrollingBehavior = .continuous
+            section.interGroupSpacing = 10
+            section.boundarySupplementaryItems = [header]
             section.contentInsets = NSDirectionalEdgeInsets(
-                top: 0,
-                leading: 10,
-                bottom: 0,
-                trailing: 10
+                top: 10, leading: 10, bottom: 10, trailing: 10
             )
 
-            let layout = UICollectionViewCompositionalLayout(section: section)
-
-            return layout
-
+            return section
         }
-
+    }
 
 
 
@@ -128,15 +161,54 @@ class Ideate: UIViewController{
 }
 
 extension Ideate: UICollectionViewDataSource {
+
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 2
+    }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        ideas.count
+             if section == 0 {
+                 return 1 + ideas.count
+             } else {
+                 return ideas.count
+             }
+
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlusCell", for: indexPath) as! PlusCollectionViewCell
-        let ideas = self.ideas[indexPath.row]
-        cell.configureCell(idea : ideas)
-        return cell
+        if indexPath.section == 0 {
+            if indexPath.row == 0 {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlusCell", for: indexPath) as! PlusCollectionViewCell
+                cell.configureCell()
+                return cell
+            } else {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scripts_cell", for: indexPath) as! scriptsCell
+                let idea = ideas[indexPath.row - 1]
+                cell.configureCell(idea: idea)
+                return cell
+            }
+        } else
+        {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "likedCells", for: indexPath) as! likedCells
+            let idea = ideas[indexPath.row]
+            cell.configureCell(idea: idea)
+            return cell
+        }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        //create header view
+
+
+        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: "header", withReuseIdentifier: "headerCell", for: indexPath) as! HeaderView
+        if indexPath.section == 0 {
+            headerView.configureHeader(text: "Your Scripts")
+
+        } else  {
+            headerView.configureHeader(text: "Liked Ideas")
+        }
+
+
+        return headerView
     }
 
 

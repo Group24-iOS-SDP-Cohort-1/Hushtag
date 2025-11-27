@@ -411,8 +411,9 @@
       ]
     }
   ],
-  "youtubeAnalysis": [
+  "youtube": [
     {
+      "id": "1",
       "views": "5.2",
       "likes": "3.1",
       "incFollowers": "8k",
@@ -447,6 +448,7 @@
       "engagementRate": "6.1"
     },
     {
+        "id": "2",
       "views": "3.8",
       "likes": "2.5",
       "incFollowers": "3k",
@@ -481,6 +483,7 @@
       "engagementRate": "4.8"
     },
     {
+        "id": "3",
       "views": "7.4",
       "likes": "5.6",
       "incFollowers": "12k",
@@ -515,8 +518,9 @@
       "engagementRate": "7.3"
     }
   ],
-  "instagramAnalysis": [
+  "instagram": [
     {
+        "id": "1",
       "views": "4.5",
       "likes": "3.9",
       "incFollowers": "6k",
@@ -551,6 +555,7 @@
       "engagementRate": "5.7"
     },
     {
+        "id": "2",
       "views": "6.1",
       "likes": "4.8",
       "incFollowers": "10k",
@@ -585,6 +590,7 @@
       "engagementRate": "6.3"
     },
     {
+        "id": "3",
       "views": "3.2",
       "likes": "2.1",
       "incFollowers": "2k",
@@ -619,8 +625,9 @@
       "engagementRate": "3.9"
     }
   ],
-  "facebookAnalysis": [
+  "facebook": [
     {
+        "id": "1",
       "views": "2.2",
       "likes": "1.2",
       "incFollowers": "1k",
@@ -655,6 +662,7 @@
       "engagementRate": "2.9"
     },
     {
+        "id": "2",
       "views": "4.4",
       "likes": "2.8",
       "incFollowers": "3.4k",
@@ -689,6 +697,7 @@
       "engagementRate": "4.2"
     },
     {
+        "id": "3",
       "views": "3.7",
       "likes": "2",
       "incFollowers": "1.8k",
@@ -739,6 +748,59 @@
       "youtube": 3.5,
       "instagram": 5,
       "facebook": 4.5
-  }
+  },
+  "preferences": {
+      "pickYourNiche": {
+        "title": "Pick your niche",
+        "subheading": "Choose topics you want to create content about",
+        "options": [
+          "Lifestyle",
+          "Skincare",
+          "Game",
+          "Food",
+          "Wellness",
+          "Finance",
+          "Music",
+          "Education",
+          "Other"
+        ]
+      },
+      "setYourContentGoals": {
+        "title": "Set your content goals",
+        "subheading": "Select your main content goals",
+        "options": [
+          "Grow Audience",
+          "Create more consistently",
+          "Experiment with Trends",
+          "Find my niche voice"
+        ]
+      },
+      "contentPreferences": {
+        "title": "Content Preferences",
+        "subheading": "Tone and format preferences",
+        "sections": [
+          {
+            "title": "What best describes your vibe?",
+            "options": [
+              "Funny",
+              "Relatable",
+              "Casual",
+              "Motivational",
+              "Aesthetic",
+              "Trendy",
+              "Other"
+            ]
+          },
+          {
+            "title": "What kind of content do you prefer making?",
+            "options": [
+              "Short-Form",
+              "Mid-Length",
+              "Long-Form"
+            ]
+          }
+        ]
+      }
+    }
 }
 
