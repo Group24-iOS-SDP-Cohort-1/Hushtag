@@ -11,7 +11,9 @@ class Overview: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
     var ideaResponse = IdeaResponse()
-    let analysisResponse = youtubeResponse()
+    let ytResponse = youtubeResponse()
+    let igResponse = instagramResponse()
+    let fbResponse = facebookResponse()
     var scheduleResponse = PostResponse()
     var analysis: [Analysis] = []
     var schedule: [Post] = []
@@ -26,9 +28,8 @@ class Overview: UIViewController {
         // fetch the data
         
         ideas = ideaResponse.ideas
-        analysis = analysisResponse.youtube
         schedule = scheduleResponse.posts
-        
+        analysis = [ytResponse.youtube.first, igResponse.instagram.first, fbResponse.facebook.first].compactMap { $0 }
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
@@ -60,7 +61,18 @@ class Overview: UIViewController {
                   bundle: nil),
             forSupplementaryViewOfKind: "header",
             withReuseIdentifier: "headerCell")
-
+        
+        collectionView.register(
+            UINib(nibName: "HeaderChevronView",
+                  bundle: nil),
+            forSupplementaryViewOfKind: "headerChevron",
+            withReuseIdentifier: "header_chevron")
+        
+        collectionView.register(
+            UINib(nibName: "HeaderButton",
+                  bundle: nil),
+            forSupplementaryViewOfKind: "headerButton",
+            withReuseIdentifier: "header_button")
 
     }
     
@@ -72,6 +84,10 @@ class Overview: UIViewController {
             let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
             
             let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "header", alignment: .top)
+            
+            let headerChevron = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "headerChevron", alignment: .top)
+            
+            let headerButton = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "headerButton", alignment: .top)
             
             if section == 0 {
                 
@@ -90,7 +106,7 @@ class Overview: UIViewController {
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
                 section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom:10, trailing: 20)
-                section.boundarySupplementaryItems = [headerItem]
+                section.boundarySupplementaryItems = [headerButton]
 
                 return section
             }
@@ -110,7 +126,7 @@ class Overview: UIViewController {
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
                 section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
-                section.boundarySupplementaryItems = [headerItem]
+                section.boundarySupplementaryItems = [headerChevron]
     
                 return section
             }
@@ -135,6 +151,41 @@ class Overview: UIViewController {
             return section
         }
         return layout
+    }
+    
+    func applyFilter(_ filter: String) {
+        
+        switch filter {
+        case "week":
+            print("Showing past week analysis")
+            self.analysis = [
+                ytResponse.youtube.first,
+                igResponse.instagram.first,
+                fbResponse.facebook.first
+            ].compactMap { $0 }
+
+        case "month":
+            print("Showing past month analysis")
+            self.analysis = [
+                ytResponse.youtube[1],
+                igResponse.instagram[1],
+                fbResponse.facebook[1]
+            ].compactMap { $0 }
+
+        case "3weeks":
+            print("Showing past 3 weeks analysis")
+            self.analysis = [
+                ytResponse.youtube[2],
+                igResponse.instagram[2],
+                fbResponse.facebook[2]
+            ].compactMap { $0 }
+
+        default:
+            break
+        }
+
+        // Reload only section 0
+        collectionView.reloadSections(IndexSet(integer: 0))
     }
     
 }
@@ -265,17 +316,45 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
-        // create the header view
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: "header", withReuseIdentifier: "headerCell", for: indexPath) as! HeaderView
-        if indexPath.section == 0 {
-            headerView.configureHeader(text: "Engagement Rates")
-        }
-        else if indexPath.section == 1 {
-            headerView.configureHeader(text: "Upcoming Schedule")
-        } else {
+        if kind == "header" {
+            let headerView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: "header",
+                withReuseIdentifier: "headerCell",
+                for: indexPath
+            ) as! HeaderView
             headerView.configureHeader(text: "Suggested for you")
+            return headerView
         }
-        return headerView
+
+        if kind == "headerChevron" {
+            let headerView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: "headerChevron",
+                withReuseIdentifier: "header_chevron",
+                for: indexPath
+            ) as! HeaderChevronView
+
+            headerView.configure(title: "Upcoming Schedule")
+            return headerView
+        }
+        
+        if kind == "headerButton" {
+            let headerView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: "headerButton",
+                withReuseIdentifier: "header_button",
+                for: indexPath
+            ) as! HeaderButton
+
+            headerView.configure()
+            
+            // Listen to filter selection
+            headerView.onFilterSelected = { filter in
+                self.applyFilter(filter)
+            }
+            
+            return headerView
+        }
+
+        return UICollectionReusableView()
     }
 }
 
