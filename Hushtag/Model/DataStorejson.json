@@ -223,7 +223,8 @@
               "hour": 10,
               "minute": 30
             }
-          }
+          },
+          "isCompleted": true
         },
         {
           "name": "Final IG Carousel Post",
@@ -234,7 +235,8 @@
               "hour": 15,
               "minute": 0
             }
-          }
+          },
+          "isCompleted": false
         }
       ],
       "platform": [
@@ -259,18 +261,20 @@
               "hour": 9,
               "minute": 0
             }
-          }
+          },
+          "isCompleted": true
         },
         {
           "name": "Final Reel Submission",
           "deadline": {
             "day": "Friday",
-            "date": "2025-11-19T00:00:00Z",
+            "date": "2025-11-18T00:00:00Z",
             "time": {
               "hour": 17,
               "minute": 0
             }
-          }
+          },
+          "isCompleted": false
         }
       ],
       "platform": [
@@ -294,7 +298,8 @@
               "hour": 12,
               "minute": 45
             }
-          }
+          },
+          "isCompleted": false
         },
         {
           "name": "Final Tutorial Video",
@@ -305,7 +310,8 @@
               "hour": 17,
               "minute": 15
             }
-          }
+          },
+          "isCompleted": false
         }
       ],
       "platform": [
@@ -330,7 +336,8 @@
               "hour": 13,
               "minute": 30
             }
-          }
+          },
+          "isCompleted": true
         },
         {
           "name": "Final Reel Edit",
@@ -341,7 +348,8 @@
               "hour": 19,
               "minute": 0
             }
-          }
+          },
+          "isCompleted": true
         }
       ],
       "platform": [
