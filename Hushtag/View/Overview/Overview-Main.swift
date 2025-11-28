@@ -208,6 +208,11 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             let vc = segue.destination as! FacebookAnalysis
             //vc.analysis = selectedVideos
         }
+        
+        if segue.identifier == "goToSchedule" {
+            let vc = segue.destination as! Schedule
+            //vc.analysis = selectedVideos
+        }
 
         if segue.identifier == "goToIdea" {
             let nav = segue.destination as! UINavigationController
@@ -231,7 +236,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
                         break
                     }
             case 1:
-                performSegue(withIdentifier: "goToYoutubeAnalysis", sender: nil)
+                performSegue(withIdentifier: "goToSchedule", sender: nil)
 
             case 2:
                 selectedIdeas = ideas[indexPath.row]

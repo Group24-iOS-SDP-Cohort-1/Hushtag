@@ -22,7 +22,7 @@ class IdeaCollectionViewCell: UICollectionViewCell {
     func configureCell(ideas: Idea) {
         trendingLabel.text = "Trending in " + ideas.hashtag[0]
         titleLabel.text = ideas.title
-        titleLabel.numberOfLines = 0
+        titleLabel.numberOfLines = 2
         descriptionLabel.text = ideas.description
         hashtagLabel.text = "#" + ideas.hashtag[1] + "  #" + ideas.hashtag[1]
         contentView.layer.cornerRadius = 12

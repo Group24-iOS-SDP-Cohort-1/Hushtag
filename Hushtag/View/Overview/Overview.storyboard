@@ -17,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="rWT-oj-zyq">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="rWT-oj-zyq">
                                 <rect key="frame" x="0.0" y="172" width="393" height="612"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="QO4-6q-Knb">
@@ -71,6 +71,7 @@
                         <segue destination="KVU-qB-L83" kind="show" identifier="goToIdea" id="w62-kq-you"/>
                         <segue destination="ebO-x5-Gco" kind="show" identifier="goToInstagramAnalysis" id="8Up-li-35O"/>
                         <segue destination="1bs-Q7-Nyo" kind="show" identifier="goToFacebookAnalysis" id="rVJ-dg-WhJ"/>
+                        <segue destination="5Zc-bc-IbZ" kind="show" identifier="goToSchedule" id="5vr-Xe-cA7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -106,6 +107,16 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mUg-rO-0iP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1218" y="606"/>
+        </scene>
+        <!--Schedule-->
+        <scene sceneID="yGG-j7-HCS">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="ScheduleVC" storyboardName="Schedule" id="5Zc-bc-IbZ" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="6aM-i6-SXS"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fYa-xn-VEK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2050" y="252"/>
         </scene>
         <!--FacebookAnalysis-->
         <scene sceneID="8qV-pH-NMT">
