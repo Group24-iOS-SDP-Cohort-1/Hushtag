@@ -28,6 +28,7 @@ class Ideate: UIViewController{
     var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
     //var selectedIdea: Idea?
+   // var isSearchMode = false
 
 
     override func viewDidLoad() {
@@ -61,7 +62,7 @@ class Ideate: UIViewController{
 
         //registering cells
         PlusCollectionView.register(UINib(nibName: "likedCells", bundle: nil), forCellWithReuseIdentifier: "likedCells")
-        PlusCollectionView.register(UINib(nibName: "HeaderView", bundle:nil ),forSupplementaryViewOfKind: "header", withReuseIdentifier: "headerCell")
+        PlusCollectionView.register(UINib(nibName: "HeaderChevronView", bundle:nil ),forSupplementaryViewOfKind: "header", withReuseIdentifier: "header_chevron")
 
         PlusCollectionView.isScrollEnabled = false
         ScrollView.isScrollEnabled = true
@@ -81,6 +82,13 @@ class Ideate: UIViewController{
     @IBAction func cleartext(_ sender: UIButton) {
         textField.text = ""
         textDidChange()
+//        if let text = textField.text, !text.isEmpty {
+//              isSearchMode = true
+//          } else {
+//              isSearchMode = false
+//          }
+//
+//          PlusCollectionView.reloadData()
     }
 
     func generateLayout() -> UICollectionViewLayout {
@@ -99,13 +107,13 @@ class Ideate: UIViewController{
             if sectionIndex == 0 {
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .absolute(180),
-                    heightDimension: .absolute(150)
+                    heightDimension: .absolute(160)
                 )
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
                 let groupSize = NSCollectionLayoutSize(
                     widthDimension: .absolute(180),
-                    heightDimension: .absolute(150)
+                    heightDimension: .absolute(160)
                 )
                 let group = NSCollectionLayoutGroup.horizontal(
                     layoutSize: groupSize,
@@ -185,9 +193,7 @@ extension Ideate: UICollectionViewDataSource {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scripts_cell", for: indexPath) as! scriptsCell
                 let idea = ideas[indexPath.row - 1]
                 cell.configureCell(idea: idea)
-                cell.onChevronTap = { [weak self] in
-                    self?.performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
-                }
+                
                 return cell
             }
         } else
@@ -200,12 +206,12 @@ extension Ideate: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: "header", withReuseIdentifier: "headerCell", for: indexPath) as! HeaderView
+        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: "header", withReuseIdentifier: "header_chevron", for: indexPath) as! HeaderChevronView
         if indexPath.section == 0 {
-            headerView.configureHeader(text: "Your Scripts")
+            headerView.configure(title: "Your Scripts")
 
         } else  {
-            headerView.configureHeader(text: "Liked Ideas")
+            headerView.configure(title: "Liked Ideas")
         }
         return headerView
     }
@@ -220,8 +226,9 @@ extension Ideate: UICollectionViewDelegate {
             performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
 
         case 1:
-            let idea = ideas[indexPath.row]
-            performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
+//            let idea = ideas[indexPath.row]
+//            performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
+            return
         default:
             return
         }

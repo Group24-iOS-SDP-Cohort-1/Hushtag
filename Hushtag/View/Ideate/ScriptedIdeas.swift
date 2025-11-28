@@ -13,7 +13,7 @@ class ScriptedIdeas: UIViewController {
 
     var idea: Idea?
 
-    @IBOutlet weak var tagIdea: UIButton!
+
 
     @IBOutlet weak var descriptionTitle: UILabel!
 
@@ -37,7 +37,7 @@ class ScriptedIdeas: UIViewController {
 
     @IBOutlet weak var popupButton: UIButton!
 
-    var onFilterSelected: ((String) -> Void)?
+    let response = DealResponse() 
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,7 +49,7 @@ class ScriptedIdeas: UIViewController {
             return
         }
 
-        setupPopupMenu()
+
         // Navigation title
         let titleLabel = UILabel()
         titleLabel.text = idea.title
@@ -80,7 +80,7 @@ class ScriptedIdeas: UIViewController {
             imageStack.isHidden = false
             imageView.image = UIImage(named: idea.thumbnail)
         }
-
+        setupBrandMenu()
         // Script
         loadHTMLFile(for: idea)
     }
@@ -121,46 +121,27 @@ class ScriptedIdeas: UIViewController {
         }
     }
 
-    func applyFilter(_ filter: String) {
+    func setupBrandMenu() {
+        // Default shown text
+        popupButton.setTitle("Tag Idea", for: .normal)
 
-        switch filter {
-        case "Week":
-            print("Showing past week analysis")
+        let deals = response.deals
 
-
-        case "month":
-            print("Showing past month analysis")
-
-        case "3weeks":
-            print("Showing past 3 weeks analysis")
-
-
-        default:
-            break
+        guard !deals.isEmpty else {
+            popupButton.menu = UIMenu(title: "No Deals Available", children: [])
+            popupButton.showsMenuAsPrimaryAction = true
+            return
         }
 
-
-
-    }
-
-    func setupPopupMenu() {
-
-        let option1 = UIAction(title: "Past week") { _ in
-            self.popupButton.setTitle("Past week", for: .normal)
-            self.onFilterSelected?("week")
+        let actions = deals.map { deal in
+            UIAction(title: deal.name) { _ in
+                self.popupButton.setTitle(deal.name, for: .normal)
+            }
         }
 
-        let option2 = UIAction(title: "Past month") { _ in
-            self.popupButton.setTitle("Past month", for: .normal)
-            self.onFilterSelected?("month")
-        }
-
-        let option3 = UIAction(title: "Past 3 weeks") { _ in
-            self.popupButton.setTitle("Past month", for: .normal)
-            self.onFilterSelected?("3weeks")
-        }
-
-        popupButton.menu = UIMenu(title: "", children: [option1, option2, option3])
+        popupButton.menu = UIMenu(title: "Select Brand", children: actions)
         popupButton.showsMenuAsPrimaryAction = true
     }
+
+
 }

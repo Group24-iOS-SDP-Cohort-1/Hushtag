@@ -17,7 +17,7 @@ class scriptsCell: UICollectionViewCell {
 
     @IBOutlet weak var Hashtag: UILabel!
 
-    @IBOutlet weak var chevron: UIButton!
+   
 
 
     @IBOutlet weak var ContentView: UIView!
@@ -25,7 +25,7 @@ class scriptsCell: UICollectionViewCell {
 
     
 
-    var onChevronTap: (() -> Void)?
+
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -40,8 +40,7 @@ class scriptsCell: UICollectionViewCell {
         self.layer.shadowRadius = 6
 
         self.backgroundColor = .white
-       chevron.setImage(UIImage(systemName: "chevron.right"), for: .normal)
-       chevron.tintColor = .accent
+
     
         Title.font = .systemFont(ofSize: 14, weight: .regular)
       Title.numberOfLines = 3
@@ -59,9 +58,6 @@ class scriptsCell: UICollectionViewCell {
         }
 
 
-    @IBAction func chevronTapped(_ sender: Any) {
-        onChevronTap?()
-    }
     
 
 }
