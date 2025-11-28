@@ -148,6 +148,7 @@
           "hour": 0,
           "minute": 0
         }
+        
       },
       "endDate": {
         "day": "Friday",
@@ -161,7 +162,8 @@
       "reminder": [
         "1 hour before",
         "1 day before"
-      ]
+      ],
+      "isCompleted": false
     },
     {
       "name": "Unboxing Cosmetic Products",
@@ -184,7 +186,8 @@
       "description": "Unbox and review new cosmetic products — capture photos/videos and schedule the post for publishing.",
       "reminder": [
         "1 hour before"
-      ]
+      ],
+      "isCompleted": true
     },
     {
       "name": "Get the look of a model",
@@ -207,7 +210,8 @@
       "description": "Showcase the full transformation with featured products and styling details.",
       "reminder": [
         "15 mins before"
-      ]
+      ],
+      "isCompleted": false
     }
   ],
   "deals": [
@@ -380,7 +384,8 @@
       "reminder": [
         "1 hour before",
         "10 minutes before"
-      ]
+      ],
+      "isCompleted": false
     },
     {
       "name": "YouTube Vlog – Week in My Life",
@@ -398,7 +403,8 @@
       "description": "Full vlog showing weekly lifestyle, workouts, filming and routine.",
       "reminder": [
         "2 hours before"
-      ]
+      ],
+      "isCompleted": false
     },
     {
       "name": "Instagram Carousel – Outfit Inspirations",
@@ -417,7 +423,8 @@
       "reminder": [
         "30 minutes before",
         "5 minutes before"
-      ]
+      ],
+      "isCompleted": false
     },
     {
       "name": "Facebook Update – Festival Sale Promo",
@@ -435,7 +442,8 @@
       "description": "Short promotional post about the festival sale.",
       "reminder": [
         "1 hour before"
-      ]
+      ],
+      "isCompleted": true
     },
     {
       "name": "YouTube Shorts – GRWM for Dinner",
@@ -454,7 +462,8 @@
       "description": "Short GRWM clip for dinner outing.",
       "reminder": [
         "15 minutes before"
-      ]
+      ],
+      "isCompleted": false
     },
     {
       "name": "IG Story – New Product Sneak Peek",
@@ -473,7 +482,8 @@
       "reminder": [
         "1 hour before",
         "10 minutes before"
-      ]
+      ],
+      "isCompleted": true
     }
   ],
   "youtube": [

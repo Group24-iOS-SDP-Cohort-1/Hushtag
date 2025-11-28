@@ -10,10 +10,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Schedule-->
+        <!--Posts-->
         <scene sceneID="s0d-6b-0kx">
             <objects>
-                <viewController storyboardIdentifier="ScheduleVC" id="Y6W-OH-hqX" customClass="Schedule" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ScheduleVC" title="Posts" id="Y6W-OH-hqX" customClass="Schedule" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -106,7 +106,7 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <tableView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="rZh-n1-UJj">
+                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="rZh-n1-UJj">
                                                 <rect key="frame" x="0.0" y="41.333333333333314" width="359" height="200"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
@@ -141,18 +141,39 @@
                             <constraint firstItem="EJD-1L-Zom" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="17" id="ueO-jh-Gra"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Schedule" id="bD6-jx-sLK"/>
+                    <navigationItem key="navigationItem" title="Schedule" largeTitleDisplayMode="never" id="bD6-jx-sLK">
+                        <barButtonItem key="rightBarButtonItem" style="plain" id="tXX-xy-mWn">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="7A6-GJ-K1P">
+                                <rect key="frame" x="326" y="4.6666666666666687" width="47" height="34.666666666666664"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system"/>
+                            </button>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="activitiesView" destination="CxR-iE-KxJ" id="Ozc-ur-uGF"/>
                         <outlet property="listView" destination="rZh-n1-UJj" id="i5O-TA-CLh"/>
+                        <segue destination="3Bc-kS-aS6" kind="show" identifier="GoToActivitiesSegue" id="X5T-QO-kDP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1064.885496183206" y="130.98591549295776"/>
+            <point key="canvasLocation" x="2918.320610687023" y="130.98591549295776"/>
+        </scene>
+        <!--Activities-->
+        <scene sceneID="dpl-zh-qOE">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="ActivitiesVC" storyboardName="Activities" id="3Bc-kS-aS6" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="fVv-0o-jxJ"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5l2-5l-1zM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3780.9160305343512" y="160.56338028169014"/>
         </scene>
     </scenes>
     <resources>
+        <image name="plus" catalog="system" width="128" height="113"/>
         <namedColor name="AccentColor">
             <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

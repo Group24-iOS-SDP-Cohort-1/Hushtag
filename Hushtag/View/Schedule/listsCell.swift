@@ -11,18 +11,17 @@ class listsCell: UITableViewCell {
 
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var valueLabel: UILabel!
+    @IBOutlet weak var navigationButton: UIButton!
+    var onTap: (() -> Void)?
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        navigationButton.addTarget(self, action: #selector(tapped), for: .touchUpInside)
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    @objc func tapped() {
+        onTap?()
     }
-    
     func configure(lists: (String, Int)) {
         nameLabel.text = lists.0
         valueLabel.text = "\(lists.1)"

@@ -49,6 +49,7 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="nameLabel" destination="7JI-kI-veh" id="f88-hb-mLK"/>
+                <outlet property="navigationButton" destination="U2g-Ha-iQv" id="3Cz-UX-kac"/>
                 <outlet property="valueLabel" destination="dwu-2E-KRd" id="GcO-Nk-gH5"/>
             </connections>
             <point key="canvasLocation" x="237.40458015267174" y="172.18309859154931"/>

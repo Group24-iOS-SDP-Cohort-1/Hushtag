@@ -108,13 +108,14 @@ struct TaskResponse: Codable {
 struct Task: Codable, Identifiable {
     let id = UUID()
     let name: String
-    let startDate: String
-    let endDate: String
+    let startDate: DateData
+    let endDate: DateData
     let description: String
     let reminder: [String]
+    let isCompleted : Bool
 
     enum CodingKeys: String, CodingKey {
-        case name,startDate,endDate,description,reminder
+        case name,startDate,endDate,description,reminder, isCompleted
     }
 }
 
@@ -166,9 +167,10 @@ struct Post: Codable, Identifiable {
     let platform: [String]
     let description: String
     let reminder: [String]
+    let isCompleted : Bool
 
     enum CodingKeys: String, CodingKey {
-        case name,postingTime,platform,description,reminder
+        case name,postingTime,platform,description,reminder, isCompleted
     }
 
     var platformType: [PlatformType]{

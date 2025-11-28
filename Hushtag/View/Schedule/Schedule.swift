@@ -20,16 +20,29 @@ class Schedule: UIViewController {
     var posts: [Post] = []
     var activities: [(String, Int, String)] = []
     var lists: [(String, Int)] = []
+    var completedDeals: [Deal] {
+        return deals.filter {
+            let total = $0.deliverable.count
+            let completed = $0.deliverable.filter { $0.isCompleted }.count
+            return total > 0 && completed == total
+        }
+    }
+    var completedTasks: [Task] {
+        return tasks.filter { $0.isCompleted }
+    }
+    var completedPosts: [Post] {
+        return posts.filter { $0.isCompleted }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tasks = taskresponse.tasks
         deals = dealsresponse.deals
         posts = postresponse.posts
-        print(tasks, "\n", deals,"\n", posts)
+        
         activities = [
             ("All", tasks.count + deals.count + posts.count, "tray.circle.fill"),
-            ("Completed", 2, "checkmark.circle.fill")
+            ("Completed", completedTasks.count + completedDeals.count + completedPosts.count, "checkmark.circle.fill")
         ]
         lists = [
             ("Tasks", tasks.count),
@@ -44,8 +57,16 @@ class Schedule: UIViewController {
         listView.delegate = self
         listView.register(UINib(nibName: "listsCell", bundle: nil), forCellReuseIdentifier: "listCell")
     }
-    
+    func navigateToActivitiesStoryboard() {
+        performSegue(withIdentifier: "GoToActivitiesSegue", sender: self)
+        
+//        let vc = storyboard?.instantiateViewController(withIdentifier: "Activities") as! Activities
+//            navigationController?.pushViewController(vc, animated: true)
+        
+    }
+
 }
+
 extension Schedule: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
@@ -54,7 +75,7 @@ extension Schedule: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = activitiesView.dequeueReusableCell(withReuseIdentifier: "ScheduleCell", for: indexPath) as! ActivitiesCell
-        let item = activities[indexPath.item]
+        let item = activities[indexPath.row]
         cell.configure(item.0, item.1, item.2)
         return cell
     }
@@ -89,6 +110,9 @@ extension Schedule: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath) as! listsCell
         let item = lists[indexPath.item]
         cell.configure(lists: item)
+        cell.onTap = { [weak self] in
+            self?.navigateToActivitiesStoryboard()
+        }
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
