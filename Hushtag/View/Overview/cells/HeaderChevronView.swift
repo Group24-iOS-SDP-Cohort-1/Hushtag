@@ -9,11 +9,18 @@ import UIKit
 
 class HeaderChevronView: UICollectionReusableView {
 
+    var onTap: (() -> Void)?
+    
     @IBOutlet weak var headerLabel: UILabel!
     @IBOutlet weak var navigationButton: UIButton!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        navigationButton.addTarget(self, action: #selector(tapped), for: .touchUpInside)
+    }
+    @objc func tapped() {
+        onTap?()
     }
     func configure(title: String) {
         headerLabel.text = title

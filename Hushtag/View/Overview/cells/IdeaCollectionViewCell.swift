@@ -25,6 +25,16 @@ class IdeaCollectionViewCell: UICollectionViewCell {
         titleLabel.numberOfLines = 0
         descriptionLabel.text = ideas.description
         hashtagLabel.text = "#" + ideas.hashtag[1] + "  #" + ideas.hashtag[1]
+        contentView.layer.cornerRadius = 12
+        contentView.layer.masksToBounds = true
+        layer.cornerRadius = 12
+        layer.masksToBounds = false
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.1
+        layer.shadowOffset = CGSize(width: 0, height: 1)
+        layer.shadowRadius = 8
+        backgroundColor = .clear
+        contentView.backgroundColor = .white
     }
 
 }
