@@ -26,7 +26,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="393" height="628"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="NL3-HC-Paz">
-                                                <rect key="frame" x="17" y="0.0" width="359" height="545"/>
+                                                <rect key="frame" x="17" y="0.0" width="359" height="490.66666666666669"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="GD9-w1-2Wg">
                                                         <rect key="frame" x="0.0" y="0.0" width="359" height="45.666666666666664"/>
@@ -55,7 +55,7 @@
                                                                 <rect key="frame" x="0.0" y="0.0" width="359" height="50"/>
                                                                 <subviews>
                                                                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter your keyword" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="T4b-Ys-4fv">
-                                                                        <rect key="frame" x="20" y="8" width="287" height="34"/>
+                                                                        <rect key="frame" x="20" y="8" width="287" height="29"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                         <textInputTraits key="textInputTraits"/>
                                                                     </textField>
@@ -64,7 +64,9 @@
                                                                         <state key="normal" title="Button"/>
                                                                         <buttonConfiguration key="configuration" style="plain" title=""/>
                                                                         <connections>
+                                                                            <action selector="buttonTapped:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="8Dl-dy-5k8"/>
                                                                             <action selector="cleartext:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="7qT-ZT-iUE"/>
+                                                                            <action selector="ideaSearch:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="T5O-Dd-Ffo"/>
                                                                         </connections>
                                                                     </button>
                                                                 </subviews>
@@ -74,7 +76,7 @@
                                                                     <constraint firstItem="Xc6-Ho-yOX" firstAttribute="leading" secondItem="T4b-Ys-4fv" secondAttribute="trailing" constant="18" id="Fgu-Hg-gcj"/>
                                                                     <constraint firstAttribute="trailing" secondItem="Xc6-Ho-yOX" secondAttribute="trailing" constant="10" id="R0V-rK-ASD"/>
                                                                     <constraint firstAttribute="bottom" secondItem="Xc6-Ho-yOX" secondAttribute="bottom" constant="8" id="RFn-Dx-Uk6"/>
-                                                                    <constraint firstAttribute="bottom" secondItem="T4b-Ys-4fv" secondAttribute="bottom" constant="8" id="bAO-uI-uDX"/>
+                                                                    <constraint firstAttribute="bottom" secondItem="T4b-Ys-4fv" secondAttribute="bottom" constant="13" id="bAO-uI-uDX"/>
                                                                     <constraint firstItem="Xc6-Ho-yOX" firstAttribute="top" secondItem="tBX-Ov-9z8" secondAttribute="top" constant="8" id="j11-ye-Rc6"/>
                                                                     <constraint firstItem="T4b-Ys-4fv" firstAttribute="top" secondItem="tBX-Ov-9z8" secondAttribute="top" constant="8" id="ywF-Ot-Oug"/>
                                                                 </constraints>
@@ -84,22 +86,8 @@
                                                             <constraint firstAttribute="height" constant="50" id="ySJ-Qu-EDd"/>
                                                         </constraints>
                                                     </stackView>
-                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="ja9-Ae-CKj">
-                                                        <rect key="frame" x="0.0" y="135.66666666666669" width="359" height="34.333333333333343"/>
-                                                        <subviews>
-                                                            <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="hsb-wR-AWp">
-                                                                <rect key="frame" x="132.33333333333334" y="0.0" width="94.333333333333343" height="34.333333333333336"/>
-                                                                <color key="tintColor" name="AccentColor"/>
-                                                                <state key="normal" title="Button"/>
-                                                                <buttonConfiguration key="configuration" style="filled" title="Generate"/>
-                                                            </button>
-                                                        </subviews>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="34.329999999999998" id="O2I-un-ocf"/>
-                                                        </constraints>
-                                                    </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" distribution="fillProportionally" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="mwC-SG-aMI">
-                                                        <rect key="frame" x="0.0" y="190" width="359" height="355"/>
+                                                        <rect key="frame" x="0.0" y="135.66666666666669" width="359" height="355"/>
                                                         <subviews>
                                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="eTR-6b-d0K">
                                                                 <rect key="frame" x="0.0" y="0.0" width="359" height="355"/>
