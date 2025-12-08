@@ -7,23 +7,32 @@
 
 import UIKit
 
-class DealsCollectionViewCell: UICollectionViewCell {
+class DealsCollectionViewCell: UICollectionViewCell{
     @IBOutlet weak var cardView: UIView!
-    @IBOutlet weak var chevronImageView: UIImageView!
+    
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var deadlineValueLabel: UILabel!
     @IBOutlet weak var deliverablesValueLabel: UILabel!
     @IBOutlet weak var paymentValueLabel: UILabel!
     @IBOutlet weak var nextDeliverableLabel: UILabel!
 
+    @IBOutlet weak var navigationButton: UIButton!
     @IBOutlet weak var captionLabel: UILabel!
     let customPurple = UIColor(_colorLiteralRed: 139/255, green: 92/255, blue: 246/255, alpha: 1)
     
+    var onTap : (() -> Void)?
     override func awakeFromNib() {
         super.awakeFromNib()
         setupCardAppearance()
+        navigationButton.addTarget(self, action: #selector(handleTap), for: .touchUpInside)
     }
 
+    
+    @objc func handleTap() {
+        onTap?()
+    }
+    
+    
     private func setupCardAppearance() {
         // Rounded corners
         cardView.layer.cornerRadius = 15
@@ -40,8 +49,6 @@ class DealsCollectionViewCell: UICollectionViewCell {
         cardView.layer.shadowRadius = 6
 
         // Chevron
-        chevronImageView.image = UIImage(systemName: "chevron.right")
-        chevronImageView.tintColor = customPurple
     }
 
     func formatDeadline(_ isoString: String) -> String {

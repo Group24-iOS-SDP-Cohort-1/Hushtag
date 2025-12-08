@@ -13,7 +13,7 @@ class DealsViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
 
     
-   
+   var selected_Deal : Deal?
     var dealResponse = DealResponse()
     var deals: [Deal] = []
     var completedDeals: [Deal] {
@@ -46,7 +46,7 @@ class DealsViewController: UIViewController {
 
        deals = dealResponse.deals
         print(deals.count)
-
+        collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
 //        collectionView.clipsToBounds = false
@@ -112,7 +112,7 @@ class DealsViewController: UIViewController {
     }
 }
 
-extension DealsViewController: UICollectionViewDataSource {
+extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
@@ -131,6 +131,9 @@ extension DealsViewController: UICollectionViewDataSource {
             ) as! DealsCollectionViewCell
 
             cell.configure(with: deal)
+            cell.onTap = { [weak self] in
+                       self?.performSegue(withIdentifier: "info_page", sender: self)
+                   }
             return cell
 
         } else {
@@ -141,7 +144,18 @@ extension DealsViewController: UICollectionViewDataSource {
             ) as! CompletedDealsCollectionViewCell
 
             cell.configure(with: deal)
+//            cell.onTap = { [weak self] in
+//                       self?.performSegue(withIdentifier: "info_page", sender: deal)
+//                   }
             return cell
+        }
+    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "info_page",
+           let deal = sender as? Deal,
+           let vc = segue.destination as? DealsInfo {
+            
+            vc.deals = deal  // ⭐ pass data here
         }
     }
 }

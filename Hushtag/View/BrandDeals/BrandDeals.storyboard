@@ -86,22 +86,40 @@
                     <connections>
                         <outlet property="collectionView" destination="gHj-oi-jVG" id="aAm-1T-fk0"/>
                         <outlet property="segmentControl" destination="W9K-Sj-GFK" id="l8f-JI-Fr4"/>
-                        <segue destination="8nf-00-qdP" kind="show" identifier="goToInfo" id="QnK-hY-NfA"/>
+                        <segue destination="bZL-Eh-1SZ" kind="show" identifier="info_page" id="uw8-FQ-9Zb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1064.885496183206" y="130.98591549295776"/>
+            <point key="canvasLocation" x="1236" y="141"/>
         </scene>
-        <!--DealsInfo-->
-        <scene sceneID="dnL-he-tJA">
+        <!--info-->
+        <scene sceneID="ZCT-su-JqW">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="InfoID" storyboardName="DealsInfo" id="8nf-00-qdP" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="fpw-qE-Ih5"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="U9g-rA-AYc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <viewController id="bZL-Eh-1SZ" customClass="DealsInfo" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="7uh-oy-gwc">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="nqw-Pc-AQn">
+                                <rect key="frame" x="0.0" y="172" width="393" height="612"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="XEE-7q-6TD"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="nqw-Pc-AQn" firstAttribute="leading" secondItem="XEE-7q-6TD" secondAttribute="leading" id="8a0-fR-xcM"/>
+                            <constraint firstItem="nqw-Pc-AQn" firstAttribute="top" secondItem="XEE-7q-6TD" secondAttribute="top" id="Cnq-4e-B1S"/>
+                            <constraint firstItem="XEE-7q-6TD" firstAttribute="bottom" secondItem="nqw-Pc-AQn" secondAttribute="bottom" id="ccQ-sD-WKK"/>
+                            <constraint firstItem="XEE-7q-6TD" firstAttribute="trailing" secondItem="nqw-Pc-AQn" secondAttribute="trailing" id="m7O-3t-cmz"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="info" largeTitleDisplayMode="never" id="fXh-dh-Pe0"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wBf-on-JRI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2439" y="99"/>
+            <point key="canvasLocation" x="1992" y="150"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="PW2-oH-yOD">

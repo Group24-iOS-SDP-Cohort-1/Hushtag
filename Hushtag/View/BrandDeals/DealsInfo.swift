@@ -8,7 +8,7 @@
 import UIKit
 
 class DealsInfo: UIViewController {
-
+    var deals : Deal?
     override func viewDidLoad() {
         super.viewDidLoad()
 

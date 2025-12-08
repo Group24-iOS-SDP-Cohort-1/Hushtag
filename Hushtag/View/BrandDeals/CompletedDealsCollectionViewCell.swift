@@ -10,17 +10,17 @@ import UIKit
 let customPurple = UIColor(_colorLiteralRed: 139/255, green: 92/255, blue: 246/255, alpha: 1)
 
 class CompletedDealsCollectionViewCell: UICollectionViewCell {
-
+    var onTap : (() -> Void)?
     @IBOutlet weak var cardView: UIView!
     @IBOutlet weak var titleNameLabel: UILabel!
     
     @IBOutlet weak var platformNameLabel: UILabel!
     
-    @IBOutlet weak var chevronImageView: UIImageView!
     @IBOutlet weak var paymentLabel: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         setupCardAppearance()
+        
         // Initialization code
     }
     private func setupCardAppearance() {
@@ -39,8 +39,6 @@ class CompletedDealsCollectionViewCell: UICollectionViewCell {
         cardView.layer.shadowRadius = 6
 
         // Chevron
-        chevronImageView.image = UIImage(systemName: "chevron.right")
-        chevronImageView.tintColor = customPurple
     }
     func configure(with deal: Deal) {
             // Brand name
