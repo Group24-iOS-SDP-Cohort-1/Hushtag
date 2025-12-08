@@ -29,6 +29,11 @@
 			path = Hushtag;
 			sourceTree = "<group>";
 		};
+		19DC13202EE69E5A00DD2999 /* Model */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Model;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +50,7 @@
 		19ABF3672EC4873200DD9E40 = {
 			isa = PBXGroup;
 			children = (
+				19DC13202EE69E5A00DD2999 /* Model */,
 				19ABF3722EC4873200DD9E40 /* Hushtag */,
 				19ABF3712EC4873200DD9E40 /* Products */,
 			);
@@ -75,6 +81,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				19ABF3722EC4873200DD9E40 /* Hushtag */,
+				19DC13202EE69E5A00DD2999 /* Model */,
 			);
 			name = Hushtag;
 			packageProductDependencies = (

@@ -12,42 +12,44 @@ class Schedule: UIViewController {
     @IBOutlet weak var activitiesView: UICollectionView!
     @IBOutlet weak var listView: UITableView!
     
-    var postresponse = PostResponse()
-    var taskresponse = TaskResponse()
-    var dealsresponse = DealResponse()
-    var tasks: [Task] = []
-    var deals: [Deal] = []
-    var posts: [Post] = []
+    
+    var tasks: [Task]?
+    var deals: [Deal]?
+    var posts: [Post]?
     var activities: [(String, Int, String)] = []
     var lists: [(String, Int)] = []
     var completedDeals: [Deal] {
-        return deals.filter {
+        return deals?.filter {
             let total = $0.deliverable.count
             let completed = $0.deliverable.filter { $0.isCompleted }.count
             return total > 0 && completed == total
-        }
+        } ?? []
     }
+
     var completedTasks: [Task] {
-        return tasks.filter { $0.isCompleted }
+        return tasks?.filter { $0.isCompleted } ?? []
     }
+
     var completedPosts: [Post] {
-        return posts.filter { $0.isCompleted }
+        return posts?.filter { $0.isCompleted } ?? []
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tasks = taskresponse.tasks
-        deals = dealsresponse.deals
-        posts = postresponse.posts
         
+        let taskCount = tasks?.count ?? 0
+        let dealCount = deals?.count ?? 0
+        let postCount = posts?.count ?? 0
+
         activities = [
-            ("All", tasks.count + deals.count + posts.count, "tray.circle.fill"),
+            ("All", taskCount + dealCount + postCount, "tray.circle.fill"),
             ("Completed", completedTasks.count + completedDeals.count + completedPosts.count, "checkmark.circle.fill")
         ]
+
         lists = [
-            ("Tasks", tasks.count),
-            ("Deals", deals.count),
-            ("Posts", posts.count)
+            ("Tasks", taskCount),
+            ("Deals", dealCount),
+            ("Posts", postCount)
         ]
         
         activitiesView.setCollectionViewLayout(generateLayout(), animated: true)
@@ -102,18 +104,53 @@ extension Schedule: UICollectionViewDataSource, UICollectionViewDelegate {
 }
 
 extension Schedule: UITableViewDataSource, UITableViewDelegate {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "GoToActivitiesSegue",
+           let vc = segue.destination as? Activities,
+           let category = sender as? String {
+
+            vc.category = category
+            
+            switch category {
+            case "Tasks":
+                vc.tasks = tasks ?? []
+            case "Deals":
+                vc.deals = deals ?? []
+            case "Posts":
+                vc.posts = posts ?? []
+            default:
+                break
+            }
+        }
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "GoToActivitiesSegue", sender: indexPath.row)
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "listCell", for: indexPath) as! listsCell
-        let item = lists[indexPath.item]
+        let item = lists[indexPath.row]
         cell.configure(lists: item)
+
         cell.onTap = { [weak self] in
-            self?.navigateToActivitiesStoryboard()
-        }
-        return cell
+        guard let self = self else { return }
+
+        switch indexPath.row {
+            case 0:
+               self.performSegue(withIdentifier: "GoToActivitiesSegue", sender: "Tasks")
+            case 1:
+               self.performSegue(withIdentifier: "GoToActivitiesSegue", sender: "Deals")
+            case 2:
+               self.performSegue(withIdentifier: "GoToActivitiesSegue", sender: "Posts")
+            default:
+               break
+            }
+       }
+       return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 55

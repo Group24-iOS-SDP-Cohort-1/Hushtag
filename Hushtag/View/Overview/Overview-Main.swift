@@ -14,13 +14,20 @@ class Overview: UIViewController {
     let ytResponse = youtubeResponse()
     let igResponse = instagramResponse()
     let fbResponse = facebookResponse()
-    var scheduleResponse = PostResponse()
+    var postresponse = PostResponse()
+    var taskresponse = TaskResponse()
+    var dealsresponse = DealResponse()
     var analysis: [Analysis] = []
-    var schedule: [Post] = []
+    var post: [Post] = []
+    var task: [Task] = []
+    var deal: [Deal] = []
     var ideas: [Idea] = []
     var selectedIndexPath: IndexPath?
     var selectedIdeas: Idea?
     var selectedVideos: Analysis?
+    var selectedPost: Post?
+    var selectedDeal: Deal?
+    var selectedTask: Task?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +35,9 @@ class Overview: UIViewController {
         // fetch the data
         
         ideas = ideaResponse.ideas
-        schedule = scheduleResponse.posts
+        post = postresponse.posts
+        task = taskresponse.tasks
+        deal = dealsresponse.deals
         analysis = [ytResponse.youtube.first, igResponse.instagram.first, fbResponse.facebook.first].compactMap { $0 }
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -193,27 +202,23 @@ class Overview: UIViewController {
 extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let indexPath = selectedIndexPath else { return }
-
-        if segue.identifier == "goToYoutubeAnalysis" {
-            let vc = segue.destination as! YoutubeAnalysis
-            vc.analysis = selectedVideos
-        }
-    
-        if segue.identifier == "goToInstagramAnalysis" {
-            let vc = segue.destination as! InstagramAnalysis
-            //vc.analysis = selectedVideos
-        }
         
-        if segue.identifier == "goToFacebookAnalysis" {
-            let vc = segue.destination as! FacebookAnalysis
+        if segue.identifier == "goToAnalysis" {
+            let vc = segue.destination as! AnalysisDataViewController
             //vc.analysis = selectedVideos
         }
         
         if segue.identifier == "goToSchedule" {
             let vc = segue.destination as! Schedule
-            //vc.analysis = selectedVideos
+            vc.posts = post
+            vc.deals = deal
+            vc.tasks = task
         }
-
+        
+        if segue.identifier == "taskDetails" {
+            let vc = segue.destination as! Details
+            vc.post = selectedPost
+        }
         if segue.identifier == "goToIdea" {
             let nav = segue.destination as! UINavigationController
             let vc = nav.topViewController as! ViewIdea
@@ -225,19 +230,10 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         selectedIndexPath = indexPath
         switch indexPath.section {
             case 0:
-                switch indexPath.row {
-                    case 0:
-                        performSegue(withIdentifier: "goToYoutubeAnalysis", sender: nil)
-                    case 1:
-                        performSegue(withIdentifier: "goToInstagramAnalysis", sender: nil)
-                    case 2:
-                        performSegue(withIdentifier: "goToFacebookAnalysis", sender: nil)
-                    default:
-                        break
-                    }
+                performSegue(withIdentifier: "goToAnalysis", sender: nil)
             case 1:
-                performSegue(withIdentifier: "goToSchedule", sender: nil)
-
+                selectedPost = post[indexPath.row]
+                performSegue(withIdentifier: "goToAnalysis", sender: nil)
             case 2:
                 selectedIdeas = ideas[indexPath.row]
                 performSegue(withIdentifier: "goToIdea", sender: nil)
@@ -257,7 +253,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         if  (section == 0) {
             return analysis.count
         } else if (section == 1) {
-            return schedule.count
+            return post.count
         }
         return ideas.count
     }
@@ -271,14 +267,14 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             } else if indexPath.row == 1 {
                 cell.configureCell(analysis: analysis, category: "Instagram")
             } else {
-                cell.configureCell(analysis: analysis, category: "FaceBook")
+                cell.configureCell(analysis: analysis, category: "Facebook")
             }
 
             return cell
         }
         else if indexPath.section == 1 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "schedule_cell", for: indexPath) as! ScheduleCollectionViewCell
-            let schedule = schedule[indexPath.row]
+            let schedule = post[indexPath.row]
             cell.configureCell(schedule: schedule)
             
             return cell
@@ -286,7 +282,6 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideas_cell", for: indexPath) as! IdeaCollectionViewCell
         let ideas = ideas[indexPath.row]
         cell.configureCell(ideas: ideas)
-        
         return cell
     }
     
@@ -308,16 +303,16 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
                 withReuseIdentifier: "header_chevron",
                 for: indexPath
             ) as! HeaderChevronView
-
+            
             headerView.configure(title: "Upcoming Schedule")
+            
             headerView.onTap = { [weak self] in
-                guard let self = self else { return }
-                let sb = UIStoryboard(name: "Schedule", bundle: nil)
-                let vc = sb.instantiateInitialViewController()!
-                self.navigationController?.pushViewController(vc, animated: true)
+                self?.performSegue(withIdentifier: "goToSchedule", sender: nil)
             }
+            
             return headerView
         }
+
         
         if kind == "headerButton" {
             let headerView = collectionView.dequeueReusableSupplementaryView(
