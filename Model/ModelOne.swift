@@ -300,7 +300,7 @@ struct youtubeResponse: Codable {
 }
 
 struct Analysis: Codable, Identifiable {
-    let id = UUID()
+    let id: String
     let views: String
     let likes: String
     let incFollowers: String

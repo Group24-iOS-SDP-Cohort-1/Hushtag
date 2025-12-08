@@ -215,7 +215,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             vc.tasks = task
         }
         
-        if segue.identifier == "taskDetails" {
+        if segue.identifier == "goToDetails" {
             let vc = segue.destination as! Details
             vc.post = selectedPost
         }
@@ -233,7 +233,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
                 performSegue(withIdentifier: "goToAnalysis", sender: nil)
             case 1:
                 selectedPost = post[indexPath.row]
-                performSegue(withIdentifier: "goToAnalysis", sender: nil)
+                performSegue(withIdentifier: "goToDetails", sender: nil)
             case 2:
                 selectedIdeas = ideas[indexPath.row]
                 performSegue(withIdentifier: "goToIdea", sender: nil)

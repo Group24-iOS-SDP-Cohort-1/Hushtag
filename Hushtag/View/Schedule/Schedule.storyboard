@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="EJD-1L-Zom">
-                                <rect key="frame" x="17" y="171.99999999999997" width="359" height="451.33333333333326"/>
+                                <rect key="frame" x="17" y="117.99999999999997" width="359" height="451.33333333333326"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="TkX-fP-lRf">
                                         <rect key="frame" x="0.0" y="0.0" width="359" height="190"/>
@@ -142,14 +142,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Schedule" largeTitleDisplayMode="never" id="bD6-jx-sLK">
-                        <barButtonItem key="rightBarButtonItem" style="plain" id="tXX-xy-mWn">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="7A6-GJ-K1P">
-                                <rect key="frame" x="326" y="4.6666666666666687" width="47" height="34.666666666666664"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system"/>
-                            </button>
-                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" image="plus" catalog="system" id="moB-84-WOr"/>
                     </navigationItem>
                     <connections>
                         <outlet property="activitiesView" destination="CxR-iE-KxJ" id="Ozc-ur-uGF"/>
@@ -170,24 +163,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5l2-5l-1zM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="4707.6335877862593" y="160.56338028169014"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="h1i-Q5-HTe">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="dug-zS-tbV" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Af3-OQ-Bv9">
-                        <rect key="frame" x="0.0" y="118" width="393" height="54"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="Y6W-OH-hqX" kind="relationship" relationship="rootViewController" id="EyW-1a-U9h"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Jd0-St-Afn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2918.320610687023" y="130.98591549295776"/>
         </scene>
     </scenes>
     <resources>

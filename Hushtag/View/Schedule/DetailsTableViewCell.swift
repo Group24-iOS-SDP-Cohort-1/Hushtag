@@ -16,10 +16,9 @@ class DetailsTableViewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
     }
-    func configure(post: Post?) {
-        print("3", post)
-        
-        valueLabel.text = post?.name ?? ""
+    func configure(task: Task?, deal: Deal?, post: Post?) {
+        descriptionLabel.text = task?.description ?? deal?.description ?? post?.description ?? ""
+        valueLabel.text = task?.name ?? deal?.name ?? post?.name ?? ""
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

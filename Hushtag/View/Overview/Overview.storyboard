@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="rWT-oj-zyq">
-                                <rect key="frame" x="0.0" y="172" width="393" height="612"/>
+                                <rect key="frame" x="0.0" y="172" width="393" height="563"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="QO4-6q-Knb">
                                     <size key="itemSize" width="231" height="216"/>
@@ -65,16 +65,26 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Overview" id="ZZd-fl-5CJ"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="collectionView" destination="rWT-oj-zyq" id="LDk-n7-gth"/>
                         <segue destination="KVU-qB-L83" kind="show" identifier="goToIdea" id="w62-kq-you"/>
                         <segue destination="5Zc-bc-IbZ" kind="show" identifier="goToSchedule" id="5vr-Xe-cA7"/>
                         <segue destination="hDs-sx-oiG" kind="show" identifier="goToAnalysis" id="tdd-OI-4OB"/>
+                        <segue destination="RsE-9q-XJa" kind="presentation" identifier="goToDetails" id="xAC-1q-pHn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1319.8473282442746" y="136.61971830985917"/>
+            <point key="canvasLocation" x="1316.793893129771" y="136.61971830985917"/>
+        </scene>
+        <!--Details-->
+        <scene sceneID="2U1-zS-8B2">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="Details" storyboardName="Activities" referencedIdentifier="Details" id="RsE-9q-XJa" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iZ0-Vu-YOP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2015" y="14"/>
         </scene>
         <!--ViewIdea-->
         <scene sceneID="Wj9-SX-FKy">
@@ -84,7 +94,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HkF-yW-aKd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2068" y="-6"/>
+            <point key="canvasLocation" x="2157" y="137"/>
         </scene>
         <!--Schedule-->
         <scene sceneID="yGG-j7-HCS">
@@ -104,7 +114,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RnT-n1-1Wb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1873" y="606"/>
+            <point key="canvasLocation" x="1318" y="620"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="I6x-YR-HNe">

@@ -122,15 +122,7 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Idea Title" id="dtc-aJ-ivQ">
-                        <barButtonItem key="rightBarButtonItem" style="plain" id="NX6-Db-zTR">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="48Q-JE-4T0">
-                                <rect key="frame" x="322.33333333333331" y="4.6666666666666687" width="50.666666666666686" height="34.666666666666664"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="heart" catalog="system"/>
-                            </button>
-                            <color key="tintColor" name="AccentColor"/>
-                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" image="heart" catalog="system" id="kyf-8k-aJL"/>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>

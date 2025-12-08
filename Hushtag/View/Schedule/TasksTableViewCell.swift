@@ -7,8 +7,12 @@
 
 import UIKit
 
+protocol TasksTableViewCellDelegate: AnyObject {
+    func didTapOpenModal(task: Task?, deal: Deal?, post: Post?)
+}
+
 class TasksTableViewCell: UITableViewCell {
-    var onDetailsTap: ((Task?, Deal?, Post?) -> Void)?
+    weak var delegate: TasksTableViewCellDelegate?
     private var task: Task?
     private var deal: Deal?
     private var post: Post?
@@ -22,7 +26,6 @@ class TasksTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
         // Configure the view for the selected state
     }
     func configureCell(_ tasks: Task?, _ deals: Deal?, _ posts: Post?) {
@@ -40,7 +43,8 @@ class TasksTableViewCell: UITableViewCell {
         sender.setImage(UIImage(systemName: imageName), for: .normal)
     }
     @IBAction func detailsButtonPressed(_ sender: UIButton) {
-        onDetailsTap?(task, deal, post)
+        delegate?.didTapOpenModal(task: task, deal: deal, post: post)
     }
     
 }
+
