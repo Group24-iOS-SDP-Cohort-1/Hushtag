@@ -319,8 +319,46 @@ extension Ideate: UICollectionViewDataSource {
 
         if isSearchMode {
             headerView.configure(title: "Search Results")
-        } else {
-            headerView.configure(title: indexPath.section == 0 ? "Your Scripts" : "Liked Ideas")
+        } else if indexPath.section == 0 {                                  //PASSING DATA FOR VIEWING ALL SCRIPTS
+            headerView.configure(title: "Your Scripts")
+            headerView.onTap = { [weak self] in
+                guard let self = self else { return }
+                let sb = UIStoryboard(name: "ViewScripts", bundle: nil)
+                guard let navVC = sb.instantiateInitialViewController() as? UINavigationController else {
+                        print("Error: Initial VC is not a Navigation Controller")
+                        return
+                }
+                
+                guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {
+                        return
+                }
+                
+                destinationVC.pageTitle = "Your Scripts"
+                destinationVC.cellReuseIdentifier = "allScriptsCell"
+                destinationVC.ideas = self.ideas
+                
+                self.navigationController?.pushViewController(destinationVC, animated: true)
+            }
+        } else {                                                        //PASSING DATA FOR VIEWING ALL LIKED IDEAS
+            headerView.configure(title: "Liked Ideas")
+            headerView.onTap = { [weak self] in
+                guard let self = self else { return }
+                let sb = UIStoryboard(name: "ViewScripts", bundle: nil)
+                guard let navVC = sb.instantiateInitialViewController() as? UINavigationController else {
+                        print("Error: Initial VC is not a Navigation Controller")
+                        return
+                }
+                
+                guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {
+                        return
+                }
+                
+                destinationVC.pageTitle = "Liked Ideas"
+                destinationVC.cellReuseIdentifier = "allScriptsCell"
+                destinationVC.ideas = self.ideas
+                
+                self.navigationController?.pushViewController(destinationVC, animated: true)
+            }
         }
 
         return headerView
