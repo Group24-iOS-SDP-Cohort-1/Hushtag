@@ -39,7 +39,7 @@ class likedCells: UICollectionViewCell {
         // Description Label
        
        Description.textColor = UIColor.secondaryLabel
-      Description.numberOfLines = 2
+        Description.numberOfLines = 2
     }
     func configureCell(idea : Idea) {
 

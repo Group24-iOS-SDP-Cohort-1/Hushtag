@@ -27,65 +27,72 @@ class Ideate: UIViewController{
 
     var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
-
+    //var selectedIdea: Idea?
+    var isSearchMode = false
+    var filteredIdeas: [Idea] = []
+    var collectionViewHeightConstraint: NSLayoutConstraint?
     override func viewDidLoad() {
 
         super.viewDidLoad()
 
+        //text box view for generate
         textBoxView.layer.borderWidth = 0.8
         textBoxView.layer.borderColor = UIColor.accent.cgColor
         textBoxView.layer.cornerRadius = 10
 
-        let layout = generateLayout()
-        PlusCollectionView.setCollectionViewLayout(layout, animated: true)
+        //button of textbox generate
         button.tintColor = .accent
         button.setImage(UIImage(systemName: "sparkles"), for: .normal)
-     
 
+        //textfield of textbox generate
         textField.attributedPlaceholder = NSAttributedString(string: "Enter your keyword", attributes: [NSAttributedString.Key.foregroundColor: UIColor.accent])
         textField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
 
-        ideas = ideaResponse.ideas
+        //generate layout
+        let layout = generateLayout()
         PlusCollectionView.setCollectionViewLayout(generateLayout(), animated: true)
         PlusCollectionView.dataSource = self
-        print("Ideas loaded: \(ideas.count)")
-       PlusCollectionView.reloadData()
+        PlusCollectionView.delegate = self
+
+
+        ideas = ideaResponse.ideas
+
+        PlusCollectionView.reloadData()
         PlusCollectionView.clipsToBounds = false
 
+        //registering cells
         PlusCollectionView.register(UINib(nibName: "likedCells", bundle: nil), forCellWithReuseIdentifier: "likedCells")
-        PlusCollectionView.register(UINib(nibName: "HeaderView", bundle:nil ),forSupplementaryViewOfKind: "header", withReuseIdentifier: "headerCell")
+        PlusCollectionView.register(UINib(nibName: "IdeaCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ideas_cell")
+        PlusCollectionView.register(UINib(nibName: "HeaderChevronView", bundle:nil ),forSupplementaryViewOfKind: "header", withReuseIdentifier: "header_chevron")
+
         PlusCollectionView.isScrollEnabled = false
         ScrollView.isScrollEnabled = true
-        PlusCollectionView.heightAnchor.constraint(equalToConstant: 400).isActive = true
-//      
+        PlusCollectionView.heightAnchor.constraint(equalToConstant: CGFloat(ideas.count * 160)).isActive = true
+        collectionViewHeightConstraint = PlusCollectionView.heightAnchor.constraint(equalToConstant: CGFloat(ideas.count * 160))
+               collectionViewHeightConstraint?.isActive = true
+
 
     }
 
+    //button change logic on input basis
     @objc func textDidChange() {
- let isEmpty = textField.text?.isEmpty ?? true
-
-        if isEmpty {
-
-
-            button.setImage(UIImage(systemName: "sparkles"), for: .normal)
-        } else {
-
-
-            button.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
-        }
+        if textField.text?.isEmpty ?? true {
+                    isSearchMode = false
+                    filteredIdeas.removeAll()
+                    PlusCollectionView.reloadData()
+                }
     }
 
     @IBAction func cleartext(_ sender: UIButton) {
-        textField.text = ""
-        textDidChange()
+        //        textField.text = ""
+        //        isSearchMode = false
+        //        textDidChange()
+        //        PlusCollectionView.reloadData()
     }
-
-    
 
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
 
-            // HEADER (common to both)
             let headerSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .absolute(50)
@@ -95,18 +102,43 @@ class Ideate: UIViewController{
                 elementKind: "header",
                 alignment: .top
             )
-
-            if sectionIndex == 0 {
+            if self.isSearchMode {
 
                 let itemSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .estimated(160)
+                )
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 10, trailing: 5)
+
+                let groupSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .estimated(160)
+                )
+                let group = NSCollectionLayoutGroup.vertical(
+                    layoutSize: groupSize,
+                    subitems: [item]
+                )
+
+                let section = NSCollectionLayoutSection(group: group)
+                section.interGroupSpacing = 15
+                section.orthogonalScrollingBehavior = .none
+                section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
+
+                return section
+
+            }
+
+            if sectionIndex == 0 {
+                let itemSize = NSCollectionLayoutSize(
                     widthDimension: .absolute(180),
-                    heightDimension: .absolute(150)
+                    heightDimension: .absolute(160)
                 )
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
                 let groupSize = NSCollectionLayoutSize(
                     widthDimension: .absolute(180),
-                    heightDimension: .absolute(150)
+                    heightDimension: .absolute(160)
                 )
                 let group = NSCollectionLayoutGroup.horizontal(
                     layoutSize: groupSize,
@@ -125,16 +157,15 @@ class Ideate: UIViewController{
                 return section
             }
 
-
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .absolute(180),
-                heightDimension: .absolute(220)   
+                heightDimension: .absolute(190)
             )
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
             let groupSize = NSCollectionLayoutSize(
                 widthDimension: .absolute(180),
-                heightDimension: .absolute(220)
+                heightDimension: .absolute(190)
             )
             let group = NSCollectionLayoutGroup.horizontal(
                 layoutSize: groupSize,
@@ -154,62 +185,171 @@ class Ideate: UIViewController{
         }
     }
 
-
-
-
-
-}
-
-extension Ideate: UICollectionViewDataSource {
-
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toScriptedIdeas",
+           let destinationVC = segue.destination as? ScriptedIdeas,
+           let idea = sender as? Idea {
+            destinationVC.idea = idea
+        }
     }
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-             if section == 0 {
-                 return 1 + ideas.count
-             } else {
-                 return ideas.count
-             }
 
+    @IBAction func ideaSearch(_ sender: UIButton) {
+        guard let text = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  !text.isEmpty else { return }
+
+
+        filteredIdeas = ideas.filter { idea in
+            idea.trending.lowercased().contains(text.lowercased())
+        }
+            print("Filtered ideas:", filteredIdeas.map { $0.title })
+
+            isSearchMode = true
+
+            updateCollectionViewHeight()
+
+            PlusCollectionView.setCollectionViewLayout(generateLayout(), animated: false)
+            PlusCollectionView.reloadData()
+    }
+
+    func updateCollectionViewHeight() {
+            let itemHeight: CGFloat = 160
+            let itemCount = isSearchMode ? filteredIdeas.count : ideas.count
+            collectionViewHeightConstraint?.constant = CGFloat(itemCount) * itemHeight
+            view.layoutIfNeeded()
+        }
+
+    @IBAction func buttonTapped(_ sender: UIButton) {
+        let text = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+
+                if isSearchMode {
+                    // CROSS tapped → reset original ideas
+                    isSearchMode = false
+                    filteredIdeas.removeAll()
+                    textField.text = ""
+                    button.setImage(UIImage(systemName: "sparkles"), for: .normal)
+                } else {
+                    // SPARKLE tapped → perform search
+                    guard !text.isEmpty else { return }
+
+
+                    filteredIdeas = ideas.filter { idea in
+                        idea.trending.lowercased().contains(text.lowercased())
+                    }
+
+                    isSearchMode = true
+                    button.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
+                }
+
+
+                updateCollectionViewHeight()
+
+
+                PlusCollectionView.setCollectionViewLayout(generateLayout(), animated: false)
+                PlusCollectionView.reloadData()
+    }
+}
+extension Ideate: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return isSearchMode ? 1 : 2
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int {
+
+        if isSearchMode {
+            return filteredIdeas.count
+        }
+
+        if section == 0 {
+            return 1 + ideas.count
+        } else {
+            return ideas.count
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+        if isSearchMode {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideas_cell", for: indexPath) as! IdeaCollectionViewCell
+                        let idea = filteredIdeas[indexPath.row]
+                        cell.configureCell(ideas: idea)
+                        return cell
+        }
+
         if indexPath.section == 0 {
             if indexPath.row == 0 {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlusCell", for: indexPath) as! PlusCollectionViewCell
+                let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: "PlusCell",
+                    for: indexPath
+                ) as! PlusCollectionViewCell
+
                 cell.configureCell()
                 return cell
             } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scripts_cell", for: indexPath) as! scriptsCell
+                let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: "scripts_cell",
+                    for: indexPath
+                ) as! scriptsCell
+
                 let idea = ideas[indexPath.row - 1]
                 cell.configureCell(idea: idea)
                 return cell
             }
-        } else
-        {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "likedCells", for: indexPath) as! likedCells
-            let idea = ideas[indexPath.row]
-            cell.configureCell(idea: idea)
-            return cell
         }
+
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "likedCells",
+            for: indexPath
+        ) as! likedCells
+
+        let idea = ideas[indexPath.row]
+        cell.configureCell(idea: idea)
+        return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        //create header view
+    func collectionView(_ collectionView: UICollectionView,
+                        viewForSupplementaryElementOfKind kind: String,
+                        at indexPath: IndexPath) -> UICollectionReusableView {
 
+        let headerView = collectionView.dequeueReusableSupplementaryView(
+            ofKind: "header",
+            withReuseIdentifier: "header_chevron",
+            for: indexPath
+        ) as! HeaderChevronView
 
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: "header", withReuseIdentifier: "headerCell", for: indexPath) as! HeaderView
-        if indexPath.section == 0 {
-            headerView.configureHeader(text: "Your Scripts")
-
-        } else  {
-            headerView.configureHeader(text: "Liked Ideas")
+        if isSearchMode {
+            headerView.configure(title: "Search Results")
+        } else {
+            headerView.configure(title: indexPath.section == 0 ? "Your Scripts" : "Liked Ideas")
         }
-
 
         return headerView
     }
+}
 
+extension Ideate: UICollectionViewDelegate {
 
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if isSearchMode {
+                    let idea = filteredIdeas[indexPath.row]
+                    performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
+                    return
+                }
+
+        switch indexPath.section {
+
+        case 0:
+            if indexPath.row == 0 { return }
+
+            let idea = ideas[indexPath.row - 1]
+            performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
+
+        case 1:
+            let idea = ideas[indexPath.row]
+            performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
+
+        default:
+            return
+        }
+    }
 }
