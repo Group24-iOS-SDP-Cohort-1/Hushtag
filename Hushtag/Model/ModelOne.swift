@@ -18,6 +18,11 @@ struct DateData: Codable{
     let time: TimeData
 }
 
+struct Message {
+    let text: String
+    let isUser: Bool
+}
+
 enum PlatformType:String{
     case youtube,instagram,facebook
 }

@@ -377,14 +377,18 @@ extension Ideate: UICollectionViewDelegate {
         switch indexPath.section {
 
         case 0:
-            if indexPath.row == 0 { return }
+            if indexPath.row == 0 {
+                let sb = UIStoryboard(name: "Chatbot", bundle: nil)
+                let chatVC = sb.instantiateViewController(withIdentifier: "Chatbot")
+                navigationController?.pushViewController(chatVC, animated: true)
+                return }
 
             let idea = ideas[indexPath.row - 1]
             performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
 
-        case 1:
-            let idea = ideas[indexPath.row]
-            performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
+        //case 1:
+//            let idea = ideas[indexPath.row]
+//            performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
 
         default:
             return

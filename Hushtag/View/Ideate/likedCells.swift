@@ -43,7 +43,7 @@ class likedCells: UICollectionViewCell {
     }
     func configureCell(idea : Idea) {
 
-       Title.text = idea.title
+        Title.text = idea.title
         Description.text = idea.description
         Hashtag.text = idea.hashtag.map { "#\($0)" }.joined(separator: " ")
         Hashtag.textColor = .accent
