@@ -82,7 +82,13 @@
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="aYf-TZ-qsg" secondAttribute="bottom" id="oeL-2K-Rpf"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Brand Deals" id="fpR-OI-OUV"/>
+                    <navigationItem key="navigationItem" title="Brand Deals" id="fpR-OI-OUV">
+                        <barButtonItem key="rightBarButtonItem" image="plus" catalog="system" id="gI6-zs-Mmo">
+                            <connections>
+                                <segue destination="bRz-Zh-7dQ" kind="presentation" id="mIm-EB-cwQ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="gHj-oi-jVG" id="aAm-1T-fk0"/>
                         <outlet property="segmentControl" destination="W9K-Sj-GFK" id="l8f-JI-Fr4"/>
@@ -116,10 +122,110 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="info" largeTitleDisplayMode="never" id="fXh-dh-Pe0"/>
+                    <connections>
+                        <outlet property="tableView" destination="nqw-Pc-AQn" id="ByT-hS-9sG"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wBf-on-JRI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1992" y="150"/>
+            <point key="canvasLocation" x="2048" y="478"/>
+        </scene>
+        <!--Add Deals-->
+        <scene sceneID="WPI-1M-MpK">
+            <objects>
+                <tableViewController id="bRz-Zh-7dQ" customClass="AddDealsViewController" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="insetGrouped" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" id="ftt-eg-lkt">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="793"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="MainFieldCell" id="KPs-nx-u3W" customClass="MainFieldCell" customModule="Hushtag" customModuleProvider="target">
+                                <rect key="frame" x="20" y="55.333332061767578" width="353" height="61"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="KPs-nx-u3W" id="l86-mZ-JL9">
+                                    <rect key="frame" x="0.0" y="0.0" width="353" height="61"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kcS-fS-lqB">
+                                            <rect key="frame" x="16" y="8" width="321" height="45"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="44" id="aR1-1G-rK4"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </textField>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="kcS-fS-lqB" secondAttribute="bottom" constant="8" id="1LG-Py-2Q9"/>
+                                        <constraint firstItem="kcS-fS-lqB" firstAttribute="top" secondItem="l86-mZ-JL9" secondAttribute="top" constant="8" id="QJ7-zr-nOE"/>
+                                        <constraint firstItem="kcS-fS-lqB" firstAttribute="leading" secondItem="l86-mZ-JL9" secondAttribute="leading" constant="16" id="mWU-uu-M2Z"/>
+                                        <constraint firstAttribute="trailing" secondItem="kcS-fS-lqB" secondAttribute="trailing" constant="16" id="qCK-JB-68t"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="textField" destination="kcS-fS-lqB" id="S3B-6j-zXw"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeliverableCell" id="WQf-gz-H9g" customClass="DeliverableCellAddDeal" customModule="Hushtag" customModuleProvider="target">
+                                <rect key="frame" x="20" y="116.33333206176758" width="353" height="83.333335876464844"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WQf-gz-H9g" id="bQ7-sg-YyA">
+                                    <rect key="frame" x="0.0" y="0.0" width="353" height="83.333335876464844"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ift-r7-xm6">
+                                            <rect key="frame" x="16" y="0.0" width="321" height="67.333333333333329"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ipu-uK-y9Z">
+                                                    <rect key="frame" x="16" y="16.000000000000004" width="289" height="35.333333333333343"/>
+                                                    <subviews>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6u7-lx-HNB">
+                                                            <rect key="frame" x="0.0" y="0.0" width="289" height="35.333333333333336"/>
+                                                            <state key="normal" title="Button"/>
+                                                            <buttonConfiguration key="configuration" style="plain" title="Deliverables"/>
+                                                            <connections>
+                                                                <action selector="addButtonTapped:" destination="WQf-gz-H9g" eventType="touchUpInside" id="moZ-pj-HGt"/>
+                                                            </connections>
+                                                        </button>
+                                                    </subviews>
+                                                </stackView>
+                                            </subviews>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="ipu-uK-y9Z" secondAttribute="trailing" constant="16" id="D1o-h9-dRj"/>
+                                                <constraint firstAttribute="bottom" secondItem="ipu-uK-y9Z" secondAttribute="bottom" constant="16" id="Tpf-db-fXN"/>
+                                                <constraint firstItem="ipu-uK-y9Z" firstAttribute="leading" secondItem="ift-r7-xm6" secondAttribute="leading" constant="16" id="jDR-4X-nuO"/>
+                                                <constraint firstItem="ipu-uK-y9Z" firstAttribute="top" secondItem="ift-r7-xm6" secondAttribute="top" constant="16" id="uXa-Ha-5tP"/>
+                                            </constraints>
+                                        </view>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="ift-r7-xm6" firstAttribute="top" secondItem="bQ7-sg-YyA" secondAttribute="top" id="AfL-P4-6GN"/>
+                                        <constraint firstItem="ift-r7-xm6" firstAttribute="leading" secondItem="bQ7-sg-YyA" secondAttribute="leading" constant="16" id="GVT-Zc-J0I"/>
+                                        <constraint firstAttribute="bottom" secondItem="ift-r7-xm6" secondAttribute="bottom" constant="16" id="IH8-SO-9uB"/>
+                                        <constraint firstAttribute="trailing" secondItem="ift-r7-xm6" secondAttribute="trailing" constant="16" id="QPr-Ok-m5g"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="addButton" destination="6u7-lx-HNB" id="xuQ-J7-Owm"/>
+                                    <outlet property="cardView" destination="ift-r7-xm6" id="RQt-5F-foB"/>
+                                    <outlet property="stackView" destination="ipu-uK-y9Z" id="tII-3G-Fus"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="bRz-Zh-7dQ" id="rkn-gd-msl"/>
+                            <outlet property="delegate" destination="bRz-Zh-7dQ" id="j1e-Y4-gvL"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Add Deals" id="mwv-Jg-qMr">
+                        <barButtonItem key="leftBarButtonItem" title="Item" image="xmark" catalog="system" id="3mc-rF-Foc"/>
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="checkmark" catalog="system" id="zsa-kU-QJa"/>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ovj-Fq-r9i" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2023.6641221374045" y="-188.02816901408451"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="PW2-oH-yOD">
@@ -141,6 +247,9 @@
         </scene>
     </scenes>
     <resources>
+        <image name="checkmark" catalog="system" width="128" height="114"/>
+        <image name="plus" catalog="system" width="128" height="113"/>
+        <image name="xmark" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
