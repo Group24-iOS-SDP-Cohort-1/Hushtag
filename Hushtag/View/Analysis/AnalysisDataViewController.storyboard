@@ -5,6 +5,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -15,14 +16,78 @@
                     <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Ijh-h0-h44">
+                                <rect key="frame" x="20" y="148" width="353" height="32"/>
+                                <segments>
+                                    <segment title="Week"/>
+                                    <segment title="Month"/>
+                                    <segment title="3 Months"/>
+                                </segments>
+                                <connections>
+                                    <action selector="segmentChanged:" destination="Y6W-OH-hqX" eventType="valueChanged" id="TUJ-Vh-v3Z"/>
+                                </connections>
+                            </segmentedControl>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="7z1-FJ-eeu">
+                                <rect key="frame" x="0.0" y="194" width="393" height="590"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="i3c-oM-0fN">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="S1H-Yl-xaH">
+                                        <rect key="frame" x="84" y="0.0" width="225" height="186"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="EmX-jF-5W4">
+                                            <rect key="frame" x="0.0" y="0.0" width="225" height="186"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                        <size key="customSize" width="225" height="186"/>
+                                    </collectionViewCell>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="9kI-hA-Dbv">
+                                        <rect key="frame" x="68.666666666666671" y="196" width="256" height="178"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="eFJ-fq-dy3">
+                                            <rect key="frame" x="0.0" y="0.0" width="256" height="178"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                        <size key="customSize" width="256" height="178"/>
+                                    </collectionViewCell>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="0tu-CT-6jU">
+                                        <rect key="frame" x="132.66666666666666" y="384" width="127.99999999999997" height="128"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Yah-cT-zSU">
+                                            <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="7z1-FJ-eeu" firstAttribute="top" secondItem="Ijh-h0-h44" secondAttribute="bottom" constant="15" id="Cec-OX-J05"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="7z1-FJ-eeu" secondAttribute="trailing" id="D1U-Xc-TZS"/>
+                            <constraint firstItem="Ijh-h0-h44" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="WWZ-Sq-fbp"/>
+                            <constraint firstItem="Ijh-h0-h44" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="30" id="dVl-Xr-odF"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="7z1-FJ-eeu" secondAttribute="bottom" id="feO-eg-cOS"/>
+                            <constraint firstItem="7z1-FJ-eeu" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="hMQ-Zq-9WO"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Ijh-h0-h44" secondAttribute="trailing" constant="20" id="rb2-zx-fA3"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Analysis" largeTitleDisplayMode="never" id="rdl-7Q-UK4"/>
+                    <connections>
+                        <outlet property="analysisCollectionView" destination="7z1-FJ-eeu" id="U24-ot-FRi"/>
+                        <outlet property="segmentedTimeOutlet" destination="Ijh-h0-h44" id="hPL-mh-DcE"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1993.1297709923663" y="91.549295774647888"/>
+            <point key="canvasLocation" x="2919.8473282442746" y="91.549295774647888"/>
         </scene>
     </scenes>
     <resources>

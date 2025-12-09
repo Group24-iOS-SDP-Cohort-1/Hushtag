@@ -206,6 +206,17 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         if segue.identifier == "goToAnalysis" {
             let vc = segue.destination as! AnalysisDataViewController
             //vc.analysis = selectedVideos
+            //vc.analysisData = analysis[indexPath.row]
+            if indexPath.row == 0{
+                vc.platform = "YouTube"
+                vc.fullAnalysis = ytResponse.youtube
+            }else if indexPath.row == 1{
+                vc.platform = "Instagram"
+                vc.fullAnalysis = igResponse.instagram
+            }else{
+                vc.platform = "Facebook"
+                vc.fullAnalysis = fbResponse.facebook
+            }
         }
         
         if segue.identifier == "goToSchedule" {
