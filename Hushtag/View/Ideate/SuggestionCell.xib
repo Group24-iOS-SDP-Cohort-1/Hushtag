@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="SuggestionCell" id="U6b-Vx-4bR" customClass="SuggestionCell" customModule="Hushtag" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="251" height="50"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AEh-lq-yPY">
+                    <rect key="frame" x="0.0" y="8" width="251" height="34"/>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="gray" image="plus" catalog="system" title="Button">
+                        <color key="baseForegroundColor" name="AccentColor"/>
+                        <color key="baseBackgroundColor" systemColor="groupTableViewBackgroundColor"/>
+                    </buttonConfiguration>
+                    <connections>
+                        <action selector="btnTapped:" destination="U6b-Vx-4bR" eventType="touchUpInside" id="5Hv-hK-Fgg"/>
+                    </connections>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="VXr-Tz-HHm"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="AEh-lq-yPY" secondAttribute="bottom" constant="8" id="4hP-cJ-eTk"/>
+                <constraint firstItem="AEh-lq-yPY" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" constant="8" id="GNI-w0-uU2"/>
+                <constraint firstItem="AEh-lq-yPY" firstAttribute="leading" secondItem="U6b-Vx-4bR" secondAttribute="leading" id="PQv-7s-fGE"/>
+                <constraint firstAttribute="trailing" secondItem="AEh-lq-yPY" secondAttribute="trailing" id="izo-kr-8FQ"/>
+            </constraints>
+            <connections>
+                <outlet property="suggestionButton" destination="AEh-lq-yPY" id="3dj-8m-IoR"/>
+            </connections>
+            <point key="canvasLocation" x="-6.8702290076335872" y="154.22535211267606"/>
+        </collectionReusableView>
+    </objects>
+    <resources>
+        <image name="plus" catalog="system" width="128" height="113"/>
+        <namedColor name="AccentColor">
+            <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="groupTableViewBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

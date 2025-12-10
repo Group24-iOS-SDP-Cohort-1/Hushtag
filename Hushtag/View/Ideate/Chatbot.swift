@@ -27,7 +27,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     var messages: [Message] = []
 
     let botDatabase: [String: String] = [
-
             "hi": "hello",
             "hello": "Hi! How can I help you today?",
             "script": "Sure! I can help you write a script. Tell me the topic!",
@@ -35,6 +34,14 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             "title": "I can suggest optimized titles. What's your video about?",
             "default": "I'm not sure, but I’m learning! Try asking in another way"
         ]
+
+    var markedMessages: [String: [Message]] = [
+        "script": [],
+        "title": [],
+        "description": []
+    ]
+
+    
 
     let maxLines: CGFloat = 10
     let minLines: CGFloat = 3
@@ -84,13 +91,22 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             return messages.count
         }
 
-        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
             let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
             cell.configure(with: messages[indexPath.row])
+
+            //to remove existing duplicates
+            //cell.contentView.gestureRecognizers?.forEach(cell.contentView.removeGestureRecognizer)
+
+            let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+            longPress.minimumPressDuration = 0.5 // half a second
+            cell.contentView.addGestureRecognizer(longPress)
+            cell.contentView.tag = indexPath.row // store row in tag for refere
+
             return cell
 
-        }
+    }
 
     func textViewDidChange(_ textView: UITextView) {
 
@@ -142,7 +158,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
     func generateBotReply(for userText: String) {
-        let input = userText.lowercased()
+        let input = userText
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+
 
         let output: String
         if let response = botDatabase[input] {
@@ -168,6 +187,45 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             }
     }
 
+
+    @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+
+        //to trigger action once the press begins
+        guard gesture.state == .began else { return }
+
+        //to get the view that we long pressed
+        guard let cellView = gesture.view else { return }
+        //to store the row the cell belongs to
+        let row = cellView.tag
+        //message object corresponsding to that row
+        var message = messages[row]
+
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+           // Helper to add mark/unmark option
+           func addMarkAction(type: String) {
+               let isMarked = message.markType == type
+               let title = isMarked ? "Unmark \(type.capitalized)" : "Mark as \(type.capitalized)"
+
+               alert.addAction(UIAlertAction(title: title, style: .default) { _ in
+                   if isMarked {
+                       message.markType = nil
+                       self.markedMessages[type]?.removeAll(where: { $0.text == message.text })
+                   } else {
+                       message.markType = type
+                       self.markedMessages[type]?.append(message)
+                   }
+                   self.messages[row] = message
+                   self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
+               })
+           }
+
+           ["script", "title", "description"].forEach { addMarkAction(type: $0) }
+
+           alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+           self.present(alert, animated: true)
+
+    }
 
 }
 
