@@ -7,10 +7,38 @@
 
 import UIKit
 
+private let cardBackgroundElementKind = "card-background"
+
+final class CardBackgroundView: UICollectionReusableView {
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setup()
+    }
+
+    private func setup() {
+        backgroundColor = .white
+        layer.cornerRadius = 12
+        layer.masksToBounds = false
+
+        // Match IdeaCell shadow
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.10     // softer shadow
+        layer.shadowOffset = CGSize(width: 0, height: 1)
+        layer.shadowRadius = 8         // same as idea cell
+    }
+}
 
 private enum DealsInfoSection: Int, CaseIterable {
     case details
     case deliverables
+    case selectedIdeas
+    case notes
 }
 
 
@@ -22,42 +50,114 @@ class DealsInfo: UIViewController {
     
     var deals: Deal!
     
-    private var detailRegistration: UICollectionView.CellRegistration<DealDetailCell, (String, String)>!
+        private var detailRegistration: UICollectionView.CellRegistration<DealDetailCell, (String, String)>!
         private var deliverableRegistration: UICollectionView.CellRegistration<UICollectionViewListCell, Deliverable>!
-        private var headerRegistration: UICollectionView.SupplementaryRegistration<UICollectionViewListCell>!
+        
+        
 
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = deals.name
-        collectionView.backgroundColor = .systemGroupedBackground
-        view.backgroundColor = .systemGroupedBackground
+        view.backgroundColor = .white
+        collectionView.backgroundColor = .white
+        view.backgroundColor = .white
                 configureLayout()
                 configureRegistrations()
-                collectionView.allowsSelection = false
+                
                 collectionView.dataSource = self
                 collectionView.delegate   = self
+        collectionView.register(
+            UINib(nibName: "IdeaCollectionViewCell", bundle: nil),
+            forCellWithReuseIdentifier: "ideas_cell"
+        )
+        collectionView.register(
+                UINib(nibName: "HeaderView", bundle: nil),
+                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                withReuseIdentifier: "headerCell"
+            )
+        collectionView.register(NotesCell.self, forCellWithReuseIdentifier: "NotesCell")
     }
 }
 extension DealsInfo {
 
     private func configureLayout() {
-            var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
-            config.headerMode = .supplementary
+        let layout = UICollectionViewCompositionalLayout { sectionIndex, environment in
 
-            collectionView.collectionViewLayout =
-                UICollectionViewCompositionalLayout.list(using: config)
+            guard let sectionKind = DealsInfoSection(rawValue: sectionIndex) else {
+                return nil
+            }
+
+            var listConfig = UICollectionLayoutListConfiguration(appearance: .plain)
+            listConfig.headerMode = .supplementary
+            listConfig.backgroundColor = .clear
+
+            let section = NSCollectionLayoutSection.list(
+                using: listConfig,
+                layoutEnvironment: environment
+            )
+
+            section.contentInsets = NSDirectionalEdgeInsets(
+                top: 12,   // spacing of the card from indside
+                leading: 16,
+                bottom: 0,
+                trailing: 16
+            )
+
+            let headerSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(44)
+            )
+
+            let header = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: headerSize,
+                elementKind: UICollectionView.elementKindSectionHeader,
+                alignment: .top
+            )
+
+            header.contentInsets = NSDirectionalEdgeInsets(
+                top: 0,
+                leading: 16,
+                bottom: 0,
+                trailing: 0
+            )
+
+            section.boundarySupplementaryItems = [header]
+
+            if sectionKind == .details || sectionKind == .deliverables {
+                let cardStartOffset: CGFloat = 64
+                let background = NSCollectionLayoutDecorationItem.background(
+                    elementKind: cardBackgroundElementKind
+                )
+                background.contentInsets = NSDirectionalEdgeInsets(
+                    top: cardStartOffset,
+                    leading: 16,
+                    bottom: -10,
+                    trailing: 16
+                )
+                section.decorationItems = [background]
+            }
+
+            return section
         }
+
+        layout.register(CardBackgroundView.self,
+                        forDecorationViewOfKind: cardBackgroundElementKind)
+
+        collectionView.collectionViewLayout = layout
+    }
+       
 
     private func configureRegistrations() {
 
-        // DETAILS rows (Deadline, Payment, Gmail, Phone)
+        
+        // DETAILS registration (use indexPath param so we can check last item)
         detailRegistration =
-        UICollectionView.CellRegistration<DealDetailCell, (String, String)> { cell, _, item in
-            let (title, value) = item
-            cell.configure(title: title, value: value)
-        }
-
-        // DELIVERABLE rows
+                UICollectionView.CellRegistration<DealDetailCell, (String, String)> { cell, _, item in
+                    let (title, value) = item
+                    cell.configure(title: title, value: value)
+                    cell.backgroundConfiguration = UIBackgroundConfiguration.clear()
+                }
+        
         deliverableRegistration =
         UICollectionView.CellRegistration<UICollectionViewListCell, Deliverable> { cell, _, deliverable in
             var content = UIListContentConfiguration.subtitleCell()
@@ -74,41 +174,24 @@ extension DealsInfo {
                 content.secondaryText = nil
             }
 
-            // purple check circle like Figma
+            // purple circle / filled circle
             let symbolName = deliverable.isCompleted ? "checkmark.circle.fill" : "circle"
             let purple = UIColor(red: 139/255, green: 92/255, blue: 246/255, alpha: 1)
+
             content.image = UIImage(systemName: symbolName)
             content.imageProperties.tintColor = purple
             content.imageProperties.preferredSymbolConfiguration =
                 UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold)
-
             content.imageToTextPadding = 8
+
             cell.contentConfiguration = content
+            cell.backgroundConfiguration = UIBackgroundConfiguration.clear()
+            
             
         }
+}
 
-        // Section headers
-        headerRegistration =
-        UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(
-            elementKind: UICollectionView.elementKindSectionHeader
-        ) { header, _, indexPath in
-
-            guard let section = DealsInfoSection(rawValue: indexPath.section) else { return }
-
-            var content = UIListContentConfiguration.header()
-            switch section {
-            case .details:
-                content.text = "Details"
-            case .deliverables:
-                content.text = "Deliverables"
-            }
-            content.textProperties.font  = .systemFont(ofSize: 20, weight: .bold)
-            content.textProperties.color = .label
-            header.contentConfiguration = content
-        }
-    }
-    // MARK: - Helpers
-
+   
     private func overallDeadline() -> String {
         guard let last = deals.deliverable.last else { return "-" }
         let day  = last.deadline.day ?? ""
@@ -123,6 +206,12 @@ extension DealsInfo {
         let amountString = formatter.string(from: deals.payment as NSNumber) ?? "\(deals.payment)"
         return "Rs \(amountString)"
     }
+    private var notesText: String? {
+        // `deals` is a non-optional in your code — guard just in case
+        let raw = deals.description
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
+    }
 
     /// Title + value for the "Details" card
     private var detailRows: [(String, String)] {
@@ -135,35 +224,39 @@ extension DealsInfo {
     }
 }
 
-// MARK: - UICollectionViewDataSource
+// MARK: - DataSource
+
 extension DealsInfo: UICollectionViewDataSource {
-
+    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return DealsInfoSection.allCases.count    // details + deliverables
+        return DealsInfoSection.allCases.count
     }
-
+    
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
-
+        
         guard let sec = DealsInfoSection(rawValue: section) else { return 0 }
-
+        
         switch sec {
         case .details:
             return detailRows.count
         case .deliverables:
             return deals.deliverable.count
+        case .selectedIdeas:
+            return selectedIdea != nil ? 1 : 0
+        case .notes:
+            return notesText != nil ? 1 : 0
         }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
+        
         guard let sec = DealsInfoSection(rawValue: indexPath.section) else {
             return UICollectionViewCell()
         }
-
+        
         switch sec {
-
         case .details:
             let item = detailRows[indexPath.item]
             return collectionView.dequeueConfiguredReusableCell(
@@ -171,7 +264,7 @@ extension DealsInfo: UICollectionViewDataSource {
                 for: indexPath,
                 item: item
             )
-
+            
         case .deliverables:
             let deliverable = deals.deliverable[indexPath.item]
             return collectionView.dequeueConfiguredReusableCell(
@@ -179,20 +272,78 @@ extension DealsInfo: UICollectionViewDataSource {
                 for: indexPath,
                 item: deliverable
             )
+            
+        case .selectedIdeas:
+            guard let idea = selectedIdea else { return UICollectionViewCell() }
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideas_cell", for: indexPath)
+            if let ideaCell = cell as? IdeaCollectionViewCell {
+                ideaCell.configureCell(ideas: idea)
+            }
+            return cell
+            
+        case .notes:
+            guard let note = notesText else { return UICollectionViewCell() }
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NotesCell", for: indexPath) as! NotesCell
+            cell.label.text = note
+            cell.backgroundColor = .clear
+            return cell
         }
     }
-
-    // Headers for list layout
+    
     func collectionView(_ collectionView: UICollectionView,
                         viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
-
-        collectionView.dequeueConfiguredReusableSupplementary(
-            using: headerRegistration,
+        
+        guard kind == UICollectionView.elementKindSectionHeader,
+              let section = DealsInfoSection(rawValue: indexPath.section) else {
+            return UICollectionReusableView()
+        }
+        
+        let header = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: "headerCell",
             for: indexPath
-        )
+        ) as! HeaderView
+        
+        switch section {
+        case .details:
+            header.configureHeader(text: "Details")
+        case .deliverables:
+            header.configureHeader(text: "Deliverables")
+        case .selectedIdeas:
+            header.configureHeader(text: "Selected ideas")
+        case .notes:
+            header.configureHeader(text: "Notes")
+        }
+            
+        return header
     }
 }
 
-// MARK: - UICollectionViewDelegate (if needed later)
-extension DealsInfo: UICollectionViewDelegate {}
+// MARK: - Delegate (selection only for Deliverables)
+
+extension DealsInfo: UICollectionViewDelegate {
+
+    func collectionView(_ collectionView: UICollectionView,
+                        shouldHighlightItemAt indexPath: IndexPath) -> Bool {
+        guard let section = DealsInfoSection(rawValue: indexPath.section) else { return false }
+        return section == .deliverables
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        guard let section = DealsInfoSection(rawValue: indexPath.section) else { return false }
+        return section == .deliverables
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        didSelectItemAt indexPath: IndexPath) {
+        guard let section = DealsInfoSection(rawValue: indexPath.section),
+              section == .deliverables else { return }
+
+        // toggle completion
+        deals.deliverable[indexPath.item].isCompleted.toggle()
+        collectionView.reloadItems(at: [indexPath])
+    }
+}
+

@@ -265,6 +265,30 @@
           "isCompleted": true
         },
         {
+          "name": "Reel Concept Ideation",
+          "deadline": {
+            "day": "Tuesday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 9,
+              "minute": 0
+            }
+          },
+          "isCompleted": true
+        },
+        {
+          "name": "Reel Concept Ideation",
+          "deadline": {
+            "day": "Tuesday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 9,
+              "minute": 0
+            }
+          },
+          "isCompleted": true
+        },
+        {
           "name": "Final Reel Submission",
           "deadline": {
             "day": "Friday",

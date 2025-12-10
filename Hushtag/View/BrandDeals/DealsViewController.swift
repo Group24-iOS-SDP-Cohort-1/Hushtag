@@ -156,6 +156,11 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
            let vc = segue.destination as? DealsInfo {
             
             vc.deals = deal  // ⭐ pass data here
+            if let ideaId = deal.selectedIdeaIndex {
+                let ideaResponse = IdeaResponse()
+                vc.selectedIdea = ideaResponse.ideas.first { $0.id == ideaId }
+            } else {
+                vc.selectedIdea = nil}
         }
     }
 }
