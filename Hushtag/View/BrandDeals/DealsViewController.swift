@@ -144,9 +144,9 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
             ) as! CompletedDealsCollectionViewCell
 
             cell.configure(with: deal)
-//            cell.onTap = { [weak self] in
-//                       self?.performSegue(withIdentifier: "info_page", sender: deal)
-//                   }
+            cell.onTap = { [weak self] in
+                self?.performSegue(withIdentifier: "info_page", sender: deal)
+            }
             return cell
         }
     }

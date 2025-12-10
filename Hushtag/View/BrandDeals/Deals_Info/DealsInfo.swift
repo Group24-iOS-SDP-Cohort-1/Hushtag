@@ -99,7 +99,7 @@ extension DealsInfo {
             section.contentInsets = NSDirectionalEdgeInsets(
                 top: 12,   // spacing of the card from indside
                 leading: 16,
-                bottom: 0,
+                bottom: -11,
                 trailing: 16
             )
 

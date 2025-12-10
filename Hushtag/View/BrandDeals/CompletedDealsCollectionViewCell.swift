@@ -16,13 +16,18 @@ class CompletedDealsCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var platformNameLabel: UILabel!
     
+    @IBOutlet weak var navigationButton: UIButton!
     @IBOutlet weak var paymentLabel: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         setupCardAppearance()
-        
-        // Initialization code
+        navigationButton.addTarget(self, action: #selector(handleTap), for: .touchUpInside)
     }
+    
+    @objc func handleTap() {
+        onTap?()
+    }
+    
     private func setupCardAppearance() {
         // Rounded corners
         cardView.layer.cornerRadius = 15

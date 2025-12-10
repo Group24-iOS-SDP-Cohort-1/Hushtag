@@ -69,6 +69,7 @@
             <size key="customSize" width="324" height="97"/>
             <connections>
                 <outlet property="cardView" destination="ckw-QZ-zZD" id="anG-e3-aWY"/>
+                <outlet property="navigationButton" destination="YTH-h9-v1s" id="wvy-hy-QH5"/>
                 <outlet property="paymentLabel" destination="7Cs-0a-BFS" id="4O5-RQ-z9Z"/>
                 <outlet property="platformNameLabel" destination="kdb-su-Ak3" id="BP4-re-Qat"/>
                 <outlet property="titleNameLabel" destination="lPS-a4-xoJ" id="HUz-Cl-RqE"/>
