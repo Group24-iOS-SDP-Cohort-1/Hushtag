@@ -14,6 +14,8 @@ class AudienceChartCell: UICollectionViewCell {
     
     @IBOutlet weak var followersLabel: UILabel!
     
+    @IBOutlet weak var followersChangeLabel: UILabel!
+    
     @IBOutlet weak var ageLabel: UILabel!
     
     @IBOutlet weak var postsLabel: UILabel!
@@ -36,6 +38,35 @@ class AudienceChartCell: UICollectionViewCell {
 
             // B. Embed the Chart
             setupChart(genderData: data.gender)
+        
+        
+        let currentTotal = parseMetric(data.followers)     // "40k" -> 40000.0
+        let changeAmount = parseMetric(data.incFollowers)
+        
+        let previousTotal = currentTotal - changeAmount
+        
+        if previousTotal != 0 {
+                let percentChange = (changeAmount / previousTotal) * 100
+                
+                if percentChange > 0 {
+                    // POSITIVE: Force the "+" sign and use Green
+                    followersChangeLabel.text = String(format: "+%.0f%%", percentChange)
+                    followersChangeLabel.textColor = UIColor.systemGreen
+                } else if percentChange < 0 {
+                    // NEGATIVE: The "-" sign is automatic in the number. Use Red.
+                    // String(format: "%.0f") turns -25.0 into "-25"
+                    followersChangeLabel.text = String(format: "%.0f%%", percentChange)
+                    followersChangeLabel.textColor = UIColor.systemRed
+                } else {
+                    // ZERO: Grey
+                    followersChangeLabel.text = "0%"
+                    followersChangeLabel.textColor = UIColor.gray
+                }
+            } else {
+                // Edge case: If previous total was 0 (new account), growth is 100% or undefined
+                followersChangeLabel.text = "N/A"
+                followersChangeLabel.textColor = .gray
+            }
         
         
         
@@ -80,5 +111,22 @@ class AudienceChartCell: UICollectionViewCell {
             }
         }
 
+    
+    
+    private func parseMetric(_ value: String) -> Double {
+        let clean = value.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        if clean.hasSuffix("k") {
+            let number = clean.dropLast() // Remove 'k'
+            return (Double(number) ?? 0) * 1_000
+        } else if clean.hasSuffix("m") {
+            let number = clean.dropLast() // Remove 'm'
+            return (Double(number) ?? 0) * 1_000_000
+        }
+        
+        // Return normal number or 0 if failed
+        return Double(clean) ?? 0
+    }
+    
     
 }
