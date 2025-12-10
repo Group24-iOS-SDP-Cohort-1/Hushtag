@@ -50,8 +50,6 @@ class DealsViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
-//        collectionView.clipsToBounds = false
-        
         segmentControl.selectedSegmentIndex = 0
         
         selectedSegmentIndex = 0
@@ -74,6 +72,10 @@ class DealsViewController: UIViewController {
 
     @IBAction func segmentedAction(_ sender: UISegmentedControl) {
         selectedSegmentIndex = sender.selectedSegmentIndex
+            
+            // update layout for new tab (different estimated height)
+            collectionView.setCollectionViewLayout(generateLayout(), animated: false)
+            
             collectionView.reloadData()
     }
     
@@ -82,32 +84,40 @@ class DealsViewController: UIViewController {
             UINib(nibName: "DealsCollectionViewCell", bundle: nil),
             forCellWithReuseIdentifier: "ongoing_deal_cell"
         )
-        collectionView.register(
-            UINib(nibName: "CompletedDealsCollectionViewCell", bundle: nil),
-            forCellWithReuseIdentifier: "completed_deal_cell"
-        )
     }
 
     // MARK: - Layout
     func generateLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { sectionIndex, environment in
+        return UICollectionViewCompositionalLayout { [weak self] _, _ in
+
+            // 0 = Ongoing, 1 = Completed
+            let isCompleted = (self?.selectedSegmentIndex == 1)
+
+            let estimatedHeight: CGFloat = isCompleted ? 100 : 200
 
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .estimated(200)
+                heightDimension: .estimated(estimatedHeight)
             )
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
             let groupSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .estimated(200) // change to .absolute(160) to test fixed height
+                heightDimension: .estimated(estimatedHeight)
             )
-            let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+            let group = NSCollectionLayoutGroup.vertical(
+                layoutSize: groupSize,
+                subitems: [item]
+            )
 
             let section = NSCollectionLayoutSection(group: group)
             section.interGroupSpacing = 7.5
-            section.contentInsets = NSDirectionalEdgeInsets(top: 7.5, leading: 0, bottom: 7.5, trailing: 0)
-
+            section.contentInsets = NSDirectionalEdgeInsets(
+                top: 7.5,
+                leading: 0,
+                bottom: 7.5,
+                trailing: 0
+            )
             return section
         }
     }
@@ -124,32 +134,20 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
         let deal = displayedDeals[indexPath.item]
+        let isCompletedTab = (selectedSegmentIndex == 1)
 
-        if selectedSegmentIndex == 0 {
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "ongoing_deal_cell",
-                for: indexPath
-            ) as! DealsCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "ongoing_deal_cell",
+            for: indexPath
+        ) as! DealsCollectionViewCell
 
-            cell.configure(with: deal)
-            cell.onTap = { [weak self] in
-                self?.performSegue(withIdentifier: "info_page", sender: deal)
-            }
-            return cell
+        cell.configure(with: deal, isCompleted: isCompletedTab)
 
-        } else {
-            
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "completed_deal_cell",
-                for: indexPath
-            ) as! CompletedDealsCollectionViewCell
-
-            cell.configure(with: deal)
-            cell.onTap = { [weak self] in
-                self?.performSegue(withIdentifier: "info_page", sender: deal)
-            }
-            return cell
+        cell.onTap = { [weak self] in
+            self?.performSegue(withIdentifier: "info_page", sender: deal)
         }
+
+        return cell
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "info_page",

@@ -16,6 +16,9 @@ class DealsCollectionViewCell: UICollectionViewCell{
     @IBOutlet weak var paymentValueLabel: UILabel!
     @IBOutlet weak var nextDeliverableLabel: UILabel!
 
+    @IBOutlet weak var deadlineTitleLabel: UILabel!
+    @IBOutlet weak var deadlineIconImageView: UIImageView!
+    @IBOutlet weak var bottomStackView: UIStackView!
     @IBOutlet weak var navigationButton: UIButton!
     @IBOutlet weak var captionLabel: UILabel!
     let customPurple = UIColor(_colorLiteralRed: 139/255, green: 92/255, blue: 246/255, alpha: 1)
@@ -38,8 +41,6 @@ class DealsCollectionViewCell: UICollectionViewCell{
         cardView.layer.cornerRadius = 15
         cardView.layer.cornerCurve = .continuous
         cardView.backgroundColor = .white
-
-        // Keep masksToBounds = false so shadow is visible
         cardView.layer.masksToBounds = false
 
         // Subtle shadow
@@ -66,51 +67,70 @@ class DealsCollectionViewCell: UICollectionViewCell{
             return displayFormatter.string(from: date)
         }
     
-    func configure(with deal: Deal) {
+    func configure(with deal: Deal, isCompleted: Bool) {
         titleLabel.text = deal.name
-
-        // Payment
         paymentValueLabel.text = "Rs \(deal.payment)"
 
-        // Deliverables count
-        // Deliverables count based on isCompleted flag
         let total = deal.deliverable.count
         let completed = deal.deliverable.filter { $0.isCompleted }.count
-        deliverablesValueLabel.text = "\(completed) / \(total) done"
-        
-        
-        let isoFormatter = ISO8601DateFormatter()
-        isoFormatter.formatOptions = [.withInternetDateTime]
 
-        let now = Date()
+        if isCompleted {
+            deadlineTitleLabel.text = "Platform"
+            deadlineIconImageView.image = UIImage(systemName: "network")
+            bottomStackView.isHidden = true
+            captionLabel.isHidden    = true
+            nextDeliverableLabel.isHidden = true
 
-        if completed == 0 {
-                captionLabel.text = "Get started with"
-            } else {
-                captionLabel.text = "Next deliverable"
-            }
-        
-        let deliverablesWithDates: [(Deliverable, Date)] = deal.deliverable.compactMap { item in
-            guard let dateString = item.deadline.date,
-                  let date = isoFormatter.date(from: dateString)
-            else { return nil }
-            return (item, date)
-        }
+            deliverablesValueLabel.text = "\(completed)"
 
-        
-        let upcoming = deliverablesWithDates.filter { $0.1 >= now }
-        let chosen = upcoming.min(by: { $0.1 < $1.1 })
-            ?? deliverablesWithDates.min(by: { $0.1 < $1.1 })
+            // deadline shows platform in completed tab
+            deadlineValueLabel.text      = deal.platform.joined(separator: ", ")
+            deadlineValueLabel.font      = paymentValueLabel.font
+            deadlineValueLabel.textColor = paymentValueLabel.textColor
 
-        
-        if let (deliverable, date) = chosen {
-            nextDeliverableLabel.text = deliverable.name
-            deadlineValueLabel.text = formatDeadline(ISO8601DateFormatter().string(from: date))
         } else {
-            nextDeliverableLabel.text = "-"
-            deadlineValueLabel.text = deal.platform.joined(separator: ", ")
+            deadlineTitleLabel.text = "Deadline"
+            deadlineIconImageView.image = UIImage(systemName: "calendar")
+            // show bottom area
+            bottomStackView.isHidden = false
+            captionLabel.isHidden    = false
+            nextDeliverableLabel.isHidden = false
+
+            deliverablesValueLabel.text = "\(completed) / \(total) done"
+            updateNextDeadline(deal)
+            
+            if completed == 0 {
+                captionLabel.text = "Get started with"
+            }else{
+                captionLabel.text = "Next Deliverable"
+            }
         }
     }
+
+        private func updateNextDeadline(_ deal: Deal) {
+            let isoFormatter = ISO8601DateFormatter()
+            isoFormatter.formatOptions = [.withInternetDateTime]
+
+            let now = Date()
+
+            let deliverablesWithDates: [(Deliverable, Date)] = deal.deliverable.compactMap { item in
+                guard let dateString = item.deadline.date,
+                      let date = isoFormatter.date(from: dateString) else { return nil }
+                return (item, date)
+            }
+
+            let upcoming = deliverablesWithDates.filter { $0.1 >= now }
+            let chosen = upcoming.min { $0.1 < $1.1 } ??
+                         deliverablesWithDates.min { $0.1 < $1.1 }
+
+            if let (deliverable, date) = chosen {
+                nextDeliverableLabel.text = deliverable.name
+                deadlineValueLabel.text = formatDeadline(isoFormatter.string(from: date))
+            } else {
+                nextDeliverableLabel.text = "-"
+                deadlineValueLabel.text = "-"
+            }
+        }
 }
 
 
