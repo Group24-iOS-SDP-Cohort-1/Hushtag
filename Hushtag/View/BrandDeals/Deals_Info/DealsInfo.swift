@@ -54,7 +54,7 @@ class DealsInfo: UIViewController {
     var dealIndex: Int = -1
     @IBOutlet weak var collectionView: UICollectionView!
     
-    var deals: Deal!
+    var deals: Deal?
     
         private var detailRegistration: UICollectionView.CellRegistration<DealDetailCell, (String, String)>!
         private var deliverableRegistration: UICollectionView.CellRegistration<UICollectionViewListCell, Deliverable>!
@@ -63,7 +63,7 @@ class DealsInfo: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = deals.name
+        navigationItem.title = deals?.name
         view.backgroundColor = .white
         collectionView.backgroundColor = .white
         view.backgroundColor = .white
@@ -199,33 +199,37 @@ extension DealsInfo {
 
    
     private func overallDeadline() -> String {
-        guard let last = deals.deliverable.last else { return "-" }
+        guard let last = deals?.deliverable.last else { return "-" }
         let day  = last.deadline.day ?? ""
         let date = (last.deadline.date ?? "").prefix(10)
         return "\(day) \(date)"
     }
 
     private func formattedPayment() -> String {
+        guard let deal = deals else { return "-" }
+
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.groupingSeparator = ","
-        let amountString = formatter.string(from: deals.payment as NSNumber) ?? "\(deals.payment)"
+
+        let amountString = formatter.string(from: deal.payment as NSNumber) ?? "\(deal.payment)"
         return "Rs \(amountString)"
     }
+    
     private var notesText: String? {
-        // `deals` is a non-optional in your code — guard just in case
-        let raw = deals.description
+        guard let raw = deals?.description else { return nil }
         let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed.isEmpty ? nil : trimmed
     }
-
-    /// Title + value for the "Details" card
+    
     private var detailRows: [(String, String)] {
-        [
+        guard let deal = deals else { return [] }
+
+        return [
             ("Deadline",      overallDeadline()),
             ("Payment",       formattedPayment()),
-            ("Gmail",         deals.email),
-            ("Phone number",  deals.phone)
+            ("Gmail",         deal.email),
+            ("Phone number",  deal.phone)
         ]
     }
 }
@@ -247,7 +251,7 @@ extension DealsInfo: UICollectionViewDataSource {
         case .details:
             return detailRows.count
         case .deliverables:
-            return deals.deliverable.count
+            return deals?.deliverable.count ?? 0
         case .selectedIdeas:
             return selectedIdea != nil ? 1 : 0
         case .notes:
@@ -272,7 +276,9 @@ extension DealsInfo: UICollectionViewDataSource {
             )
             
         case .deliverables:
-            let deliverable = deals.deliverable[indexPath.item]
+            guard let deliverable = deals?.deliverable[indexPath.item] else {
+                return UICollectionViewCell()
+            }
             return collectionView.dequeueConfiguredReusableCell(
                 using: deliverableRegistration,
                 for: indexPath,
@@ -347,15 +353,15 @@ extension DealsInfo: UICollectionViewDelegate {
         guard let section = DealsInfoSection(rawValue: indexPath.section),
               section == .deliverables else { return }
 
-        // Toggle the model (this mutates the local copy inside this VC)
-        deals.deliverable[indexPath.item].isCompleted.toggle()
+        // Toggle state safely
+        deals?.deliverable[indexPath.item].isCompleted.toggle()
 
-        // Refresh UI for that cell
         collectionView.reloadItems(at: [indexPath])
 
-        // Inform parent about updated deal (pass the updated copy + index)
-        guard dealIndex >= 0 else { return }
-        delegate?.dealsInfo(self, didUpdateDeal: deals, at: dealIndex)
+        // Notify parent
+        if let updatedDeal = deals, dealIndex >= 0 {
+            delegate?.dealsInfo(self, didUpdateDeal: updatedDeal, at: dealIndex)
+        }
     }
 }
 
