@@ -14,22 +14,33 @@ class ChatCell: UITableViewCell {
 
     @IBOutlet weak var ChatLabel: UILabel!
     
+    @IBOutlet weak var leftConstraint: NSLayoutConstraint!
 
+    @IBOutlet weak var rightConstraint: NSLayoutConstraint!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         ChatView.layer.cornerRadius = 16
+
     }
 
     func configure(with message: Message) {
            ChatLabel.text = message.text
+        ChatLabel.numberOfLines = 0 
+        if message.isUser {
 
-           if message.isUser {
-               ChatView.backgroundColor = .white
-               ChatLabel.textColor = .black
-           } else {
-               ChatView.backgroundColor = UIColor(white: 0.93, alpha: 1) // ChatGPT-style grey
-               ChatLabel.textColor = .black
-           }
+            ChatView.backgroundColor = UIColor.accent
+            ChatLabel.textColor = .white
+//           rightConstraint.isActive = true
+//           leftConstraint.isActive = false
+
+                } else {
+                    
+                    ChatView.backgroundColor = UIColor.systemGray5
+                    ChatLabel.textColor = .black
+//                 leftConstraint.isActive = true
+//                   rightConstraint.isActive = false
+                }
        }
 
 

@@ -28,10 +28,10 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fjw-g3-qaD">
-                                                    <rect key="frame" x="16" y="12.000000000000004" width="361" height="53.333333333333343"/>
+                                                    <rect key="frame" x="16" y="12.000000000000004" width="250" height="53.333333333333343"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sSg-LK-k2x">
-                                                            <rect key="frame" x="16" y="15.999999999999998" width="329" height="21.333333333333329"/>
+                                                            <rect key="frame" x="16" y="15.999999999999998" width="218" height="21.333333333333329"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
@@ -42,15 +42,15 @@
                                                         <constraint firstItem="sSg-LK-k2x" firstAttribute="leading" secondItem="fjw-g3-qaD" secondAttribute="leading" constant="16" id="3ga-fX-iCN"/>
                                                         <constraint firstItem="sSg-LK-k2x" firstAttribute="top" secondItem="fjw-g3-qaD" secondAttribute="top" constant="16" id="asY-o0-qgu"/>
                                                         <constraint firstAttribute="bottom" secondItem="sSg-LK-k2x" secondAttribute="bottom" constant="16" id="bhz-aW-JIE"/>
+                                                        <constraint firstAttribute="width" constant="250" id="hCC-3D-hSX"/>
                                                         <constraint firstAttribute="trailing" secondItem="sSg-LK-k2x" secondAttribute="trailing" constant="16" id="w4A-gW-fYL"/>
                                                     </constraints>
                                                 </view>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="bottom" secondItem="fjw-g3-qaD" secondAttribute="bottom" constant="12" id="2AS-jw-5b0"/>
-                                                <constraint firstItem="fjw-g3-qaD" firstAttribute="leading" secondItem="3r4-Uk-13r" secondAttribute="leading" constant="16" id="RKt-hK-zzD"/>
-                                                <constraint firstItem="fjw-g3-qaD" firstAttribute="top" secondItem="3r4-Uk-13r" secondAttribute="top" constant="12" id="adj-7c-2ql"/>
-                                                <constraint firstAttribute="trailing" secondItem="fjw-g3-qaD" secondAttribute="trailing" constant="16" id="eMK-cJ-I2Z"/>
+                                                <constraint firstItem="fjw-g3-qaD" firstAttribute="leading" secondItem="3r4-Uk-13r" secondAttribute="leading" constant="16" id="8CY-In-YaD"/>
+                                                <constraint firstItem="fjw-g3-qaD" firstAttribute="top" secondItem="3r4-Uk-13r" secondAttribute="top" constant="12" id="8iF-Td-LH5"/>
+                                                <constraint firstAttribute="bottom" secondItem="fjw-g3-qaD" secondAttribute="bottom" constant="12" id="Tfm-w6-T8b"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -87,8 +87,15 @@
                                                 </constraints>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" title=""/>
+                                                <connections>
+                                                    <action selector="sendButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="0qO-WH-3zq"/>
+                                                </connections>
                                             </button>
                                         </subviews>
+                                        <constraints>
+                                            <constraint firstItem="juk-cQ-ZRr" firstAttribute="leading" secondItem="ygC-V6-BK5" secondAttribute="leading" constant="16" id="3RA-OD-K8b"/>
+                                            <constraint firstItem="nYb-18-tvh" firstAttribute="leading" secondItem="juk-cQ-ZRr" secondAttribute="trailing" constant="16" id="rEi-Xw-jVy"/>
+                                        </constraints>
                                     </stackView>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -114,7 +121,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Scripting" largeTitleDisplayMode="never" id="iNc-XK-pMm"/>
                     <connections>
-                        <outlet property="Enterbutton" destination="nYb-18-tvh" id="wmz-wJ-a6g"/>
+                        <outlet property="Enterbutton" destination="nYb-18-tvh" id="PNi-ge-sor"/>
                         <outlet property="tableView" destination="SNm-vA-oEx" id="6TJ-DM-Idy"/>
                         <outlet property="textFieldView" destination="juk-cQ-ZRr" id="Wzg-iX-ikx"/>
                         <outlet property="textStack" destination="ygC-V6-BK5" id="C3v-DR-7Cj"/>

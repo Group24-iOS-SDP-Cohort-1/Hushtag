@@ -7,6 +7,8 @@
 
 import UIKit
 
+
+
 class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
 
     @IBOutlet weak var tableView: UITableView!
@@ -22,8 +24,19 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     @IBOutlet weak var Enterbutton: UIButton!
 
-
     var messages: [Message] = []
+
+    let botDatabase: [String: String] = [
+
+            "hi": "hello",
+            "hello": "Hi! How can I help you today?",
+            "script": "Sure! I can help you write a script. Tell me the topic!",
+            "idea": "Looking for ideas? You can ask me for trending ideas anytime!",
+            "title": "I can suggest optimized titles. What's your video about?",
+            "default": "I'm not sure, but I’m learning! Try asking in another way 😊"
+
+        ]
+
     let maxLines: CGFloat = 10
     let minLines: CGFloat = 3
     let lineHeight: CGFloat = 100
@@ -115,6 +128,50 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 self.view.layoutIfNeeded()
             }
     }
+
+    func sendMessage(_ text: String) {
+        messages.append(Message(text: text, isUser: true))
+        tableView.reloadData()
+
+        let indexPath = IndexPath(row: messages.count - 1, section: 0)
+        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+
+        textFieldView.text = ""
+        textViewDidChange(textFieldView)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.generateBotReply(for: text)
+                }
+    }
+
+    func generateBotReply(for userText: String) {
+        let input = userText.lowercased()
+
+        let output: String
+        if let response = botDatabase[input] {
+            output = response
+        } else if let responseDefault = botDatabase["default"] {
+            output = responseDefault
+        } else {
+            output = "Sorry"
+        }
+
+        messages.append(Message(text: output, isUser: false))
+        tableView.reloadData()
+
+        let indexPath = IndexPath(row: messages.count - 1, section: 0)
+        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+    }
+
+    
+    @IBAction func sendButton(_ sender: Any) {
+        let text = textFieldView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !text.isEmpty {
+                sendMessage(text)
+            }
+    }
+
+
 }
 
 
