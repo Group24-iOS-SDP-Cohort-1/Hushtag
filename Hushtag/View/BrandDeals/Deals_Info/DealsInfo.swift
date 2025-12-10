@@ -7,6 +7,11 @@
 
 import UIKit
 
+protocol DealsInfoDelegate: AnyObject {
+    /// Called when the detail screen has an updated copy of the deal.
+    func dealsInfo(_ controller: DealsInfo, didUpdateDeal deal: Deal, at index: Int)
+}
+
 private let cardBackgroundElementKind = "card-background"
 
 final class CardBackgroundView: UICollectionReusableView {
@@ -45,7 +50,8 @@ private enum DealsInfoSection: Int, CaseIterable {
 class DealsInfo: UIViewController {
     
     var selectedIdea: Idea?
-    
+    weak var delegate: DealsInfoDelegate?
+    var dealIndex: Int = -1
     @IBOutlet weak var collectionView: UICollectionView!
     
     var deals: Deal!
@@ -175,7 +181,7 @@ extension DealsInfo {
             }
 
             // purple circle / filled circle
-            let symbolName = deliverable.isCompleted ? "checkmark.circle.fill" : "circle"
+            let symbolName = deliverable.isCompleted ? "circle.inset.filled" : "circle"
             let purple = UIColor(red: 139/255, green: 92/255, blue: 246/255, alpha: 1)
 
             content.image = UIImage(systemName: symbolName)
@@ -341,9 +347,15 @@ extension DealsInfo: UICollectionViewDelegate {
         guard let section = DealsInfoSection(rawValue: indexPath.section),
               section == .deliverables else { return }
 
-        // toggle completion
+        // Toggle the model (this mutates the local copy inside this VC)
         deals.deliverable[indexPath.item].isCompleted.toggle()
+
+        // Refresh UI for that cell
         collectionView.reloadItems(at: [indexPath])
+
+        // Inform parent about updated deal (pass the updated copy + index)
+        guard dealIndex >= 0 else { return }
+        delegate?.dealsInfo(self, didUpdateDeal: deals, at: dealIndex)
     }
 }
 

@@ -12,6 +12,7 @@ class DealsViewController: UIViewController {
     @IBOutlet weak var segmentControl: UISegmentedControl!
     @IBOutlet weak var collectionView: UICollectionView!
 
+
     
    var selected_Deal : Deal?
     var dealResponse = DealResponse()
@@ -154,13 +155,31 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
         if segue.identifier == "info_page",
            let deal = sender as? Deal,
            let vc = segue.destination as? DealsInfo {
-            
-            vc.deals = deal  // ⭐ pass data here
+
+            vc.deals = deal
+
+            // find index in the current deals array
+            if let idx = deals.firstIndex(where: { $0.id == deal.id }) {
+                vc.dealIndex = idx
+                vc.delegate = self
+            } else {
+                vc.dealIndex = -1
+            }
+
             if let ideaId = deal.selectedIdeaIndex {
                 let ideaResponse = IdeaResponse()
                 vc.selectedIdea = ideaResponse.ideas.first { $0.id == ideaId }
             } else {
-                vc.selectedIdea = nil}
+                vc.selectedIdea = nil
+            }
         }
+    }
+}
+
+extension DealsViewController: DealsInfoDelegate {
+    func dealsInfo(_ controller: DealsInfo, didUpdateDeal deal: Deal, at index: Int) {
+        guard index >= 0 && index < deals.count else { return }
+        deals[index] = deal
+        collectionView.reloadData()
     }
 }
