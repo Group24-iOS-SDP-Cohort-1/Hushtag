@@ -18,6 +18,18 @@ struct DateData: Codable{
     let time: TimeData
 }
 
+struct AnalysisDateData: Codable, Identifiable{
+    let id = UUID()
+    let day: String
+    let date: String
+    let time: TimeData
+    let audienceEngagementRate: String
+    
+    enum CodingKeys: String, CodingKey {
+        case day, date, time, audienceEngagementRate
+    }
+}
+
 enum PlatformType:String{
     case youtube,instagram,facebook
 }
@@ -308,7 +320,7 @@ struct Analysis: Codable, Identifiable {
     let ageGroup: [String]
     let gender: [String: String]
     let post: Int
-    let optimalTime: [DateData]
+    let optimalTime: [AnalysisDateData]
     let engagementRate: String
 
     enum CodingKeys: String, CodingKey {

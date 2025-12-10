@@ -503,13 +503,50 @@
       },
       "post": 5,
       "optimalTime": [
+          {
+            "day": "Monday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 17,
+              "minute": 0
+            },
+            "audienceEngagementRate": "6.1"
+          },
+          {
+            "day": "Tuesday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 14,
+              "minute": 0
+            },
+            "audienceEngagementRate": "4.3"
+          },
         {
           "day": "Wednesday",
           "date": "2025-11-19T00:00:00Z",
           "time": {
             "hour": 14,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "1.7"
+        },
+        {
+          "day": "Thursday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 9,
+            "minute": 0
+          },
+          "audienceEngagementRate": "5.4"
+        },
+        {
+          "day": "Friday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 14,
+            "minute": 0
+          },
+          "audienceEngagementRate": "3.2"
         },
         {
           "day": "Saturday",
@@ -517,7 +554,17 @@
           "time": {
             "hour": 10,
             "minute": 30
-          }
+          },
+          "audienceEngagementRate": "2.5"
+        },
+        {
+          "day": "Sunday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 14,
+            "minute": 0
+          },
+          "audienceEngagementRate": "4.1"
         }
       ],
       "engagementRate": "6.1"
@@ -544,7 +591,26 @@
           "time": {
             "hour": 16,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 17,
+            "minute": 0
+          },
+          "audienceEngagementRate": "6.1"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 17,
+            "minute": 0
+          },
+          "audienceEngagementRate": "6.1"
         },
         {
           "day": "Thursday",
@@ -552,7 +618,35 @@
           "time": {
             "hour": 11,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Friday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 17,
+            "minute": 0
+          },
+          "audienceEngagementRate": "6.1"
+        },
+        {
+          "day": "Saturday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 17,
+            "minute": 0
+          },
+          "audienceEngagementRate": "6.2"
+        },
+        {
+          "day": "Sunday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 17,
+            "minute": 0
+          },
+          "audienceEngagementRate": "6.7"
         }
       ],
       "engagementRate": "4.8"
@@ -573,13 +667,41 @@
       },
       "post": 6,
       "optimalTime": [
+          {
+            "day": "Monday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 17,
+              "minute": 0
+            },
+            "audienceEngagementRate": "6.1"
+          },
         {
           "day": "Tuesday",
           "date": "2025-11-19T00:00:00Z",
           "time": {
             "hour": 18,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "7.6"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 17,
+            "minute": 0
+          },
+          "audienceEngagementRate": "6.1"
+        },
+        {
+          "day": "Thursday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 17,
+            "minute": 0
+          },
+          "audienceEngagementRate": "6.1"
         },
         {
           "day": "Friday",
@@ -587,7 +709,26 @@
           "time": {
             "hour": 15,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Saturday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 17,
+            "minute": 0
+          },
+          "audienceEngagementRate": "6.1"
+        },
+        {
+          "day": "Sunday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 17,
+            "minute": 0
+          },
+          "audienceEngagementRate": "7.2"
         }
       ],
       "engagementRate": "7.3"
@@ -616,7 +757,35 @@
           "time": {
             "hour": 9,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 9,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 9,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Thursday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 9,
+            "minute": 0
+          },
+          "audienceEngagementRate": "3.0"
         },
         {
           "day": "Friday",
@@ -624,7 +793,26 @@
           "time": {
             "hour": 13,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Saturday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 9,
+            "minute": 0
+          },
+          "audienceEngagementRate": "2.0"
+        },
+        {
+          "day": "Sunday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 9,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
         }
       ],
       "engagementRate": "5.7"
@@ -645,13 +833,59 @@
       },
       "post": 8,
       "optimalTime": [
+          {
+            "day": "Monday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 17,
+              "minute": 0
+            },
+            "audienceEngagementRate": "1.0"
+          },
         {
           "day": "Tuesday",
           "date": "2025-11-19T00:00:00Z",
           "time": {
             "hour": 17,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 17,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Thursday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 17,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Friday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 17,
+            "minute": 0
+          },
+          "audienceEngagementRate": "3.0"
+        },
+        {
+          "day": "Saturday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 17,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
         },
         {
           "day": "Sunday",
@@ -659,7 +893,8 @@
           "time": {
             "hour": 11,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "2.0"
         }
       ],
       "engagementRate": "6.3"
@@ -680,13 +915,50 @@
       },
       "post": 3,
       "optimalTime": [
+          {
+            "day": "Monday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 14,
+              "minute": 0
+            },
+            "audienceEngagementRate": "1.0"
+          },
+          {
+            "day": "Tuesday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 14,
+              "minute": 0
+            },
+            "audienceEngagementRate": "1.0"
+          },
         {
           "day": "Wednesday",
           "date": "2025-11-19T00:00:00Z",
           "time": {
             "hour": 14,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "3.0"
+        },
+        {
+          "day": "Thursday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 14,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Friday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 14,
+            "minute": 0
+          },
+          "audienceEngagementRate": "2.0"
         },
         {
           "day": "Saturday",
@@ -694,7 +966,17 @@
           "time": {
             "hour": 9,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Sunday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 14,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
         }
       ],
       "engagementRate": "3.9"
@@ -717,13 +999,59 @@
       },
       "post": 2,
       "optimalTime": [
+          {
+            "day": "Monday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 19,
+              "minute": 0
+            },
+            "audienceEngagementRate": "1.0"
+          },
+          {
+            "day": "Tuesday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 19,
+              "minute": 0
+            },
+            "audienceEngagementRate": "2.0"
+          },
+          {
+            "day": "Wednesday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 19,
+              "minute": 0
+            },
+            "audienceEngagementRate": "3.0"
+          },
         {
           "day": "Thursday",
           "date": "2025-11-19T00:00:00Z",
           "time": {
             "hour": 19,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Friday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 19,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Saturday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 19,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
         },
         {
           "day": "Sunday",
@@ -731,7 +1059,8 @@
           "time": {
             "hour": 12,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "1.0"
         }
       ],
       "engagementRate": "2.9"
@@ -758,7 +1087,35 @@
           "time": {
             "hour": 18,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Tuesday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 18,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Wednesday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 18,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Thursday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 18,
+            "minute": 0
+          },
+          "audienceEngagementRate": "2.0"
         },
         {
           "day": "Friday",
@@ -766,7 +1123,26 @@
           "time": {
             "hour": 14,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "3.0"
+        },
+        {
+          "day": "Saturday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 18,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Sunday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 18,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
         }
       ],
       "engagementRate": "4.2"
@@ -787,13 +1163,50 @@
       },
       "post": 4,
       "optimalTime": [
+          {
+            "day": "Monday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 16,
+              "minute": 0
+            },
+            "audienceEngagementRate": "1.0"
+          },
+          {
+            "day": "Tuesday",
+            "date": "2025-11-19T00:00:00Z",
+            "time": {
+              "hour": 16,
+              "minute": 0
+            },
+            "audienceEngagementRate": "1.0"
+          },
         {
           "day": "Wednesday",
           "date": "2025-11-19T00:00:00Z",
           "time": {
             "hour": 16,
             "minute": 0
-          }
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Thursday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 16,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
+        },
+        {
+          "day": "Friday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 16,
+            "minute": 0
+          },
+          "audienceEngagementRate": "1.0"
         },
         {
           "day": "Saturday",
@@ -801,8 +1214,18 @@
           "time": {
             "hour": 11,
             "minute": 0
-          }
-        }
+          },
+          "audienceEngagementRate": "3.0"
+        },
+        {
+          "day": "Sunday",
+          "date": "2025-11-19T00:00:00Z",
+          "time": {
+            "hour": 16,
+            "minute": 0
+          },
+          "audienceEngagementRate": "4.0"
+        },
       ],
       "engagementRate": "3.5"
     }

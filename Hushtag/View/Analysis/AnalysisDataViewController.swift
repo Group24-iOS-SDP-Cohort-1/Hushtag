@@ -43,6 +43,11 @@ class AnalysisDataViewController: UIViewController {
             forSupplementaryViewOfKind: "header",
             withReuseIdentifier: "headerCell")
         
+        analysisCollectionView.register(
+            UINib(nibName: "OptimalTimeChartCell", bundle: nil),
+            forCellWithReuseIdentifier: "optimal_time_cell"
+        )
+        
         let purpleColor = UIColor(red: 139/255, green: 92/255, blue: 246/255, alpha: 1)
         let grayColor = UIColor.darkGray
 
@@ -100,13 +105,15 @@ class AnalysisDataViewController: UIViewController {
 extension AnalysisDataViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        return 3
     }
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0{
             return 3
+        }else if section == 1{
+            return 1
         }else{
             return 1
         }
@@ -121,6 +128,15 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
                     
             if let data = analysisData {
                 cell.configure(with: data)
+            }
+            return cell
+        }
+        
+        if indexPath.section == 2{
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "optimal_time_cell", for: indexPath) as! OptimalTimeChartCell
+            
+            if let data = analysisData {
+                cell.configure(with: data.optimalTime)
             }
             return cell
         }
@@ -150,8 +166,10 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
         
         if indexPath.section == 0{
             headerView.configureHeader(text: "Audience Metrics")
-        }else{
+        }else if indexPath.section == 1{
             headerView.configureHeader(text: "Audience Demographic")
+        }else{
+            headerView.configureHeader(text: "Optimal Upload Times")
         }
         
         return headerView
@@ -194,7 +212,7 @@ func generateAnalysisLayout() -> UICollectionViewLayout{
         
         
         if section == 0 {
-            print("Inside section == 0")
+            //print("Inside section == 0")
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
 
             // create the item
@@ -213,6 +231,22 @@ func generateAnalysisLayout() -> UICollectionViewLayout{
             section.boundarySupplementaryItems = [headerItem]
             
             return section
+        }else if section == 1{
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+
+            // create the item
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
+
+            // create the group
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(200))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
+
+            //create the section
+            let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom:10, trailing: 20)
+            section.boundarySupplementaryItems = [headerItem]
+            return section
         }else{
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
 
@@ -230,6 +264,7 @@ func generateAnalysisLayout() -> UICollectionViewLayout{
             section.boundarySupplementaryItems = [headerItem]
             return section
         }
+        
     }
     
     return layout
