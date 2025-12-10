@@ -17,6 +17,8 @@ class TasksTableViewCell: UITableViewCell {
     private var deal: Deal?
     private var post: Post?
     @IBOutlet weak var nameLabel: UILabel!
+    
+    @IBOutlet weak var radioButton: UIButton!
     private var isChecked: Bool = false
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -34,13 +36,22 @@ class TasksTableViewCell: UITableViewCell {
         self.post = posts
 
         nameLabel.text = tasks?.name ?? posts?.name ?? deals?.name ?? " "
+        if tasks?.isCompleted == true || posts?.isCompleted == true {
+            radioButton.setImage(UIImage(systemName: "circle.inset.filled"), for: .normal)
+            nameLabel.textColor = .systemGray
+        }
     }
     
     @IBAction func radioPressed(_ sender: UIButton) {
         isChecked.toggle()  // flip state
         
         let imageName = isChecked ? "circle.inset.filled" : "circle"
+        nameLabel.textColor = isChecked ? .systemGray : .black
         sender.setImage(UIImage(systemName: imageName), for: .normal)
+        if isChecked {
+            post?.isCompleted = true
+            task?.isCompleted = true
+        }
     }
     @IBAction func detailsButtonPressed(_ sender: UIButton) {
         delegate?.didTapOpenModal(task: task, deal: deal, post: post)

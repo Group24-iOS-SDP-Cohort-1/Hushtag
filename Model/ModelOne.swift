@@ -112,7 +112,7 @@ struct Task: Codable, Identifiable {
     let endDate: DateData
     let description: String
     let reminder: [String]
-    let isCompleted : Bool
+    var isCompleted : Bool
 
     enum CodingKeys: String, CodingKey {
         case name,startDate,endDate,description,reminder, isCompleted
@@ -167,7 +167,7 @@ struct Post: Codable, Identifiable {
     let platform: [String]
     let description: String
     let reminder: [String]
-    let isCompleted : Bool
+    var isCompleted : Bool
 
     enum CodingKeys: String, CodingKey {
         case name,postingTime,platform,description,reminder, isCompleted

@@ -14,7 +14,8 @@ class ViewIdea: UIViewController {
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var hashtagLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
-    
+    @IBOutlet weak var likeButton: UIBarButtonItem!
+    private var isChecked: Bool = false
     var ideas: Idea?
     var video: [Video] = []
 
@@ -47,6 +48,14 @@ class ViewIdea: UIViewController {
                   bundle: nil),
             forSupplementaryViewOfKind: "header",
             withReuseIdentifier: "headerCell")
+    }
+    
+    @IBAction func likeButtonPressed(_ sender: UIBarButtonItem) {
+        isChecked.toggle()
+        let imageName = isChecked ? "heart.fill" : "heart"
+        
+        likeButton.image = UIImage(systemName: imageName)
+        sender.image = UIImage(systemName: imageName)
     }
     
     func generateLayout() -> UICollectionViewLayout {

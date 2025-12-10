@@ -13,10 +13,12 @@ class Activities: UIViewController {
     var deals: [Deal]?
 
     @IBOutlet weak var listingView: UITableView!
+    
+    @IBOutlet weak var addButton: UIBarButtonItem!
     var category: String?
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+
         listingView.dataSource = self
         listingView.delegate = self
         switch category {
@@ -28,6 +30,23 @@ class Activities: UIViewController {
                 self.title = "Posts"
             default:
                 self.title = "Activities"
+        }
+    }
+    @IBAction func buttonPressed(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: "goToAddStuff", sender: category)
+
+    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "goToAddStuff" {
+            let vc = segue.destination as! AddViewController
+            vc.category = category
+            if category == "Tasks" {
+                vc.tasks = tasks
+            } else if category == "Deals" {
+                vc.deals = deals
+            } else if category == "Posts" {
+                vc.post = posts
+            }
         }
     }
 }
