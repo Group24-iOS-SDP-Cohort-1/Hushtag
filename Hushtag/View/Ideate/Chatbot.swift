@@ -33,8 +33,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             "script": "Sure! I can help you write a script. Tell me the topic!",
             "idea": "Looking for ideas? You can ask me for trending ideas anytime!",
             "title": "I can suggest optimized titles. What's your video about?",
-            "default": "I'm not sure, but I’m learning! Try asking in another way 😊"
-
+            "default": "I'm not sure, but I’m learning! Try asking in another way"
         ]
 
     let maxLines: CGFloat = 10
@@ -46,8 +45,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 tableView.delegate = self
                 tableView.dataSource = self
                 tableView.separatorStyle = .none
-
-                messages.append(Message(text: "Hello! I'm your AI assistant.", isUser: false))
                 tableView.reloadData()
 
                 // Container view

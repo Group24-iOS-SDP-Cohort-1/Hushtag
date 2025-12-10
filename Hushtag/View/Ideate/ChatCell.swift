@@ -14,10 +14,12 @@ class ChatCell: UITableViewCell {
 
     @IBOutlet weak var ChatLabel: UILabel!
     
-    @IBOutlet weak var leftConstraint: NSLayoutConstraint!
+   
+    @IBOutlet weak var leftSpacer: UIView!
 
-    @IBOutlet weak var rightConstraint: NSLayoutConstraint!
-    
+
+    @IBOutlet weak var rightSpacer: UIView!
+
     override func awakeFromNib() {
         super.awakeFromNib()
         ChatView.layer.cornerRadius = 16
@@ -31,15 +33,16 @@ class ChatCell: UITableViewCell {
 
             ChatView.backgroundColor = UIColor.accent
             ChatLabel.textColor = .white
-//           rightConstraint.isActive = true
-//           leftConstraint.isActive = false
+            leftSpacer.isHidden = false
+            rightSpacer.isHidden = true
 
                 } else {
                     
                     ChatView.backgroundColor = UIColor.systemGray5
                     ChatLabel.textColor = .black
-//                 leftConstraint.isActive = true
-//                   rightConstraint.isActive = false
+                    leftSpacer.isHidden = true
+                    rightSpacer.isHidden = false
+
                 }
        }
 
