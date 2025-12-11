@@ -88,7 +88,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 textStack.distribution = .fill
 
                 //to load buttons of generate ideas,title,description
-                showScriptSuggestions()
+                //showScriptSuggestions()
+                GenerateStack.isHidden = true
 }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -203,9 +204,12 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         let row = cellView.tag
         //message object corresponsding to that row
         var message = messages[row]
+        
 
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
+
+    
            // Helper to add mark/unmark option
            func addMarkAction(type: String) {
                let isMarked = message.markType == type
@@ -215,9 +219,22 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                    if isMarked {
                        message.markType = nil
                        self.markedMessages[type]?.removeAll(where: { $0.text == message.text })
+                       self.showScriptSuggestions()
                    } else {
+                       self.GenerateStack.isHidden = false
                        message.markType = type
                        self.markedMessages[type]?.append(message)
+                       
+                       switch type {
+                               case "script":
+                                   self.showScriptSuggestions(except: ["script"])
+                               case "title":
+                                   self.showScriptSuggestions(except: ["script", "title"])
+                               case "description":
+                                   self.showScriptSuggestions(except: ["script", "title", "description"])
+                               default:
+                                   self.showScriptSuggestions()
+                               }
                    }
                    self.messages[row] = message
                    self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
@@ -231,45 +248,40 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     }
 
-    func showScriptSuggestions() {
+
+    func showScriptSuggestions(except excludedTypes: [String] = []) {
+        // Remove previous buttons
         GenerateStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
-        let items = ["Generate Scripts", "Generate Title", "Generate Description", "Generate Thumbnail"]
+        // All possible suggestions
+        var items = ["Generate Title", "Generate Description", "Generate Thumbnail"]
+
+        // Remove excluded items
+        if excludedTypes.contains("script") { items.removeAll { $0 == "Generate Scripts" } }
+        if excludedTypes.contains("title") { items.removeAll { $0 == "Generate Title" } }
+        if excludedTypes.contains("description") { items.removeAll { $0 == "Generate Description" } }
 
         for item in items {
             if let view = Bundle.main.loadNibNamed("SuggestionCell", owner: self, options: nil)?.first as? SuggestionCell {
                 view.GenerateButton.setTitle(item, for: .normal)
+                view.GenerateButton.addTarget(self, action: #selector(generateButtonTapped(_:)), for: .touchUpInside)
                 GenerateStack.addArrangedSubview(view)
             }
         }
+
         GenerateStack.layoutIfNeeded()
     }
 
-//    func showScriptSuggestions(except excludedTypes: [String] = []) {
-//        GenerateStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-//
-//        // All possible suggestions
-//        var items = ["Generate Scripts", "Generate Title", "Generate Description", "Generate Thumbnail"]
-//
-//        // Remove items based on excluded types
-//        if excludedTypes.contains("script") { items.removeAll { $0 == "Generate Scripts" } }
-//        if excludedTypes.contains("title") { items.removeAll { $0 == "Generate Title" } }
-//        if excludedTypes.contains("description") { items.removeAll { $0 == "Generate Description" } }
-//
-//        for item in items {
-//            if let view = Bundle.main.loadNibNamed("SuggestionCell", owner: self, options: nil)?.first as? SuggestionCell {
-//                view.GenerateButton.setTitle(item, for: .normal)
-//
-//                // Add button tap action
-//                //view.GenerateButton.addTarget(self, action: #selector(generateButtonTapped(_:)), for: .touchUpInside)
-//
-//                GenerateStack.addArrangedSubview(view)
-//            }
-//        }
-//        GenerateStack.layoutIfNeeded()
-//    }
-//
-//
+    @objc func generateButtonTapped(_ sender: UIButton) {
+        guard let title = sender.currentTitle else { return }
+
+        // Send user message
+        sendMessage(title)
+
+        GenerateStack.isHidden = true
+  }
+
+
 
 
 }
