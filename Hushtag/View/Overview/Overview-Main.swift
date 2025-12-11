@@ -101,20 +101,20 @@ class Overview: UIViewController {
             let headerChevron = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "headerChevron", alignment: .top)
             
             let headerButton = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "headerButton", alignment: .top)
-            
+
             if section == 0 {
-                
+
                 // set the item size
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-                
+
                 // create the item
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
-                
+
                 // create the group
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.3), heightDimension: .estimated(115))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
-                
+
                 //create the section
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous

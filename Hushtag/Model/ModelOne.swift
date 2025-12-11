@@ -18,6 +18,12 @@ struct DateData: Codable{
     let time: TimeData
 }
 
+struct Message {
+    let text: String
+    let isUser: Bool
+    var markType: String? = nil 
+}
+
 enum PlatformType:String{
     case youtube,instagram,facebook
 }
@@ -87,6 +93,8 @@ extension IdeaResponse {
         decoder.dateDecodingStrategy = .iso8601
         return try decoder.decode(IdeaResponse.self, from: data)
     }
+
+
 }
 
 // for tasks

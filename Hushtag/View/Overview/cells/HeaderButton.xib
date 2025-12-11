@@ -44,7 +44,7 @@
                 <outlet property="headerLabel" destination="KoO-Gy-UgS" id="5ha-Bs-p9b"/>
                 <outlet property="popupButton" destination="y9V-zH-MLe" id="d3d-rp-v02"/>
             </connections>
-            <point key="canvasLocation" x="139" y="123"/>
+            <point key="canvasLocation" x="138.93129770992365" y="122.53521126760565"/>
         </collectionReusableView>
     </objects>
 </document>
