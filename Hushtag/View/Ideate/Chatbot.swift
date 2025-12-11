@@ -208,6 +208,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
+
+    
            // Helper to add mark/unmark option
            func addMarkAction(type: String) {
                let isMarked = message.markType == type
