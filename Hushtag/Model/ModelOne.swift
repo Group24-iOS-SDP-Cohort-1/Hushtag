@@ -55,7 +55,7 @@ struct Idea: Codable, Identifiable {
     let script: String
     let hashtag: [String]
     let videos: [Video]
-    let liked: Bool
+    var liked: Bool
     let tag: String
     let thumbnail: String
 
@@ -69,6 +69,7 @@ struct Video: Codable {
     let url: String
     let videoTitle: String
     let views: String
+    let link: String
 }
 
 extension IdeaResponse {
@@ -116,13 +117,14 @@ struct TaskResponse: Codable {
 struct Task: Codable, Identifiable {
     let id = UUID()
     let name: String
-    let startDate: String
-    let endDate: String
+    let startDate: DateData
+    let endDate: DateData
     let description: String
     let reminder: [String]
+    var isCompleted : Bool
 
     enum CodingKeys: String, CodingKey {
-        case name,startDate,endDate,description,reminder
+        case name,startDate,endDate,description,reminder, isCompleted
     }
 }
 
@@ -174,9 +176,10 @@ struct Post: Codable, Identifiable {
     let platform: [String]
     let description: String
     let reminder: [String]
+    var isCompleted : Bool
 
     enum CodingKeys: String, CodingKey {
-        case name,postingTime,platform,description,reminder
+        case name,postingTime,platform,description,reminder, isCompleted
     }
 
     var platformType: [PlatformType]{
@@ -306,7 +309,7 @@ struct youtubeResponse: Codable {
 }
 
 struct Analysis: Codable, Identifiable {
-    let id = UUID()
+    let id: String
     let views: String
     let likes: String
     let incFollowers: String

@@ -17,8 +17,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="rWT-oj-zyq">
-                                <rect key="frame" x="0.0" y="172" width="393" height="612"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="rWT-oj-zyq">
+                                <rect key="frame" x="0.0" y="172" width="393" height="680"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="QO4-6q-Knb">
                                     <size key="itemSize" width="231" height="216"/>
@@ -59,23 +59,32 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="rWT-oj-zyq" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="2cR-eF-RL9"/>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="rWT-oj-zyq" secondAttribute="bottom" id="LSA-jL-Nty"/>
+                            <constraint firstAttribute="bottom" secondItem="rWT-oj-zyq" secondAttribute="bottom" id="LSA-jL-Nty"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="rWT-oj-zyq" secondAttribute="trailing" id="bqC-Mm-h99"/>
                             <constraint firstItem="rWT-oj-zyq" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="lNM-1q-xIw"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Overview" id="ZZd-fl-5CJ"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="collectionView" destination="rWT-oj-zyq" id="LDk-n7-gth"/>
-                        <segue destination="8lP-8n-es5" kind="show" identifier="goToYoutubeAnalysis" id="AKq-Nd-HCx"/>
                         <segue destination="KVU-qB-L83" kind="show" identifier="goToIdea" id="w62-kq-you"/>
-                        <segue destination="ebO-x5-Gco" kind="show" identifier="goToInstagramAnalysis" id="8Up-li-35O"/>
-                        <segue destination="1bs-Q7-Nyo" kind="show" identifier="goToFacebookAnalysis" id="rVJ-dg-WhJ"/>
+                        <segue destination="5Zc-bc-IbZ" kind="show" identifier="goToSchedule" id="5vr-Xe-cA7"/>
+                        <segue destination="hDs-sx-oiG" kind="show" identifier="goToAnalysis" id="tdd-OI-4OB"/>
+                        <segue destination="RsE-9q-XJa" kind="presentation" identifier="goToDetails" id="xAC-1q-pHn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1319.8473282442746" y="136.61971830985917"/>
+            <point key="canvasLocation" x="1316.793893129771" y="136.61971830985917"/>
+        </scene>
+        <!--Details-->
+        <scene sceneID="2U1-zS-8B2">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="Details" storyboardName="Activities" referencedIdentifier="Details" id="RsE-9q-XJa" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iZ0-Vu-YOP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2015" y="14"/>
         </scene>
         <!--ViewIdea-->
         <scene sceneID="Wj9-SX-FKy">
@@ -85,37 +94,27 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HkF-yW-aKd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2068" y="-6"/>
+            <point key="canvasLocation" x="2157" y="137"/>
         </scene>
-        <!--YoutubeAnalysis-->
-        <scene sceneID="AUZ-vY-MXn">
+        <!--Schedule-->
+        <scene sceneID="yGG-j7-HCS">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="YoutubeVC" storyboardName="YoutubeAnalysis" id="8lP-8n-es5" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="udV-5c-Rce"/>
+                <viewControllerPlaceholder storyboardIdentifier="ScheduleVC" storyboardName="Schedule" id="5Zc-bc-IbZ" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="6aM-i6-SXS"/>
                 </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="XbZ-da-EHU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fYa-xn-VEK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="912" y="607"/>
+            <point key="canvasLocation" x="2050" y="252"/>
         </scene>
-        <!--InstagramAnalysis-->
-        <scene sceneID="vth-oR-50B">
+        <!--AnalysisDataViewController-->
+        <scene sceneID="J2E-PJ-RSg">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="InstagramVC" storyboardName="InstagramAnalysis" id="ebO-x5-Gco" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="1xi-5l-UWn"/>
+                <viewControllerPlaceholder storyboardIdentifier="AnalysisVC" storyboardName="AnalysisDataViewController" id="hDs-sx-oiG" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="akp-3R-M98"/>
                 </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="mUg-rO-0iP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="RnT-n1-1Wb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1218" y="606"/>
-        </scene>
-        <!--FacebookAnalysis-->
-        <scene sceneID="8qV-pH-NMT">
-            <objects>
-                <viewControllerPlaceholder storyboardIdentifier="FacebookVC" storyboardName="FacebookAnalysis" id="1bs-Q7-Nyo" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="rwO-kw-HCw"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Ddm-43-pud" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1511" y="606"/>
+            <point key="canvasLocation" x="1318" y="620"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="I6x-YR-HNe">

@@ -13,21 +13,24 @@
       "videos": [
           {
               "id": "v1",
-              "url": "Image",
-              "videoTitle": "5-Minute Morning Makeup Routine",
-              "views": "3.6M"
+              "url": "hqdefault-2",
+              "videoTitle": "GRWM & LET’S CHAT !! | Makeup routine, skincare, hair care, life updates, relationships, traveling",
+              "views": "399K",
+              "link": "https://youtu.be/OJNj-jRfDis?si=D3tHiRsOHCK1tPcp"
           },
           {
               "id": "v2",
-              "url": "Flat geometric beauty youtube thumbnail | Free Vector",
-              "videoTitle": "5 Tips For Better Make Up",
-              "views": "2.3M"
+              "url": "hqdefault",
+              "videoTitle": "get ready with me for a DATE...",
+              "views": "617K",
+              "link": "https://youtu.be/suny-SfWufU?si=cyuBZHjiN-hy08tk"
           },
           {
               "id": "v3",
-              "url": "Make Your Videos Stand Out with Creative Thumbnails",
-              "videoTitle": "Buying everything in one colour",
-              "views": "1.4M"
+              "url": "hqdefault-3",
+              "videoTitle": "simple everyday makeup tutorial 🫧 (step by step + skincare routine)",
+              "views": "222K",
+              "link": "https://youtu.be/Sued4KBSSaw?si=hEj1gFPXYlnwRjr7"
           }
       ],
       "liked": false,
@@ -47,21 +50,24 @@
       "videos": [
           {
               "id": "v1",
-              "url": "Image",
-              "videoTitle": "5-Minute Morning Makeup Routine",
-              "views": "3.6M"
+              "url": "hqdefault-2",
+              "videoTitle": "GRWM & LET’S CHAT !! | Makeup routine, skincare, hair care, life updates, relationships, traveling",
+              "views": "399K",
+              "link": "https://youtu.be/OJNj-jRfDis?si=D3tHiRsOHCK1tPcp"
           },
           {
               "id": "v2",
-              "url": "Flat geometric beauty youtube thumbnail | Free Vector",
-              "videoTitle": "5 Tips For Better Make Up",
-              "views": "2.3M"
+              "url": "hqdefault",
+              "videoTitle": "get ready with me for a DATE...",
+              "views": "617K",
+              "link": "https://youtu.be/suny-SfWufU?si=cyuBZHjiN-hy08tk"
           },
           {
               "id": "v3",
-              "url": "Make Your Videos Stand Out with Creative Thumbnails",
-              "videoTitle": "Buying everything in one colour",
-              "views": "1.4M"
+              "url": "hqdefault-3",
+              "videoTitle": "simple everyday makeup tutorial 🫧 (step by step + skincare routine)",
+              "views": "222K",
+              "link": "https://youtu.be/Sued4KBSSaw?si=hEj1gFPXYlnwRjr7"
           }
       ],
       "liked": false,
@@ -69,77 +75,122 @@
       "thumbnail": ""
     },
     {
-      "id" : "i3",
-      "trending": "fashion",
-      "title": "Unlock Your Style: Must-Known Fashion Hacks!",
-      "description": "Looking to level up your wardrobe without breaking the bank? In this video, we’re sharing 10 game-changing fashion hacks that’ll instantly upgrade your style!",
-      "script": "",
-      "hashtag": [
-        "beauty",
-        "style"
-      ],
-      "videos": [
-          {
-              "id": "v1",
-              "url": "Image",
-              "videoTitle": "5-Minute Morning Makeup Routine",
-              "views": "3.6M"
-          },
-          {
-              "id": "v2",
-              "url": "Flat geometric beauty youtube thumbnail | Free Vector",
-              "videoTitle": "5 Tips For Better Make Up",
-              "views": "2.3M"
-          },
-          {
-              "id": "v3",
-              "url": "Make Your Videos Stand Out with Creative Thumbnails",
-              "videoTitle": "Buying everything in one colour",
-              "views": "1.4M"
-          }
-      ],
-      "liked": false,
-      "tag": "",
-      "thumbnail": "Make Your Videos Stand Out with Creative Thumbnails"
-    },
-    {
-      "id" : "i4",
-      "trending": "skincare",
-      "title": "Unlock Your Style: Must-Known Fashion Hacks!",
-      "description": "Looking to level up your wardrobe without breaking the bank? In this video, we’re sharing 10 game-changing fashion style tips.",
-      "script": "",
-      "hashtag": [
-        "beauty",
-        "style"
-      ],
-      "videos": [
-          {
-              "id": "v1",
-              "url": "Image",
-              "videoTitle": "5-Minute Morning Makeup Routine",
-              "views": "3.6M"
-          },
-          {
-              "id": "v2",
-              "url": "Flat geometric beauty youtube thumbnail | Free Vector",
-              "videoTitle": "5 Tips For Better Make Up",
-              "views": "2.3M"
-          },
-          {
-              "id": "v3",
-              "url": "Make Your Videos Stand Out with Creative Thumbnails",
-              "videoTitle": "Buying everything in one colour",
-              "views": "1.4M"
-          }
-      ],
-      "liked": false,
-      "tag": "",
-      "thumbnail": "Miniatura geométrica plana de beleza do youtube | Vetor Grátis"
-    }
+        "id": "i3",
+        "trending": "beauty",
+        "title": "Everyday Glam: Simple Makeup for a Natural Glow",
+        "description": "Learn how to achieve a soft, glowing makeup look perfect for daily wear using products you already own.",
+        "script": "",
+        "hashtag": [
+        "makeup",
+        "beauty"
+    ],
+    "videos": [
+        {
+            "id": "v1",
+            "url": "hqdefault-4",
+            "videoTitle": "How to Make Your Outfits Better (Avoid These Styling Mistakes!)",
+            "views": "6.6M",
+            "link": "https://youtu.be/klKVm1FALhs?si=zzjvt8Lw7p5AaHrv"
+        },
+        {
+            "id": "v2",
+            "url": "hqdefault-2",
+            "videoTitle": "5-Min Everyday Makeup Routine",
+            "views": "1.1M",
+            "link": "https://youtu.be/VxKdc14Z0H8?si=ZYGpWiqPNuT-4t5N"
+        },
+        {
+            "id": "v3",
+            "url": "hqdefault-3",
+            "videoTitle": "Dewy Skin Look: Step-by-Step Tutorial",
+            "views": "287K",
+            "link": "https://youtu.be/3-H7IhFz1ck?si=dMLl78I6cUQ0FjZS"
+        }
+    ],
+    "liked": false,
+    "tag": "",
+    "thumbnail": ""
+  },
+
+  {
+    "id": "i4",
+    "trending": "fashion",
+    "title": "10 Wardrobe Essentials Every Girl Needs",
+    "description": "Build the perfect capsule wardrobe with these timeless essentials that instantly elevate your everyday style.",
+    "script": "",
+    "hashtag": [
+      "fashion",
+      "style"
+    ],
+    "videos": [
+        {
+          "id": "v1",
+          "url": "hqdefault-5",
+          "videoTitle": "10 Wardrobe Essentials EVERY Woman in Her Late 20s NEEDS!",
+          "views": "87K",
+          "link": "https://www.youtube.com/watch?v=KZeuJ6b_2C8"
+        },
+      {
+        "id": "v2",
+        "url": "hqdefault-2",
+        "videoTitle": "How to Build a Minimalist Wardrobe",
+        "views": "678K",
+        "link": "https://youtu.be/2t5DdDhcE7k?si=39OQXDXje1fW28Tj"
+      },
+      {
+        "id": "v3",
+        "url": "hqdefault-3",
+        "videoTitle": "5 Outfits With Only 5 Basics",
+        "views": "421K",
+        "link": "https://youtu.be/Z0mWLw6dCk8?si=Bp-DAx34trdhX3Ll"
+      }
+    ],
+    "liked": false,
+    "tag": "",
+    "thumbnail": ""
+  },
+
+  {
+    "id": "i5",
+    "trending": "fashion",
+    "title": "Affordable Fashion Hacks to Look Expensive",
+    "description": "Upgrade your style instantly with these simple, budget-friendly fashion hacks that make any outfit look high-end.",
+    "script": "",
+    "hashtag": [
+      "fashion",
+      "beauty"
+    ],
+    "videos": [
+      {
+        "id": "v1",
+        "url": "hqdefault-4",
+        "videoTitle": "How to Make Your Outfits Better (Avoid These Styling Mistakes!)",
+        "views": "6.6M",
+        "link": "https://youtu.be/klKVm1FALhs?si=zzjvt8Lw7p5AaHrv"
+      },
+      {
+        "id": "v2",
+        "url": "hqdefault-3",
+        "videoTitle": "10 Dos & Don’ts of Dressing Stylish",
+        "views": "788K",
+        "link": "https://youtu.be/CkgCbtDFn94?si=g4wW5tYJXoDqWUpv"
+      },
+      {
+        "id": "v3",
+        "url": "hqdefault-5",
+        "videoTitle": "10 Wardrobe Essentials EVERY Woman in Her Late 20s NEEDS!",
+        "views": "87K",
+        "link": "https://www.youtube.com/watch?v=KZeuJ6b_2C8"
+      }
+    ],
+    "liked": false,
+    "tag": "",
+    "thumbnail": ""
+  }
   ],
   
   "tasks": [
-    {
+{
       "name": "Everyday Glam",
       "startDate": {
         "day": "Monday",
@@ -148,6 +199,7 @@
           "hour": 0,
           "minute": 0
         }
+        
       },
       "endDate": {
         "day": "Friday",
@@ -161,7 +213,8 @@
       "reminder": [
         "1 hour before",
         "1 day before"
-      ]
+      ],
+      "isCompleted": false
     },
     {
       "name": "Unboxing Cosmetic Products",
@@ -184,7 +237,8 @@
       "description": "Unbox and review new cosmetic products — capture photos/videos and schedule the post for publishing.",
       "reminder": [
         "1 hour before"
-      ]
+      ],
+      "isCompleted": true
     },
     {
       "name": "Get the look of a model",
@@ -207,7 +261,8 @@
       "description": "Showcase the full transformation with featured products and styling details.",
       "reminder": [
         "15 mins before"
-      ]
+      ],
+      "isCompleted": false
     }
   ],
   "deals": [
@@ -380,7 +435,8 @@
       "reminder": [
         "1 hour before",
         "10 minutes before"
-      ]
+      ],
+      "isCompleted": false
     },
     {
       "name": "YouTube Vlog – Week in My Life",
@@ -398,7 +454,8 @@
       "description": "Full vlog showing weekly lifestyle, workouts, filming and routine.",
       "reminder": [
         "2 hours before"
-      ]
+      ],
+      "isCompleted": false
     },
     {
       "name": "Instagram Carousel – Outfit Inspirations",
@@ -417,7 +474,8 @@
       "reminder": [
         "30 minutes before",
         "5 minutes before"
-      ]
+      ],
+      "isCompleted": false
     },
     {
       "name": "Facebook Update – Festival Sale Promo",
@@ -435,7 +493,8 @@
       "description": "Short promotional post about the festival sale.",
       "reminder": [
         "1 hour before"
-      ]
+      ],
+      "isCompleted": true
     },
     {
       "name": "YouTube Shorts – GRWM for Dinner",
@@ -454,7 +513,8 @@
       "description": "Short GRWM clip for dinner outing.",
       "reminder": [
         "15 minutes before"
-      ]
+      ],
+      "isCompleted": false
     },
     {
       "name": "IG Story – New Product Sneak Peek",
@@ -473,7 +533,8 @@
       "reminder": [
         "1 hour before",
         "10 minutes before"
-      ]
+      ],
+      "isCompleted": true
     }
   ],
   "youtube": [
