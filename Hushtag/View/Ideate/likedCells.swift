@@ -7,7 +7,11 @@
 
 import UIKit
 
-class likedCells: UICollectionViewCell {
+protocol LikedCellDelegate: AnyObject {
+    func didTapDraftScript(for idea: Idea)
+}
+
+class likedCells: UICollectionViewCell{
 
     @IBOutlet weak var Title: UILabel!
 
@@ -16,6 +20,11 @@ class likedCells: UICollectionViewCell {
     
     @IBOutlet weak var Hashtag: UILabel!
 
+
+    @IBOutlet weak var draftScript: UIButton!
+
+    private var currentIdea: Idea?
+    weak var delegate: LikedCellDelegate?
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -31,7 +40,7 @@ class likedCells: UICollectionViewCell {
          self.layer.shadowOffset = CGSize(width: 0, height: 0)
          self.layer.shadowRadius = 6
 
-         self.backgroundColor = .white
+        self.backgroundColor = .white
         // Title Label (plusLabel)
         Title.font = .systemFont(ofSize: 14, weight: .regular)
         Title.textColor = UIColor.label
@@ -40,14 +49,20 @@ class likedCells: UICollectionViewCell {
        
        Description.textColor = UIColor.secondaryLabel
         Description.numberOfLines = 2
+        draftScript.addTarget(self, action: #selector(draftScriptTapped), for: .touchUpInside)
+
+
     }
     func configureCell(idea : Idea) {
-
+        self.currentIdea = idea
         Title.text = idea.title
         Description.text = idea.description
         Hashtag.text = idea.hashtag.map { "#\($0)" }.joined(separator: " ")
         Hashtag.textColor = .accent
+    }
 
+    @objc private func draftScriptTapped() {
+            guard let idea = currentIdea else { return }
+            delegate?.didTapDraftScript(for: idea)
         }
-
 }

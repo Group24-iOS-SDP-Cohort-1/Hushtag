@@ -9,7 +9,7 @@ import UIKit
 
 
 
-class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
+class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, LikedCellDelegate {
 
     @IBOutlet weak var tableView: UITableView!
 
@@ -28,6 +28,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     @IBOutlet weak var GenerateStack: UIStackView!
 
     var messages: [Message] = []
+    var autoSendMessage: String?
 
     let botDatabase: [String: String] = [
             "hi": "hello",
@@ -90,6 +91,11 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 //to load buttons of generate ideas,title,description
                 //showScriptSuggestions()
                 GenerateStack.isHidden = true
+
+                if let text = autoSendMessage {
+                    sendAutoMessage(text)
+                    autoSendMessage = nil // prevent duplication
+                }
 }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -281,8 +287,34 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         GenerateStack.isHidden = true
   }
 
+    func didTapDraftScript(for idea: Idea) {
+
+        // Send the message immediately as if user typed "script"
+        sendAutoMessage("script")
+
+        // Mark it as script
+        if let lastIndex = messages.indices.last {
+            messages[lastIndex].markType = "script"
+        }
+
+        // Show buttons (title, description, thumbnail)
+        GenerateStack.isHidden = false
+        showScriptSuggestions(except: ["script"])
+    }
 
 
+    func sendAutoMessage(_ text: String) {
+
+        messages.append(Message(text: text, isUser: true))
+        tableView.reloadData()
+
+        let indexPath = IndexPath(row: messages.count - 1, section: 0)
+        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.generateBotReply(for: text)
+        }
+    }
 
 }
 
