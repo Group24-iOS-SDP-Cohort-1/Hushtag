@@ -1,7 +1,12 @@
 import UIKit
 
-class AddDealsViewController: UITableViewController, DeliverableCellAddDealDelegate, UITextFieldDelegate {
+protocol AddDealsDelegate: AnyObject {
+    /// Called when AddDealsViewController has created a new deal
+    func addDealsViewController(_ controller: AddDealsViewController, didCreateDeal deal: Deal)
+}
 
+class AddDealsViewController: UITableViewController, DeliverableCellAddDealDelegate, UITextFieldDelegate {
+    weak var delegate: AddDealsDelegate?
     var InputDeal : Deal?
     
     enum Section: Int, CaseIterable {
@@ -112,14 +117,9 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             selectedIdeaIndex: nil
         )
 
-        // 5) pass back — append to parent DealsViewController array
-        if let parent = parent as? UINavigationController,
-           let presenting = parent.viewControllers.first(where: { $0 is DealsViewController }) as? DealsViewController {
-            presenting.deals.append(deal)
-            presenting.collectionView.reloadData()
-        }
-
-        dismiss(animated: true)
+            self.InputDeal = deal
+            delegate?.addDealsViewController(self, didCreateDeal: deal)
+            dismiss(animated: true)
     }
 
     // MARK: - TableView DataSource

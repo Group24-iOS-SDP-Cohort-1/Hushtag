@@ -150,6 +150,12 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
         return cell
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let nav = segue.destination as? UINavigationController,
+               let addVC = nav.viewControllers.first as? AddDealsViewController {
+                addVC.delegate = self
+            } else if let addVC = segue.destination as? AddDealsViewController {
+                addVC.delegate = self
+            }
         if segue.identifier == "info_page",
            let deal = sender as? Deal,
            let vc = segue.destination as? DealsInfo {
@@ -179,5 +185,13 @@ extension DealsViewController: DealsInfoDelegate {
         guard index >= 0 && index < deals.count else { return }
         deals[index] = deal
         collectionView.reloadData()
+    }
+}
+extension DealsViewController: AddDealsDelegate {
+    func addDealsViewController(_ controller: AddDealsViewController, didCreateDeal deal: Deal) {
+        DispatchQueue.main.async {
+            self.deals.append(deal)
+            self.collectionView.reloadData()
+        }
     }
 }
