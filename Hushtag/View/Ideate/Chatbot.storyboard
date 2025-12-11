@@ -88,6 +88,24 @@
                                     <outlet property="delegate" destination="Y6W-OH-hqX" id="beI-Jk-6IS"/>
                                 </connections>
                             </tableView>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nuj-q1-pSo">
+                                <rect key="frame" x="0.0" y="660" width="393" height="50"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ThS-3f-STF">
+                                        <rect key="frame" x="8" y="0.0" width="377" height="38.333333333333336"/>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="ThS-3f-STF" firstAttribute="leading" secondItem="19j-KY-AHh" secondAttribute="leading" constant="10" id="AVB-9c-nfU"/>
+                                    <constraint firstItem="19j-KY-AHh" firstAttribute="bottom" secondItem="ThS-3f-STF" secondAttribute="bottom" id="KLh-0h-hwH"/>
+                                    <constraint firstItem="19j-KY-AHh" firstAttribute="trailing" secondItem="ThS-3f-STF" secondAttribute="trailing" id="Zoe-w5-0On"/>
+                                    <constraint firstAttribute="height" constant="50" id="dUF-CU-izN"/>
+                                    <constraint firstItem="ThS-3f-STF" firstAttribute="top" secondItem="19j-KY-AHh" secondAttribute="top" id="uwV-xU-ZiP"/>
+                                    <constraint firstItem="ThS-3f-STF" firstAttribute="height" secondItem="Nuj-q1-pSo" secondAttribute="height" multiplier="0.764706" id="wjs-kS-5yY"/>
+                                </constraints>
+                                <viewLayoutGuide key="contentLayoutGuide" id="19j-KY-AHh"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="DGu-i1-FWF"/>
+                            </scrollView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c7U-vD-YmN">
                                 <rect key="frame" x="24" y="710" width="345" height="66"/>
                                 <subviews>
@@ -135,8 +153,11 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="c7U-vD-YmN" secondAttribute="trailing" constant="8" id="28I-SJ-eUc"/>
+                            <constraint firstAttribute="trailing" secondItem="Nuj-q1-pSo" secondAttribute="trailing" id="683-Ar-XQ6"/>
                             <constraint firstItem="SNm-vA-oEx" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="NCO-KK-lXe"/>
                             <constraint firstItem="c7U-vD-YmN" firstAttribute="top" secondItem="SNm-vA-oEx" secondAttribute="bottom" constant="10" id="eIt-V9-Hyn"/>
+                            <constraint firstItem="Nuj-q1-pSo" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" id="fgh-Z2-fYq"/>
+                            <constraint firstItem="c7U-vD-YmN" firstAttribute="top" secondItem="Nuj-q1-pSo" secondAttribute="bottom" id="hR2-Pe-c6K"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="c7U-vD-YmN" secondAttribute="bottom" constant="8" id="k1n-mV-YhR"/>
                             <constraint firstItem="SNm-vA-oEx" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="p45-hi-EOD"/>
                             <constraint firstItem="SNm-vA-oEx" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="tuw-iU-HIN"/>
@@ -146,6 +167,7 @@
                     <navigationItem key="navigationItem" title="Scripting" largeTitleDisplayMode="never" id="iNc-XK-pMm"/>
                     <connections>
                         <outlet property="Enterbutton" destination="nYb-18-tvh" id="PNi-ge-sor"/>
+                        <outlet property="GenerateStack" destination="ThS-3f-STF" id="iOB-LH-WI8"/>
                         <outlet property="tableView" destination="SNm-vA-oEx" id="6TJ-DM-Idy"/>
                         <outlet property="textFieldView" destination="juk-cQ-ZRr" id="Wzg-iX-ikx"/>
                         <outlet property="textStack" destination="ygC-V6-BK5" id="C3v-DR-7Cj"/>

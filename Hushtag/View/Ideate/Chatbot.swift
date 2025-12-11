@@ -24,6 +24,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     @IBOutlet weak var Enterbutton: UIButton!
 
+    
+    @IBOutlet weak var GenerateStack: UIStackView!
+
     var messages: [Message] = []
 
     let botDatabase: [String: String] = [
@@ -84,8 +87,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 textStack.alignment = .bottom
                 textStack.distribution = .fill
 
-
-    }
+                //to load buttons of generate ideas,title,description
+                showScriptSuggestions()
+}
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return messages.count
@@ -226,6 +230,47 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
            self.present(alert, animated: true)
 
     }
+
+    func showScriptSuggestions() {
+        GenerateStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        let items = ["Generate Scripts", "Generate Title", "Generate Description", "Generate Thumbnail"]
+
+        for item in items {
+            if let view = Bundle.main.loadNibNamed("SuggestionCell", owner: self, options: nil)?.first as? SuggestionCell {
+                view.GenerateButton.setTitle(item, for: .normal)
+                GenerateStack.addArrangedSubview(view)
+            }
+        }
+        GenerateStack.layoutIfNeeded()
+    }
+
+//    func showScriptSuggestions(except excludedTypes: [String] = []) {
+//        GenerateStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+//
+//        // All possible suggestions
+//        var items = ["Generate Scripts", "Generate Title", "Generate Description", "Generate Thumbnail"]
+//
+//        // Remove items based on excluded types
+//        if excludedTypes.contains("script") { items.removeAll { $0 == "Generate Scripts" } }
+//        if excludedTypes.contains("title") { items.removeAll { $0 == "Generate Title" } }
+//        if excludedTypes.contains("description") { items.removeAll { $0 == "Generate Description" } }
+//
+//        for item in items {
+//            if let view = Bundle.main.loadNibNamed("SuggestionCell", owner: self, options: nil)?.first as? SuggestionCell {
+//                view.GenerateButton.setTitle(item, for: .normal)
+//
+//                // Add button tap action
+//                //view.GenerateButton.addTarget(self, action: #selector(generateButtonTapped(_:)), for: .touchUpInside)
+//
+//                GenerateStack.addArrangedSubview(view)
+//            }
+//        }
+//        GenerateStack.layoutIfNeeded()
+//    }
+//
+//
+
 
 }
 
