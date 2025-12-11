@@ -204,6 +204,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         let row = cellView.tag
         //message object corresponsding to that row
         var message = messages[row]
+        
 
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
