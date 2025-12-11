@@ -18,14 +18,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="YLL-H1-qMg">
-                                <rect key="frame" x="17" y="171.99999999999997" width="359" height="358.33333333333326"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="YLL-H1-qMg">
+                                <rect key="frame" x="17" y="172" width="359" height="216"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="jRf-Vx-hVm">
-                                        <rect key="frame" x="0.0" y="0.0" width="359" height="33.666666666666664"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="359" height="21"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aUE-L3-ayN">
-                                                <rect key="frame" x="0.0" y="0.0" width="359" height="33.666666666666664"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="359" height="21"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -33,16 +33,16 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="1dQ-5O-xeF">
-                                        <rect key="frame" x="0.0" y="63.666666666666657" width="359" height="58.333333333333343"/>
+                                        <rect key="frame" x="0.0" y="46" width="359" height="37"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="peE-D7-msl">
-                                                <rect key="frame" x="0.0" y="0.0" width="359" height="26.333333333333332"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="359" height="22"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WEW-Ga-EW2">
-                                                <rect key="frame" x="0.0" y="41.333333333333343" width="359" height="17"/>
+                                                <rect key="frame" x="0.0" y="37" width="359" height="0.0"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -50,11 +50,10 @@
                                         </subviews>
                                     </stackView>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="CF7-ZS-Kg6">
-                                        <rect key="frame" x="0.0" y="152" width="359" height="50"/>
+                                        <rect key="frame" x="0.0" y="108" width="359" height="0.0"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="275" id="4xB-y4-MkN"/>
-                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="275" id="cj8-iV-PFL"/>
+                                            <constraint firstAttribute="height" constant="300" id="4xB-y4-MkN"/>
                                         </constraints>
                                         <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="QiE-Uw-SV7">
                                             <size key="itemSize" width="128" height="128"/>
@@ -65,23 +64,23 @@
                                         <cells>
                                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="3Rl-0t-Eqc">
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" id="7VU-dA-Qd6">
+                                                <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="7VU-dA-Qd6">
                                                     <autoresizingMask key="autoresizingMask"/>
                                                 </collectionViewCellContentView>
                                             </collectionViewCell>
                                         </cells>
                                     </collectionView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="83" translatesAutoresizingMaskIntoConstraints="NO" id="0PW-JH-F0J">
-                                        <rect key="frame" x="0.0" y="232.00000000000003" width="359" height="126.33333333333334"/>
+                                        <rect key="frame" x="0.0" y="133" width="359" height="83"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Trending Hashtags" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Aye-Ke-VQB">
-                                                <rect key="frame" x="0.0" y="0.0" width="359" height="26.333333333333332"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Trending Hashtags" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Aye-Ke-VQB">
+                                                <rect key="frame" x="0.0" y="0.0" width="359" height="0.0"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bts-yD-koV">
-                                                <rect key="frame" x="0.0" y="109.33333333333337" width="359" height="17"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bts-yD-koV">
+                                                <rect key="frame" x="0.0" y="83" width="359" height="0.0"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <color key="textColor" name="AccentColor"/>
                                                 <nil key="highlightedColor"/>
@@ -122,20 +121,17 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Idea Title" id="dtc-aJ-ivQ">
-                        <barButtonItem key="rightBarButtonItem" style="plain" id="NX6-Db-zTR">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="48Q-JE-4T0">
-                                <rect key="frame" x="322.33333333333331" y="4.6666666666666687" width="50.666666666666686" height="34.666666666666664"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="heart" catalog="system"/>
-                            </button>
-                            <color key="tintColor" name="AccentColor"/>
+                        <barButtonItem key="rightBarButtonItem" image="heart" catalog="system" id="kyf-8k-aJL">
+                            <connections>
+                                <action selector="likeButtonPressed:" destination="Y6W-OH-hqX" id="tY5-A7-bhQ"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="descriptionLabel" destination="WEW-Ga-EW2" id="7fg-26-X3a"/>
                         <outlet property="hashtagLabel" destination="bts-yD-koV" id="6Bj-FA-xMv"/>
+                        <outlet property="likeButton" destination="kyf-8k-aJL" id="ER2-8y-CZ6"/>
                         <outlet property="titleLabel" destination="aUE-L3-ayN" id="LUw-Rv-QdM"/>
                         <outlet property="videoView" destination="CF7-ZS-Kg6" id="DaE-hZ-JgQ"/>
                     </connections>

@@ -30,6 +30,12 @@ struct AnalysisDateData: Codable, Identifiable{
     }
 }
 
+struct Message {
+    let text: String
+    let isUser: Bool
+    var markType: String? = nil
+}
+
 enum PlatformType:String{
     case youtube,instagram,facebook
 }
@@ -61,7 +67,7 @@ struct Idea: Codable, Identifiable {
     let script: String
     let hashtag: [String]
     let videos: [Video]
-    let liked: Bool
+    var liked: Bool
     let tag: String
     let thumbnail: String
 
@@ -75,6 +81,7 @@ struct Video: Codable {
     let url: String
     let videoTitle: String
     let views: String
+    let link: String
 }
 
 extension IdeaResponse {
@@ -98,6 +105,8 @@ extension IdeaResponse {
         decoder.dateDecodingStrategy = .iso8601
         return try decoder.decode(IdeaResponse.self, from: data)
     }
+
+
 }
 
 // for tasks
@@ -124,7 +133,7 @@ struct Task: Codable, Identifiable {
     let endDate: DateData
     let description: String
     let reminder: [String]
-    let isCompleted : Bool
+    var isCompleted : Bool
 
     enum CodingKeys: String, CodingKey {
         case name,startDate,endDate,description,reminder, isCompleted
@@ -179,7 +188,7 @@ struct Post: Codable, Identifiable {
     let platform: [String]
     let description: String
     let reminder: [String]
-    let isCompleted : Bool
+    var isCompleted : Bool
 
     enum CodingKeys: String, CodingKey {
         case name,postingTime,platform,description,reminder, isCompleted

@@ -28,6 +28,10 @@ class Overview: UIViewController {
     var selectedPost: Post?
     var selectedDeal: Deal?
     var selectedTask: Task?
+    var filteredIdeas: [Idea] {
+        return ideas.filter { $0.liked == false }
+    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -97,20 +101,20 @@ class Overview: UIViewController {
             let headerChevron = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "headerChevron", alignment: .top)
             
             let headerButton = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "headerButton", alignment: .top)
-            
+
             if section == 0 {
-                
+
                 // set the item size
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-                
+
                 // create the item
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
-                
+
                 // create the group
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.3), heightDimension: .estimated(115))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
-                
+
                 //create the section
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
@@ -226,14 +230,26 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             vc.tasks = task
         }
         
-        if segue.identifier == "taskDetails" {
+        if segue.identifier == "goToDetails" {
             let vc = segue.destination as! Details
             vc.post = selectedPost
         }
         if segue.identifier == "goToIdea" {
             let nav = segue.destination as! UINavigationController
             let vc = nav.topViewController as! ViewIdea
-            vc.ideas = selectedIdeas
+            vc.idea = selectedIdeas
+            vc.onLikeStatusChanged = { [weak self] updatedIdea in
+                guard let self = self else { return }
+
+                // 1. Find the index of this idea
+                if let index = self.ideas.firstIndex(where: { $0.id == updatedIdea.id }) {
+                    self.ideas[index] = updatedIdea
+                }
+
+                // 2. Reload ONLY the ideas section (section 2)
+                let ideasSection = IndexSet(integer: 2)
+                self.collectionView.reloadSections(ideasSection)
+            }
         }
     }
 
@@ -244,7 +260,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
                 performSegue(withIdentifier: "goToAnalysis", sender: nil)
             case 1:
                 selectedPost = post[indexPath.row]
-                performSegue(withIdentifier: "goToAnalysis", sender: nil)
+                performSegue(withIdentifier: "goToDetails", sender: nil)
             case 2:
                 selectedIdeas = ideas[indexPath.row]
                 performSegue(withIdentifier: "goToIdea", sender: nil)
@@ -266,7 +282,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         } else if (section == 1) {
             return post.count
         }
-        return ideas.count
+        return filteredIdeas.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -291,8 +307,8 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             return cell
         }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideas_cell", for: indexPath) as! IdeaCollectionViewCell
-        let ideas = ideas[indexPath.row]
-        cell.configureCell(ideas: ideas)
+        let idea = filteredIdeas[indexPath.row]
+        cell.configureCell(ideas: idea)
         return cell
     }
     

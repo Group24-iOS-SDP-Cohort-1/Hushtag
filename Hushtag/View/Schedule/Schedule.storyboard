@@ -141,16 +141,7 @@
                             <constraint firstItem="EJD-1L-Zom" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="17" id="ueO-jh-Gra"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Schedule" largeTitleDisplayMode="never" id="bD6-jx-sLK">
-                        <barButtonItem key="rightBarButtonItem" style="plain" id="tXX-xy-mWn">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="7A6-GJ-K1P">
-                                <rect key="frame" x="326" y="4.6666666666666687" width="47" height="34.666666666666664"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system"/>
-                            </button>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Schedule" largeTitleDisplayMode="never" id="bD6-jx-sLK"/>
                     <connections>
                         <outlet property="activitiesView" destination="CxR-iE-KxJ" id="Ozc-ur-uGF"/>
                         <outlet property="listView" destination="rZh-n1-UJj" id="i5O-TA-CLh"/>
@@ -159,7 +150,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3845.0381679389311" y="130.98591549295776"/>
+            <point key="canvasLocation" x="4771.7557251908393" y="130.98591549295776"/>
         </scene>
         <!--Activities-->
         <scene sceneID="dpl-zh-qOE">
@@ -169,29 +160,28 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5l2-5l-1zM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4707.6335877862593" y="160.56338028169014"/>
+            <point key="canvasLocation" x="4468" y="568"/>
         </scene>
         <!--Navigation Controller-->
-        <scene sceneID="h1i-Q5-HTe">
+        <scene sceneID="t9t-a2-BGR">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="dug-zS-tbV" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="FL0-8Y-Nra" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Af3-OQ-Bv9">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="aqm-2j-Vz8">
                         <rect key="frame" x="0.0" y="118" width="393" height="54"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="Y6W-OH-hqX" kind="relationship" relationship="rootViewController" id="EyW-1a-U9h"/>
+                        <segue destination="Y6W-OH-hqX" kind="relationship" relationship="rootViewController" id="GWR-DQ-zNZ"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Jd0-St-Afn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="O6N-hw-RS5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2918.320610687023" y="130.98591549295776"/>
+            <point key="canvasLocation" x="3845.0381679389311" y="130.98591549295776"/>
         </scene>
     </scenes>
     <resources>
-        <image name="plus" catalog="system" width="128" height="113"/>
         <namedColor name="AccentColor">
             <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
