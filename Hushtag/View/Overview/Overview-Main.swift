@@ -28,6 +28,10 @@ class Overview: UIViewController {
     var selectedPost: Post?
     var selectedDeal: Deal?
     var selectedTask: Task?
+    var filteredIdeas: [Idea] {
+        return ideas.filter { $0.liked == false }
+    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -222,7 +226,19 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         if segue.identifier == "goToIdea" {
             let nav = segue.destination as! UINavigationController
             let vc = nav.topViewController as! ViewIdea
-            vc.ideas = selectedIdeas
+            vc.idea = selectedIdeas
+            vc.onLikeStatusChanged = { [weak self] updatedIdea in
+                guard let self = self else { return }
+
+                // 1. Find the index of this idea
+                if let index = self.ideas.firstIndex(where: { $0.id == updatedIdea.id }) {
+                    self.ideas[index] = updatedIdea
+                }
+
+                // 2. Reload ONLY the ideas section (section 2)
+                let ideasSection = IndexSet(integer: 2)
+                self.collectionView.reloadSections(ideasSection)
+            }
         }
     }
 
@@ -255,7 +271,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         } else if (section == 1) {
             return post.count
         }
-        return ideas.count
+        return filteredIdeas.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -280,8 +296,8 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             return cell
         }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideas_cell", for: indexPath) as! IdeaCollectionViewCell
-        let ideas = ideas[indexPath.row]
-        cell.configureCell(ideas: ideas)
+        let idea = filteredIdeas[indexPath.row]
+        cell.configureCell(ideas: idea)
         return cell
     }
     

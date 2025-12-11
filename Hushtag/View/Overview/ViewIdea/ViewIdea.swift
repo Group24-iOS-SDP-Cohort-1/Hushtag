@@ -6,32 +6,36 @@
 //
 
 import UIKit
+import SafariServices
 
 class ViewIdea: UIViewController {
     
-
     @IBOutlet weak var videoView: UICollectionView!
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var hashtagLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var likeButton: UIBarButtonItem!
     private var isChecked: Bool = false
-    var ideas: Idea?
+    var idea: Idea?
     var video: [Video] = []
+    var onLikeStatusChanged: ((Idea) -> Void)?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
         videoView.dataSource = self
+        videoView.delegate = self
 
-        if let idea = ideas {
+
+        if let idea = idea {
             titleLabel.text = idea.title
             titleLabel.numberOfLines = 2
             descriptionLabel.text = idea.description
             descriptionLabel.numberOfLines = 0
             hashtagLabel.text = "#" +  idea.hashtag.joined(separator: " #")
             video = idea.videos
-            }
+            likeButton.image = UIImage(systemName: idea.liked ? "heart.fill" : "heart")
+        }
         videoView.setCollectionViewLayout(generateLayout(), animated: true)
     }
     
@@ -56,6 +60,10 @@ class ViewIdea: UIViewController {
         
         likeButton.image = UIImage(systemName: imageName)
         sender.image = UIImage(systemName: imageName)
+        idea?.liked = isChecked
+        if let updatedIdea = idea {
+            onLikeStatusChanged?(updatedIdea)
+        }
     }
     
     func generateLayout() -> UICollectionViewLayout {
@@ -89,7 +97,7 @@ class ViewIdea: UIViewController {
     }
 }
 
-extension ViewIdea: UICollectionViewDataSource {
+extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
             return video.count
         }
@@ -111,4 +119,41 @@ extension ViewIdea: UICollectionViewDataSource {
         headerView.configureHeader(text: "Trending Videos")
         return headerView
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedVideo = video[indexPath.item]
+
+        // Assuming your Video model has a property: video.url or video.link
+        guard let url = URL(string: selectedVideo.link) else {
+            print("Invalid URL")
+            return
+        }
+
+        let safariVC = SFSafariViewController(url: url)
+        present(safariVC, animated: true)
+    }
+//    func extractYouTubeID(from url: String) -> String? {
+//        guard let url = URL(string: url) else { return nil }
+//        
+//        // case: https://youtu.be/VIDEOID?si=XXXX
+//        if url.host?.contains("youtu.be") == true {
+//            return url.pathComponents.last // strips query automatically
+//        }
+//        
+//        // case: https://www.youtube.com/watch?v=VIDEOID
+//        if url.host?.contains("youtube.com") == true {
+//            let components = URLComponents(string: url.absoluteString)
+//            return components?
+//                .queryItems?
+//                .first(where: { $0.name == "v" })?
+//                .value
+//        }
+//
+//        return nil
+//    }
+//    func youtubeThumbnailURL(from url: String) -> URL? {
+//        guard let id = extractYouTubeID(from: url) else { return nil }
+//        return URL(string: "https://img.youtube.com/vi/\(id)/hqdefault.jpg")
+//    }
+
 }

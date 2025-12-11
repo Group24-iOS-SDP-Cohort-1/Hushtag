@@ -49,7 +49,7 @@ struct Idea: Codable, Identifiable {
     let script: String
     let hashtag: [String]
     let videos: [Video]
-    let liked: Bool
+    var liked: Bool
     let tag: String
     let thumbnail: String
 
@@ -63,6 +63,7 @@ struct Video: Codable {
     let url: String
     let videoTitle: String
     let views: String
+    let link: String
 }
 
 extension IdeaResponse {

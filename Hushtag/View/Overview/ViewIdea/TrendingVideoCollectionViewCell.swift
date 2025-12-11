@@ -20,7 +20,7 @@ class TrendingVideoCollectionViewCell: UICollectionViewCell {
     func configureVideo(video: Video) {
         imageView.image = UIImage(named: video.url)
         titleLabel.text = video.videoTitle
-        titleLabel.numberOfLines = 0
+        titleLabel.numberOfLines = 2
         viewsLabel.text = "\(video.views) views"
     }
 
