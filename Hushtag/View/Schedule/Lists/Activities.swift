@@ -11,6 +11,10 @@ class Activities: UIViewController {
     var tasks: [Task]?
     var posts: [Post]?
     var deals: [Deal]?
+    var onTasksUpdated: (([Task]) -> Void)?
+    var onDealsUpdated: (([Deal]) -> Void)?
+    var onPostsUpdated: (([Post]) -> Void)?
+
 
     @IBOutlet weak var listingView: UITableView!
     
@@ -72,6 +76,7 @@ extension Activities: UITableViewDataSource, UITableViewDelegate{
             let cell = tableView.dequeueReusableCell(withIdentifier: "taskCell", for: indexPath) as! TasksTableViewCell
             guard let task = tasks?[indexPath.row] else { return UITableViewCell() }
             cell.configureCell(task, nil, nil)
+            cell.indexPath = indexPath
             cell.delegate = self
             return cell
 
@@ -79,6 +84,7 @@ extension Activities: UITableViewDataSource, UITableViewDelegate{
             let cell = tableView.dequeueReusableCell(withIdentifier: "taskCell", for: indexPath) as! TasksTableViewCell
             guard let post = posts?[indexPath.row] else { return UITableViewCell() }
             cell.configureCell(nil, nil, post)
+            cell.indexPath = indexPath
             cell.delegate = self
             return cell
 
@@ -86,6 +92,7 @@ extension Activities: UITableViewDataSource, UITableViewDelegate{
             let cell = tableView.dequeueReusableCell(withIdentifier: "taskCell", for: indexPath) as! TasksTableViewCell
             guard let deal = deals?[indexPath.row] else { return UITableViewCell() }
             cell.configureCell(nil, deal, nil)
+            cell.indexPath = indexPath
             cell.delegate = self
             return cell
 
@@ -112,4 +119,32 @@ extension Activities: TasksTableViewCellDelegate {
 
         present(modal, animated: true)
     }
+    func didUpdateCompletion(at indexPath: IndexPath, task: Task?, deal: Deal?, post: Post?) {
+        switch category {
+        case "Tasks":
+            if let updated = task {
+                tasks?[indexPath.row] = updated
+                onTasksUpdated?(tasks ?? [])
+            }
+            
+        case "Posts":
+            if let updated = post {
+                posts?[indexPath.row] = updated
+                onPostsUpdated?(posts ?? [])
+            }
+            
+//        case "Deals":
+//            if let updated = deal {
+//                deals?[indexPath.row] = updated
+//                onDealsUpdated?(deals ?? [])
+//            }
+            
+        default: break
+        }
+
+        listingView.reloadRows(at: [indexPath], with: .automatic)
+    }
+
+
+
 }

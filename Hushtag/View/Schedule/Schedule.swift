@@ -36,14 +36,21 @@ class Schedule: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         let taskCount = tasks?.count ?? 0
         let dealCount = deals?.count ?? 0
         let postCount = posts?.count ?? 0
 
+        let completedTaskCount = completedTasks.count
+        let completedDealCount = completedDeals.count
+        let completedPostCount = completedPosts.count
+
+        let totalCompleted = completedTaskCount + completedDealCount + completedPostCount
+        let totalActivities = taskCount + dealCount + postCount
+
         activities = [
-            ("All", taskCount + dealCount + postCount, "tray.circle.fill"),
-            ("Completed", completedTasks.count + completedDeals.count + completedPosts.count, "checkmark.circle.fill")
+            ("All", totalActivities, "tray.circle.fill"),
+            ("Completed", totalCompleted, "checkmark.circle.fill")
         ]
 
         lists = [
@@ -51,7 +58,7 @@ class Schedule: UIViewController {
             ("Deals", dealCount),
             ("Posts", postCount)
         ]
-        
+
         activitiesView.setCollectionViewLayout(generateLayout(), animated: true)
         activitiesView.dataSource = self
         activitiesView.delegate = self
@@ -59,12 +66,10 @@ class Schedule: UIViewController {
         listView.delegate = self
         listView.register(UINib(nibName: "listsCell", bundle: nil), forCellReuseIdentifier: "listCell")
     }
-    func navigateToActivitiesStoryboard() {
-        performSegue(withIdentifier: "GoToActivitiesSegue", sender: self)
-        
-//        let vc = storyboard?.instantiateViewController(withIdentifier: "Activities") as! Activities
-//            navigationController?.pushViewController(vc, animated: true)
-        
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        refreshCounts()
     }
 
 }
@@ -110,21 +115,67 @@ extension Schedule: UITableViewDataSource, UITableViewDelegate {
            let category = sender as? String {
 
             vc.category = category
-            
+
             switch category {
             case "Tasks":
                 vc.tasks = tasks ?? []
+                vc.onTasksUpdated = { [weak self] updatedTasks in
+                    self?.tasks = updatedTasks
+                    self?.refreshCounts()
+                }
+
             case "Deals":
                 vc.deals = deals ?? []
+                vc.onDealsUpdated = { [weak self] updatedDeals in
+                    self?.deals = updatedDeals
+                    self?.refreshCounts()
+                }
+
             case "Posts":
                 vc.posts = posts ?? []
+                vc.onPostsUpdated = { [weak self] updatedPosts in
+                    self?.posts = updatedPosts
+                    self?.refreshCounts()
+                }
+
             default:
                 break
             }
         }
     }
+    
+    func refreshCounts() {
+
+        let taskCount = tasks?.count ?? 0
+        let dealCount = deals?.count ?? 0
+        let postCount = posts?.count ?? 0
+
+        let completedTaskCount = tasks?.filter { $0.isCompleted }.count ?? 0
+        let completedDealCount = deals?.filter { $0.deliverable.allSatisfy { $0.isCompleted } }.count ?? 0
+        let completedPostCount = posts?.filter { $0.isCompleted }.count ?? 0
+
+        let totalCompleted = completedTaskCount + completedDealCount + completedPostCount
+        let totalActivities = taskCount + dealCount + postCount
+
+        activities = [
+            ("All", totalActivities, "tray.circle.fill"),
+            ("Completed", totalCompleted, "checkmark.circle.fill")
+        ]
+
+        lists = [
+            ("Tasks", taskCount),
+            ("Deals", dealCount),
+            ("Posts", postCount)
+        ]
+
+        activitiesView.reloadData()
+        listView.reloadData()
+    }
+
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "GoToActivitiesSegue", sender: indexPath.row)
+        let category = lists[indexPath.row].0   // "Tasks" / "Deals" / "Posts"
+        performSegue(withIdentifier: "GoToActivitiesSegue", sender: category)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
