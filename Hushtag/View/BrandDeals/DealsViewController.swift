@@ -180,6 +180,7 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
     }
 }
 
+
 extension DealsViewController: DealsInfoDelegate {
     func dealsInfo(_ controller: DealsInfo, didUpdateDeal deal: Deal, at index: Int) {
         guard index >= 0 && index < deals.count else { return }

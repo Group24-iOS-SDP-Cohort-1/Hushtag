@@ -107,30 +107,63 @@ class DealsCollectionViewCell: UICollectionViewCell{
         }
     }
 
-        private func updateNextDeadline(_ deal: Deal) {
-            let isoFormatter = ISO8601DateFormatter()
-            isoFormatter.formatOptions = [.withInternetDateTime]
+    private func updateNextDeadline(_ deal: Deal) {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime]
 
-            let now = Date()
+        // 1) all pending deliverables
+        let pending = deal.deliverable.filter { !$0.isCompleted }
 
-            let deliverablesWithDates: [(Deliverable, Date)] = deal.deliverable.compactMap { item in
-                guard let dateString = item.deadline.date,
-                      let date = isoFormatter.date(from: dateString) else { return nil }
+        // No pending items -> show dashes
+        guard !pending.isEmpty else {
+            nextDeliverableLabel.text = "-"
+            deadlineValueLabel.text = "-"
+            return
+        }
+
+        // 2) Prefer pending items that have a valid date, choose the earliest date
+        var chosenDeliverable: Deliverable?
+        var chosenDate: Date?
+
+        let withDates: [(Deliverable, Date)] = pending.compactMap { item in
+            if let dateString = item.deadline.date,
+               let date = isoFormatter.date(from: dateString) {
                 return (item, date)
             }
+            return nil
+        }
 
-            let upcoming = deliverablesWithDates.filter { $0.1 >= now }
-            let chosen = upcoming.min { $0.1 < $1.1 } ??
-                         deliverablesWithDates.min { $0.1 < $1.1 }
-
-            if let (deliverable, date) = chosen {
-                nextDeliverableLabel.text = deliverable.name
-                deadlineValueLabel.text = formatDeadline(isoFormatter.string(from: date))
-            } else {
-                nextDeliverableLabel.text = "-"
-                deadlineValueLabel.text = "-"
+        if !withDates.isEmpty {
+            // earliest upcoming date (closest to now) — still works if some are past
+            chosenDate = withDates.map { $0.1 }.min()
+            if let cd = chosenDate {
+                chosenDeliverable = withDates.first { $0.1 == cd }?.0
             }
         }
+
+        // 3) fallback to first pending (preserve original order) if no dates present
+        if chosenDeliverable == nil {
+            chosenDeliverable = pending.first
+            chosenDate = nil
+            if let dateString = chosenDeliverable?.deadline.date,
+               let d = isoFormatter.date(from: dateString) {
+                chosenDate = d
+            }
+        }
+
+        // 4) update UI
+        if let deliverable = chosenDeliverable {
+            nextDeliverableLabel.text = deliverable.name
+            if let date = chosenDate {
+                deadlineValueLabel.text = formatDeadline(isoFormatter.string(from: date))
+            } else {
+                deadlineValueLabel.text = "-"
+            }
+        } else {
+            nextDeliverableLabel.text = "-"
+            deadlineValueLabel.text = "-"
+        }
+    }
 }
 
 
