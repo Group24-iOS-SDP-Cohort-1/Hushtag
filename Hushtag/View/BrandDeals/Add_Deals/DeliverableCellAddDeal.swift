@@ -81,10 +81,10 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
 
             // 3) delete button (x)
             let delBtn = UIButton(type: .system)
-            delBtn.setImage(UIImage(systemName: "minus.circle.fill"), for: .normal)
+            delBtn.setImage(UIImage(systemName: "minus.circle"), for: .normal)
             delBtn.tintColor = .systemRed
-            delBtn.widthAnchor.constraint(equalToConstant: 36).isActive = true
-            delBtn.heightAnchor.constraint(equalToConstant: 36).isActive = true
+            delBtn.widthAnchor.constraint(equalToConstant: 20).isActive = true
+            delBtn.heightAnchor.constraint(equalToConstant: 20).isActive = true
 
             // Make a horizontal row (text + date + delete)
             let row = UIStackView(arrangedSubviews: [tv, dateBtn, delBtn])
@@ -210,7 +210,7 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
                     while self.deliverableDates.count <= index { self.deliverableDates.append(nil) }
                     self.deliverableDates[index] = selected
                 }
-                senderButton.setTitle(self.shortDateString(from: selected), for: .normal)
+                senderButton.setTitle(nil, for: .normal)
                 senderButton.setImage(UIImage(systemName: "calendar"), for: .normal)
                 senderButton.tintColor = UIColor(red: 139/255, green: 92/255, blue: 246/255, alpha: 1)
             }))
