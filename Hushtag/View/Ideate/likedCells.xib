@@ -66,6 +66,7 @@
                 <outlet property="Description" destination="nsl-Iy-505" id="qpg-xX-QDa"/>
                 <outlet property="Hashtag" destination="KF2-Hd-dSW" id="DWZ-PD-8xU"/>
                 <outlet property="Title" destination="tU8-CR-0ZL" id="2xw-Tr-dfr"/>
+                <outlet property="draftScript" destination="ytE-xW-n3g" id="CDM-7r-pqH"/>
             </connections>
             <point key="canvasLocation" x="91.603053435114504" y="148.94366197183101"/>
         </collectionViewCell>

@@ -304,6 +304,7 @@ extension Ideate: UICollectionViewDataSource {
 
         let idea = ideas[indexPath.row]
         cell.configureCell(idea: idea)
+        cell.delegate = self
         return cell
     }
 
@@ -387,11 +388,32 @@ extension Ideate: UICollectionViewDelegate {
             performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
 
         //case 1:
-//            let idea = ideas[indexPath.row]
-//            performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
+        //let idea = ideas[indexPath.row]
+        //performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
 
         default:
             return
         }
     }
+
+
+    }
+
+extension Ideate: LikedCellDelegate {
+
+    func didTapDraftScript(for idea: Idea) {
+
+        let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
+        guard let chatVC = storyboard.instantiateViewController(
+            withIdentifier: "Chatbot"
+        ) as? Chatbot else { return }
+
+        // Pass the idea script text
+        chatVC.autoSendMessage = "script"   // <— add this property in Chatbot
+
+        navigationController?.pushViewController(chatVC, animated: true)
+    }
 }
+
+
+
