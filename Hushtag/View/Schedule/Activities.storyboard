@@ -85,7 +85,6 @@
                         <barButtonItem key="rightBarButtonItem" title="Item" image="plus" catalog="system" id="UDT-Mw-Ou3">
                             <connections>
                                 <action selector="buttonPressed:" destination="Y6W-OH-hqX" id="Jnu-8S-JYp"/>
-                                <segue destination="l9C-mQ-l1v" kind="presentation" identifier="goToAddStuff" id="zCM-cP-dsB"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -103,11 +102,11 @@
             <objects>
                 <viewController storyboardIdentifier="AddViewController" id="l9C-mQ-l1v" customClass="AddViewController" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="bUA-8F-HLh">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="793"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="u06-W2-mW3">
-                                <rect key="frame" x="0.0" y="30" width="393" height="688"/>
+                                <rect key="frame" x="0.0" y="148" width="393" height="561"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="fieldCell" rowHeight="183" id="Sxh-4d-wvI" customClass="FieldTableViewCell" customModule="Hushtag" customModuleProvider="target">
@@ -154,7 +153,7 @@
                                 </prototypes>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vxq-81-ceh">
-                                <rect key="frame" x="146" y="758" width="101" height="35"/>
+                                <rect key="frame" x="146" y="749" width="101" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Submit"/>
                                 <connections>
