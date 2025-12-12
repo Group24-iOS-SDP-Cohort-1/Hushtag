@@ -42,14 +42,21 @@ class Activities: UIViewController {
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "goToAddStuff" {
-            let vc = segue.destination as! AddViewController
-            vc.category = category
-            if category == "Tasks" {
-                vc.tasks = tasks
-            } else if category == "Deals" {
-                vc.deals = deals
-            } else if category == "Posts" {
-                vc.post = posts
+            // If AddViewController is embedded in a UINavigationController when presented modally,
+            // you might need to get topViewController
+            if let nav = segue.destination as? UINavigationController,
+               let vc = nav.topViewController as? AddViewController {
+                vc.category = category
+                vc.delegate = self
+                if category == "Tasks" { vc.tasks = tasks }
+                else if category == "Deals" { vc.deals = deals }
+                else if category == "Posts" { vc.post = posts }
+            } else if let vc = segue.destination as? AddViewController {
+                vc.category = category
+                vc.delegate = self
+                if category == "Tasks" { vc.tasks = tasks }
+                else if category == "Deals" { vc.deals = deals }
+                else if category == "Posts" { vc.post = posts }
             }
         }
     }
@@ -147,4 +154,27 @@ extension Activities: TasksTableViewCellDelegate {
 
 
 
+}
+
+extension Activities: AddViewControllerDelegate {
+    func addViewController(_ controller: AddViewController, didAddTask task: Task) {
+        if tasks == nil { tasks = [] }
+        tasks?.append(task)
+        listingView.reloadData()
+        onTasksUpdated?(tasks ?? [])
+    }
+
+    func addViewController(_ controller: AddViewController, didAddDeal deal: Deal) {
+        if deals == nil { deals = [] }
+        deals?.append(deal)
+        listingView.reloadData()
+        onDealsUpdated?(deals ?? [])
+    }
+
+    func addViewController(_ controller: AddViewController, didAddPost post: Post) {
+        if posts == nil { posts = [] }
+        posts?.append(post)
+        listingView.reloadData()
+        onPostsUpdated?(posts ?? [])
+    }
 }
