@@ -12,8 +12,9 @@ class DealsViewController: UIViewController {
     @IBOutlet weak var segmentControl: UISegmentedControl!
     @IBOutlet weak var collectionView: UICollectionView!
 
+
     
-   
+   var selected_Deal : Deal?
     var dealResponse = DealResponse()
     var deals: [Deal] = []
     var completedDeals: [Deal] {
@@ -46,11 +47,9 @@ class DealsViewController: UIViewController {
 
        deals = dealResponse.deals
         print(deals.count)
-
+        collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
-//        collectionView.clipsToBounds = false
-        
         segmentControl.selectedSegmentIndex = 0
         
         selectedSegmentIndex = 0
@@ -73,6 +72,10 @@ class DealsViewController: UIViewController {
 
     @IBAction func segmentedAction(_ sender: UISegmentedControl) {
         selectedSegmentIndex = sender.selectedSegmentIndex
+            
+            // update layout for new tab (different estimated height)
+            collectionView.setCollectionViewLayout(generateLayout(), animated: false)
+            
             collectionView.reloadData()
     }
     
@@ -81,38 +84,46 @@ class DealsViewController: UIViewController {
             UINib(nibName: "DealsCollectionViewCell", bundle: nil),
             forCellWithReuseIdentifier: "ongoing_deal_cell"
         )
-        collectionView.register(
-            UINib(nibName: "CompletedDealsCollectionViewCell", bundle: nil),
-            forCellWithReuseIdentifier: "completed_deal_cell"
-        )
     }
 
     // MARK: - Layout
     func generateLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { sectionIndex, environment in
+        return UICollectionViewCompositionalLayout { [weak self] _, _ in
+
+            // 0 = Ongoing, 1 = Completed
+            let isCompleted = (self?.selectedSegmentIndex == 1)
+
+            let estimatedHeight: CGFloat = isCompleted ? 100 : 200
 
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .estimated(200)
+                heightDimension: .estimated(estimatedHeight)
             )
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
             let groupSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .estimated(200) // change to .absolute(160) to test fixed height
+                heightDimension: .estimated(estimatedHeight)
             )
-            let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
+            let group = NSCollectionLayoutGroup.vertical(
+                layoutSize: groupSize,
+                subitems: [item]
+            )
 
             let section = NSCollectionLayoutSection(group: group)
             section.interGroupSpacing = 7.5
-            section.contentInsets = NSDirectionalEdgeInsets(top: 7.5, leading: 0, bottom: 7.5, trailing: 0)
-
+            section.contentInsets = NSDirectionalEdgeInsets(
+                top: 7.5,
+                leading: 0,
+                bottom: 7.5,
+                trailing: 0
+            )
             return section
         }
     }
 }
 
-extension DealsViewController: UICollectionViewDataSource {
+extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
@@ -123,25 +134,65 @@ extension DealsViewController: UICollectionViewDataSource {
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
         let deal = displayedDeals[indexPath.item]
+        let isCompletedTab = (selectedSegmentIndex == 1)
 
-        if selectedSegmentIndex == 0 {
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "ongoing_deal_cell",
-                for: indexPath
-            ) as! DealsCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "ongoing_deal_cell",
+            for: indexPath
+        ) as! DealsCollectionViewCell
 
-            cell.configure(with: deal)
-            return cell
+        cell.configure(with: deal, isCompleted: isCompletedTab)
 
-        } else {
-            
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "completed_deal_cell",
-                for: indexPath
-            ) as! CompletedDealsCollectionViewCell
+        cell.onTap = { [weak self] in
+            self?.performSegue(withIdentifier: "info_page", sender: deal)
+        }
 
-            cell.configure(with: deal)
-            return cell
+        return cell
+    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let nav = segue.destination as? UINavigationController,
+               let addVC = nav.viewControllers.first as? AddDealsViewController {
+                addVC.delegate = self
+            } else if let addVC = segue.destination as? AddDealsViewController {
+                addVC.delegate = self
+            }
+        if segue.identifier == "info_page",
+           let deal = sender as? Deal,
+           let vc = segue.destination as? DealsInfo {
+
+            vc.deals = deal
+
+            // find index in the current deals array
+            if let idx = deals.firstIndex(where: { $0.id == deal.id }) {
+                vc.dealIndex = idx
+                vc.delegate = self
+            } else {
+                vc.dealIndex = -1
+            }
+
+            if let ideaId = deal.selectedIdeaIndex {
+                let ideaResponse = IdeaResponse()
+                vc.selectedIdea = ideaResponse.ideas.first { $0.id == ideaId }
+            } else {
+                vc.selectedIdea = nil
+            }
+        }
+    }
+}
+
+
+extension DealsViewController: DealsInfoDelegate {
+    func dealsInfo(_ controller: DealsInfo, didUpdateDeal deal: Deal, at index: Int) {
+        guard index >= 0 && index < deals.count else { return }
+        deals[index] = deal
+        collectionView.reloadData()
+    }
+}
+extension DealsViewController: AddDealsDelegate {
+    func addDealsViewController(_ controller: AddDealsViewController, didCreateDeal deal: Deal) {
+        DispatchQueue.main.async {
+            self.deals.append(deal)
+            self.collectionView.reloadData()
         }
     }
 }

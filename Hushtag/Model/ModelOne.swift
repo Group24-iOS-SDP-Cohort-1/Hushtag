@@ -249,7 +249,7 @@ struct DealResponse: Codable {
 struct Deal: Codable, Identifiable {
     let id = UUID()
     let name: String
-    let deliverable: [Deliverable]
+    var deliverable: [Deliverable]
     let platform: [String]
     let phone: String
     let email: String
@@ -265,7 +265,7 @@ struct Deal: Codable, Identifiable {
 struct Deliverable: Codable {
     let name: String
     let deadline: Deadline
-    let isCompleted : Bool
+    var isCompleted : Bool
 }
 
 struct Deadline: Codable {

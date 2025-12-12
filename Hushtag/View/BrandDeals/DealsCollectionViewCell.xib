@@ -20,24 +20,25 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rRV-kh-PPe">
                         <rect key="frame" x="12" y="8" width="409" height="192"/>
                         <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="lXL-yG-jIp">
+                                <rect key="frame" x="81" y="16" width="258.33333333333331" height="160"/>
+                            </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Owz-I1-BGo">
-                                <rect key="frame" x="16" y="15" width="371" height="24"/>
+                                <rect key="frame" x="16" y="15" width="49" height="24"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevron.right" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="q3E-KC-xn3">
-                                <rect key="frame" x="375" y="18" width="20" height="18.333333333333329"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="22" id="80p-9L-7li"/>
-                                    <constraint firstAttribute="width" constant="20" id="q2f-p7-dq5"/>
-                                </constraints>
-                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="05H-Cd-Uog">
+                                <rect key="frame" x="355.33333333333331" y="10" width="39.666666666666686" height="34.333333333333336"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="chevron.right" catalog="system"/>
+                            </button>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="wGU-3N-tqP">
-                                <rect key="frame" x="16" y="54.999999999999993" width="377" height="64.333333333333314"/>
+                                <rect key="frame" x="16" y="54.999999999999993" width="377" height="69.333333333333314"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="v0V-np-DmK">
-                                        <rect key="frame" x="0.0" y="10.666666666666675" width="90" height="43.333333333333343"/>
+                                        <rect key="frame" x="0.0" y="13.000000000000004" width="90" height="43.333333333333343"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="Iv4-Iz-gvC">
                                                 <rect key="frame" x="0.0" y="0.0" width="71.666666666666671" height="20"/>
@@ -67,7 +68,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="VaW-KI-t3c">
-                                        <rect key="frame" x="120" y="10.000000000000004" width="114.66666666666669" height="44.333333333333343"/>
+                                        <rect key="frame" x="120" y="12.666666666666675" width="114.66666666666669" height="44.333333333333343"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="xUf-T8-rN3">
                                                 <rect key="frame" x="0.0" y="0.0" width="91.666666666666671" height="20"/>
@@ -97,7 +98,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="pen-gj-wZL">
-                                        <rect key="frame" x="264.66666666666669" y="10.666666666666675" width="112.33333333333331" height="43.333333333333343"/>
+                                        <rect key="frame" x="264.66666666666669" y="13.000000000000004" width="112.33333333333331" height="43.333333333333343"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="xTD-7d-4Th">
                                                 <rect key="frame" x="0.0" y="0.0" width="77.333333333333329" height="20"/>
@@ -148,17 +149,20 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="Szb-d9-kc0" firstAttribute="top" secondItem="wGU-3N-tqP" secondAttribute="bottom" constant="20" id="2Zr-PK-CgR"/>
-                            <constraint firstItem="q3E-KC-xn3" firstAttribute="centerY" secondItem="Owz-I1-BGo" secondAttribute="centerY" id="3X4-tE-nhe"/>
+                            <constraint firstItem="lXL-yG-jIp" firstAttribute="top" secondItem="rRV-kh-PPe" secondAttribute="top" constant="16" id="15r-ir-K5I"/>
+                            <constraint firstItem="Szb-d9-kc0" firstAttribute="top" secondItem="wGU-3N-tqP" secondAttribute="bottom" constant="15" id="1bm-6G-Wve"/>
+                            <constraint firstItem="lXL-yG-jIp" firstAttribute="leading" secondItem="Owz-I1-BGo" secondAttribute="trailing" constant="16" id="2OQ-Bq-DQ4"/>
+                            <constraint firstAttribute="bottom" secondItem="lXL-yG-jIp" secondAttribute="bottom" constant="16" id="7Jk-1P-FBU"/>
                             <constraint firstItem="Owz-I1-BGo" firstAttribute="top" secondItem="rRV-kh-PPe" secondAttribute="top" constant="15" id="HPF-Jz-jSG"/>
-                            <constraint firstItem="Owz-I1-BGo" firstAttribute="trailing" secondItem="q3E-KC-xn3" secondAttribute="trailing" constant="-8" id="IHs-zE-ufE"/>
                             <constraint firstAttribute="bottom" secondItem="Szb-d9-kc0" secondAttribute="bottom" constant="15" id="M36-J5-LNY"/>
                             <constraint firstItem="Szb-d9-kc0" firstAttribute="leading" secondItem="rRV-kh-PPe" secondAttribute="leading" constant="16" id="Ojc-LS-LHx"/>
-                            <constraint firstAttribute="trailing" secondItem="q3E-KC-xn3" secondAttribute="trailing" constant="14" id="SXi-BX-vAF"/>
                             <constraint firstAttribute="trailing" secondItem="wGU-3N-tqP" secondAttribute="trailing" constant="16" id="W1Y-b2-wNz"/>
                             <constraint firstItem="wGU-3N-tqP" firstAttribute="top" secondItem="Owz-I1-BGo" secondAttribute="top" constant="40" id="Wmg-dV-Au8"/>
+                            <constraint firstItem="05H-Cd-Uog" firstAttribute="centerY" secondItem="Owz-I1-BGo" secondAttribute="centerY" id="ZEV-gs-h09"/>
+                            <constraint firstItem="05H-Cd-Uog" firstAttribute="leading" secondItem="lXL-yG-jIp" secondAttribute="trailing" constant="16" id="j17-1k-F4f"/>
                             <constraint firstItem="wGU-3N-tqP" firstAttribute="leading" secondItem="rRV-kh-PPe" secondAttribute="leading" constant="16" id="lYa-ll-AyH"/>
                             <constraint firstItem="Owz-I1-BGo" firstAttribute="leading" secondItem="rRV-kh-PPe" secondAttribute="leading" constant="16" id="pyg-l2-HSd"/>
+                            <constraint firstAttribute="trailing" secondItem="05H-Cd-Uog" secondAttribute="trailing" constant="14" id="rgw-qh-89P"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -172,11 +176,14 @@
             </constraints>
             <size key="customSize" width="351" height="227"/>
             <connections>
+                <outlet property="bottomStackView" destination="Szb-d9-kc0" id="mvX-Gq-joX"/>
                 <outlet property="captionLabel" destination="Fnn-ap-Vb4" id="T63-da-lPU"/>
                 <outlet property="cardView" destination="rRV-kh-PPe" id="yxh-1X-8oz"/>
-                <outlet property="chevronImageView" destination="q3E-KC-xn3" id="EOL-uy-Ats"/>
+                <outlet property="deadlineIconImageView" destination="DOM-hF-dJ1" id="Mv2-jG-UAY"/>
+                <outlet property="deadlineTitleLabel" destination="kas-YT-jGL" id="Ekb-aH-4JM"/>
                 <outlet property="deadlineValueLabel" destination="eqk-Oj-VaE" id="Tch-Na-ZgL"/>
                 <outlet property="deliverablesValueLabel" destination="XeP-Pa-b2M" id="1pT-pT-d4a"/>
+                <outlet property="navigationButton" destination="05H-Cd-Uog" id="PRQ-rJ-TI0"/>
                 <outlet property="nextDeliverableLabel" destination="SrZ-pQ-vg4" id="dzn-Z6-AnF"/>
                 <outlet property="paymentValueLabel" destination="3aC-0J-gdN" id="ZYL-VF-kYa"/>
                 <outlet property="titleLabel" destination="Owz-I1-BGo" id="Jvk-7R-hDj"/>
