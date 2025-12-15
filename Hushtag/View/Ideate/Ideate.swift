@@ -370,10 +370,33 @@ extension Ideate: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if isSearchMode {
-                    let idea = filteredIdeas[indexPath.row]
-                    performSegue(withIdentifier: "toScriptedIdeas", sender: idea)
-                    return
+            let idea = filteredIdeas[indexPath.row]
+
+            let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
+            guard let vc = storyboard.instantiateViewController(
+                withIdentifier: "IdeaVC"
+            ) as? ViewIdea else {
+                return
+            }
+
+            // Pass data
+            vc.idea = idea
+
+            // Optional callback for like update
+            vc.onLikeStatusChanged = { [weak self] updatedIdea in
+                guard let self = self else { return }
+                if let index = self.ideas.firstIndex(where: { $0.id == updatedIdea.id }) {
+                    self.ideas[index] = updatedIdea
                 }
+            }
+
+            // PRESENT (modal)
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .automatic
+            present(nav, animated: true)
+
+            return
+        }
 
         switch indexPath.section {
 
