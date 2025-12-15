@@ -12,6 +12,7 @@ class AnalysisCell: UICollectionViewCell {
     @IBOutlet weak var analysisValue: UILabel!
     @IBOutlet weak var analysisType: UILabel!
     
+    @IBOutlet weak var sfSymbol: UIImageView!
     
     
     override func awakeFromNib() {
@@ -22,8 +23,41 @@ class AnalysisCell: UICollectionViewCell {
     
     
     func configureCell(value: String, type: String) {
-        analysisValue.text = value
+        var absoluteValue = value
+        
+        if absoluteValue.hasPrefix("-") {
+            absoluteValue.removeFirst()
+        }
+        
+        analysisValue.text = "\(absoluteValue)%"
+        if absoluteValue.isEmpty {
+            analysisValue.text = "--"
+        }
         analysisType.text = type
+        //analysisValue.text = value
+        
+        let rateValue = Double(value) ?? 0
+        
+        var symbolName = "minus.circle.fill"
+        var symbolColor: UIColor = .gray
+        if rateValue > 0 {
+            symbolName = "arrow.up.circle.fill"
+            symbolColor = .systemGreen
+        } else if rateValue < 0 {
+            symbolName = "arrow.down.circle.fill"
+            symbolColor = .systemRed
+        }
+        
+        let config = UIImage.SymbolConfiguration(pointSize: 14, weight: .semibold)
+        sfSymbol.image = UIImage(systemName: symbolName, withConfiguration: config)
+        sfSymbol.tintColor = symbolColor
+        
+//        if type == "Followers" {
+//            sfSymbol.isHidden = true
+//            analysisValue.text = "\(absoluteValue)"
+//        }
+        
+        
         contentView.layer.cornerRadius = 12
         contentView.layer.masksToBounds = true
         layer.cornerRadius = 12

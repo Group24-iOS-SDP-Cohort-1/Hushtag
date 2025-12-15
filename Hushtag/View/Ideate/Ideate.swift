@@ -77,10 +77,11 @@ class Ideate: UIViewController{
     //button change logic on input basis
     @objc func textDidChange() {
         if textField.text?.isEmpty ?? true {
-                    isSearchMode = false
-                    filteredIdeas.removeAll()
-                    PlusCollectionView.reloadData()
-                }
+//                    isSearchMode = false
+//                    filteredIdeas.removeAll()
+//                    PlusCollectionView.reloadData()
+            resetToDefaultState()
+        }
     }
 
     @IBAction func cleartext(_ sender: UIButton) {
@@ -223,10 +224,12 @@ class Ideate: UIViewController{
 
                 if isSearchMode {
                     // CROSS tapped → reset original ideas
-                    isSearchMode = false
-                    filteredIdeas.removeAll()
-                    textField.text = ""
-                    button.setImage(UIImage(systemName: "sparkles"), for: .normal)
+//                    isSearchMode = false
+//                    filteredIdeas.removeAll()
+//                    textField.text = ""
+//                    button.setImage(UIImage(systemName: "sparkles"), for: .normal)
+                    resetToDefaultState()
+                    
                 } else {
                     // SPARKLE tapped → perform search
                     guard !text.isEmpty else { return }
@@ -238,14 +241,38 @@ class Ideate: UIViewController{
 
                     isSearchMode = true
                     button.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
+                    updateCollectionViewHeight()
+
+
+                    PlusCollectionView.setCollectionViewLayout(generateLayout(), animated: false)
+                    PlusCollectionView.reloadData()
                 }
 
 
-                updateCollectionViewHeight()
-
-
-                PlusCollectionView.setCollectionViewLayout(generateLayout(), animated: false)
-                PlusCollectionView.reloadData()
+//                updateCollectionViewHeight()
+//
+//
+//                PlusCollectionView.setCollectionViewLayout(generateLayout(), animated: false)
+//                PlusCollectionView.reloadData()
+    }
+    
+    
+    
+    func resetToDefaultState() {
+        isSearchMode = false
+        filteredIdeas.removeAll()
+        textField.text = "" // Clear the text
+        textField.resignFirstResponder() // Dismiss keyboard
+        
+        // Reset the button icon to Sparkle
+        button.setImage(UIImage(systemName: "sparkles"), for: .normal)
+        
+        // Reset height constraint to match full list
+        updateCollectionViewHeight()
+        
+        // Reset Layout to 2 sections
+        PlusCollectionView.setCollectionViewLayout(generateLayout(), animated: false)
+        PlusCollectionView.reloadData()
     }
 }
 extension Ideate: UICollectionViewDataSource {
