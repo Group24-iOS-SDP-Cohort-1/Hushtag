@@ -723,7 +723,7 @@
           "audienceEngagementRate": "6.7"
         }
       ],
-      "engagementRate": "4.8"
+      "engagementRate": ""
     },
     {
         "id": "3",
@@ -805,7 +805,7 @@
           "audienceEngagementRate": "7.2"
         }
       ],
-      "engagementRate": "7.3"
+      "engagementRate": "-7.3"
     }
   ],
   "instagram": [
@@ -889,7 +889,7 @@
           "audienceEngagementRate": "1.0"
         }
       ],
-      "engagementRate": "5.7"
+      "engagementRate": "-5.7"
     },
     {
         "id": "2",
@@ -1301,7 +1301,7 @@
           "audienceEngagementRate": "4.0"
         },
       ],
-      "engagementRate": "3.5"
+      "engagementRate": ""
     }
   ],
   "niche": [

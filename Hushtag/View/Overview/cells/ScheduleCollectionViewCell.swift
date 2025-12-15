@@ -26,16 +26,21 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         titleLabel.text = schedule.name
         titleLabel.numberOfLines = 0
         dayLabel.text = schedule.postingTime.day
-        if schedule.platform.first == "youtube" {
+        let platform = schedule.platform.first?.lowercased() ?? ""
+
+        if platform == "youtube" {
             platformLabel.text = "Youtube"
             platformLabel.textColor = UIColor(hex: "BD081C")
-        } else if schedule.platform.first == "instagram" {
+
+        } else if platform == "instagram" {
             platformLabel.text = "Instagram"
             platformLabel.textColor = UIColor(hex: "8134AF")
+
         } else {
             platformLabel.text = "Facebook"
             platformLabel.textColor = UIColor(hex: "1877F2")
         }
+
         contentView.layer.cornerRadius = 12
         contentView.layer.masksToBounds = true
         layer.cornerRadius = 12
