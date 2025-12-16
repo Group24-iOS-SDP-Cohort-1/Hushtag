@@ -20,7 +20,7 @@ class MainFieldCell: UITableViewCell {
                 textField.borderStyle = .none
                 textField.backgroundColor = .clear
                 
-                // Placeholder style (light gray)
+                // Placeholder style
                 textField.attributedPlaceholder = NSAttributedString(
                     string: textField.placeholder ?? "",
                     attributes: [.foregroundColor: UIColor.secondaryLabel]
