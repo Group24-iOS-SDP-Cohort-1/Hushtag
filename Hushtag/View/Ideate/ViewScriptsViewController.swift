@@ -17,10 +17,8 @@ class ViewScriptsViewController: UIViewController {
     var ideas: [Idea] = []
     var isSearchMode = false
     var filteredIdeas: [Idea] = []
-    
-    
+
     @IBOutlet weak var scriptsCollectionView: UICollectionView!
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,8 +83,6 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
 }
 
 func generateScriptsLayout(title: String) -> UICollectionViewLayout{
-    
-    
     //LAYOUT FOR VIEWING ALL SCRIPTS
     if title == "Your Scripts"{
         

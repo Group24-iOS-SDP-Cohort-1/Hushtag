@@ -75,8 +75,8 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="ChatLabel" destination="sSg-LK-k2x" id="hZE-6D-lg4"/>
-                                            <outlet property="ChatView" destination="fjw-g3-qaD" id="Mqx-1S-9oz"/>
+                                            <outlet property="chatLabel" destination="sSg-LK-k2x" id="hZE-6D-lg4"/>
+                                            <outlet property="chatView" destination="fjw-g3-qaD" id="Mqx-1S-9oz"/>
                                             <outlet property="leftSpacer" destination="4a3-qk-NU2" id="wFt-kO-KNY"/>
                                             <outlet property="rightSpacer" destination="azp-Yk-SFY" id="27Y-ut-vrL"/>
                                             <outlet property="starImage" destination="BN6-OL-TIP" id="NCq-uD-1tr"/>
@@ -166,8 +166,8 @@
                     </view>
                     <navigationItem key="navigationItem" title="Scripting" largeTitleDisplayMode="never" id="iNc-XK-pMm"/>
                     <connections>
-                        <outlet property="Enterbutton" destination="nYb-18-tvh" id="PNi-ge-sor"/>
-                        <outlet property="GenerateStack" destination="ThS-3f-STF" id="iOB-LH-WI8"/>
+                        <outlet property="enterbutton" destination="nYb-18-tvh" id="PNi-ge-sor"/>
+                        <outlet property="generateStack" destination="ThS-3f-STF" id="iOB-LH-WI8"/>
                         <outlet property="tableView" destination="SNm-vA-oEx" id="6TJ-DM-Idy"/>
                         <outlet property="textFieldView" destination="juk-cQ-ZRr" id="Wzg-iX-ikx"/>
                         <outlet property="textStack" destination="ygC-V6-BK5" id="C3v-DR-7Cj"/>
@@ -210,7 +210,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray5Color">
-            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.8980392157" green="0.8980392157" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

@@ -65,7 +65,6 @@
                                                                         <buttonConfiguration key="configuration" style="plain" title=""/>
                                                                         <connections>
                                                                             <action selector="buttonTapped:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="8Dl-dy-5k8"/>
-                                                                            <action selector="cleartext:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="7qT-ZT-iUE"/>
                                                                             <action selector="ideaSearch:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="T5O-Dd-Ffo"/>
                                                                         </connections>
                                                                     </button>
@@ -137,7 +136,7 @@
                                                                             <outlet property="plusLabel" destination="gwv-8l-2oV" id="M7m-4S-xyE"/>
                                                                         </connections>
                                                                     </collectionViewCell>
-                                                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="scripts_cell" id="D5Z-vq-nub" customClass="scriptsCell" customModule="Hushtag" customModuleProvider="target">
+                                                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="scripts_cell" id="D5Z-vq-nub" customClass="ScriptsCell" customModule="Hushtag" customModuleProvider="target">
                                                                         <rect key="frame" x="0.0" y="157" width="177" height="147"/>
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="g8n-yT-oyy">
@@ -181,8 +180,8 @@
                                                                         <connections>
                                                                             <outlet property="Description" destination="ln4-RV-Byn" id="kgH-IQ-LSM"/>
                                                                             <outlet property="Hashtag" destination="CfO-d4-OFO" id="yab-gV-ZcJ"/>
-                                                                            <outlet property="ScriptCell" destination="g8n-yT-oyy" id="pfw-1U-LDF"/>
                                                                             <outlet property="Title" destination="Xr1-uN-jBJ" id="W0K-mq-RGF"/>
+                                                                            <outlet property="scriptCell" destination="g8n-yT-oyy" id="pfw-1U-LDF"/>
                                                                         </connections>
                                                                     </collectionViewCell>
                                                                 </cells>
@@ -223,10 +222,10 @@
                     </view>
                     <navigationItem key="navigationItem" title="Ideate" id="Z17-7z-gvD"/>
                     <connections>
-                        <outlet property="ContentView" destination="Xp2-7f-412" id="fF2-jk-ZQn"/>
-                        <outlet property="PlusCollectionView" destination="eTR-6b-d0K" id="mM6-aw-emk"/>
-                        <outlet property="ScrollView" destination="G7B-JP-VVb" id="JNa-Y0-Bwx"/>
                         <outlet property="button" destination="Xc6-Ho-yOX" id="2g5-7H-tzh"/>
+                        <outlet property="contentView" destination="Xp2-7f-412" id="fF2-jk-ZQn"/>
+                        <outlet property="plusCollectionView" destination="eTR-6b-d0K" id="mM6-aw-emk"/>
+                        <outlet property="scrollView" destination="G7B-JP-VVb" id="JNa-Y0-Bwx"/>
                         <outlet property="textBoxView" destination="tBX-Ov-9z8" id="thu-EG-6aE"/>
                         <outlet property="textField" destination="T4b-Ys-4fv" id="Y0g-3h-CkA"/>
                         <segue destination="Yb8-13-5gt" kind="show" identifier="toScriptedIdeas" id="rsD-Te-pVV"/>

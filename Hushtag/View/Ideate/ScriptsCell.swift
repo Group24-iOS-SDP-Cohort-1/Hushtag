@@ -7,17 +7,17 @@
 
 import UIKit
 
-class scriptsCell: UICollectionViewCell {
+class ScriptsCell: UICollectionViewCell {
   
     @IBOutlet weak var Title: UILabel!
 
-    @IBOutlet weak var ScriptCell: UIView!
+    @IBOutlet weak var scriptCell: UIView!
 
     @IBOutlet weak var Description: UILabel!
 
     @IBOutlet weak var Hashtag: UILabel!
 
-    @IBOutlet weak var ContentView: UIView!
+    @IBOutlet weak var View: UIView!
 
     override func awakeFromNib() {
         super.awakeFromNib()
