@@ -1,7 +1,7 @@
 import UIKit
 
 protocol AddDealsDelegate: AnyObject {
-    /// Called when AddDealsViewController has created a new deal
+    // Call when new deal is created
     func addDealsViewController(_ controller: AddDealsViewController, didCreateDeal deal: Deal)
 }
 
@@ -24,7 +24,6 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         "Description"
     ]
 
-    // Start with 2 deliverable fields (you asked to show 2)
     var deliverablePlaceholders = [
         "Deliverable 1",
         "Deliverable 2"
@@ -46,7 +45,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
     @objc private func closeTapped() { dismiss(animated: true) }
 
     @objc private func doneTapped() {
-        // 1) read main fields (Brand name etc)
+        
         var fieldValues: [String] = []
         for row in 0..<fieldPlaceholders.count {
             let ip = IndexPath(row: row, section: Section.mainFields.rawValue)
@@ -54,7 +53,6 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             fieldValues.append(cell?.textField.text ?? "")
         }
 
-        // Map fields (ensure indexes match placeholders array)
         let brandName   = fieldValues.safe(0) ?? ""
         let platformRaw = fieldValues.safe(1) ?? ""
         let payRaw      = fieldValues.safe(2) ?? ""
@@ -62,7 +60,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         let email       = fieldValues.safe(4) ?? ""
         let description = fieldValues.safe(5) ?? ""
 
-        // 2) read deliverable cell
+
         let delIP = IndexPath(row: 0, section: Section.deliverables.rawValue)
         guard let delCell = tableView.cellForRow(at: delIP) as? DeliverableCellAddDeal else {
             dismiss(animated: true); return
@@ -71,7 +69,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         let texts = delCell.deliverablesText
         let dates = delCell.deliverablesDates
 
-        // 3) map into your model
+        
         var deliverables: [Deliverable] = []
         let isoFormatter = ISO8601DateFormatter()
         isoFormatter.formatOptions = [.withInternetDateTime]
@@ -94,10 +92,10 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             }
         }
 
-        // 4) build Deal (keep missing fields simple)
+       
         let platforms = platformRaw.isEmpty ? [] : platformRaw.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
 
-        // parse payment safely (remove commas/spaces)
+        
         let sanitizedPay = payRaw.replacingOccurrences(of: ",", with: "").trimmingCharacters(in: .whitespaces)
         let paymentValue = Int(sanitizedPay) ?? 0
 
@@ -111,21 +109,16 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             payment: paymentValue,
             selectedIdeaIndex: nil
         )
-
-        // save locally
+        
         self.InputDeal = deal
-
-        // 1) Inform delegate (preferred)
         delegate?.addDealsViewController(self, didCreateDeal: deal)
-
-        // 2) Also dismiss self (presenting VC or flow may append as well)
         dismiss(animated: true)
     }
 
-    // MARK: - TableView DataSource
+  
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return Section.allCases.count   // 2 sections
+        return Section.allCases.count
     }
 
     override func tableView(_ tableView: UITableView,
@@ -169,7 +162,6 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         }
     }
 
-    // MARK: - DeliverableCellAddDealDelegate
 
     func deliverableCellDidTapAdd(_ cell: DeliverableCellAddDeal) {
         let nextNumber = deliverablePlaceholders.count + 1
@@ -178,14 +170,13 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 
         guard let indexPath = tableView.indexPath(for: cell) else { return }
 
-        // 1) Update the cell’s stack
+      
         cell.addDeliverableField(placeholder: placeholder)
 
-        // 2) Ask the table to recalc that row height and its contentSize
+        // recalculating the size
         tableView.beginUpdates()
         tableView.endUpdates()
 
-        // 3) Optionally scroll so the new field is visible
         tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
     }
 
@@ -195,13 +186,12 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             deliverablePlaceholders.remove(at: index)
         }
 
-        // force table to recalc sizing for that row
+        // recalculating the size
         tableView.beginUpdates()
         tableView.endUpdates()
     }
 }
 
-// MARK: - Safe array subscript helper
 extension Array {
     func safe(_ index: Int) -> Element? {
         return (index >= 0 && index < count) ? self[index] : nil
