@@ -16,11 +16,33 @@ class IdeateSearchHeader: UICollectionReusableView {
 
     @IBOutlet weak var searchButton: UIButton!
 
-    var onSearchTriggered: ((String) -> Void)?
+    var onButtonTapped: ((String) -> Void)?
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        textView.layer.cornerRadius = 10
+        textView.layer.borderWidth = 0.8
+        textView.layer.borderColor = UIColor.accent.cgColor
 
-    }
-    
-}
+        // Button icon
+        searchButton.tintColor = .accent
+        searchButton.setImage(UIImage(systemName: "sparkles"), for: .normal)
+
+        // TextField placeholder
+        textField.attributedPlaceholder = NSAttributedString(
+                   string: "Enter your keyword",
+                   attributes: [NSAttributedString.Key.foregroundColor: UIColor.accent]
+               )
+
+        textField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
+           }
+
+           @objc func textDidChange() {
+
+           }
+
+           @IBAction func buttonTapped(_ sender: UIButton) {
+               let text = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+               onButtonTapped?(text)
+           }
+       }

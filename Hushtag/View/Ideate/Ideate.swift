@@ -116,14 +116,14 @@ class Ideate: UIViewController{
 
             if sectionIndex == 0 {
                 let itemSize = NSCollectionLayoutSize(
-                    widthDimension: .absolute(180),
-                    heightDimension: .absolute(160)
+                    widthDimension: .fractionalWidth(0.5),
+                    heightDimension: .estimated(160)
                 )
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
                 let groupSize = NSCollectionLayoutSize(
-                    widthDimension: .absolute(180),
-                    heightDimension: .absolute(160)
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(160)
                 )
                 let group = NSCollectionLayoutGroup.horizontal(
                     layoutSize: groupSize,
@@ -143,14 +143,15 @@ class Ideate: UIViewController{
             }
 
             let itemSize = NSCollectionLayoutSize(
-                widthDimension: .absolute(180),
-                heightDimension: .absolute(190)
+                widthDimension: .fractionalWidth(0.5),
+                heightDimension: .estimated(190)
             )
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
             let groupSize = NSCollectionLayoutSize(
-                widthDimension: .absolute(180),
-                heightDimension: .absolute(190)
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .estimated(190)
+
             )
             let group = NSCollectionLayoutGroup.horizontal(
                 layoutSize: groupSize,
