@@ -49,7 +49,6 @@ class DealsCollectionViewCell: UICollectionViewCell{
         cardView.layer.shadowOffset = CGSize(width: 0, height: 0)
         cardView.layer.shadowRadius = 6
 
-        // Chevron
     }
 
     func formatDeadline(_ isoString: String) -> String {
@@ -80,10 +79,8 @@ class DealsCollectionViewCell: UICollectionViewCell{
             bottomStackView.isHidden = true
             captionLabel.isHidden    = true
             nextDeliverableLabel.isHidden = true
-
-            deliverablesValueLabel.text = "\(completed)"
-
-            // deadline shows platform in completed tab
+            deliverablesValueLabel.textAlignment = .center
+            deliverablesValueLabel.text = "\(completed) / \(total)"
             deadlineValueLabel.text      = deal.platform.joined(separator: ", ")
             deadlineValueLabel.font      = paymentValueLabel.font
             deadlineValueLabel.textColor = paymentValueLabel.textColor
@@ -111,17 +108,16 @@ class DealsCollectionViewCell: UICollectionViewCell{
         let isoFormatter = ISO8601DateFormatter()
         isoFormatter.formatOptions = [.withInternetDateTime]
 
-        // 1) all pending deliverables
+        //pending deliverables
         let pending = deal.deliverable.filter { !$0.isCompleted }
 
-        // No pending items -> show dashes
+        //no pending items -> show dashes
         guard !pending.isEmpty else {
             nextDeliverableLabel.text = "-"
             deadlineValueLabel.text = "-"
             return
         }
 
-        // 2) Prefer pending items that have a valid date, choose the earliest date
         var chosenDeliverable: Deliverable?
         var chosenDate: Date?
 
@@ -134,14 +130,12 @@ class DealsCollectionViewCell: UICollectionViewCell{
         }
 
         if !withDates.isEmpty {
-            // earliest upcoming date (closest to now) — still works if some are past
             chosenDate = withDates.map { $0.1 }.min()
             if let cd = chosenDate {
                 chosenDeliverable = withDates.first { $0.1 == cd }?.0
             }
         }
 
-        // 3) fallback to first pending (preserve original order) if no dates present
         if chosenDeliverable == nil {
             chosenDeliverable = pending.first
             chosenDate = nil
@@ -151,7 +145,7 @@ class DealsCollectionViewCell: UICollectionViewCell{
             }
         }
 
-        // 4) update UI
+        //update UI
         if let deliverable = chosenDeliverable {
             nextDeliverableLabel.text = deliverable.name
             if let date = chosenDate {

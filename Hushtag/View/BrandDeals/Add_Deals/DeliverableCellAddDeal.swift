@@ -25,7 +25,7 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
         super.awakeFromNib()
         selectionStyle = .none
 
-                // Card look
+                // Card style
                 cardView.layer.cornerRadius = 16
                 cardView.layer.masksToBounds = true
                 cardView.layer.borderWidth = 0.5
@@ -38,13 +38,11 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
         for (i, tv) in deliverableTextViews.enumerated() {
 
             let newPlaceholder = "Deliverable \(i + 1)"
-
-            // If textView still shows placeholder text → update it
+            
             if tv.textColor == .secondaryLabel {
                 tv.text = newPlaceholder
             }
 
-            // Always update placeholder reference
             tv.accessibilityLabel = newPlaceholder
         }
     }
@@ -58,55 +56,47 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
             }
         }
 
-        /// Add a deliverable row (UITextView + date button + delete button)
+       
         func addDeliverableField(placeholder: String) {
-            // 1) multi-line text view
+            
             let tv = UITextView()
             tv.text = placeholder
-            tv.textColor = .secondaryLabel        // placeholder style
+            tv.textColor = .secondaryLabel
             tv.font = UIFont.systemFont(ofSize: 16)
-            //tv.isScrollEnabled = false            // auto-expand in stack
             tv.backgroundColor = .clear
             tv.accessibilityLabel = placeholder 
             tv.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
             tv.textContainerInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
             tv.delegate = self
 
-            // 2) date button (calendar icon)
             let dateBtn = UIButton(type: .system)
             dateBtn.setImage(UIImage(systemName: "calendar"), for: .normal)
             dateBtn.tintColor = .systemGray
             dateBtn.widthAnchor.constraint(equalToConstant: 44).isActive = true
             dateBtn.heightAnchor.constraint(equalToConstant: 44).isActive = true
 
-            // 3) delete button (x)
             let delBtn = UIButton(type: .system)
             delBtn.setImage(UIImage(systemName: "minus.circle"), for: .normal)
             delBtn.tintColor = .systemRed
             delBtn.widthAnchor.constraint(equalToConstant: 20).isActive = true
             delBtn.heightAnchor.constraint(equalToConstant: 20).isActive = true
 
-            // Make a horizontal row (text + date + delete)
             let row = UIStackView(arrangedSubviews: [tv, dateBtn, delBtn])
             row.axis = .horizontal
             row.alignment = .center
             row.distribution = .fill
             row.spacing = 8
 
-            // textview should expand, buttons hug
             tv.setContentHuggingPriority(.defaultLow, for: .horizontal)
             dateBtn.setContentHuggingPriority(.required, for: .horizontal)
             delBtn.setContentHuggingPriority(.required, for: .horizontal)
 
-            // Insert above the final arranged subview (assume last is the + button container)
             let index = max(stackView.arrangedSubviews.count - 1, 0)
             stackView.insertArrangedSubview(row, at: index)
 
-            // Save references in parallel arrays
             deliverableTextViews.append(tv)
             deliverableDates.append(nil)
 
-            // Tag & actions based on current index
             let currentIndex = deliverableTextViews.count - 1
             dateBtn.tag = currentIndex
             delBtn.tag = currentIndex
@@ -114,36 +104,27 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
             delBtn.addTarget(self, action: #selector(deleteTapped(_:)), for: .touchUpInside)
         }
 
-        // MARK: - Delete
-
     @objc private func deleteTapped(_ sender: UIButton) {
         let idx = sender.tag
         guard idx >= 0 && idx < deliverableTextViews.count else { return }
 
-        // remove row UI
         guard let row = sender.superview as? UIStackView else { return }
         stackView.removeArrangedSubview(row)
         row.removeFromSuperview()
 
-        // remove data
         deliverableTextViews.remove(at: idx)
         if idx < deliverableDates.count { deliverableDates.remove(at: idx) }
 
-        // retag buttons
         retagButtons()
 
-        // 🔥 NEW: renumber all placeholders
         renumberPlaceholders()
 
-        // notify VC
         delegate?.deliverableCell(self, didRemoveAt: idx)
     }
         private func retagButtons() {
             var currentIndex = 0
             for sub in stackView.arrangedSubviews {
-                // We expect rows to be UIStackView with (textView, dateBtn, delBtn)
                 guard let row = sub as? UIStackView else { continue }
-                // ensure row has at least an action button at index 1
                 if row.arrangedSubviews.count >= 2 {
                     if let dateBtn = row.arrangedSubviews.safe(1) as? UIButton {
                         dateBtn.tag = currentIndex
@@ -156,15 +137,12 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
             }
         }
 
-        // MARK: - Date Picker
-
         @objc private func dateButtonTapped(_ sender: UIButton) {
             let index = sender.tag
             showDatePicker(for: index, senderButton: sender)
         }
 
         private func showDatePicker(for index: Int, senderButton: UIButton) {
-            // Keep arrays in sync
             while deliverableDates.count < deliverableTextViews.count {
                 deliverableDates.append(nil)
             }
@@ -175,12 +153,10 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
                 datePicker.preferredDatePickerStyle = .inline
             }
 
-            // restore previously selected if any
             if index < deliverableDates.count, let existing = deliverableDates[index] {
                 datePicker.date = existing
             }
 
-            // Wrap picker into a VC so we can control size
             let contentVC = UIViewController()
             contentVC.view.addSubview(datePicker)
             datePicker.translatesAutoresizingMaskIntoConstraints = false
@@ -244,8 +220,6 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
             return df.string(from: date)
         }
 
-        // MARK: - Exposed values for parent VC
-
         var deliverablesText: [String] {
             deliverableTextViews.map { $0.text ?? "" }
         }
@@ -253,8 +227,6 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
         var deliverablesDates: [Date?] {
             deliverableDates
         }
-
-        // MARK: - UITextViewDelegate
 
         func textViewDidBeginEditing(_ textView: UITextView) {
             if textView.textColor == .secondaryLabel {
@@ -268,8 +240,6 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
             textView.sizeToFit()
             layoutIfNeeded()
         }
-
-        // MARK: - Helpers
 
         private func parentViewController() -> UIViewController? {
             var parentResponder: UIResponder? = self

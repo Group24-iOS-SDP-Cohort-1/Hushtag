@@ -35,7 +35,7 @@ class DealsViewController: UIViewController {
         }
     private var selectedSegmentIndex = 0
 
-        // deals that the collection view should show for current tab
+        // deals for current tab in segmented control
         var displayedDeals: [Deal] {
             return selectedSegmentIndex == 0 ? ongoingDeals : completedDeals
         }
@@ -56,13 +56,13 @@ class DealsViewController: UIViewController {
         let purpleColor = UIColor(red: 139/255, green: 92/255, blue: 246/255, alpha: 1)
         let grayColor = UIColor.darkGray
 
-        // Normal (not selected)
+        // Not selected color appearance
         segmentControl.setTitleTextAttributes([
             .foregroundColor: grayColor,
             .font: UIFont.systemFont(ofSize: 14, weight: .medium)
         ], for: .normal)
 
-        // Selected
+        // Selected color appearance
         segmentControl.setTitleTextAttributes([
             .foregroundColor: purpleColor,
             .font: UIFont.systemFont(ofSize: 14, weight: .semibold)
@@ -73,7 +73,7 @@ class DealsViewController: UIViewController {
     @IBAction func segmentedAction(_ sender: UISegmentedControl) {
         selectedSegmentIndex = sender.selectedSegmentIndex
             
-            // update layout for new tab (different estimated height)
+            // set the generateLayout function for the collection view
             collectionView.setCollectionViewLayout(generateLayout(), animated: false)
             
             collectionView.reloadData()
@@ -86,7 +86,6 @@ class DealsViewController: UIViewController {
         )
     }
 
-    // MARK: - Layout
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { [weak self] _, _ in
 
