@@ -13,27 +13,19 @@ class ScriptedIdeas: UIViewController {
 
     var idea: Idea?
 
-
-
     @IBOutlet weak var descriptionTitle: UILabel!
 
     @IBOutlet weak var Description: UILabel!
 
-
     @IBOutlet weak var scriptTitle: UILabel!
-
 
     @IBOutlet weak var imageView: UIImageView!
 
-
     @IBOutlet weak var imageStack: UIStackView!
-
 
     @IBOutlet weak var descriptionStack: UIStackView!
 
-
     @IBOutlet weak var scriptStack: UIStackView!
-
 
     @IBOutlet weak var popupButton: UIButton!
 
@@ -48,7 +40,6 @@ class ScriptedIdeas: UIViewController {
             script.text = "No idea received."
             return
         }
-
 
         // Navigation title
         let titleLabel = UILabel()
@@ -65,7 +56,6 @@ class ScriptedIdeas: UIViewController {
         // Description
         if idea.description.isEmpty {
             descriptionStack.isHidden = true
-
         } else {
             descriptionStack.isHidden = false
             descriptionTitle.text = "Description"
@@ -88,7 +78,7 @@ class ScriptedIdeas: UIViewController {
         // Hide by default
         scriptStack.isHidden = true
 
-        // Check if idea.script exists
+        // Checking if idea.script exists
         let scriptName = idea.script.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !scriptName.isEmpty else {
             return
@@ -110,7 +100,7 @@ class ScriptedIdeas: UIViewController {
                 documentAttributes: nil
             )
 
-            // Only show if the HTML actually has content
+            // Showing when the html has content
             if !attributed.string.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 script.attributedText = attributed
                 scriptTitle.text = "Script"
@@ -138,7 +128,6 @@ class ScriptedIdeas: UIViewController {
                 self.popupButton.setTitle(deal.name, for: .normal)
             }
         }
-
         popupButton.menu = UIMenu(title: "Select Brand", children: actions)
         popupButton.showsMenuAsPrimaryAction = true
     }

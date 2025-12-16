@@ -26,7 +26,7 @@ class ViewScriptsViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        
+
         navigationItem.title = pageTitle
         
         //ideas = ideaResponse.ideas

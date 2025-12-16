@@ -18,9 +18,7 @@ class ChatCell: UITableViewCell {
 
     @IBOutlet weak var rightSpacer: UIView!
 
-
     @IBOutlet weak var starImage: UIImageView!
-    
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -29,8 +27,6 @@ class ChatCell: UITableViewCell {
 
     }
 
-
-    
     func configure(with message: Message) {
         ChatLabel.text = message.text
         ChatLabel.numberOfLines = 0
@@ -42,27 +38,20 @@ class ChatCell: UITableViewCell {
                }
 
         if message.isUser {
-
             ChatView.backgroundColor = UIColor.accent
             ChatLabel.textColor = .white
             leftSpacer.isHidden = false
             rightSpacer.isHidden = true
-
                 } else {
-                    
                     ChatView.backgroundColor = UIColor.systemGray5
                     ChatLabel.textColor = .black
                     leftSpacer.isHidden = true
                     rightSpacer.isHidden = false
-
                 }
        }
 
-
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-
     }
 
 }

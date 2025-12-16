@@ -13,7 +13,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     @IBOutlet weak var tableView: UITableView!
 
-
     @IBOutlet weak var textView: UIView!
 
     @IBOutlet weak var textViewHeightConstraint: NSLayoutConstraint!
@@ -24,7 +23,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     @IBOutlet weak var Enterbutton: UIButton!
 
-    
     @IBOutlet weak var GenerateStack: UIStackView!
 
     var messages: [Message] = []
@@ -44,8 +42,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         "title": [],
         "description": []
     ]
-
-    
 
     let maxLines: CGFloat = 10
     let minLines: CGFloat = 3
@@ -107,14 +103,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
             cell.configure(with: messages[indexPath.row])
 
-            //to remove existing duplicates
-            //cell.contentView.gestureRecognizers?.forEach(cell.contentView.removeGestureRecognizer)
-
             let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
-            longPress.minimumPressDuration = 0.5 // half a second
+            longPress.minimumPressDuration = 0.5
             cell.contentView.addGestureRecognizer(longPress)
-            cell.contentView.tag = indexPath.row // store row in tag for refere
-
+            cell.contentView.tag = indexPath.row
             return cell
 
     }
@@ -131,9 +123,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
         let size = CGSize(width: textView.frame.width, height: .infinity)
             let estimatedSize = textView.sizeThatFits(size)
-
             let contentHeight = estimatedSize.height
-
 
         if contentHeight >= maxHeight {
             textViewHeightConstraint.constant = maxHeight
@@ -173,7 +163,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .lowercased()
 
-
         let output: String
         if let response = botDatabase[input] {
             output = response
@@ -198,24 +187,19 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             }
     }
 
-
     @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
 
         //to trigger action once the press begins
         guard gesture.state == .began else { return }
-
         //to get the view that we long pressed
         guard let cellView = gesture.view else { return }
         //to store the row the cell belongs to
         let row = cellView.tag
         //message object corresponsding to that row
         var message = messages[row]
-        
 
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
-
-    
            // Helper to add mark/unmark option
            func addMarkAction(type: String) {
                let isMarked = message.markType == type
@@ -283,7 +267,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
         // Send user message
         sendMessage(title)
-
         GenerateStack.isHidden = true
   }
 
@@ -302,15 +285,12 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         showScriptSuggestions(except: ["script"])
     }
 
-
     func sendAutoMessage(_ text: String) {
 
         messages.append(Message(text: text, isUser: true))
         tableView.reloadData()
-
         let indexPath = IndexPath(row: messages.count - 1, section: 0)
         tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.generateBotReply(for: text)
         }

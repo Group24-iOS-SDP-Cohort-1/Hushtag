@@ -12,6 +12,5 @@ class SuggestionCell: UIView {
 
     @IBOutlet weak var GenerateButton: UIButton!
 
-    
 
 }
