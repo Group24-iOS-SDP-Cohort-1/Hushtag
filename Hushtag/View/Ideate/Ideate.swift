@@ -226,8 +226,8 @@ class Ideate: UIViewController{
                     updateCollectionViewHeight()
 
 
-                    PlusCollectionView.setCollectionViewLayout(generateLayout(), animated: false)
-                    PlusCollectionView.reloadData()
+                    plusCollectionView.setCollectionViewLayout(generateLayout(), animated: false)
+                    plusCollectionView.reloadData()
                 }
 
 
@@ -253,8 +253,8 @@ class Ideate: UIViewController{
         updateCollectionViewHeight()
         
         // Reset Layout to 2 sections
-        PlusCollectionView.setCollectionViewLayout(generateLayout(), animated: false)
-        PlusCollectionView.reloadData()
+        plusCollectionView.setCollectionViewLayout(generateLayout(), animated: false)
+        plusCollectionView.reloadData()
     }
 }
 
