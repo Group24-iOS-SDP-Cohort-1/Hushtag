@@ -59,6 +59,8 @@ class Ideate: UIViewController{
         PlusCollectionView.isScrollEnabled = false
         ScrollView.isScrollEnabled = true
         PlusCollectionView.heightAnchor.constraint(equalToConstant: CGFloat(ideas.count * 160)).isActive = true
+        ScrollView.contentSize.width = ContentView.frame.width
+        ScrollView.contentSize.height = PlusCollectionView.frame.origin.y + PlusCollectionView.frame.height + 30
     }
 
     //button change logic on input basis
