@@ -218,6 +218,9 @@ class Ideate: UIViewController{
                 } else {
                     guard !text.isEmpty else { return }
 
+
+                    textField.resignFirstResponder()
+                    
                     filteredIdeas = ideas.filter { idea in
                         idea.trending.lowercased().contains(text.lowercased())
                     }
