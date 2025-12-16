@@ -29,7 +29,7 @@ class AnalysisCell: UICollectionViewCell {
             absoluteValue.removeFirst()
         }
         
-        analysisValue.text = "\(absoluteValue)%"
+        analysisValue.text = "\(absoluteValue)"
         if absoluteValue.isEmpty {
             analysisValue.text = "--"
         }
