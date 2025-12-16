@@ -36,8 +36,48 @@ class Activities: UIViewController {
                 self.title = "Activities"
         }
     }
+    
+    
     @IBAction func buttonPressed(_ sender: UIBarButtonItem) {
-        performSegue(withIdentifier: "goToAddStuff", sender: category)
+        guard let category = category else { return }
+
+            if category == "Deals" {
+                
+                let storyboard = UIStoryboard(name: "BrandDeals", bundle: nil)
+                guard let addDealsVC = storyboard.instantiateViewController(withIdentifier: "AddDealsViewController") as? AddDealsViewController else {
+                    return
+                }
+
+                // configure
+                addDealsVC.delegate = self
+                addDealsVC.InputDeal = nil
+                addDealsVC.title = "Add Deal"
+
+                // wrap so nav items appear
+                let nav = UINavigationController(rootViewController: addDealsVC)
+                nav.modalPresentationStyle = .automatic
+                present(nav, animated: true, completion: nil)
+                return
+            }
+
+            // For Tasks / Posts -> present AddViewController (reuse existing add VC)
+            let storyboard = UIStoryboard(name: "Activities", bundle: nil)
+            guard let addVC = storyboard.instantiateViewController(withIdentifier: "AddViewController") as? AddViewController else {
+                print("⚠️ Could not instantiate AddViewController - check Storyboard ID and storyboard name")
+                return
+            }
+
+            addVC.category = category
+            addVC.delegate = self
+
+            // pass existing arrays so AddVC can show current items if needed
+            if category == "Tasks" { addVC.tasks = tasks }
+            else if category == "Posts" { addVC.post = posts }
+
+            // wrap in nav controller so Save/Cancel nav items show (if you use them)
+            let nav = UINavigationController(rootViewController: addVC)
+            nav.modalPresentationStyle = .automatic
+            present(nav, animated: true, completion: nil)
 
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -176,5 +216,20 @@ extension Activities: AddViewControllerDelegate {
         posts?.append(post)
         listingView.reloadData()
         onPostsUpdated?(posts ?? [])
+    }
+}
+extension Activities: AddDealsDelegate {
+    func addDealsViewController(_ controller: AddDealsViewController, didCreateDeal deal: Deal) {
+        if deals == nil { deals = [] }
+        deals?.append(deal)
+
+        // Insert row with animation (if your listingView has one section)
+        let newIndex = (deals?.count ?? 1) - 1
+        listingView.beginUpdates()
+        listingView.insertRows(at: [IndexPath(row: newIndex, section: 0)], with: .automatic)
+        listingView.endUpdates()
+
+        // Notify any external observers
+        onDealsUpdated?(deals ?? [])
     }
 }

@@ -10,8 +10,7 @@ import UIKit
 class SuggestionCell: UIView {
 
 
-    @IBOutlet weak var GenerateButton: UIButton!
+    @IBOutlet weak var generateButton: UIButton!
 
-    
 
 }

@@ -9,13 +9,13 @@ import UIKit
 
 class HeaderView: UICollectionReusableView {
 
-    @IBOutlet weak var HeaderView: UILabel!
+    @IBOutlet weak var headerView: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
     func configureHeader(text:String){
-        HeaderView.text = text
+        headerView.text = text
     }
 }
