@@ -40,6 +40,9 @@
                                     <rect key="frame" x="357" y="9" width="24" height="22"/>
                                     <state key="normal" title="Button"/>
                                     <buttonConfiguration key="configuration" style="plain" title=""/>
+                                    <connections>
+                                        <action selector="buttonTapped:" destination="U6b-Vx-4bR" eventType="touchUpInside" id="0R3-RI-Xsn"/>
+                                    </connections>
                                 </button>
                             </subviews>
                             <constraints>
