@@ -27,6 +27,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     
     @IBOutlet weak var GenerateStack: UIStackView!
 
+    @IBOutlet weak var inputViewBottomConstraint: NSLayoutConstraint!
+    
+    
     var messages: [Message] = []
     var autoSendMessage: String?
 
@@ -36,7 +39,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             "script": "Sure! I can help you write a script. Tell me the topic!",
             "idea": "Looking for ideas? You can ask me for trending ideas anytime!",
             "title": "I can suggest optimized titles. What's your video about?",
-            "default": "I'm not sure, but I’m learning! Try asking in another way"
+            "default": "I'm not sure, but I’m learning! Try asking in another way",
+            
         ]
 
     var markedMessages: [String: [Message]] = [
@@ -96,7 +100,64 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     sendAutoMessage(text)
                     autoSendMessage = nil // prevent duplication
                 }
-}
+        
+        //NEW
+        setupKeyboardObservers()
+        setupTapToDismiss()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    func setupTapToDismiss() {
+            // Allows user to tap the table view (messages) to close the keyboard
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+            tableView.addGestureRecognizer(tapGesture)
+        }
+    
+    @objc func dismissKeyboard() {
+            view.endEditing(true)
+        }
+    
+    func setupKeyboardObservers() {
+            NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+            if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+                // Adjust the bottom constraint.
+                // We subtract safeAreaInsets.bottom because the keyboard height includes the bottom safe area,
+                // but our constraint is likely pinned to the Safe Area, not the Superview edge.
+                let bottomPadding = view.safeAreaInsets.bottom
+                self.inputViewBottomConstraint.constant = keyboardSize.height - bottomPadding
+                
+                // Animate the movement
+                UIView.animate(withDuration: 0.3) {
+                    self.view.layoutIfNeeded()
+                }
+                
+                // Scroll to the last message so it isn't hidden
+                scrollToBottom()
+            }
+        }
+    
+    @objc func keyboardWillHide(notification: NSNotification) {
+            // Reset the constraint to 0 (or whatever your default margin is)
+            self.inputViewBottomConstraint.constant = 8
+            
+            UIView.animate(withDuration: 0.3) {
+                self.view.layoutIfNeeded()
+            }
+        }
+    
+    func scrollToBottom() {
+            if messages.count > 0 {
+                let indexPath = IndexPath(row: messages.count - 1, section: 0)
+                tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+            }
+        }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return messages.count
