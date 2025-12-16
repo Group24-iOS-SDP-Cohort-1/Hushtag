@@ -28,7 +28,7 @@
                 <constraint firstItem="SU4-VU-LEo" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" id="egG-wL-CQZ"/>
             </constraints>
             <connections>
-                <outlet property="HeaderView" destination="SU4-VU-LEo" id="X2d-tv-zVl"/>
+                <outlet property="headerView" destination="SU4-VU-LEo" id="X2d-tv-zVl"/>
             </connections>
             <point key="canvasLocation" x="112.21374045801527" y="167.25352112676057"/>
         </collectionReusableView>

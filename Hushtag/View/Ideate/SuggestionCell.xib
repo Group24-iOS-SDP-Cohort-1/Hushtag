@@ -30,7 +30,7 @@
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
-                <outlet property="GenerateButton" destination="FWS-0J-C1P" id="357-l2-ftT"/>
+                <outlet property="generateButton" destination="FWS-0J-C1P" id="357-l2-ftT"/>
             </connections>
             <point key="canvasLocation" x="366.41221374045801" y="300"/>
         </view>

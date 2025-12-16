@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="IdeateHeader" id="U6b-Vx-4bR" customClass="IdeateSearchHeader" customModule="Hushtag" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="427" height="176"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bdr-X2-tXg">
+                    <rect key="frame" x="0.0" y="0.0" width="427" height="176"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Generate Ideas" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uGY-9y-LSb">
+                            <rect key="frame" x="17" y="9.9999999999999982" width="144" height="26.333333333333329"/>
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter a keyword to discover trending ideas related to it." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0tA-AD-dho">
+                            <rect key="frame" x="17" y="41.333333333333336" width="312.66666666666669" height="13.333333333333336"/>
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pWZ-gD-KI8">
+                            <rect key="frame" x="17" y="69.666666666666671" width="389" height="41"/>
+                            <subviews>
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter Your Keyword" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7lC-uh-J1P">
+                                    <rect key="frame" x="8" y="9" width="339" height="22"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </textField>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SS5-zS-8Kv">
+                                    <rect key="frame" x="357" y="9" width="24" height="22"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title=""/>
+                                </button>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="SS5-zS-8Kv" firstAttribute="leading" secondItem="7lC-uh-J1P" secondAttribute="trailing" constant="10" id="05z-k0-QaF"/>
+                                <constraint firstItem="7lC-uh-J1P" firstAttribute="top" secondItem="pWZ-gD-KI8" secondAttribute="top" constant="9" id="N9e-Mx-FsU"/>
+                                <constraint firstItem="SS5-zS-8Kv" firstAttribute="top" secondItem="pWZ-gD-KI8" secondAttribute="top" constant="9" id="cgS-C9-XhI"/>
+                                <constraint firstAttribute="bottom" secondItem="7lC-uh-J1P" secondAttribute="bottom" constant="10" id="iad-Bn-tkr"/>
+                                <constraint firstItem="7lC-uh-J1P" firstAttribute="leading" secondItem="pWZ-gD-KI8" secondAttribute="leading" constant="8" id="qb9-Pk-WRG"/>
+                                <constraint firstAttribute="trailing" secondItem="SS5-zS-8Kv" secondAttribute="trailing" constant="8" id="t6q-Ed-n6D"/>
+                                <constraint firstAttribute="bottom" secondItem="SS5-zS-8Kv" secondAttribute="bottom" constant="10" id="uE7-D2-Jw7"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="pWZ-gD-KI8" firstAttribute="top" secondItem="0tA-AD-dho" secondAttribute="bottom" constant="15" id="48T-07-BDG"/>
+                        <constraint firstItem="pWZ-gD-KI8" firstAttribute="leading" secondItem="Bdr-X2-tXg" secondAttribute="leading" constant="17" id="4SN-AB-DSH"/>
+                        <constraint firstAttribute="trailing" secondItem="pWZ-gD-KI8" secondAttribute="trailing" constant="21" id="C7u-4P-XQf"/>
+                        <constraint firstItem="0tA-AD-dho" firstAttribute="top" secondItem="uGY-9y-LSb" secondAttribute="bottom" constant="5" id="DY6-N4-8c0"/>
+                        <constraint firstItem="uGY-9y-LSb" firstAttribute="leading" secondItem="Bdr-X2-tXg" secondAttribute="leading" constant="17" id="JOZ-sA-SZf"/>
+                        <constraint firstItem="0tA-AD-dho" firstAttribute="leading" secondItem="Bdr-X2-tXg" secondAttribute="leading" constant="17" id="fmy-g5-dAj"/>
+                        <constraint firstItem="uGY-9y-LSb" firstAttribute="top" secondItem="Bdr-X2-tXg" secondAttribute="top" constant="10" id="s4q-hv-Le8"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="VXr-Tz-HHm"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="Bdr-X2-tXg" secondAttribute="bottom" id="Ntz-tC-OKy"/>
+                <constraint firstAttribute="trailing" secondItem="Bdr-X2-tXg" secondAttribute="trailing" id="VmS-Cu-bIF"/>
+                <constraint firstItem="Bdr-X2-tXg" firstAttribute="leading" secondItem="U6b-Vx-4bR" secondAttribute="leading" id="Zka-y3-d58"/>
+                <constraint firstItem="Bdr-X2-tXg" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" id="kj4-UY-u3F"/>
+            </constraints>
+            <connections>
+                <outlet property="searchButton" destination="SS5-zS-8Kv" id="uVU-MM-mlk"/>
+                <outlet property="textField" destination="7lC-uh-J1P" id="Wjw-uU-C9f"/>
+                <outlet property="textView" destination="pWZ-gD-KI8" id="wCn-F4-HNB"/>
+            </connections>
+            <point key="canvasLocation" x="220.61068702290075" y="197.88732394366198"/>
+        </collectionReusableView>
+        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" id="3Th-0q-38r">
+            <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <point key="canvasLocation" x="133" y="83"/>
+        </activityIndicatorView>
+    </objects>
+</document>

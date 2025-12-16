@@ -19,14 +19,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G7B-JP-VVb">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G7B-JP-VVb">
                                 <rect key="frame" x="0.0" y="224" width="393" height="628"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xp2-7f-412">
-                                        <rect key="frame" x="0.0" y="0.0" width="393" height="628"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xp2-7f-412">
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="675"/>
                                         <subviews>
-                                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="NL3-HC-Paz">
-                                                <rect key="frame" x="17" y="0.0" width="359" height="490.66666666666669"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="NL3-HC-Paz">
+                                                <rect key="frame" x="17" y="0.0" width="359" height="585.66666666666663"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="GD9-w1-2Wg">
                                                         <rect key="frame" x="0.0" y="0.0" width="359" height="45.666666666666664"/>
@@ -65,7 +65,6 @@
                                                                         <buttonConfiguration key="configuration" style="plain" title=""/>
                                                                         <connections>
                                                                             <action selector="buttonTapped:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="8Dl-dy-5k8"/>
-                                                                            <action selector="cleartext:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="7qT-ZT-iUE"/>
                                                                             <action selector="ideaSearch:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="T5O-Dd-Ffo"/>
                                                                         </connections>
                                                                     </button>
@@ -86,12 +85,15 @@
                                                             <constraint firstAttribute="height" constant="50" id="ySJ-Qu-EDd"/>
                                                         </constraints>
                                                     </stackView>
-                                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" distribution="fillProportionally" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="mwC-SG-aMI">
-                                                        <rect key="frame" x="0.0" y="135.66666666666669" width="359" height="355"/>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="mwC-SG-aMI">
+                                                        <rect key="frame" x="0.0" y="135.66666666666669" width="359" height="450.00000000000006"/>
                                                         <subviews>
-                                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="eTR-6b-d0K">
-                                                                <rect key="frame" x="0.0" y="0.0" width="359" height="355"/>
+                                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="eTR-6b-d0K">
+                                                                <rect key="frame" x="0.0" y="0.0" width="359" height="450"/>
                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="450" id="bbt-WI-JgE"/>
+                                                                </constraints>
                                                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="pMC-J7-4yG">
                                                                     <size key="itemSize" width="175" height="147"/>
                                                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -102,17 +104,17 @@
                                                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PlusCell" id="yc9-5M-2fU" customClass="PlusCollectionViewCell" customModule="Hushtag" customModuleProvider="target">
                                                                         <rect key="frame" x="1" y="0.0" width="175" height="147"/>
                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" id="Alj-OV-aui">
+                                                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Alj-OV-aui">
                                                                             <rect key="frame" x="0.0" y="0.0" width="175" height="147"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                             <subviews>
-                                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gwv-8l-2oV">
+                                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gwv-8l-2oV">
                                                                                     <rect key="frame" x="17" y="0.0" width="148" height="20.333333333333332"/>
                                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                                     <nil key="textColor"/>
                                                                                     <nil key="highlightedColor"/>
                                                                                 </label>
-                                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GpD-Su-BzY">
+                                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GpD-Su-BzY">
                                                                                     <rect key="frame" x="17" y="20.333333333333332" width="150" height="13.333333333333332"/>
                                                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                                                                     <nil key="textColor"/>
@@ -134,7 +136,7 @@
                                                                             <outlet property="plusLabel" destination="gwv-8l-2oV" id="M7m-4S-xyE"/>
                                                                         </connections>
                                                                     </collectionViewCell>
-                                                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="scripts_cell" id="D5Z-vq-nub" customClass="scriptsCell" customModule="Hushtag" customModuleProvider="target">
+                                                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="scripts_cell" id="D5Z-vq-nub" customClass="ScriptsCell" customModule="Hushtag" customModuleProvider="target">
                                                                         <rect key="frame" x="0.0" y="157" width="177" height="147"/>
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="g8n-yT-oyy">
@@ -178,8 +180,8 @@
                                                                         <connections>
                                                                             <outlet property="Description" destination="ln4-RV-Byn" id="kgH-IQ-LSM"/>
                                                                             <outlet property="Hashtag" destination="CfO-d4-OFO" id="yab-gV-ZcJ"/>
-                                                                            <outlet property="ScriptCell" destination="g8n-yT-oyy" id="pfw-1U-LDF"/>
                                                                             <outlet property="Title" destination="Xr1-uN-jBJ" id="W0K-mq-RGF"/>
+                                                                            <outlet property="scriptCell" destination="g8n-yT-oyy" id="pfw-1U-LDF"/>
                                                                         </connections>
                                                                     </collectionViewCell>
                                                                 </cells>
@@ -187,12 +189,8 @@
                                                         </subviews>
                                                     </stackView>
                                                 </subviews>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="359" id="4Ta-bO-XPg"/>
-                                                </constraints>
                                             </stackView>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
                                             <constraint firstItem="NL3-HC-Paz" firstAttribute="top" secondItem="Xp2-7f-412" secondAttribute="top" id="MBz-6P-S5h"/>
                                             <constraint firstItem="NL3-HC-Paz" firstAttribute="leading" secondItem="Xp2-7f-412" secondAttribute="leading" constant="17" id="Xkq-s4-ELL"/>
@@ -224,9 +222,10 @@
                     </view>
                     <navigationItem key="navigationItem" title="Ideate" id="Z17-7z-gvD"/>
                     <connections>
-                        <outlet property="PlusCollectionView" destination="eTR-6b-d0K" id="mM6-aw-emk"/>
-                        <outlet property="ScrollView" destination="G7B-JP-VVb" id="JNa-Y0-Bwx"/>
                         <outlet property="button" destination="Xc6-Ho-yOX" id="2g5-7H-tzh"/>
+                        <outlet property="contentView" destination="Xp2-7f-412" id="fF2-jk-ZQn"/>
+                        <outlet property="plusCollectionView" destination="eTR-6b-d0K" id="mM6-aw-emk"/>
+                        <outlet property="scrollView" destination="G7B-JP-VVb" id="JNa-Y0-Bwx"/>
                         <outlet property="textBoxView" destination="tBX-Ov-9z8" id="thu-EG-6aE"/>
                         <outlet property="textField" destination="T4b-Ys-4fv" id="Y0g-3h-CkA"/>
                         <segue destination="Yb8-13-5gt" kind="show" identifier="toScriptedIdeas" id="rsD-Te-pVV"/>
