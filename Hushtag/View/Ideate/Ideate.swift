@@ -98,7 +98,7 @@ class Ideate: UIViewController{
                 item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 10, trailing: 5)
 
                 let groupSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
+                    widthDimension: .fractionalWidth(1),
                     heightDimension: .estimated(160)
                 )
                 let group = NSCollectionLayoutGroup.vertical(
@@ -117,13 +117,13 @@ class Ideate: UIViewController{
 
             if sectionIndex == 0 {
                 let itemSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(0.5),
+                    widthDimension: .fractionalWidth(1),
                     heightDimension: .estimated(160)
                 )
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
                 let groupSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1),
+                    widthDimension: .fractionalWidth(0.75),
                     heightDimension: .estimated(160)
                 )
                 let group = NSCollectionLayoutGroup.horizontal(
@@ -144,13 +144,13 @@ class Ideate: UIViewController{
             }
 
             let itemSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(0.5),
+                widthDimension: .fractionalWidth(1),
                 heightDimension: .estimated(190)
             )
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
             let groupSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1),
+                widthDimension: .fractionalWidth(0.75),
                 heightDimension: .estimated(190)
 
             )

@@ -29,8 +29,8 @@ class PlusCollectionViewCell: UICollectionViewCell {
     func configureCell() {
         plusLabel.text = "+"
         plusLabel.textColor = .accent
-        plusLabel.font = UIFont.systemFont(ofSize: 80, weight: .regular)
+        plusLabel.font = UIFont.systemFont(ofSize: 40, weight: .regular)
         plusLabel.textAlignment = .center
-        ideaDescription.text = "Your creative assistant for scripting, titles, descriptions, and thumbnails."
+        ideaDescription.text = "Script with AI"
         }
 }

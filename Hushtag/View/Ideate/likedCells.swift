@@ -34,20 +34,20 @@ class likedCells: UICollectionViewCell{
         self.layer.shadowRadius = 6
         self.backgroundColor = .white
         // Title Label (plusLabel)
-        Title.font = .systemFont(ofSize: 14, weight: .regular)
+      
         Title.textColor = UIColor.label
-        Title.numberOfLines = 3
+        Title.numberOfLines = 2
         // Description Label
-        Description.textColor = UIColor.secondaryLabel
-        Description.numberOfLines = 2
+//        Description.textColor = UIColor.secondaryLabel
+//        Description.numberOfLines = 2
         draftScript.addTarget(self, action: #selector(draftScriptTapped), for: .touchUpInside)
     }
     func configureCell(idea : Idea) {
         self.currentIdea = idea
         Title.text = idea.title
-        Description.text = idea.description
-        Hashtag.text = idea.hashtag.map { "#\($0)" }.joined(separator: " ")
-        Hashtag.textColor = .accent
+//        Description.text = idea.description
+//        Hashtag.text = idea.hashtag.map { "#\($0)" }.joined(separator: " ")
+//        Hashtag.textColor = .accent
     }
 
     @objc private func draftScriptTapped() {

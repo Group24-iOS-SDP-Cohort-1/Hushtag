@@ -3,6 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -17,58 +18,54 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tU8-CR-0ZL">
-                        <rect key="frame" x="10" y="20" width="192" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nsl-Iy-505">
-                        <rect key="frame" x="10" y="75" width="192" height="13.333333333333329"/>
-                        <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
+                        <rect key="frame" x="10" y="20" width="168" height="18"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ytE-xW-n3g">
-                        <rect key="frame" x="31" y="143" width="150" height="33"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="33" id="t0f-p3-H4Z"/>
-                        </constraints>
+                        <rect key="frame" x="60" y="58" width="92" height="113"/>
                         <state key="normal" title="Button"/>
                         <buttonConfiguration key="configuration" style="filled" title="Draft Script">
                             <fontDescription key="titleFontDescription" style="UICTFontTextStyleCaption1"/>
                         </buttonConfiguration>
                     </button>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KF2-Hd-dSW">
-                        <rect key="frame" x="10" y="115" width="192" height="13.333333333333343"/>
-                        <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dB5-4f-84b">
+                        <rect key="frame" x="179" y="20" width="25" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="AvL-tb-q7R"/>
+                            <constraint firstAttribute="width" constant="25" id="GYQ-WY-dFQ"/>
+                        </constraints>
+                        <color key="tintColor" name="AccentColor"/>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain" image="heart.fill" catalog="system" title=""/>
+                    </button>
                 </subviews>
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
-                <constraint firstItem="KF2-Hd-dSW" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="19l-9C-its"/>
-                <constraint firstAttribute="trailing" secondItem="nsl-Iy-505" secondAttribute="trailing" constant="10" id="AUB-s3-8n2"/>
-                <constraint firstAttribute="trailing" secondItem="KF2-Hd-dSW" secondAttribute="trailing" constant="10" id="IGk-ML-avv"/>
-                <constraint firstAttribute="trailing" secondItem="ytE-xW-n3g" secondAttribute="trailing" constant="31" id="JsE-em-eUw"/>
-                <constraint firstAttribute="trailing" secondItem="tU8-CR-0ZL" secondAttribute="trailing" constant="10" id="LRC-mK-wxl"/>
-                <constraint firstItem="tU8-CR-0ZL" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="20" id="iCV-KL-OyR"/>
-                <constraint firstItem="ytE-xW-n3g" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="31" id="j6C-WU-YKP"/>
-                <constraint firstItem="tU8-CR-0ZL" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="k8M-ud-eWY"/>
-                <constraint firstItem="nsl-Iy-505" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="75" id="rhj-F6-ABo"/>
-                <constraint firstItem="KF2-Hd-dSW" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="115" id="uoN-UL-Vgb"/>
-                <constraint firstItem="nsl-Iy-505" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="vpH-pG-HH9"/>
-                <constraint firstAttribute="bottom" secondItem="ytE-xW-n3g" secondAttribute="bottom" constant="15" id="zUk-E8-geF"/>
+                <constraint firstAttribute="trailing" secondItem="ytE-xW-n3g" secondAttribute="trailing" constant="60" id="5NS-zw-bK4"/>
+                <constraint firstItem="dB5-4f-84b" firstAttribute="leading" secondItem="tU8-CR-0ZL" secondAttribute="trailing" constant="1" id="97v-gh-TMN"/>
+                <constraint firstItem="ytE-xW-n3g" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="60" id="GoT-aY-Mt3"/>
+                <constraint firstItem="dB5-4f-84b" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="20" id="RFG-8A-Rry"/>
+                <constraint firstItem="tU8-CR-0ZL" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="20" id="aN8-y7-ury"/>
+                <constraint firstAttribute="bottom" secondItem="ytE-xW-n3g" secondAttribute="bottom" constant="20" id="bcE-2u-dDW"/>
+                <constraint firstItem="ytE-xW-n3g" firstAttribute="top" secondItem="tU8-CR-0ZL" secondAttribute="bottom" constant="20" id="kZV-Ku-crG"/>
+                <constraint firstAttribute="trailing" secondItem="dB5-4f-84b" secondAttribute="trailing" constant="8" id="tT3-AC-p85"/>
+                <constraint firstItem="tU8-CR-0ZL" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="unI-OV-QDs"/>
             </constraints>
             <size key="customSize" width="329" height="208"/>
             <connections>
-                <outlet property="Description" destination="nsl-Iy-505" id="qpg-xX-QDa"/>
-                <outlet property="Hashtag" destination="KF2-Hd-dSW" id="DWZ-PD-8xU"/>
                 <outlet property="Title" destination="tU8-CR-0ZL" id="2xw-Tr-dfr"/>
                 <outlet property="draftScript" destination="ytE-xW-n3g" id="CDM-7r-pqH"/>
             </connections>
             <point key="canvasLocation" x="91.603053435114504" y="148.94366197183101"/>
         </collectionViewCell>
     </objects>
+    <resources>
+        <image name="heart.fill" catalog="system" width="128" height="107"/>
+        <namedColor name="AccentColor">
+            <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
 </document>
