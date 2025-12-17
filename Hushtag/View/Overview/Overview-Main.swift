@@ -31,6 +31,23 @@ class Overview: UIViewController {
     var filteredIdeas: [Idea] {
         return ideas.filter { $0.liked == false }
     }
+    var activities: [(String, Int, String)] = []
+    var lists: [(String, Int)] = []
+    var completedTasks: [Task] {
+        task.filter { $0.isCompleted }
+    }
+
+    var completedDeals: [Deal] {
+        deal.filter { deal in
+            let total = deal.deliverable.count
+            let completed = deal.deliverable.filter { $0.isCompleted }.count
+            return total > 0 && completed == total
+        }
+    }
+
+    var completedPosts: [Post] {
+        post.filter { $0.isCompleted }
+    }
 
     
     override func viewDidLoad() {
@@ -46,7 +63,27 @@ class Overview: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
-            
+        
+        let taskCount = task.count
+        let dealCount = deal.count
+        let postCount = post.count
+
+        let completedTaskCount = completedTasks.count
+        let completedDealCount = completedDeals.count
+        let completedPostCount = completedPosts.count
+
+        let totalCompleted = completedTaskCount + completedDealCount + completedPostCount
+        let totalActivities = taskCount + dealCount + postCount
+        activities = [
+            ("All", totalActivities, "tray.circle.fill"),
+            ("Completed", totalCompleted, "checkmark.circle.fill")
+        ]
+
+        lists = [
+            ("Tasks", taskCount),
+            ("Deals", dealCount),
+            ("Posts", postCount)
+        ]
     }
     func registerCell() {
         collectionView.register(
@@ -58,28 +95,18 @@ class Overview: UIViewController {
         )
         
         collectionView.register(
-            UINib(nibName: "ScheduleCollectionViewCell",
-                  bundle: nil
+            UINib (
+                nibName: "AnalysisCollectionViewCell",
+                bundle: nil
                  ),
-            forCellWithReuseIdentifier: "schedule_cell")
-        
-        collectionView.register(
-            UINib(nibName: "IdeaCollectionViewCell",
-                  bundle: nil
-                 ),
-            forCellWithReuseIdentifier: "ideas_cell")
+            forCellWithReuseIdentifier: "analysis_cell"
+        )
         
         collectionView.register(
             UINib(nibName: "HeaderView",
                   bundle: nil),
             forSupplementaryViewOfKind: "header",
             withReuseIdentifier: "headerCell")
-        
-        collectionView.register(
-            UINib(nibName: "HeaderChevronView",
-                  bundle: nil),
-            forSupplementaryViewOfKind: "headerChevron",
-            withReuseIdentifier: "header_chevron")
         
         collectionView.register(
             UINib(nibName: "HeaderButton",
@@ -97,8 +124,6 @@ class Overview: UIViewController {
             let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
             
             let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "header", alignment: .top)
-            
-            let headerChevron = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "headerChevron", alignment: .top)
             
             let headerButton = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "headerButton", alignment: .top)
 
@@ -123,45 +148,23 @@ class Overview: UIViewController {
 
                 return section
             }
-            else if section == 1 {
-                // set the item size
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-                
-                // create the item
-                let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
-                
-                // create the group
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.45), heightDimension: .estimated(150))
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
-                
-                //create the section
-                let section = NSCollectionLayoutSection(group: group)
-                section.orthogonalScrollingBehavior = .continuous
-                section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
-                section.boundarySupplementaryItems = [headerChevron]
-    
-                return section
-            }
-            
-            // set the item size
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
             
             // create the item
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
             
             // create the group
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(210))
-            let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, repeatingSubitem: item, count: 1)
-            group.interItemSpacing = .fixed(15)
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.45), heightDimension: .estimated(100))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
             
             //create the section
             let section = NSCollectionLayoutSection(group: group)
-            section.interGroupSpacing = 15
-            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom:10, trailing: 20)
-            section.boundarySupplementaryItems = [headerItem]
-            
-            return section
+            section.orthogonalScrollingBehavior = .continuous
+            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
+                section.boundarySupplementaryItems = [headerItem]
+    
+                return section
         }
         return layout
     }
@@ -209,8 +212,6 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         
         if segue.identifier == "goToAnalysis" {
             let vc = segue.destination as! AnalysisDataViewController
-            //vc.analysis = selectedVideos
-            //vc.analysisData = analysis[indexPath.row]
             if indexPath.row == 0{
                 vc.platform = "YouTube"
                 vc.fullAnalysis = ytResponse.youtube
@@ -223,34 +224,6 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             }
         }
         
-        if segue.identifier == "goToSchedule" {
-            let vc = segue.destination as! Schedule
-            vc.posts = post
-            vc.deals = deal
-            vc.tasks = task
-        }
-        
-        if segue.identifier == "goToDetails" {
-            let vc = segue.destination as! Details
-            vc.post = selectedPost
-        }
-        if segue.identifier == "goToIdea" {
-            let nav = segue.destination as! UINavigationController
-            let vc = nav.topViewController as! ViewIdea
-            vc.idea = selectedIdeas
-            vc.onLikeStatusChanged = { [weak self] updatedIdea in
-                guard let self = self else { return }
-
-                // 1. Find the index of this idea
-                if let index = self.ideas.firstIndex(where: { $0.id == updatedIdea.id }) {
-                    self.ideas[index] = updatedIdea
-                }
-
-                // 2. Reload ONLY the ideas section (section 2)
-                let ideasSection = IndexSet(integer: 2)
-                self.collectionView.reloadSections(ideasSection)
-            }
-        }
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -258,13 +231,6 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         switch indexPath.section {
             case 0:
                 performSegue(withIdentifier: "goToAnalysis", sender: nil)
-            case 1:
-                selectedPost = post[indexPath.row]
-                performSegue(withIdentifier: "goToDetails", sender: nil)
-            case 2:
-                selectedIdeas = ideas[indexPath.row]
-                performSegue(withIdentifier: "goToIdea", sender: nil)
-            
             default:
                 break
             }
@@ -273,16 +239,14 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
     
     // to make 3 sections; by default collection view only has 1 section
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 3
+        return 2
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if  (section == 0) {
             return analysis.count
-        } else if (section == 1) {
-            return post.count
         }
-        return filteredIdeas.count
+        return activities.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -299,49 +263,25 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
 
             return cell
         }
-        else if indexPath.section == 1 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "schedule_cell", for: indexPath) as! ScheduleCollectionViewCell
-            let schedule = post[indexPath.row]
-            cell.configureCell(schedule: schedule)
-            
-            return cell
-        }
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideas_cell", for: indexPath) as! IdeaCollectionViewCell
-        let idea = filteredIdeas[indexPath.row]
-        cell.configureCell(ideas: idea)
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "schedule_cell",
+            for: indexPath
+        ) as! ActivitiesCell
+
+        let item = activities[indexPath.row]
+        cell.configure(item.0, item.1, item.2)
+        cell.layer.cornerRadius = 12
+        cell.layer.masksToBounds = false
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        
-        if kind == "header" {
-            let headerView = collectionView.dequeueReusableSupplementaryView(
-                ofKind: "header",
-                withReuseIdentifier: "headerCell",
-                for: indexPath
-            ) as! HeaderView
-            headerView.configureHeader(text: "Suggested for you")
-            return headerView
-        }
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
 
-        if kind == "headerChevron" {
-            let headerView = collectionView.dequeueReusableSupplementaryView(
-                ofKind: "headerChevron",
-                withReuseIdentifier: "header_chevron",
-                for: indexPath
-            ) as! HeaderChevronView
-            
-            headerView.configure(title: "Upcoming Schedule")
-            
-            headerView.onTap = { [weak self] in
-                self?.performSegue(withIdentifier: "goToSchedule", sender: nil)
-            }
-            
-            return headerView
-        }
-
-        
-        if kind == "headerButton" {
+        if kind == "headerButton", indexPath.section == 0 {
             let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: "headerButton",
                 withReuseIdentifier: "header_button",
@@ -349,17 +289,26 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             ) as! HeaderButton
 
             headerView.configure()
-            
-            // Listen to filter selection
-            headerView.onFilterSelected = { filter in
-                self.applyFilter(filter)
+            headerView.onFilterSelected = { [weak self] filter in
+                self?.applyFilter(filter)
             }
-            
+            return headerView
+        }
+
+        if kind == "header", indexPath.section == 1 {
+            let headerView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: "header",
+                withReuseIdentifier: "headerCell",
+                for: indexPath
+            ) as! HeaderView
+
+            headerView.configureHeader(text: "Activities Overview")
             return headerView
         }
 
         return UICollectionReusableView()
     }
+
 }
 
 

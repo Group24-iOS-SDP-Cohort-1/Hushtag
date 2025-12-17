@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="sYy-XD-bDz">
-    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <device id="retina6_12" orientation="portrait" appearance="dark"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Overview-->
+        <!--Workplace-->
         <scene sceneID="s0d-6b-0kx">
             <objects>
                 <viewController storyboardIdentifier="OverviewVC" id="Y6W-OH-hqX" customClass="Overview" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
@@ -36,18 +37,51 @@
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="231" height="216"/>
                                     </collectionViewCell>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="schedule_cell" id="4Uv-W7-3hX">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="schedule_cell" id="4Uv-W7-3hX" customClass="ActivitiesCell" customModule="Hushtag" customModuleProvider="target">
                                         <rect key="frame" x="81" y="226" width="231" height="216"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="bM3-vb-gG0">
                                             <rect key="frame" x="0.0" y="0.0" width="231" height="216"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gYa-Rh-TeN">
+                                                    <rect key="frame" x="15" y="15" width="52" height="27"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                                    <color key="textColor" name="AccentColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h9A-aK-UuP">
+                                                    <rect key="frame" x="136" y="10" width="80" height="41"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XCD-wY-DEc">
+                                                    <rect key="frame" x="15" y="185" width="33" height="16"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="h9A-aK-UuP" secondAttribute="trailing" constant="15" id="3yr-U2-J3H"/>
+                                                <constraint firstItem="gYa-Rh-TeN" firstAttribute="leading" secondItem="bM3-vb-gG0" secondAttribute="leading" constant="15" id="8lf-D1-VXJ"/>
+                                                <constraint firstItem="XCD-wY-DEc" firstAttribute="leading" secondItem="bM3-vb-gG0" secondAttribute="leading" constant="15" id="ICa-s6-6sD"/>
+                                                <constraint firstItem="h9A-aK-UuP" firstAttribute="top" secondItem="bM3-vb-gG0" secondAttribute="top" constant="10" id="PPR-NW-fnN"/>
+                                                <constraint firstAttribute="bottom" secondItem="XCD-wY-DEc" secondAttribute="bottom" constant="15" id="aMZ-cK-DzV"/>
+                                                <constraint firstItem="gYa-Rh-TeN" firstAttribute="top" secondItem="bM3-vb-gG0" secondAttribute="top" constant="15" id="hxx-UR-dXy"/>
+                                            </constraints>
                                         </collectionViewCellContentView>
+                                        <connections>
+                                            <outlet property="categoryLabel" destination="XCD-wY-DEc" id="0Hj-V6-31T"/>
+                                            <outlet property="sfLabel" destination="gYa-Rh-TeN" id="axu-1f-sHM"/>
+                                            <outlet property="valueLabel" destination="h9A-aK-UuP" id="ARO-fG-0ux"/>
+                                        </connections>
                                     </collectionViewCell>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="ideas_cell" id="4oI-Pp-fha">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="upcoming_schedule" id="dUa-mx-6zd">
                                         <rect key="frame" x="81" y="452" width="231" height="216"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="vtf-kn-p0E">
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="xG5-SY-JCp" customClass="ScheduleCollectionViewCell" customModule="Hushtag" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="231" height="216"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </collectionViewCellContentView>
@@ -59,14 +93,12 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="rWT-oj-zyq" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="2cR-eF-RL9"/>
-
                             <constraint firstAttribute="bottom" secondItem="rWT-oj-zyq" secondAttribute="bottom" id="LSA-jL-Nty"/>
-
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="rWT-oj-zyq" secondAttribute="trailing" id="bqC-Mm-h99"/>
                             <constraint firstItem="rWT-oj-zyq" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="lNM-1q-xIw"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Overview" id="ZZd-fl-5CJ"/>
+                    <navigationItem key="navigationItem" title="Workplace" id="ZZd-fl-5CJ"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="collectionView" destination="rWT-oj-zyq" id="LDk-n7-gth"/>
@@ -138,6 +170,9 @@
         </scene>
     </scenes>
     <resources>
+        <namedColor name="AccentColor">
+            <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

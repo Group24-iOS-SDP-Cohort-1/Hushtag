@@ -16,6 +16,8 @@ class AnalysisCollectionViewCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        applyLiquidGlassEffect()
+        
     }
     func configureCell(analysis: Analysis, category: String) {
         var displayRate = analysis.engagementRate
@@ -37,10 +39,10 @@ class AnalysisCollectionViewCell: UICollectionViewCell {
         var symbolColor: UIColor = .gray
 
         if rateValue > 0 {
-            symbolName = "arrow.up.circle.fill"
+            symbolName = "chevron.up.2"
             symbolColor = .systemGreen
         } else if rateValue < 0 {
-            symbolName = "arrow.down.circle.fill"
+            symbolName = "chevron.down.2"
             symbolColor = .systemRed
         }
 
@@ -61,16 +63,5 @@ class AnalysisCollectionViewCell: UICollectionViewCell {
             platformLabel.text = "Facebook"
             platformLabel.textColor = UIColor(hex: "1877F2")
         }
-
-        contentView.layer.cornerRadius = 12
-        contentView.layer.masksToBounds = true
-        layer.cornerRadius = 12
-        layer.masksToBounds = false
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.1
-        layer.shadowOffset = CGSize(width: 0, height: 1)
-        layer.shadowRadius = 8
-        backgroundColor = .clear
-        contentView.backgroundColor = .white
     }
 }

@@ -87,11 +87,6 @@
                                                             </constraints>
                                                         </collectionViewCellContentView>
                                                         <size key="customSize" width="211" height="128"/>
-                                                        <connections>
-                                                            <outlet property="categoryLabel" destination="YU4-yB-dzx" id="hig-US-t1c"/>
-                                                            <outlet property="sfLabel" destination="mqU-X4-dO6" id="GK0-zK-sUf"/>
-                                                            <outlet property="valueLabel" destination="fPy-Sl-EKQ" id="eGU-Sb-Vpq"/>
-                                                        </connections>
                                                     </collectionViewCell>
                                                 </cells>
                                             </collectionView>

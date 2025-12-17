@@ -16,6 +16,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        applyLiquidGlassEffect()
     }
     func configureCell(schedule: Post) {
         let hour = schedule.postingTime.time.hour
@@ -40,16 +41,5 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
             platformLabel.text = "Facebook"
             platformLabel.textColor = UIColor(hex: "1877F2")
         }
-
-        contentView.layer.cornerRadius = 12
-        contentView.layer.masksToBounds = true
-        layer.cornerRadius = 12
-        layer.masksToBounds = false
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.1
-        layer.shadowOffset = CGSize(width: 0, height: 1)
-        layer.shadowRadius = 8
-        backgroundColor = .clear
-        contentView.backgroundColor = .white
     }
 }
