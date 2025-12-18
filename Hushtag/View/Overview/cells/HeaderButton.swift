@@ -10,39 +10,20 @@ import UIKit
 class HeaderButton: UICollectionReusableView {
 
     @IBOutlet weak var headerLabel: UILabel!
-    @IBOutlet weak var popupButton: UIButton!
-    
-    var onFilterSelected: ((String) -> Void)?
-    
+    @IBOutlet weak var datePicker: UIDatePicker!
+    var onDateChanged: ((Date) -> Void)?
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
-        popupButton.showsMenuAsPrimaryAction = true
-        setupPopupMenu()
+        datePicker.addTarget(
+            self,
+            action: #selector(dateDidChange(_:)),
+            for: .valueChanged
+        )
     }
     func configure() {
-        headerLabel.text = "Engagement Rate"
+        headerLabel.text = "Today"
     }
-    
-    func setupPopupMenu() {
-    
-        let option1 = UIAction(title: "Past week") { _ in
-            self.popupButton.setTitle("Past week", for: .normal)
-            self.onFilterSelected?("week")
-        }
-
-        let option2 = UIAction(title: "Past month") { _ in
-            self.popupButton.setTitle("Past month", for: .normal)
-            self.onFilterSelected?("month")
-        }
-
-        let option3 = UIAction(title: "Past 3 weeks") { _ in
-            self.popupButton.setTitle("Past month", for: .normal)
-            self.onFilterSelected?("3weeks")
-        }
-
-        popupButton.menu = UIMenu(title: "", children: [option1, option2, option3])
-        popupButton.showsMenuAsPrimaryAction = true
+    @objc private func dateDidChange(_ sender: UIDatePicker) {
+        onDateChanged?(sender.date)
     }
-
 }

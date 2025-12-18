@@ -31,15 +31,15 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
 
         if platform == "youtube" {
             platformLabel.text = "Youtube"
-            platformLabel.textColor = UIColor(hex: "BD081C")
+            //platformLabel.textColor = UIColor(hex: "FF4E45")
 
         } else if platform == "instagram" {
             platformLabel.text = "Instagram"
-            platformLabel.textColor = UIColor(hex: "8134AF")
+            //platformLabel.textColor = UIColor(hex: "E440FF")
 
         } else {
             platformLabel.text = "Facebook"
-            platformLabel.textColor = UIColor(hex: "1877F2")
+            //platformLabel.textColor = UIColor(hex: "4DA3FF")
         }
     }
 }

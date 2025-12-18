@@ -23,9 +23,7 @@ class ActivitiesCell: UICollectionViewCell {
         attachment.image = image
         let attributed = NSAttributedString(attachment: attachment)
         sfLabel.attributedText = attributed
-        
-        layer.cornerRadius = 12
-        layer.masksToBounds = false
+
         applyLiquidGlassEffect()
     }
 }

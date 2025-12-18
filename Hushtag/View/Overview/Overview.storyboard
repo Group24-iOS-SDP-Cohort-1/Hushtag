@@ -44,32 +44,32 @@
                                             <rect key="frame" x="0.0" y="0.0" width="231" height="216"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XCD-wY-DEc">
+                                                    <rect key="frame" x="15" y="185.33333333333334" width="33" height="15.666666666666657"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                                    <color key="textColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gYa-Rh-TeN">
-                                                    <rect key="frame" x="15" y="15" width="52" height="27"/>
+                                                    <rect key="frame" x="15" y="14.999999999999998" width="52" height="26.333333333333329"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
                                                     <color key="textColor" name="AccentColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h9A-aK-UuP">
-                                                    <rect key="frame" x="136" y="10" width="80" height="41"/>
+                                                    <rect key="frame" x="136" y="14.999999999999996" width="80" height="40.666666666666657"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XCD-wY-DEc">
-                                                    <rect key="frame" x="15" y="185" width="33" height="16"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="h9A-aK-UuP" secondAttribute="trailing" constant="15" id="3yr-U2-J3H"/>
-                                                <constraint firstItem="gYa-Rh-TeN" firstAttribute="leading" secondItem="bM3-vb-gG0" secondAttribute="leading" constant="15" id="8lf-D1-VXJ"/>
-                                                <constraint firstItem="XCD-wY-DEc" firstAttribute="leading" secondItem="bM3-vb-gG0" secondAttribute="leading" constant="15" id="ICa-s6-6sD"/>
-                                                <constraint firstItem="h9A-aK-UuP" firstAttribute="top" secondItem="bM3-vb-gG0" secondAttribute="top" constant="10" id="PPR-NW-fnN"/>
-                                                <constraint firstAttribute="bottom" secondItem="XCD-wY-DEc" secondAttribute="bottom" constant="15" id="aMZ-cK-DzV"/>
-                                                <constraint firstItem="gYa-Rh-TeN" firstAttribute="top" secondItem="bM3-vb-gG0" secondAttribute="top" constant="15" id="hxx-UR-dXy"/>
+                                                <constraint firstItem="gYa-Rh-TeN" firstAttribute="leading" secondItem="bM3-vb-gG0" secondAttribute="leading" constant="15" id="5xU-Bt-GVF"/>
+                                                <constraint firstItem="h9A-aK-UuP" firstAttribute="top" secondItem="bM3-vb-gG0" secondAttribute="top" constant="15" id="7GR-ms-3UW"/>
+                                                <constraint firstAttribute="bottom" secondItem="XCD-wY-DEc" secondAttribute="bottom" constant="15" id="8Om-hV-r1Q"/>
+                                                <constraint firstItem="gYa-Rh-TeN" firstAttribute="top" secondItem="bM3-vb-gG0" secondAttribute="top" constant="15" id="Nle-rG-kIO"/>
+                                                <constraint firstAttribute="trailing" secondItem="h9A-aK-UuP" secondAttribute="trailing" constant="15" id="mkc-2R-fqg"/>
+                                                <constraint firstItem="XCD-wY-DEc" firstAttribute="leading" secondItem="bM3-vb-gG0" secondAttribute="leading" constant="15" id="qdi-nI-fdL"/>
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <connections>
@@ -102,10 +102,9 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="collectionView" destination="rWT-oj-zyq" id="LDk-n7-gth"/>
-                        <segue destination="KVU-qB-L83" kind="show" identifier="goToIdea" id="w62-kq-you"/>
-                        <segue destination="5Zc-bc-IbZ" kind="show" identifier="goToSchedule" id="5vr-Xe-cA7"/>
                         <segue destination="hDs-sx-oiG" kind="show" identifier="goToAnalysis" id="tdd-OI-4OB"/>
                         <segue destination="RsE-9q-XJa" kind="presentation" identifier="goToDetails" id="xAC-1q-pHn"/>
+                        <segue destination="A7W-0B-TgR" kind="show" identifier="goToActivities" id="KBT-78-dSg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -120,25 +119,15 @@
             </objects>
             <point key="canvasLocation" x="2015" y="14"/>
         </scene>
-        <!--ViewIdea-->
-        <scene sceneID="Wj9-SX-FKy">
+        <!--Activities-->
+        <scene sceneID="ACs-ia-faf">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="IdeaVC" storyboardName="ViewIdea" id="KVU-qB-L83" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="t3c-A5-hGL"/>
+                <viewControllerPlaceholder storyboardName="Activities" id="A7W-0B-TgR" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="wSb-gR-l1G"/>
                 </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="HkF-yW-aKd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Rjo-eb-xhL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2157" y="137"/>
-        </scene>
-        <!--Schedule-->
-        <scene sceneID="yGG-j7-HCS">
-            <objects>
-                <viewControllerPlaceholder storyboardIdentifier="ScheduleVC" storyboardName="Schedule" id="5Zc-bc-IbZ" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="6aM-i6-SXS"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="fYa-xn-VEK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2050" y="252"/>
+            <point key="canvasLocation" x="1969" y="260"/>
         </scene>
         <!--AnalysisDataViewController-->
         <scene sceneID="J2E-PJ-RSg">

@@ -18,6 +18,28 @@ struct DateData: Codable{
     let time: TimeData
 }
 
+extension DateData {
+
+    func toDate() -> Date? {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime]
+
+        // Parse base date (midnight UTC)
+        guard let baseDate = isoFormatter.date(from: date) else {
+            return nil
+        }
+
+        // Apply hour & minute from TimeData
+        return Calendar.current.date(
+            bySettingHour: time.hour,
+            minute: time.minute,
+            second: 0,
+            of: baseDate
+        )
+    }
+}
+
+
 struct AnalysisDateData: Codable, Identifiable{
     let id = UUID()
     let day: String

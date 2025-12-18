@@ -48,8 +48,10 @@ class Overview: UIViewController {
     var completedPosts: [Post] {
         post.filter { $0.isCompleted }
     }
+    // Keep master + filtered
+    var allPosts: [Post] = []
+    var filteredPosts: [Post] = []
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
@@ -84,11 +86,18 @@ class Overview: UIViewController {
             ("Deals", dealCount),
             ("Posts", postCount)
         ]
+        allPosts = postresponse.posts
+        filteredPosts.sort {
+            ($0.postingTime.toDate() ?? .distantFuture) <
+            ($1.postingTime.toDate() ?? .distantFuture)
+        }
+
+
     }
     func registerCell() {
         collectionView.register(
             UINib (
-                nibName: "AnalysisCollectionViewCell",
+                nibName: "Analytics",
                 bundle: nil
                  ),
             forCellWithReuseIdentifier: "analysis_cell"
@@ -96,11 +105,12 @@ class Overview: UIViewController {
         
         collectionView.register(
             UINib (
-                nibName: "AnalysisCollectionViewCell",
+                nibName: "ScheduleCollectionViewCell",
                 bundle: nil
                  ),
-            forCellWithReuseIdentifier: "analysis_cell"
+            forCellWithReuseIdentifier: "upcoming_schedule"
         )
+        
         
         collectionView.register(
             UINib(nibName: "HeaderView",
@@ -134,76 +144,72 @@ class Overview: UIViewController {
 
                 // create the item
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
+                item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 7, bottom: 2, trailing: 7)
 
                 // create the group
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.3), heightDimension: .estimated(115))
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9), heightDimension: .estimated(130))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
 
                 //create the section
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
                 section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom:10, trailing: 20)
-                section.boundarySupplementaryItems = [headerButton]
 
+                return section
+            } else if section == 1 {
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+                
+                // create the item
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
+                
+                // create the group
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.45), heightDimension: .estimated(100))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
+                
+                //create the section
+                let section = NSCollectionLayoutSection(group: group)
+                section.orthogonalScrollingBehavior = .continuous
+                section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
+                section.boundarySupplementaryItems = [headerButton]
+                
                 return section
             }
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
             
             // create the item
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
+            item.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 7, bottom: 7, trailing: 7)
             
             // create the group
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.45), heightDimension: .estimated(100))
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(120))
+            let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, repeatingSubitem: item, count: 1)
             
             //create the section
             let section = NSCollectionLayoutSection(group: group)
-            section.orthogonalScrollingBehavior = .continuous
-            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
-                section.boundarySupplementaryItems = [headerItem]
-    
-                return section
+            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+            section.boundarySupplementaryItems = [headerItem]
+
+            return section
         }
         return layout
     }
     
-    func applyFilter(_ filter: String) {
-        
-        switch filter {
-        case "week":
-            print("Showing past week analysis")
-            self.analysis = [
-                ytResponse.youtube.first,
-                igResponse.instagram.first,
-                fbResponse.facebook.first
-            ].compactMap { $0 }
+    func filterSection2(by selectedDate: Date) {
+        let calendar = Calendar.current
 
-        case "month":
-            print("Showing past month analysis")
-            self.analysis = [
-                ytResponse.youtube[1],
-                igResponse.instagram[1],
-                fbResponse.facebook[1]
-            ].compactMap { $0 }
-
-        case "3weeks":
-            print("Showing past 3 weeks analysis")
-            self.analysis = [
-                ytResponse.youtube[2],
-                igResponse.instagram[2],
-                fbResponse.facebook[2]
-            ].compactMap { $0 }
-
-        default:
-            break
+        filteredPosts = allPosts.filter {
+            guard let postDate = $0.postingTime.toDate() else { return false }
+            return calendar.isDate(postDate, inSameDayAs: selectedDate)
         }
 
-        // Reload only section 0
-        collectionView.reloadSections(IndexSet(integer: 0))
+        filteredPosts.sort {
+            ($0.postingTime.toDate() ?? .distantFuture) <
+            ($1.postingTime.toDate() ?? .distantFuture)
+        }
+
+        collectionView.reloadSections(IndexSet(integer: 2))
     }
-    
 }
 
 extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -215,61 +221,78 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             if indexPath.row == 0{
                 vc.platform = "YouTube"
                 vc.fullAnalysis = ytResponse.youtube
-            }else if indexPath.row == 1{
-                vc.platform = "Instagram"
-                vc.fullAnalysis = igResponse.instagram
-            }else{
-                vc.platform = "Facebook"
-                vc.fullAnalysis = fbResponse.facebook
             }
         }
-        
+        if segue.identifier == "goToActivities" {
+            let vc = segue.destination as! Activities
+            vc.posts = post
+            vc.deals = deal
+            vc.tasks = task
+        }
+        if segue.identifier == "goToDetails" {
+            let vc = segue.destination as! Details
+            //vc.deal = selectedDeal
+            vc.post = selectedPost
+            //vc.task = selectedTask
+        }
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedIndexPath = indexPath
         switch indexPath.section {
-            case 0:
-                performSegue(withIdentifier: "goToAnalysis", sender: nil)
-            default:
-                break
-            }
+        case 0:
+            performSegue(withIdentifier: "goToAnalysis", sender: nil)
+        case 1:
+            performSegue(withIdentifier: "goToActivities", sender: nil)
+        case 2:
+            selectedPost = filteredPosts[indexPath.row]
+            performSegue(withIdentifier: "goToDetails", sender: nil)
+        default:
+            break
+        }
     }
 
     
     // to make 3 sections; by default collection view only has 1 section
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        return 3
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if  (section == 0) {
-            return analysis.count
+            return 1
         }
-        return activities.count
+        else if (section == 1) {
+            return activities.count
+        }
+        return filteredPosts.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section == 0 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "analysis_cell", for: indexPath) as! AnalysisCollectionViewCell
-            let analysis = analysis[indexPath.row]
-            if indexPath.row == 0 {
-                cell.configureCell(analysis: analysis, category: "Youtube")
-            } else if indexPath.row == 1 {
-                cell.configureCell(analysis: analysis, category: "Instagram")
-            } else {
-                cell.configureCell(analysis: analysis, category: "Facebook")
-            }
-
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "analysis_cell", for: indexPath) as! Analytics
+            cell.configure()
+            return cell
+        }
+        else if indexPath.section == 1 {
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "schedule_cell",
+                for: indexPath
+            ) as! ActivitiesCell
+            
+            let item = activities[indexPath.row]
+            cell.configure(item.0, item.1, item.2)
+            cell.layer.cornerRadius = 12
+            cell.layer.masksToBounds = false
             return cell
         }
         let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "schedule_cell",
+            withReuseIdentifier: "upcoming_schedule",
             for: indexPath
-        ) as! ActivitiesCell
-
-        let item = activities[indexPath.row]
-        cell.configure(item.0, item.1, item.2)
+        ) as! ScheduleCollectionViewCell
+        
+        let item = filteredPosts[indexPath.row]
+        cell.configureCell(schedule: item)
         cell.layer.cornerRadius = 12
         cell.layer.masksToBounds = false
         return cell
@@ -281,7 +304,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         at indexPath: IndexPath
     ) -> UICollectionReusableView {
 
-        if kind == "headerButton", indexPath.section == 0 {
+        if kind == "headerButton", indexPath.section == 1 {
             let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: "headerButton",
                 withReuseIdentifier: "header_button",
@@ -289,22 +312,33 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             ) as! HeaderButton
 
             headerView.configure()
-            headerView.onFilterSelected = { [weak self] filter in
-                self?.applyFilter(filter)
-            }
+            headerView.onDateChanged = { [weak self] selectedDate in
+               self?.filterSection2(by: selectedDate)
+           }
             return headerView
         }
 
-        if kind == "header", indexPath.section == 1 {
+//        if kind == "header", indexPath.section == 1 {
+//            let headerView = collectionView.dequeueReusableSupplementaryView(
+//                ofKind: "header",
+//                withReuseIdentifier: "headerCell",
+//                for: indexPath
+//            ) as! HeaderView
+//
+//            headerView.configureHeader(text: "Activities Overview")
+//            return headerView
+//        }
+        if kind == "header", indexPath.section == 2 {
             let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: "header",
                 withReuseIdentifier: "headerCell",
                 for: indexPath
             ) as! HeaderView
 
-            headerView.configureHeader(text: "Activities Overview")
+            headerView.configureHeader(text: "Upcoming Schedule")
             return headerView
         }
+
 
         return UICollectionReusableView()
     }
