@@ -14,8 +14,8 @@
             <rect key="frame" x="0.0" y="0.0" width="547" height="360"/>
             <autoresizingMask key="autoresizingMask"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="F5p-iG-YO8">
-                    <rect key="frame" x="0.0" y="0.0" width="547" height="109.33333333333333"/>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="F5p-iG-YO8">
+                    <rect key="frame" x="0.0" y="0.0" width="547" height="117.33333333333333"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Find your next" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tZT-t1-G4Y">
                             <rect key="frame" x="0.0" y="0.0" width="547" height="40.666666666666664"/>
@@ -24,22 +24,28 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="viral idea" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aJG-sB-xg9">
-                            <rect key="frame" x="0.0" y="45.666666666666671" width="547" height="40.666666666666671"/>
+                            <rect key="frame" x="0.0" y="40.666666666666671" width="547" height="40.666666666666671"/>
                             <color key="tintColor" red="0.86274509803921573" green="0.86274509803921573" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
                             <color key="textColor" name="AccentColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Discover trending ideas tailored to your niche instanatly" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vR4-ih-Ytj">
-                            <rect key="frame" x="0.0" y="91.333333333333329" width="547" height="18"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Discover trending ideas tailored to your " textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vR4-ih-Ytj">
+                            <rect key="frame" x="0.0" y="81.333333333333329" width="547" height="18"/>
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="niche instanatly." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HXC-wZ-V8J">
+                            <rect key="frame" x="0.0" y="99.333333333333329" width="547" height="18"/>
                             <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
                 </stackView>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="Zy2-Ce-dpI">
-                    <rect key="frame" x="0.0" y="134.33333333333334" width="547" height="89.333333333333343"/>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Zy2-Ce-dpI">
+                    <rect key="frame" x="0.0" y="142.33333333333334" width="547" height="94.333333333333343"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T9b-3e-pu7">
                             <rect key="frame" x="0.0" y="0.0" width="547" height="50"/>
@@ -52,6 +58,7 @@
                             </subviews>
                             <color key="tintColor" name="AccentColor"/>
                             <constraints>
+                                <constraint firstAttribute="height" constant="50" id="H3q-ow-mlR"/>
                                 <constraint firstItem="9qh-oQ-3Fh" firstAttribute="leading" secondItem="T9b-3e-pu7" secondAttribute="leading" constant="8" id="Lyf-nx-iNv"/>
                                 <constraint firstAttribute="bottom" secondItem="9qh-oQ-3Fh" secondAttribute="bottom" constant="5" id="e8J-vI-PjQ"/>
                                 <constraint firstItem="9qh-oQ-3Fh" firstAttribute="top" secondItem="T9b-3e-pu7" secondAttribute="top" constant="5" id="edM-1x-XVg"/>
@@ -59,12 +66,18 @@
                             </constraints>
                         </view>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2qw-PG-bjF">
-                            <rect key="frame" x="0.0" y="55" width="547" height="34.333333333333343"/>
+                            <rect key="frame" x="0.0" y="60" width="547" height="34.333333333333343"/>
                             <color key="tintColor" name="AccentColor"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="filled" image="sparkles" catalog="system" title="Get Ideas"/>
                         </button>
                     </subviews>
+                    <constraints>
+                        <constraint firstItem="2qw-PG-bjF" firstAttribute="leading" secondItem="Zy2-Ce-dpI" secondAttribute="leading" constant="60" id="RUt-hI-tD3"/>
+                        <constraint firstAttribute="trailing" secondItem="T9b-3e-pu7" secondAttribute="trailing" constant="40" id="TEE-fb-maR"/>
+                        <constraint firstItem="T9b-3e-pu7" firstAttribute="leading" secondItem="Zy2-Ce-dpI" secondAttribute="leading" constant="15" id="ijk-J8-1sC"/>
+                        <constraint firstAttribute="trailing" secondItem="2qw-PG-bjF" secondAttribute="trailing" constant="60" id="vnG-YR-HV7"/>
+                    </constraints>
                 </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="VXr-Tz-HHm"/>
@@ -76,6 +89,9 @@
                 <constraint firstAttribute="trailing" secondItem="F5p-iG-YO8" secondAttribute="trailing" id="NG5-w5-GFG"/>
                 <constraint firstItem="Zy2-Ce-dpI" firstAttribute="top" secondItem="F5p-iG-YO8" secondAttribute="bottom" constant="25" id="mjJ-H5-2Vo"/>
             </constraints>
+            <connections>
+                <outlet property="textView" destination="T9b-3e-pu7" id="a7R-8M-y7M"/>
+            </connections>
             <point key="canvasLocation" x="319.84732824427482" y="224.64788732394368"/>
         </collectionReusableView>
     </objects>

@@ -43,7 +43,7 @@ extension UIView {
         }
         
         // Match corner radius of 'self'
-        glassEffectView.layer.cornerRadius = self.layer.cornerRadius
+        glassEffectView.layer.cornerRadius = 12
         glassEffectView.clipsToBounds = true
     }
 }
