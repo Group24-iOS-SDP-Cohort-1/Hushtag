@@ -70,9 +70,10 @@ struct Idea: Codable, Identifiable {
     var liked: Bool
     let tag: String
     let thumbnail: String
+    let engagementTag: String
 
     enum CodingKeys: String, CodingKey {
-        case id, trending, title, description, script, hashtag, videos, liked, tag, thumbnail
+        case id, trending, title, description, script, hashtag, videos, liked, tag, thumbnail,engagementTag
     }
 }
 

@@ -35,7 +35,8 @@
       ],
       "liked": false,
       "tag": "",
-      "thumbnail": "Flat geometric beauty youtube thumbnail | Free Vector"
+      "thumbnail": "Flat geometric beauty youtube thumbnail | Free Vector",
+      "engagementTag": "Trending"
     },
     {
       "id" : "i2",
@@ -72,7 +73,8 @@
       ],
       "liked": false,
       "tag": "",
-      "thumbnail": ""
+      "thumbnail": "",
+      "engagementTag": "Engaging"
     },
     {
         "id": "i3",
@@ -109,7 +111,8 @@
     ],
     "liked": false,
     "tag": "",
-    "thumbnail": ""
+    "thumbnail": "",
+    "engagementTag": "New Drop"
   },
 
   {
@@ -147,7 +150,8 @@
     ],
     "liked": false,
     "tag": "",
-    "thumbnail": ""
+    "thumbnail": "",
+    "engagementTag": "Engaging"
   },
 
   {
@@ -185,7 +189,8 @@
     ],
     "liked": false,
     "tag": "",
-    "thumbnail": ""
+    "thumbnail": "",
+    "engagementTag": "Trending"
   }
   ],
   
