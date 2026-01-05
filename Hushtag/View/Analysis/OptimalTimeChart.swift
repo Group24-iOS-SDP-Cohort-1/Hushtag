@@ -8,7 +8,7 @@ struct OptimalTimeChart: View {
     // 2. Accept the pre-calculated winners (No sorting needed here!)
     var topDays: Set<String>
     
-    let purpleHex = "#8B5CF6"
+    let purpleColor = UIColor(named: "AccentColor")
     
     // 3. Sort for Display (Chronological Mon -> Sun) stays here
     // We still need this because the Chart must display Mon-Sun, regardless of which is "Best"
@@ -38,7 +38,7 @@ struct OptimalTimeChart: View {
                 .foregroundStyle(
                     // 4. Use the passed 'topDays' set directly
                     topDays.contains(item.day)
-                    ? Color(uiColor: UIColor(hex: purpleHex)!)
+                    ? Color(uiColor: purpleColor ?? .white)
                     : Color.gray.opacity(0.5)
                 )
             }

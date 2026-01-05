@@ -199,7 +199,22 @@ struct Deliverable: Codable {
 
 struct Analysis: Codable, Identifiable {
     let id: String
-    let views: String
+    
+    // 🔹 Audience metrics (NEW)
+        let views: String
+        let watchTime: String
+        let subscribers: String
+        let estRevenue: String
+
+        // 🔹 Change indicators (NEW)
+        let viewsChange: String
+        let watchTimeChange: String
+        let subscribersChange: String
+        let revenueChange: String
+
+        // 🔹 Existing fields (UNCHANGED)
+    
+    //let views: String
     let likes: String
     let incFollowers: String
     let followers: String
@@ -210,7 +225,22 @@ struct Analysis: Codable, Identifiable {
     let engagementRate: String
 
     enum CodingKeys: String, CodingKey {
-        case id,views,likes,incFollowers,followers,ageGroup,gender,optimalTime,engagementRate,post
+            case id,
+                 views, watchTime, subscribers, estRevenue,
+                 viewsChange, watchTimeChange, subscribersChange, revenueChange,
+                 likes, incFollowers, followers,
+                 ageGroup, gender, post, optimalTime, engagementRate
+        }
+}
+extension Analysis {
+
+    var audienceGrid: [(title: String, value: String, change: String)] {
+        return [
+            ("Views", views, viewsChange),
+            ("Watch time", watchTime, watchTimeChange),
+            ("Subscribers", subscribers, subscribersChange),
+            ("Est. Revenue", estRevenue, revenueChange)
+        ]
     }
 }
 

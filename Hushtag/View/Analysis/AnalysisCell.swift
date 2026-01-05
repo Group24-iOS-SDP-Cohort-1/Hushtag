@@ -62,12 +62,13 @@ class AnalysisCell: UICollectionViewCell {
         contentView.layer.masksToBounds = true
         layer.cornerRadius = 12
         layer.masksToBounds = false
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.1
-        layer.shadowOffset = CGSize(width: 0, height: 1)
-        layer.shadowRadius = 8
+//        layer.shadowColor = UIColor.black.cgColor
+//        layer.shadowOpacity = 0.1
+//        layer.shadowOffset = CGSize(width: 0, height: 1)
+//        layer.shadowRadius = 8
         backgroundColor = .clear
-        contentView.backgroundColor = .white
+        contentView.applyLiquidGlassEffect()
+        contentView.backgroundColor = .clear
     }
     
     
