@@ -12,11 +12,9 @@ class Overview: UIViewController {
     
     var ideaResponse = IdeaResponse()
     let ytResponse = youtubeResponse()
-    let igResponse = instagramResponse()
-    let fbResponse = facebookResponse()
-    var postresponse = PostResponse()
-    var taskresponse = TaskResponse()
-    var dealsresponse = DealResponse()
+
+    var dataStore: DataStore = DataStore.shared
+    
     var analysis: [Analysis] = []
     var post: [Post] = []
     var task: [Task] = []
@@ -26,8 +24,7 @@ class Overview: UIViewController {
     var selectedIdeas: Idea?
     var selectedVideos: Analysis?
     var selectedPost: Post?
-    var selectedDeal: Deal?
-    var selectedTask: Task?
+
     var filteredIdeas: [Idea] {
         return ideas.filter { $0.liked == false }
     }
@@ -58,10 +55,11 @@ class Overview: UIViewController {
         // fetch the data
         
         ideas = ideaResponse.ideas
-        post = postresponse.posts
-        task = taskresponse.tasks
-        deal = dealsresponse.deals
-        analysis = [ytResponse.youtube.first, igResponse.instagram.first, fbResponse.facebook.first].compactMap { $0 }
+        post = dataStore.getPosts()
+        task = dataStore.getTasks()
+        deal = dataStore.getDeals()
+        
+        analysis = [ytResponse.youtube.first].compactMap { $0 }
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
@@ -86,13 +84,11 @@ class Overview: UIViewController {
             ("Deals", dealCount),
             ("Posts", postCount)
         ]
-        allPosts = postresponse.posts
-        filteredPosts.sort {
+        allPosts = post
+        filteredPosts = post.sorted {
             ($0.postingTime.toDate() ?? .distantFuture) <
             ($1.postingTime.toDate() ?? .distantFuture)
         }
-
-
     }
     func registerCell() {
         collectionView.register(

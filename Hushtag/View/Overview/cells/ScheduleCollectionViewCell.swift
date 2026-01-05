@@ -19,10 +19,15 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         applyLiquidGlassEffect()
     }
     func configureCell(schedule: Post) {
-        let hour = schedule.postingTime.time.hour
-        let minute = schedule.postingTime.time.minute
-
-        timeLabel.text = "\(hour):\(String(format: "%02d", minute))"
+        if
+                let time = schedule.postingTime.time,
+                let hour = time.hour,
+                let minute = time.minute
+            {
+                timeLabel.text = String(format: "%02d:%02d", hour, minute)
+            } else {
+                timeLabel.text = "--:--"
+            }
 
         titleLabel.text = schedule.name
         titleLabel.numberOfLines = 0

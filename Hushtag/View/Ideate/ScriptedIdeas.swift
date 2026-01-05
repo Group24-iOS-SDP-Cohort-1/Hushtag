@@ -12,28 +12,21 @@ class ScriptedIdeas: UIViewController {
     @IBOutlet weak var script: UITextView!
 
     var idea: Idea?
+    let dataStore = DataStore.shared
+    var deals: [Deal] = []
 
     @IBOutlet weak var descriptionTitle: UILabel!
-
     @IBOutlet weak var Description: UILabel!
-
     @IBOutlet weak var scriptTitle: UILabel!
-
     @IBOutlet weak var imageView: UIImageView!
-
     @IBOutlet weak var imageStack: UIStackView!
-
     @IBOutlet weak var descriptionStack: UIStackView!
-
     @IBOutlet weak var scriptStack: UIStackView!
-
     @IBOutlet weak var popupButton: UIButton!
-
-    let response = DealResponse() 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        deals = dataStore.getDeals()
         scriptStack.isHidden = true
         descriptionStack.isHidden = true
         guard let idea = idea else {
@@ -115,7 +108,7 @@ class ScriptedIdeas: UIViewController {
         // Default shown text
         popupButton.setTitle("Tag Idea", for: .normal)
 
-        let deals = response.deals
+        let deals = self.deals
 
         guard !deals.isEmpty else {
             popupButton.menu = UIMenu(title: "No Deals Available", children: [])

@@ -82,11 +82,11 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
                 let day = dayFormatter.string(from: d)
                 let iso = isoFormatter.string(from: d)
                 let comps = cal.dateComponents([.hour, .minute], from: d)
-                let deadline = Deadline(day: day, date: iso, time: Time(hour: comps.hour, minute: comps.minute))
+                let deadline = DateData(day: day, date: iso, time: TimeData(hour: comps.hour, minute: comps.minute))
                 let item = Deliverable(name: title, deadline: deadline, isCompleted: false)
                 deliverables.append(item)
             } else {
-                let deadline = Deadline(day: nil, date: nil, time: nil)
+                let deadline = DateData(day: nil, date: nil, time: nil)
                 let item = Deliverable(name: title, deadline: deadline, isCompleted: false)
                 deliverables.append(item)
             }

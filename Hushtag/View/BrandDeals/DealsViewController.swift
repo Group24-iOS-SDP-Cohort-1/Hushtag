@@ -14,16 +14,16 @@ class DealsViewController: UIViewController {
 
 
     
-   var selected_Deal : Deal?
-    var dealResponse = DealResponse()
+    var selected_Deal : Deal?
     var deals: [Deal] = []
+
     var completedDeals: [Deal] {
-            return deals.filter {
-                let total = $0.deliverable.count
-                let completed = $0.deliverable.filter { $0.isCompleted }.count
-                return total > 0 && completed == total
-            }
+        deals.filter {
+            let total = $0.deliverable.count
+            let completed = $0.deliverable.filter { $0.isCompleted }.count
+            return total > 0 && completed == total
         }
+    }
 
      
         var ongoingDeals: [Deal] {
@@ -45,7 +45,7 @@ class DealsViewController: UIViewController {
 
         registerCell()
 
-       deals = dealResponse.deals
+        deals = DataStore.shared.getDeals()
         print(deals.count)
         collectionView.delegate = self
         collectionView.dataSource = self

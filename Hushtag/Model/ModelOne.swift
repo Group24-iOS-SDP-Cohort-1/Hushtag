@@ -8,37 +8,43 @@
 import Foundation
 
 struct TimeData: Codable{
-    let hour: Int
-    let minute: Int
+    let hour: Int?
+    let minute: Int?
 }
 
 struct DateData: Codable{
-    let day: String
-    let date: String
-    let time: TimeData
+    let day: String?
+    let date: String?
+    let time: TimeData?
 }
 
 extension DateData {
 
     func toDate() -> Date? {
-        let isoFormatter = ISO8601DateFormatter()
-        isoFormatter.formatOptions = [.withInternetDateTime]
-
-        // Parse base date (midnight UTC)
-        guard let baseDate = isoFormatter.date(from: date) else {
+        guard
+            let dateString = date,
+            let timeData = time,
+            let hour = timeData.hour,
+            let minute = timeData.minute
+        else {
             return nil
         }
 
-        // Apply hour & minute from TimeData
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime]
+
+        guard let baseDate = isoFormatter.date(from: dateString) else {
+            return nil
+        }
+
         return Calendar.current.date(
-            bySettingHour: time.hour,
-            minute: time.minute,
+            bySettingHour: hour,
+            minute: minute,
             second: 0,
             of: baseDate
         )
     }
 }
-
 
 struct AnalysisDateData: Codable, Identifiable{
     let id = UUID()
@@ -131,23 +137,6 @@ extension IdeaResponse {
 
 }
 
-// for tasks
-struct TaskResponse: Codable {
-    var tasks: [Task] = []
-    init() {
-        do {
-            let response = try load()
-            tasks = response.tasks
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
-    func getRandomIdea() -> Task? {
-        return tasks.randomElement()
-    }
-}
-
 struct Task: Codable, Identifiable {
     let id = UUID()
     let name: String
@@ -159,47 +148,6 @@ struct Task: Codable, Identifiable {
 
     enum CodingKeys: String, CodingKey {
         case name,startDate,endDate,description,reminder, isCompleted
-    }
-}
-
-extension TaskResponse {
-    func load(from filename: String = "DataStorejson") throws -> TaskResponse {
-        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
-            throw NSError(
-                domain: "TaskResponse",
-                code: 400,
-                userInfo: [NSLocalizedDescriptionKey: "DataSource.json not found"]
-            )
-        }
-
-        let data = try Data(contentsOf: url)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(TaskResponse.self, from: data)
-    }
-
-    func decode(from data: Data) throws -> TaskResponse {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(TaskResponse.self, from: data)
-    }
-}
-
-
-// for Post
-struct PostResponse: Codable {
-    var posts: [Post] = []
-    init() {
-        do {
-            let response = try load()
-            posts = response.posts
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
-    func getRandomIdea() -> Post? {
-        return posts.randomElement()
     }
 }
 
@@ -226,48 +174,6 @@ struct Post: Codable, Identifiable {
     }
 }
 
-extension PostResponse {
-    func load(from filename: String = "DataStorejson") throws -> PostResponse {
-        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
-            throw NSError(
-                domain: "PostResponse",
-                code: 400,
-                userInfo: [NSLocalizedDescriptionKey: "DataSource.json not found"]
-            )
-        }
-
-        let data = try Data(contentsOf: url)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(PostResponse.self, from: data)
-    }
-
-    func decode(from data: Data) throws -> PostResponse {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(PostResponse.self, from: data)
-    }
-}
-
-
-// for deals
-struct DealResponse: Codable {
-    var deals: [Deal] = []
-    init() {
-        do {
-            let response = try load()
-            deals = response.deals
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
-    func getRandomIdea() -> Deal? {
-        return deals.randomElement()
-    }
-}
-
-
 struct Deal: Codable, Identifiable {
     let id = UUID()
     let name: String
@@ -286,43 +192,8 @@ struct Deal: Codable, Identifiable {
 
 struct Deliverable: Codable {
     let name: String
-    let deadline: Deadline
+    let deadline: DateData
     var isCompleted : Bool
-}
-
-struct Deadline: Codable {
-    let day: String?
-    let date: String?
-    let time: Time?
-}
-
-struct Time: Codable {
-    let hour: Int?
-    let minute: Int?
-}
-
-
-extension DealResponse {
-    func load(from filename: String = "DataStorejson") throws -> DealResponse {
-        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
-            throw NSError(
-                domain: "DealResponse",
-                code: 400,
-                userInfo: [NSLocalizedDescriptionKey: "DataSource.json not found"]
-            )
-        }
-
-        let data = try Data(contentsOf: url)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(DealResponse.self, from: data)
-    }
-
-    func decode(from data: Data) throws -> DealResponse {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(DealResponse.self, from: data)
-    }
 }
 
 // for youtube analysis
@@ -379,86 +250,6 @@ extension youtubeResponse {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         return try decoder.decode(youtubeResponse.self, from: data)
-    }
-}
-
-// for instagram analysis
-struct instagramResponse: Codable {
-    var instagram: [Analysis] = []
-    init() {
-        do {
-            let response = try load()
-            instagram = response.instagram
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
-    func getRandomIdea() -> Analysis? {
-        return instagram.randomElement()
-    }
-}
-
-extension instagramResponse {
-    func load(from filename: String = "DataStorejson") throws -> instagramResponse {
-        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
-            throw NSError(
-                domain: "instagramResponse",
-                code: 400,
-                userInfo: [NSLocalizedDescriptionKey: "DataSource.json not found"]
-            )
-        }
-
-        let data = try Data(contentsOf: url)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(instagramResponse.self, from: data)
-    }
-
-    func decode(from data: Data) throws -> instagramResponse {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(instagramResponse.self, from: data)
-    }
-}
-
-// for facebook analysis
-struct facebookResponse: Codable {
-    var facebook: [Analysis] = []
-    init() {
-        do {
-            let response = try load()
-            facebook = response.facebook
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
-    func getRandomIdea() -> Analysis? {
-        return facebook.randomElement()
-    }
-}
-
-extension facebookResponse {
-    func load(from filename: String = "DataStorejson") throws -> facebookResponse {
-        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
-            throw NSError(
-                domain: "facebookResponse",
-                code: 400,
-                userInfo: [NSLocalizedDescriptionKey: "DataSource.json not found"]
-            )
-        }
-
-        let data = try Data(contentsOf: url)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(facebookResponse.self, from: data)
-    }
-
-    func decode(from data: Data) throws -> facebookResponse {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(facebookResponse.self, from: data)
     }
 }
 
