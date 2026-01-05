@@ -16,7 +16,6 @@ class DealsCollectionViewCell: UICollectionViewCell{
     @IBOutlet weak var paymentValueLabel: UILabel!
     @IBOutlet weak var nextDeliverableLabel: UILabel!
 
-    @IBOutlet weak var deadlineTitleLabel: UILabel!
     @IBOutlet weak var deadlineIconImageView: UIImageView!
     @IBOutlet weak var bottomStackView: UIStackView!
     @IBOutlet weak var navigationButton: UIButton!
@@ -40,14 +39,14 @@ class DealsCollectionViewCell: UICollectionViewCell{
         // Rounded corners
         cardView.layer.cornerRadius = 15
         cardView.layer.cornerCurve = .continuous
-        cardView.backgroundColor = .white
+        cardView.applyLiquidGlassEffect()
         cardView.layer.masksToBounds = false
 
-        // Subtle shadow
-        cardView.layer.shadowColor = UIColor.black.cgColor
-        cardView.layer.shadowOpacity = 0.15
-        cardView.layer.shadowOffset = CGSize(width: 0, height: 0)
-        cardView.layer.shadowRadius = 6
+//        // Subtle shadow
+//        cardView.layer.shadowColor = UIColor.black.cgColor
+//        cardView.layer.shadowOpacity = 0.15
+//        cardView.layer.shadowOffset = CGSize(width: 0, height: 0)
+//        cardView.layer.shadowRadius = 6
 
     }
 
@@ -74,8 +73,7 @@ class DealsCollectionViewCell: UICollectionViewCell{
         let completed = deal.deliverable.filter { $0.isCompleted }.count
 
         if isCompleted {
-            deadlineTitleLabel.text = "Platform"
-            deadlineIconImageView.image = UIImage(systemName: "network")
+            deadlineIconImageView.image = UIImage(systemName: "play.circle")
             bottomStackView.isHidden = true
             captionLabel.isHidden    = true
             nextDeliverableLabel.isHidden = true
@@ -86,14 +84,13 @@ class DealsCollectionViewCell: UICollectionViewCell{
             deadlineValueLabel.textColor = paymentValueLabel.textColor
 
         } else {
-            deadlineTitleLabel.text = "Deadline"
             deadlineIconImageView.image = UIImage(systemName: "calendar")
             // show bottom area
             bottomStackView.isHidden = false
             captionLabel.isHidden    = false
             nextDeliverableLabel.isHidden = false
 
-            deliverablesValueLabel.text = "\(completed) / \(total) done"
+            deliverablesValueLabel.text = "\(completed) / \(total)"
             updateNextDeadline(deal)
             
             if completed == 0 {

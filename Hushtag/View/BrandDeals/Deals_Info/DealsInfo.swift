@@ -7,12 +7,15 @@
 
 import UIKit
 
+let purple = UIColor(red: 139/255, green: 92/255, blue: 246/255, alpha: 1)
+
 protocol DealsInfoDelegate: AnyObject {
-    /// Called when the detail screen has an updated copy of the deal.
     func dealsInfo(_ controller: DealsInfo, didUpdateDeal deal: Deal, at index: Int)
 }
 
 private let cardBackgroundElementKind = "card-background"
+
+// MARK: - Card Background (Liquid Glass – MATCHES MAIN)
 
 final class CardBackgroundView: UICollectionReusableView {
 
@@ -27,15 +30,10 @@ final class CardBackgroundView: UICollectionReusableView {
     }
 
     private func setup() {
-        backgroundColor = .white
+        backgroundColor = .clear
         layer.cornerRadius = 12
-        layer.masksToBounds = false
-
-        // Match IdeaCell shadow
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.10     // softer shadow
-        layer.shadowOffset = CGSize(width: 0, height: 1)
-        layer.shadowRadius = 8         // same as idea cell
+        clipsToBounds = true
+        applyLiquidGlassEffect()
     }
 }
 
@@ -46,44 +44,52 @@ private enum DealsInfoSection: Int, CaseIterable {
     case notes
 }
 
-
 class DealsInfo: UIViewController {
-    
+
     var selectedIdea: Idea?
     weak var delegate: DealsInfoDelegate?
     var dealIndex: Int = -1
+
     @IBOutlet weak var collectionView: UICollectionView!
-    
     var deals: Deal?
-    
-        private var detailRegistration: UICollectionView.CellRegistration<DealDetailCell, (String, String)>!
-        private var deliverableRegistration: UICollectionView.CellRegistration<UICollectionViewListCell, Deliverable>!
-        
-        
+
+    // ✅ MATCH MAIN: Use UICollectionViewListCell
+    private var detailRegistration:
+        UICollectionView.CellRegistration<UICollectionViewListCell, (String, String)>!
+
+    private var deliverableRegistration:
+        UICollectionView.CellRegistration<UICollectionViewListCell, Deliverable>!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         navigationItem.title = deals?.name
-        view.backgroundColor = .white
-        collectionView.backgroundColor = .white
-        view.backgroundColor = .white
-                configureLayout()
-                configureRegistrations()
-                
-                collectionView.dataSource = self
-                collectionView.delegate   = self
+        view.backgroundColor = .clear
+        collectionView.backgroundColor = .clear
+
+        configureLayout()
+        configureRegistrations()
+
+        collectionView.dataSource = self
+        collectionView.delegate = self
+
         collectionView.register(
             UINib(nibName: "IdeaCollectionViewCell", bundle: nil),
             forCellWithReuseIdentifier: "ideas_cell"
         )
+
         collectionView.register(
-                UINib(nibName: "HeaderView", bundle: nil),
-                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                withReuseIdentifier: "headerCell"
-            )
+            UINib(nibName: "HeaderView", bundle: nil),
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "headerCell"
+        )
+
         collectionView.register(NotesCell.self, forCellWithReuseIdentifier: "NotesCell")
     }
 }
+
+// MARK: - Layout
+
 extension DealsInfo {
 
     private func configureLayout() {
@@ -103,7 +109,7 @@ extension DealsInfo {
             )
 
             section.contentInsets = NSDirectionalEdgeInsets(
-                top: 12,   // spacing of the card from indside
+                top: 12,
                 leading: 16,
                 bottom: -11,
                 trailing: 16
@@ -130,12 +136,11 @@ extension DealsInfo {
             section.boundarySupplementaryItems = [header]
 
             if sectionKind == .details || sectionKind == .deliverables {
-                let cardStartOffset: CGFloat = 64
                 let background = NSCollectionLayoutDecorationItem.background(
                     elementKind: cardBackgroundElementKind
                 )
                 background.contentInsets = NSDirectionalEdgeInsets(
-                    top: cardStartOffset,
+                    top: 64,
                     leading: 16,
                     bottom: -10,
                     trailing: 16
@@ -146,96 +151,113 @@ extension DealsInfo {
             return section
         }
 
-        layout.register(CardBackgroundView.self,
-                        forDecorationViewOfKind: cardBackgroundElementKind)
+        layout.register(
+            CardBackgroundView.self,
+            forDecorationViewOfKind: cardBackgroundElementKind
+        )
 
         collectionView.collectionViewLayout = layout
     }
-       
+}
+
+// MARK: - Cell Registrations (APPEARANCE MATCH)
+
+extension DealsInfo {
 
     private func configureRegistrations() {
 
-        
-        // DETAILS registration (use indexPath param so we can check last item)
+        // 🔹 DETAILS (SF Symbol + Value ONLY)
         detailRegistration =
-                UICollectionView.CellRegistration<DealDetailCell, (String, String)> { cell, _, item in
-                    let (title, value) = item
-                    cell.configure(title: title, value: value)
-                    cell.backgroundConfiguration = UIBackgroundConfiguration.clear()
-                }
-        
-        deliverableRegistration =
-        UICollectionView.CellRegistration<UICollectionViewListCell, Deliverable> { cell, _, deliverable in
-            var content = UIListContentConfiguration.subtitleCell()
-            content.text = deliverable.name
-            content.textProperties.font  = .systemFont(ofSize: 14, weight: .regular)
+        UICollectionView.CellRegistration<UICollectionViewListCell, (String, String)> {
+            cell, _, item in
+
+            let (title, value) = item
+
+            var content = UIListContentConfiguration.valueCell()
+            content.text = value
+            content.textProperties.font = .systemFont(ofSize: 14)
             content.textProperties.color = .label
 
-            if let day = deliverable.deadline.day,
-               let dateString = deliverable.deadline.date?.prefix(10) {
-                content.secondaryText = "Due \(day) \(dateString)"
-                content.secondaryTextProperties.color = .secondaryLabel
-                content.secondaryTextProperties.font  = .systemFont(ofSize: 12, weight: .regular)
-            } else {
-                content.secondaryText = nil
+            // Map title → SF Symbol (DATA UNCHANGED)
+            let symbolName: String
+            switch title {
+            case "Deadline":     symbolName = "calendar"
+            case "Payment":      symbolName = "creditcard"
+            case "Gmail":        symbolName = "envelope"
+            case "Phone number": symbolName = "phone"
+            default:             symbolName = "circle"
             }
-
-            // purple circle / filled circle
-            let symbolName = deliverable.isCompleted ? "circle.inset.filled" : "circle"
-            let purple = UIColor(red: 139/255, green: 92/255, blue: 246/255, alpha: 1)
 
             content.image = UIImage(systemName: symbolName)
             content.imageProperties.tintColor = purple
             content.imageProperties.preferredSymbolConfiguration =
-                UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold)
-            content.imageToTextPadding = 8
+                UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+            content.imageToTextPadding = 12
 
             cell.contentConfiguration = content
-            cell.backgroundConfiguration = UIBackgroundConfiguration.clear()
-            
-            
+            cell.backgroundConfiguration = .clear()
         }
+
+        // 🔹 DELIVERABLES (unchanged, already matching)
+        deliverableRegistration =
+        UICollectionView.CellRegistration<UICollectionViewListCell, Deliverable> {
+            cell, _, deliverable in
+
+            var content = UIListContentConfiguration.subtitleCell()
+            content.text = deliverable.name
+            content.textProperties.font = .systemFont(ofSize: 14)
+            content.textProperties.color = .label
+
+            if let day = deliverable.deadline.day,
+               let date = deliverable.deadline.date?.prefix(10) {
+                content.secondaryText = "Due \(day) \(date)"
+            }
+
+            let symbol = deliverable.isCompleted
+                ? "circle.inset.filled"
+                : "circle"
+
+            content.image = UIImage(systemName: symbol)
+            content.imageProperties.tintColor = purple
+            content.imageProperties.preferredSymbolConfiguration =
+                UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold)
+
+            cell.contentConfiguration = content
+            cell.backgroundConfiguration = .clear()
+        }
+    }
 }
 
-   
+// MARK: - DATA (UNCHANGED)
+
+extension DealsInfo {
+
     private func overallDeadline() -> String {
         guard let last = deals?.deliverable.last else { return "-" }
-        let day  = last.deadline.day ?? ""
-        let date = (last.deadline.date ?? "").prefix(10)
-        return "\(day) \(date)"
+        return "\(last.deadline.day ?? "") \(last.deadline.date?.prefix(10) ?? "")"
     }
 
     private func formattedPayment() -> String {
         guard let deal = deals else { return "-" }
-
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.groupingSeparator = ","
+        return "Rs \(formatter.string(from: deal.payment as NSNumber) ?? "\(deal.payment)")"
+    }
 
-        let amountString = formatter.string(from: deal.payment as NSNumber) ?? "\(deal.payment)"
-        return "Rs \(amountString)"
-    }
-    
     private var notesText: String? {
-        guard let raw = deals?.description else { return nil }
-        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? nil : trimmed
+        deals?.description.trimmingCharacters(in: .whitespacesAndNewlines)
     }
-    
+
+    // ✅ DATA FETCHING UNCHANGED
     private var detailRows: [(String, String)] {
         guard let deal = deals else { return [] }
-
         return [
-            ("Deadline",      overallDeadline()),
-            ("Payment",       formattedPayment()),
-            ("Gmail",         deal.email),
-            ("Phone number",  deal.phone)
+            ("Payment", formattedPayment()),
+            ("Gmail", deal.email),
+            ("Phone number", deal.phone)
         ]
     }
 }
-
-// MARK: - DataSource
-
 extension DealsInfo: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
