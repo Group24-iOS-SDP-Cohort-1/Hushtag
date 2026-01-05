@@ -11,8 +11,10 @@ class DataStore {
     private var tasks: [Task] = []
     private var deals: [Deal] = []
     private var posts: [Post] = []
+    private var analysis: [Analysis] = []
     
     static let shared = DataStore()
+    
     private init() {
         loadSampleData()
     }
@@ -25,6 +27,10 @@ class DataStore {
     func getPosts() -> [Post] {
         posts
     }
+    func getAnalysis() -> [Analysis] {
+        analysis
+    }
+    
     func loadSampleData() {
         let sampleTasks: [Task] = [
             Task(
@@ -353,8 +359,190 @@ class DataStore {
                 isCompleted: false
             )
         ]
+        
+        let sampleAnalysis: [Analysis] = [
+
+            Analysis(
+                id: "1",
+                views: "5.2k",
+                likes: "3.1k",
+                incFollowers: "-8k",
+                followers: "40k",
+                ageGroup: ["18", "34"],
+                gender: [
+                    "M": "45.2",
+                    "F": "54.8"
+                ],
+                post: 5,
+                optimalTime: [
+                    AnalysisDateData(
+                        day: "Monday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 17, minute: 0),
+                        audienceEngagementRate: "6.1"
+                    ),
+                    AnalysisDateData(
+                        day: "Tuesday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 14, minute: 0),
+                        audienceEngagementRate: "4.3"
+                    ),
+                    AnalysisDateData(
+                        day: "Wednesday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 14, minute: 0),
+                        audienceEngagementRate: "1.7"
+                    ),
+                    AnalysisDateData(
+                        day: "Thursday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 9, minute: 0),
+                        audienceEngagementRate: "5.4"
+                    ),
+                    AnalysisDateData(
+                        day: "Friday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 14, minute: 0),
+                        audienceEngagementRate: "3.2"
+                    ),
+                    AnalysisDateData(
+                        day: "Saturday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 10, minute: 30),
+                        audienceEngagementRate: "2.5"
+                    ),
+                    AnalysisDateData(
+                        day: "Sunday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 14, minute: 0),
+                        audienceEngagementRate: "4.1"
+                    )
+                ],
+                engagementRate: "6.1"
+            ),
+
+            Analysis(
+                id: "2",
+                views: "3.8k",
+                likes: "2.5k",
+                incFollowers: "3k",
+                followers: "28k",
+                ageGroup: ["20", "29"],
+                gender: [
+                    "M": "51",
+                    "F": "49"
+                ],
+                post: 4,
+                optimalTime: [
+                    AnalysisDateData(
+                        day: "Monday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 16, minute: 0),
+                        audienceEngagementRate: "1.0"
+                    ),
+                    AnalysisDateData(
+                        day: "Tuesday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 17, minute: 0),
+                        audienceEngagementRate: "6.1"
+                    ),
+                    AnalysisDateData(
+                        day: "Wednesday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 17, minute: 0),
+                        audienceEngagementRate: "6.1"
+                    ),
+                    AnalysisDateData(
+                        day: "Thursday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 11, minute: 0),
+                        audienceEngagementRate: "1.0"
+                    ),
+                    AnalysisDateData(
+                        day: "Friday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 17, minute: 0),
+                        audienceEngagementRate: "6.1"
+                    ),
+                    AnalysisDateData(
+                        day: "Saturday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 17, minute: 0),
+                        audienceEngagementRate: "6.2"
+                    ),
+                    AnalysisDateData(
+                        day: "Sunday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 17, minute: 0),
+                        audienceEngagementRate: "6.7"
+                    )
+                ],
+                engagementRate: ""
+            ),
+
+            Analysis(
+                id: "3",
+                views: "7.4k",
+                likes: "5.6k",
+                incFollowers: "12k",
+                followers: "55k",
+                ageGroup: ["25", "40"],
+                gender: [
+                    "M": "40.4",
+                    "F": "59.6"
+                ],
+                post: 6,
+                optimalTime: [
+                    AnalysisDateData(
+                        day: "Monday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 17, minute: 0),
+                        audienceEngagementRate: "6.1"
+                    ),
+                    AnalysisDateData(
+                        day: "Tuesday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 18, minute: 0),
+                        audienceEngagementRate: "7.6"
+                    ),
+                    AnalysisDateData(
+                        day: "Wednesday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 17, minute: 0),
+                        audienceEngagementRate: "6.1"
+                    ),
+                    AnalysisDateData(
+                        day: "Thursday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 17, minute: 0),
+                        audienceEngagementRate: "6.1"
+                    ),
+                    AnalysisDateData(
+                        day: "Friday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 15, minute: 0),
+                        audienceEngagementRate: "1.0"
+                    ),
+                    AnalysisDateData(
+                        day: "Saturday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 17, minute: 0),
+                        audienceEngagementRate: "6.1"
+                    ),
+                    AnalysisDateData(
+                        day: "Sunday",
+                        date: "2025-11-19T00:00:00Z",
+                        time: TimeData(hour: 17, minute: 0),
+                        audienceEngagementRate: "7.2"
+                    )
+                ],
+                engagementRate: "-7.3"
+            )
+        ]
+
         self.tasks = sampleTasks
         self.deals = sampleDeals
         self.posts = samplePosts
+        self.analysis = sampleAnalysis
     }
 }

@@ -9,9 +9,24 @@ import UIKit
 class Overview: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
-    
+    enum ScheduleItem {
+        case task(Task)
+        case deal(Deal)
+        case post(Post)
+
+        func date() -> Date? {
+            switch self {
+            case .task(let task):
+                return task.startDate.toDate()
+            case .deal(let deal):
+                return deal.deliverable.first?.deadline.toDate()
+            case .post(let post):
+                return post.postingTime.toDate()
+            }
+        }
+    }
+
     var ideaResponse = IdeaResponse()
-    let ytResponse = youtubeResponse()
 
     var dataStore: DataStore = DataStore.shared
     
@@ -21,74 +36,27 @@ class Overview: UIViewController {
     var deal: [Deal] = []
     var ideas: [Idea] = []
     var selectedIndexPath: IndexPath?
-    var selectedIdeas: Idea?
-    var selectedVideos: Analysis?
-    var selectedPost: Post?
+    var selectedScheduleItem: ScheduleItem?
 
-    var filteredIdeas: [Idea] {
-        return ideas.filter { $0.liked == false }
-    }
     var activities: [(String, Int, String)] = []
     var lists: [(String, Int)] = []
-    var completedTasks: [Task] {
-        task.filter { $0.isCompleted }
-    }
 
-    var completedDeals: [Deal] {
-        deal.filter { deal in
-            let total = deal.deliverable.count
-            let completed = deal.deliverable.filter { $0.isCompleted }.count
-            return total > 0 && completed == total
-        }
-    }
-
-    var completedPosts: [Post] {
-        post.filter { $0.isCompleted }
-    }
-    // Keep master + filtered
-    var allPosts: [Post] = []
-    var filteredPosts: [Post] = []
+    var filteredSchedule: [ScheduleItem] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
         // fetch the data
         
-        ideas = ideaResponse.ideas
         post = dataStore.getPosts()
         task = dataStore.getTasks()
         deal = dataStore.getDeals()
         
-        analysis = [ytResponse.youtube.first].compactMap { $0 }
+        analysis = dataStore.getAnalysis().prefix(1).map { $0 }
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
         
-        let taskCount = task.count
-        let dealCount = deal.count
-        let postCount = post.count
-
-        let completedTaskCount = completedTasks.count
-        let completedDealCount = completedDeals.count
-        let completedPostCount = completedPosts.count
-
-        let totalCompleted = completedTaskCount + completedDealCount + completedPostCount
-        let totalActivities = taskCount + dealCount + postCount
-        activities = [
-            ("All", totalActivities, "tray.circle.fill"),
-            ("Completed", totalCompleted, "checkmark.circle.fill")
-        ]
-
-        lists = [
-            ("Tasks", taskCount),
-            ("Deals", dealCount),
-            ("Posts", postCount)
-        ]
-        allPosts = post
-        filteredPosts = post.sorted {
-            ($0.postingTime.toDate() ?? .distantFuture) <
-            ($1.postingTime.toDate() ?? .distantFuture)
-        }
     }
     func registerCell() {
         collectionView.register(
@@ -106,7 +74,6 @@ class Overview: UIViewController {
                  ),
             forCellWithReuseIdentifier: "upcoming_schedule"
         )
-        
         
         collectionView.register(
             UINib(nibName: "HeaderView",
@@ -191,21 +158,118 @@ class Overview: UIViewController {
         return layout
     }
     
-    func filterSection2(by selectedDate: Date) {
+    func filterSection(by selectedDate: Date) {
         let calendar = Calendar.current
 
-        filteredPosts = allPosts.filter {
-            guard let postDate = $0.postingTime.toDate() else { return false }
-            return calendar.isDate(postDate, inSameDayAs: selectedDate)
-        }
+        let dailyPosts = post
+            .filter {
+                guard let d = $0.postingTime.toDate() else { return false }
+                return calendar.isDate(d, inSameDayAs: selectedDate)
+            }
+            .map { ScheduleItem.post($0) }
 
-        filteredPosts.sort {
-            ($0.postingTime.toDate() ?? .distantFuture) <
-            ($1.postingTime.toDate() ?? .distantFuture)
-        }
+        let dailyTasks = task
+            .filter {
+                guard let d = $0.startDate.toDate() else { return false }
+                return calendar.isDate(d, inSameDayAs: selectedDate)
+            }
+            .map { ScheduleItem.task($0) }
+
+        let dailyDeals = deal
+            .filter { deal in
+                deal.deliverable.contains {
+                    guard let d = $0.deadline.toDate() else { return false }
+                    return calendar.isDate(d, inSameDayAs: selectedDate)
+                }
+            }
+            .map { ScheduleItem.deal($0) }
+
+        filteredSchedule = (dailyPosts + dailyTasks + dailyDeals)
+            .sorted {
+                ($0.date() ?? .distantFuture) < ($1.date() ?? .distantFuture)
+            }
 
         collectionView.reloadSections(IndexSet(integer: 2))
     }
+
+    
+    func tasks(on date: Date) -> [Task] {
+        let calendar = Calendar.current
+        return task.filter {
+            guard let start = $0.startDate.toDate() else { return false }
+            return calendar.isDate(start, inSameDayAs: date)
+        }
+    }
+
+    func completedTasks(on date: Date) -> [Task] {
+        tasks(on: date).filter { $0.isCompleted }
+    }
+
+    func deals(on date: Date) -> [Deal] {
+        let calendar = Calendar.current
+
+        return deal.filter { deal in
+            deal.deliverable.contains {
+                guard let deadline = $0.deadline.toDate() else { return false }
+                return calendar.isDate(deadline, inSameDayAs: date)
+            }
+        }
+    }
+
+    func completedDeals(on date: Date) -> [Deal] {
+        deals(on: date).filter {
+            let total = $0.deliverable.count
+            let completed = $0.deliverable.filter { $0.isCompleted }.count
+            return total > 0 && completed == total
+        }
+    }
+
+    func posts(on date: Date) -> [Post] {
+        let calendar = Calendar.current
+        return post.filter {
+            guard let postDate = $0.postingTime.toDate() else { return false }
+            return calendar.isDate(postDate, inSameDayAs: date)
+        }
+    }
+
+    func completedPosts(on date: Date) -> [Post] {
+        posts(on: date).filter { $0.isCompleted }
+    }
+
+    func updateActivities(for selectedDate: Date) {
+
+        let dailyTasks = tasks(on: selectedDate)
+        let dailyDeals = deals(on: selectedDate)
+        let dailyPosts = posts(on: selectedDate)
+
+        let completedDailyTasks = completedTasks(on: selectedDate)
+        let completedDailyDeals = completedDeals(on: selectedDate)
+        let completedDailyPosts = completedPosts(on: selectedDate)
+
+        let totalActivities =
+            dailyTasks.count +
+            dailyDeals.count +
+            dailyPosts.count
+
+        let totalCompleted =
+            completedDailyTasks.count +
+            completedDailyDeals.count +
+            completedDailyPosts.count
+
+        activities = [
+            ("All", totalActivities, "tray.circle.fill"),
+            ("Completed", totalCompleted, "checkmark.circle.fill")
+        ]
+
+        lists = [
+            ("Tasks", dailyTasks.count),
+            ("Deals", dailyDeals.count),
+            ("Posts", dailyPosts.count)
+        ]
+
+        collectionView.reloadSections(IndexSet(integer: 1))
+    }
+
 }
 
 extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -216,7 +280,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             let vc = segue.destination as! AnalysisDataViewController
             if indexPath.row == 0{
                 vc.platform = "YouTube"
-                vc.fullAnalysis = ytResponse.youtube
+                vc.fullAnalysis = dataStore.getAnalysis()
             }
         }
         if segue.identifier == "goToActivities" {
@@ -227,9 +291,24 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         }
         if segue.identifier == "goToDetails" {
             let vc = segue.destination as! Details
-            //vc.deal = selectedDeal
-            vc.post = selectedPost
-            //vc.task = selectedTask
+            guard let item = selectedScheduleItem else { return }
+
+            switch item {
+            case .post(let post):
+                vc.post = post
+                vc.task = nil
+                vc.deal = nil
+
+            case .task(let task):
+                vc.task = task
+                vc.post = nil
+                vc.deal = nil
+
+            case .deal(let deal):
+                vc.deal = deal
+                vc.post = nil
+                vc.task = nil
+            }
         }
     }
 
@@ -241,8 +320,8 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         case 1:
             performSegue(withIdentifier: "goToActivities", sender: nil)
         case 2:
-            selectedPost = filteredPosts[indexPath.row]
-            performSegue(withIdentifier: "goToDetails", sender: nil)
+            selectedScheduleItem = filteredSchedule[indexPath.row]
+            performSegue(withIdentifier: "goToDetails", sender: self)
         default:
             break
         }
@@ -261,7 +340,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         else if (section == 1) {
             return activities.count
         }
-        return filteredPosts.count
+        return filteredSchedule.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -287,10 +366,18 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             for: indexPath
         ) as! ScheduleCollectionViewCell
         
-        let item = filteredPosts[indexPath.row]
-        cell.configureCell(schedule: item)
-        cell.layer.cornerRadius = 12
-        cell.layer.masksToBounds = false
+        let item = filteredSchedule[indexPath.row]
+
+        switch item {
+        case .post(let post):
+            cell.configureCell(post, nil, nil)
+
+        case .task(let task):
+            cell.configureCell(nil, nil, task)
+
+        case .deal(let deal):
+            cell.configureCell(nil, deal, nil)
+        }
         return cell
     }
     
@@ -309,21 +396,12 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
 
             headerView.configure()
             headerView.onDateChanged = { [weak self] selectedDate in
-               self?.filterSection2(by: selectedDate)
-           }
+                self?.filterSection(by: selectedDate)
+                self?.updateActivities(for: selectedDate)
+            }
             return headerView
         }
-
-//        if kind == "header", indexPath.section == 1 {
-//            let headerView = collectionView.dequeueReusableSupplementaryView(
-//                ofKind: "header",
-//                withReuseIdentifier: "headerCell",
-//                for: indexPath
-//            ) as! HeaderView
-//
-//            headerView.configureHeader(text: "Activities Overview")
-//            return headerView
-//        }
+        
         if kind == "header", indexPath.section == 2 {
             let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: "header",
@@ -338,7 +416,6 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
 
         return UICollectionReusableView()
     }
-
 }
 
 

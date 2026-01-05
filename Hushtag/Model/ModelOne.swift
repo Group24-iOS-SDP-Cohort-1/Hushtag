@@ -196,22 +196,6 @@ struct Deliverable: Codable {
     var isCompleted : Bool
 }
 
-// for youtube analysis
-struct youtubeResponse: Codable {
-    var youtube: [Analysis] = []
-    init() {
-        do {
-            let response = try load()
-            youtube = response.youtube
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
-    func getRandomIdea() -> Analysis? {
-        return youtube.randomElement()
-    }
-}
 
 struct Analysis: Codable, Identifiable {
     let id: String
@@ -227,29 +211,6 @@ struct Analysis: Codable, Identifiable {
 
     enum CodingKeys: String, CodingKey {
         case id,views,likes,incFollowers,followers,ageGroup,gender,optimalTime,engagementRate,post
-    }
-}
-
-extension youtubeResponse {
-    func load(from filename: String = "DataStorejson") throws -> youtubeResponse {
-        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
-            throw NSError(
-                domain: "youtubeResponse",
-                code: 400,
-                userInfo: [NSLocalizedDescriptionKey: "DataSource.json not found"]
-            )
-        }
-
-        let data = try Data(contentsOf: url)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(youtubeResponse.self, from: data)
-    }
-
-    func decode(from data: Data) throws -> youtubeResponse {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(youtubeResponse.self, from: data)
     }
 }
 

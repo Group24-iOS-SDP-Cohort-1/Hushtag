@@ -18,33 +18,56 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         // Initialization code
         applyLiquidGlassEffect()
     }
-    func configureCell(schedule: Post) {
-        if
-                let time = schedule.postingTime.time,
-                let hour = time.hour,
-                let minute = time.minute
-            {
+    func configureCell(_ post: Post?, _ deal: Deal?, _ task: Task?) {
+        timeLabel.text = "--:--"
+        titleLabel.text = ""
+        dayLabel.text = ""
+        platformLabel.text = ""
+
+        if let post = post {
+            if let time = post.postingTime.time,
+               let hour = time.hour,
+               let minute = time.minute {
                 timeLabel.text = String(format: "%02d:%02d", hour, minute)
-            } else {
-                timeLabel.text = "--:--"
             }
 
-        titleLabel.text = schedule.name
-        titleLabel.numberOfLines = 0
-        dayLabel.text = schedule.postingTime.day
-        let platform = schedule.platform.first?.lowercased() ?? ""
+            titleLabel.text = post.name
+            titleLabel.numberOfLines = 0
+            dayLabel.text = post.postingTime.day
 
-        if platform == "youtube" {
-            platformLabel.text = "Youtube"
-            //platformLabel.textColor = UIColor(hex: "FF4E45")
+            let platform = post.platform.first?.lowercased() ?? ""
+            platformLabel.text = platform.capitalized
+            return
+        }
 
-        } else if platform == "instagram" {
-            platformLabel.text = "Instagram"
-            //platformLabel.textColor = UIColor(hex: "E440FF")
+        if let task = task {
+            if let time = task.startDate.time,
+               let hour = time.hour,
+               let minute = time.minute {
+                timeLabel.text = String(format: "%02d:%02d", hour, minute)
+            }
 
-        } else {
-            platformLabel.text = "Facebook"
-            //platformLabel.textColor = UIColor(hex: "4DA3FF")
+            titleLabel.text = task.name
+            titleLabel.numberOfLines = 0
+            dayLabel.text = task.startDate.day
+            platformLabel.text = "Task"
+            return
+        }
+
+        if let deal = deal,
+           let deliverable = deal.deliverable.first {
+
+            if let time = deliverable.deadline.time,
+               let hour = time.hour,
+               let minute = time.minute {
+                timeLabel.text = String(format: "%02d:%02d", hour, minute)
+            }
+
+            titleLabel.text = deal.name
+            titleLabel.numberOfLines = 0
+            dayLabel.text = deliverable.deadline.day
+            platformLabel.text = deal.platform.first?.capitalized ?? "Deal"
+            return
         }
     }
 }
