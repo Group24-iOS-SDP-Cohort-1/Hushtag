@@ -13,7 +13,6 @@ class ViewScriptsViewController: UIViewController {
     var pageTitle: String = "" // Default value
     var cellReuseIdentifier: String = "allScriptsCell"
     
-    //var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
     var isSearchMode = false
     var filteredIdeas: [Idea] = []

@@ -16,40 +16,58 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        applyLiquidGlassEffect()
     }
-    func configureCell(schedule: Post) {
-        let hour = schedule.postingTime.time.hour
-        let minute = schedule.postingTime.time.minute
+    func configureCell(_ post: Post?, _ deal: Deal?, _ task: Task?) {
+        timeLabel.text = "--:--"
+        titleLabel.text = ""
+        dayLabel.text = ""
+        platformLabel.text = ""
 
-        timeLabel.text = "\(hour):\(String(format: "%02d", minute))"
+        if let post = post {
+            if let time = post.postingTime.time,
+               let hour = time.hour,
+               let minute = time.minute {
+                timeLabel.text = String(format: "%02d:%02d", hour, minute)
+            }
 
-        titleLabel.text = schedule.name
-        titleLabel.numberOfLines = 0
-        dayLabel.text = schedule.postingTime.day
-        let platform = schedule.platform.first?.lowercased() ?? ""
+            titleLabel.text = post.name
+            titleLabel.numberOfLines = 0
+            dayLabel.text = post.postingTime.day
 
-        if platform == "youtube" {
-            platformLabel.text = "Youtube"
-            platformLabel.textColor = UIColor(hex: "BD081C")
-
-        } else if platform == "instagram" {
-            platformLabel.text = "Instagram"
-            platformLabel.textColor = UIColor(hex: "8134AF")
-
-        } else {
-            platformLabel.text = "Facebook"
-            platformLabel.textColor = UIColor(hex: "1877F2")
+            let platform = post.platform.first?.lowercased() ?? ""
+            platformLabel.text = platform.capitalized
+            return
         }
 
-        contentView.layer.cornerRadius = 12
-        contentView.layer.masksToBounds = true
-        layer.cornerRadius = 12
-        layer.masksToBounds = false
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.1
-        layer.shadowOffset = CGSize(width: 0, height: 1)
-        layer.shadowRadius = 8
-        backgroundColor = .clear
-        contentView.backgroundColor = .white
+        if let task = task {
+            if let time = task.startDate.time,
+               let hour = time.hour,
+               let minute = time.minute {
+                timeLabel.text = String(format: "%02d:%02d", hour, minute)
+            }
+
+            titleLabel.text = task.name
+            titleLabel.numberOfLines = 0
+            dayLabel.text = task.startDate.day
+            platformLabel.text = "Task"
+            return
+        }
+
+        if let deal = deal,
+           let deliverable = deal.deliverable.first {
+
+            if let time = deliverable.deadline.time,
+               let hour = time.hour,
+               let minute = time.minute {
+                timeLabel.text = String(format: "%02d:%02d", hour, minute)
+            }
+
+            titleLabel.text = deal.name
+            titleLabel.numberOfLines = 0
+            dayLabel.text = deliverable.deadline.day
+            platformLabel.text = deal.platform.first?.capitalized ?? "Deal"
+            return
+        }
     }
 }

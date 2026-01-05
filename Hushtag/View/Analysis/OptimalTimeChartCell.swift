@@ -22,58 +22,51 @@ class OptimalTimeChartCell: UICollectionViewCell {
     }
     
     func configure(with timeData: [AnalysisDateData]) {
-            
-            // 1. Update the Label
-            // Find the absolute best day based on engagement string -> Double
-        
-        let sortedData = timeData.sorted {
-            (Double($0.audienceEngagementRate) ?? 0.0) > (Double($1.audienceEngagementRate) ?? 0.0)
-        }
-        let topTwo = sortedData.prefix(2)
-        
-        if !topTwo.isEmpty {
-            // Map them to strings like "14:00 Mon"
-            let timeStrings = topTwo.map { item -> String in
-                let hourStr = String(format: "%02d:%02d", item.time.hour, item.time.minute)
-                let dayStr = String(item.day.prefix(3)) // Shorten "Monday" -> "Mon"
-                return "\(hourStr) \(dayStr)"
-            }
-                    
-                    // Join them with a comma: "14:00 Mon, 10:30 Sat"
-            titleLabel.text = "Best time : " + timeStrings.joined(separator: ", ")
-        } else {
+
+        guard !timeData.isEmpty else {
             titleLabel.text = "Best time : N/A"
+            setupChart(data: [], topDays: [])
+            return
         }
-        
-        /*
-            if let best = timeData.max(by: {
-                (Double($0.audienceEngagementRate) ?? 0) < (Double($1.audienceEngagementRate) ?? 0)
-            }) {
-                let hourStr = String(format: "%02d:00", best.time.hour)
-                let dayStr = String(best.day.prefix(3))
-                titleLabel.text = "Best time : \(hourStr) \(dayStr)"
-            }
-         */
-            
-            // 2. Load the Chart
-        
+
+        func engagementValue(_ value: String) -> Double {
+            Double(value.replacingOccurrences(of: "%", with: "")) ?? 0
+        }
+
+        let sortedData = timeData.sorted {
+            engagementValue($0.audienceEngagementRate) >
+            engagementValue($1.audienceEngagementRate)
+        }
+
+        let topTwo = Array(sortedData.prefix(2))
+
+        let timeStrings = topTwo.map { item -> String in
+            let hour = item.time.hour ?? 0
+            let minute = item.time.minute ?? 0
+            let hourStr = String(format: "%02d:%02d", hour, minute)
+            let dayStr = String(item.day.prefix(3))
+            return "\(hourStr) \(dayStr)"
+        }
+
+        titleLabel.text = "Best time : " + timeStrings.joined(separator: ", ")
+
         let topDayNames = Set(topTwo.map { $0.day })
-        
         setupChart(data: timeData, topDays: topDayNames)
-        
-        
-        
+
         contentView.layer.cornerRadius = 12
         contentView.layer.masksToBounds = true
+
         layer.cornerRadius = 12
         layer.masksToBounds = false
-        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowColor = UIColor.label.cgColor
         layer.shadowOpacity = 0.1
         layer.shadowOffset = CGSize(width: 0, height: 1)
         layer.shadowRadius = 8
+
         backgroundColor = .clear
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = .systemBackground
     }
+
     
     
     private func setupChart(data: [AnalysisDateData], topDays: Set<String>) {

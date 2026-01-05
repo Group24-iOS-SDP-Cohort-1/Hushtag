@@ -35,21 +35,24 @@ class Badges: UIView {
            badgeLabel.textColor = .white
        }
 
-       func configure(
-           text: String,
-           color: UIColor = .white,
-           cornerRadius: CGFloat = 12,
-           borderWidth: CGFloat = 1,
-           backgroundAlpha: CGFloat = 0.15
-       ) {
-           badgeLabel.text = text.uppercased()
-           badgeCornerRadius = cornerRadius
+    func configure(text: String) {
+        badgeLabel.text = text.uppercased()
+        print("Badge text:", text)
 
-           badgeLabel.textColor = color
-           layer.borderWidth = borderWidth
-           layer.borderColor = color.cgColor
-           backgroundColor = color.withAlphaComponent(backgroundAlpha)
+        badgeCornerRadius = 10
+        badgeLabel.textColor = .white
 
-           setNeedsLayout()
-       }
-   }
+        layer.borderWidth = 0.5
+        layer.borderColor = UIColor.white.cgColor
+        backgroundColor = UIColor.white.withAlphaComponent(0.15)
+
+        // Allow badge to adjust based on its content size
+        badgeLabel.translatesAutoresizingMaskIntoConstraints = false
+        badgeLabel.setContentHuggingPriority(.required, for: .horizontal)
+        badgeLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+
+        invalidateIntrinsicContentSize()
+        setNeedsLayout()
+    }
+
+}

@@ -12,28 +12,21 @@ class ScriptedIdeas: UIViewController {
     @IBOutlet weak var script: UITextView!
 
     var idea: Idea?
+    let dataStore = DataStore.shared
+    var deals: [Deal] = []
 
     @IBOutlet weak var descriptionTitle: UILabel!
-
     @IBOutlet weak var Description: UILabel!
-
     @IBOutlet weak var scriptTitle: UILabel!
-
     @IBOutlet weak var imageView: UIImageView!
-
     @IBOutlet weak var imageStack: UIStackView!
-
     @IBOutlet weak var descriptionStack: UIStackView!
-
     @IBOutlet weak var scriptStack: UIStackView!
-
     @IBOutlet weak var popupButton: UIButton!
-
-    let response = DealResponse() 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        deals = dataStore.getDeals()
         scriptStack.isHidden = true
         descriptionStack.isHidden = true
         guard let idea = idea else {
@@ -91,7 +84,7 @@ class ScriptedIdeas: UIViewController {
 
         do {
             let html = try String(contentsOf: url, encoding: .utf8)
-            let attributed = try NSAttributedString(
+            let attributed = try NSMutableAttributedString(
                 data: Data(html.utf8),
                 options: [
                     .documentType: NSAttributedString.DocumentType.html,
@@ -100,12 +93,35 @@ class ScriptedIdeas: UIViewController {
                 documentAttributes: nil
             )
 
-            // Showing when the html has content
+            // Check if current interface style is dark or light and set color accordingly
+            let currentStyle = traitCollection.userInterfaceStyle
+            let textColor: UIColor = currentStyle == .dark ? .white : .black
+
+            // Apply the appropriate color
+            attributed.addAttribute(
+                .foregroundColor,
+                value: textColor,
+                range: NSRange(location: 0, length: attributed.length)
+            )
+
+            // Optional: Improve readability
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineSpacing = 6
+
+            attributed.addAttributes(
+                [
+                    .paragraphStyle: paragraphStyle,
+                    .font: UIFont.systemFont(ofSize: 15)
+                ],
+                range: NSRange(location: 0, length: attributed.length)
+            )
+
             if !attributed.string.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 script.attributedText = attributed
                 scriptTitle.text = "Script"
                 scriptStack.isHidden = false
             }
+
         } catch {
             print("Error loading HTML: \(error.localizedDescription)")
         }
@@ -115,7 +131,7 @@ class ScriptedIdeas: UIViewController {
         // Default shown text
         popupButton.setTitle("Tag Idea", for: .normal)
 
-        let deals = response.deals
+        let deals = self.deals
 
         guard !deals.isEmpty else {
             popupButton.menu = UIMenu(title: "No Deals Available", children: [])
@@ -131,6 +147,4 @@ class ScriptedIdeas: UIViewController {
         popupButton.menu = UIMenu(title: "Select Brand", children: actions)
         popupButton.showsMenuAsPrimaryAction = true
     }
-
-
 }

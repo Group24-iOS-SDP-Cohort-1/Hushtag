@@ -14,8 +14,7 @@ class DealsViewController: UIViewController {
 
 
     
-   var selected_Deal : Deal?
-    var dealResponse = DealResponse()
+    var selected_Deal : Deal?
     var deals: [Deal] = []
     var completedDeals: [Deal] {
             return deals.filter {
@@ -45,7 +44,7 @@ class DealsViewController: UIViewController {
 
         registerCell()
 
-       deals = dealResponse.deals
+        deals = DataStore.shared.getDeals()
         print(deals.count)
         collectionView.delegate = self
         collectionView.dataSource = self
