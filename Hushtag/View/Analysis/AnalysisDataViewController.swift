@@ -162,11 +162,16 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
             return cell
         }
 
+//        cell.configureCell(
+//            value: metric.value,
+//            type: metric.title
+//            // If you added change-based arrows later:
+//            // change: metric.change
+//        )
         cell.configureCell(
             value: metric.value,
-            type: metric.title
-            // If you added change-based arrows later:
-            // change: metric.change
+            type: metric.title,
+            change: metric.change
         )
 
         return cell

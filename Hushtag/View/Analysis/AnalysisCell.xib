@@ -17,24 +17,35 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="juL-7j-gQZ">
-                        <rect key="frame" x="0.0" y="25" width="254" height="34"/>
+                        <rect key="frame" x="0.0" y="24.999999999999996" width="254" height="33.666666666666657"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vta-6r-Zme">
-                        <rect key="frame" x="0.0" y="71" width="254" height="16"/>
+                        <rect key="frame" x="0.0" y="71.333333333333329" width="254" height="15.666666666666671"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="i5v-AF-Eds">
-                        <rect key="frame" x="229" y="10" width="15" height="15"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="15" id="bk2-Xc-Chy"/>
-                            <constraint firstAttribute="height" constant="15" id="sy2-jJ-h7K"/>
-                        </constraints>
-                    </imageView>
+                    <stackView opaque="NO" contentMode="scaleToFill" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="14f-5q-SpT">
+                        <rect key="frame" x="192" y="7" width="52" height="15"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mmA-jh-d1K">
+                                <rect key="frame" x="0.0" y="0.0" width="33" height="15"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="i5v-AF-Eds">
+                                <rect key="frame" x="37" y="0.0" width="15" height="15"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="15" id="bk2-Xc-Chy"/>
+                                    <constraint firstAttribute="height" constant="15" id="sy2-jJ-h7K"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                    </stackView>
                 </subviews>
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
@@ -42,16 +53,18 @@
                 <constraint firstItem="juL-7j-gQZ" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="0Mk-3c-oJW"/>
                 <constraint firstAttribute="bottom" secondItem="vta-6r-Zme" secondAttribute="bottom" constant="25" id="19o-dF-isM"/>
                 <constraint firstItem="vta-6r-Zme" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="6hu-NM-RhF"/>
-                <constraint firstAttribute="trailing" secondItem="i5v-AF-Eds" secondAttribute="trailing" constant="10" id="FOw-Lo-ybn"/>
+                <constraint firstItem="14f-5q-SpT" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="7" id="ASI-mz-Xl4"/>
                 <constraint firstAttribute="trailing" secondItem="vta-6r-Zme" secondAttribute="trailing" id="IVH-ZC-Yqy"/>
                 <constraint firstItem="juL-7j-gQZ" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="25" id="K5I-WS-cJU"/>
                 <constraint firstAttribute="trailing" secondItem="juL-7j-gQZ" secondAttribute="trailing" id="SDI-s7-3Yu"/>
-                <constraint firstItem="i5v-AF-Eds" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="10" id="UCv-kT-ilj"/>
+                <constraint firstItem="juL-7j-gQZ" firstAttribute="top" secondItem="14f-5q-SpT" secondAttribute="bottom" constant="3" id="YFj-b8-LLk"/>
+                <constraint firstAttribute="trailing" secondItem="14f-5q-SpT" secondAttribute="trailing" constant="10" id="xK2-Jg-s6B"/>
             </constraints>
             <size key="customSize" width="254" height="112"/>
             <connections>
                 <outlet property="analysisType" destination="vta-6r-Zme" id="0Vw-xb-Nwm"/>
                 <outlet property="analysisValue" destination="juL-7j-gQZ" id="3eT-bw-wrN"/>
+                <outlet property="changeLabel" destination="mmA-jh-d1K" id="wli-vK-0jT"/>
                 <outlet property="sfSymbol" destination="i5v-AF-Eds" id="Kle-Tv-hja"/>
             </connections>
             <point key="canvasLocation" x="47.328244274809158" y="175.35211267605635"/>
