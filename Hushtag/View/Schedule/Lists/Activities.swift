@@ -52,9 +52,6 @@ class Activities: UIViewController {
 
 extension Activities: UITableViewDataSource, UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if self.scheduleItems.isEmpty {
-            return 1
-        }
         return visibleItems.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
