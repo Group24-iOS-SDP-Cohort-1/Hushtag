@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="j7i-eP-7Qk">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="j7i-eP-7Qk">
     <device id="retina6_12" orientation="portrait" appearance="dark"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -48,19 +48,30 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oGG-eh-lG7">
+                                <rect key="frame" x="248.33333333333334" y="729" width="124.66666666666666" height="35"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Script with AI"/>
+                                <connections>
+                                    <action selector="scriptTap:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="bHB-Xx-Qxh"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="oGG-eh-lG7" secondAttribute="bottom" constant="20" id="2iX-tH-yTE"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="Mxq-Iu-w0r" secondAttribute="bottom" id="VD8-Qq-KbX"/>
                             <constraint firstItem="Mxq-Iu-w0r" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="Xaf-sN-vZI"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Mxq-Iu-w0r" secondAttribute="trailing" id="iit-Dw-olB"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="oGG-eh-lG7" secondAttribute="trailing" constant="20" id="qSq-lr-gX1"/>
                             <constraint firstItem="Mxq-Iu-w0r" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="u6g-MN-j8G"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Ideate" id="Z17-7z-gvD"/>
                     <connections>
                         <outlet property="collectionView" destination="Mxq-Iu-w0r" id="YeI-Ho-aaB"/>
+                        <outlet property="scriptButton" destination="oGG-eh-lG7" id="9QI-78-BeC"/>
                         <segue destination="Yb8-13-5gt" kind="show" identifier="goToScript" id="rsD-Te-pVV"/>
                     </connections>
                 </viewController>

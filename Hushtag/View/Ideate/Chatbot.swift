@@ -70,8 +70,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 // UITextView setup
                 textFieldView.delegate = self
                 textFieldView.isScrollEnabled = false
-                textFieldView.layer.borderWidth = 0.1
-                textFieldView.layer.borderColor = UIColor.gray.cgColor
+                textFieldView.layer.borderWidth = 0.2
+                textFieldView.layer.borderColor = UIColor.white.cgColor
                 textFieldView.layer.cornerRadius = 16
                 textFieldView.clipsToBounds = true
                 textFieldView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
@@ -96,7 +96,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     autoSendMessage = nil // prevent duplication
                 }
         
-        //NEW
+
         setupKeyboardObservers()
         setupTapToDismiss()
     }
@@ -104,7 +104,18 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if messages.isEmpty {
+            let welcomeMessage = "Welcome! I’m your scripting assistant. Lets write a script for you."
+            messages.append(Message(text: welcomeMessage, isUser: false))
+            tableView.reloadData()
+            scrollToBottom()
+        }
+    }
+
+
     func setupTapToDismiss() {
             // Allows user to tap the table view (messages) to close the keyboard
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -214,7 +225,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         textViewDidChange(textFieldView)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.generateBotReply(for: text)
+            self.generateBotReply(for: text)
                 }
     }
 

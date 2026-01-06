@@ -16,6 +16,7 @@ class Ideate1: UIViewController {
     var selectedIdea: Idea?
     var selectedIndexPath: IndexPath?
 
+    @IBOutlet weak var scriptButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,7 +27,17 @@ class Ideate1: UIViewController {
         collectionView.delegate = self
         collectionView.register(UINib(nibName: "IdeaCells", bundle: nil), forCellWithReuseIdentifier: "ideaCell")
         collectionView.register(UINib(nibName: "IdeaSearch", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "IdeaSearch")
+        collectionView.register(UINib(nibName: "SuggestedFYHeader", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "suggestedHeader")
+
     }
+
+    @IBAction func scriptTap(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
+            let vc = storyboard.instantiateViewController(withIdentifier: "Chatbot")
+            navigationController?.pushViewController(vc, animated: true)
+
+    }
+    
 
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
@@ -50,7 +61,7 @@ class Ideate1: UIViewController {
                 let section = NSCollectionLayoutSection(group: group)
                 let headerSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(300)
+                    heightDimension: .estimated(370)
                 )
                 let header = NSCollectionLayoutBoundarySupplementaryItem(
                     layoutSize: headerSize,
@@ -78,8 +89,20 @@ class Ideate1: UIViewController {
             )
 
             let section = NSCollectionLayoutSection(group: group)
+
+            let headerSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(300)
+            )
+            let header = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: headerSize,
+                elementKind: UICollectionView.elementKindSectionHeader,
+                alignment: .top
+            )
+            
+            section.boundarySupplementaryItems = [header]
             section.interGroupSpacing = 10
-            section.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
 
             return section
         }
@@ -140,7 +163,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
 
         case "Growing":
             keyword2 = EngagementStyle(
-                text: "Expanding",
+                text: "Growing",
                 icon: "bolt",
                 color: .systemOrange
             )
@@ -170,21 +193,32 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView( _ collectionView: UICollectionView,viewForSupplementaryElementOfKind kind: String,at indexPath: IndexPath
+    ) -> UICollectionReusableView {
 
-        guard kind == UICollectionView.elementKindSectionHeader, indexPath.section == 0 else {
+        guard kind == UICollectionView.elementKindSectionHeader else {
             return UICollectionReusableView()
         }
 
-        let header = collectionView.dequeueReusableSupplementaryView(
-            ofKind: kind,
-            withReuseIdentifier: "IdeaSearch",
-            for: indexPath
-        ) as! IdeaSearch
+        if indexPath.section == 0 {
+            let header = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: "IdeaSearch",
+                for: indexPath
+            ) as! IdeaSearch
 
-        header.delegate = self
-        return header
+            header.delegate = self
+            return header
+        } else {
+            let header = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: "suggestedHeader",
+                for: indexPath
+            ) as! SuggestedFYHeader
+            return header
+        }
     }
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "goToScript" {
             let vc = segue.destination as! ScriptedIdeas
