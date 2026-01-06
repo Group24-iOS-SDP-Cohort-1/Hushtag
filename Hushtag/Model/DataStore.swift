@@ -361,7 +361,6 @@ class DataStore {
         ]
         
         let sampleAnalysis: [Analysis] = [
-            
             Analysis(
                 id: "1",
                 views: "248.5K",
@@ -448,17 +447,14 @@ class DataStore {
             
             Analysis(
                 id: "2",
-                
                 views: "180.2K",
                 watchTime: "9.1K",
                 subscribers: "+3.0K",
                 estRevenue: "$1,820.75",
-                
                 viewsChange: "+6%",
                 watchTimeChange: "+10%",
                 subscribersChange: "+5%",
                 revenueChange: "+9%",
-                
                 likes: "2.5k",
                 incFollowers: "3k",
                 followers: "28k",
@@ -535,17 +531,14 @@ class DataStore {
 
             Analysis(
                 id: "3",
-
                 views: "320.9K",
                 watchTime: "18.7K",
                 subscribers: "+12K",
                 estRevenue: "$5,890.00",
-
                 viewsChange: "+18%",
                 watchTimeChange: "+22%",
                 subscribersChange: "+11%",
                 revenueChange: "+20%",
-
                 likes: "5.6k",
                 incFollowers: "12k",
                 followers: "55k",

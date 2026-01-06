@@ -9,7 +9,7 @@ import UIKit
 
 protocol TasksTableViewCellDelegate: AnyObject {
     func didTapOpenModal(task: Task?, deal: Deal?, post: Post?)
-    func didUpdateCompletion(at indexPath: IndexPath, task: Task?, deal: Deal?, post: Post?)
+    func didUpdateCompletion(task: Task?, deal: Deal?, post: Post?)
 }
 
 class TasksTableViewCell: UITableViewCell {
@@ -17,13 +17,9 @@ class TasksTableViewCell: UITableViewCell {
     private var task: Task?
     private var deal: Deal?
     private var post: Post?
-    var indexPath: IndexPath?
+
     @IBOutlet weak var nameLabel: UILabel!
-    
     @IBOutlet weak var radioButton: UIButton!
-    private var isChecked: Bool = false {
-        didSet { updateUIForCheckedState() }
-    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -36,45 +32,46 @@ class TasksTableViewCell: UITableViewCell {
         task = nil
         post = nil
         deal = nil
-        indexPath = nil
         nameLabel.text = " "
-        isChecked = false
+        updateUI(isCompleted: false)
     }
     
-    func configureCell(_ tasks: Task?, _ deals: Deal?, _ posts: Post?) {
-        self.task = tasks
-        self.deal = deals
-        self.post = posts
+    func configureCell(_ task: Task?, _ deal: Deal?, _ post: Post?) {
+        self.task = task
+        self.deal = deal
+        self.post = post
 
-        nameLabel.text = tasks?.name ?? posts?.name ?? deals?.name ?? " "
-        let taskCompleted = tasks?.isCompleted
-        let postCompleted = posts?.isCompleted
-        //let dealCompleted = deals?.isCompleted
+        nameLabel.text = task?.name ?? post?.name ?? deal?.name ?? ""
 
-        // If any model has completed = true, consider checked
-        self.isChecked = (taskCompleted == true) || (postCompleted == true) /*|| (dealCompleted == true)*/
+        let isCompleted =
+            task?.isCompleted == true ||
+            post?.isCompleted == true
+            // deal?.isCompleted == true
+
+        updateUI(isCompleted: isCompleted)
     }
     
     @IBAction func radioPressed(_ sender: UIButton) {
-        isChecked.toggle()  // flip state
-        
-        self.post?.isCompleted = isChecked
-        self.task?.isCompleted = isChecked
-        //self.deal?.isCompleted = isChecked
+        let newValue = !(
+            task?.isCompleted == true ||
+            post?.isCompleted == true
+        )
 
-        if let indexPath = indexPath {
-            delegate?.didUpdateCompletion(at: indexPath, task: task, deal: deal, post: post)
-        }
+        task?.isCompleted = newValue
+        post?.isCompleted = newValue
+        // deal?.isCompleted = newValue
 
+        updateUI(isCompleted: newValue)
+
+        delegate?.didUpdateCompletion(task: task, deal: deal, post: post)
     }
     @IBAction func detailsButtonPressed(_ sender: UIButton) {
         delegate?.didTapOpenModal(task: task, deal: deal, post: post)
     }
-    private func updateUIForCheckedState() {
-        // set image and label color based on isChecked
-        let imageName = isChecked ? "circle.inset.filled" : "circle"
+    private func updateUI(isCompleted: Bool) {
+        let imageName = isCompleted ? "circle.inset.filled" : "circle"
         radioButton.setImage(UIImage(systemName: imageName), for: .normal)
-        nameLabel.textColor = isChecked ? .systemGray : .black
+        nameLabel.textColor = isCompleted ? .systemGray : .label
     }
 }
 
