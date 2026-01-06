@@ -200,7 +200,8 @@ struct TopContentItem: Codable, Identifiable {
     let id: String
     let title: String
     let thumbnail: String   // asset name or URL
-    let views: String       // e.g. "124K views"
+    let views: String
+    let publishedTime: String
 }
 
 struct LatestContentPerformance: Codable {

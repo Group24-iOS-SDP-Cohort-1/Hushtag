@@ -30,16 +30,16 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vaS-Az-dQW">
-                        <rect key="frame" x="115" y="45" width="31" height="13.333333333333336"/>
+                        <rect key="frame" x="115" y="39" width="31" height="13.333333333333336"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
-                <constraint firstItem="vaS-Az-dQW" firstAttribute="top" secondItem="SKE-co-ms9" secondAttribute="bottom" constant="12" id="LQi-d3-MxW"/>
+                <constraint firstItem="vaS-Az-dQW" firstAttribute="top" secondItem="SKE-co-ms9" secondAttribute="bottom" constant="6" id="LQi-d3-MxW"/>
                 <constraint firstItem="SKE-co-ms9" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="15" id="PKo-7t-lyq"/>
                 <constraint firstItem="M1l-tK-jhT" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="5" id="X4a-m4-bro"/>
                 <constraint firstItem="M1l-tK-jhT" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="bVe-Sw-Peg"/>

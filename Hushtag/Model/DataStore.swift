@@ -401,19 +401,22 @@ class DataStore {
                         id: "tc1",
                         title: "Best Laptops for Coding 2024",
                         thumbnail: "laptop_thumb",
-                        views: "124K views"
+                        views: "124K views",
+                        publishedTime: "4 weeks ago"
                     ),
                     TopContentItem(
                         id: "tc2",
                         title: "Minimal Desk Setup Tour",
                         thumbnail: "desk_thumb",
-                        views: "89K views"
+                        views: "89K views",
+                        publishedTime: "2 weeks ago"
                     ),
                     TopContentItem(
                         id: "tc3",
                         title: "Sony A7IV vs Canon R6",
                         thumbnail: "camera_thumb",
-                        views: "65K views"
+                        views: "65K views",
+                        publishedTime: "6 days ago"
                     )
                 ],
                 latestContent: LatestContentPerformance(
@@ -463,19 +466,22 @@ class DataStore {
                         id: "tc1",
                         title: "Best Laptops for Coding 2024",
                         thumbnail: "laptop_thumb",
-                        views: "124K views"
+                        views: "124K views",
+                        publishedTime: "4 weeks ago"
                     ),
                     TopContentItem(
                         id: "tc2",
                         title: "Minimal Desk Setup Tour",
                         thumbnail: "desk_thumb",
-                        views: "89K views"
+                        views: "89K views",
+                        publishedTime: "2 weeks ago"
                     ),
                     TopContentItem(
                         id: "tc3",
                         title: "Sony A7IV vs Canon R6",
                         thumbnail: "camera_thumb",
-                        views: "65K views"
+                        views: "65K views",
+                        publishedTime: "6 days ago"
                     )
     ],
                         latestContent: LatestContentPerformance(
@@ -525,19 +531,22 @@ class DataStore {
                             id: "tc1",
                             title: "Best Laptops for Coding 2024",
                             thumbnail: "laptop_thumb",
-                            views: "124K views"
+                            views: "124K views",
+                            publishedTime: "4 weeks ago"
                         ),
                         TopContentItem(
                             id: "tc2",
                             title: "Minimal Desk Setup Tour",
                             thumbnail: "desk_thumb",
-                            views: "89K views"
+                            views: "89K views",
+                            publishedTime: "2 weeks ago"
                         ),
                         TopContentItem(
                             id: "tc3",
                             title: "Sony A7IV vs Canon R6",
                             thumbnail: "camera_thumb",
-                            views: "65K views"
+                            views: "65K views",
+                            publishedTime: "6 days ago"
                         )
                     ],
                 latestContent: LatestContentPerformance(

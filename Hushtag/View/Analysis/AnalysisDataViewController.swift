@@ -298,12 +298,35 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
     }
 }
 
+func makeHeaderItem() -> NSCollectionLayoutBoundarySupplementaryItem {
+    let headerSize = NSCollectionLayoutSize(
+        widthDimension: .fractionalWidth(1.0),
+        heightDimension: .absolute(50)
+    )
+
+    let header = NSCollectionLayoutBoundarySupplementaryItem(
+        layoutSize: headerSize,
+        elementKind: "header",
+        alignment: .top
+    )
+
+    // THIS is the key alignment fix
+    header.contentInsets = NSDirectionalEdgeInsets(
+        top: 0,
+        leading: 10,
+        bottom: 0,
+        trailing: 16
+    )
+
+    return header
+}
+
 
 func generateAnalysisLayout() -> UICollectionViewLayout {
 
     let layout = UICollectionViewCompositionalLayout { section, _ in
 
-        // 🔹 Header
+        // Header
         let headerSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .absolute(50)
@@ -314,6 +337,8 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
             elementKind: "header",
             alignment: .top
         )
+        
+        
 
         // =========================================================
         // SECTION 0 — Audience Metrics (2×2 grid)
@@ -351,13 +376,14 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
                 subitems: [row]
             )
 
-            let sectionLayout = NSCollectionLayoutSection(group: group)
-            sectionLayout.contentInsets = NSDirectionalEdgeInsets(
-                top: 3, leading: 16, bottom: 3, trailing: 16
+            let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(
+                top: 0, leading: 8, bottom: 0, trailing: 8
             )
-            sectionLayout.boundarySupplementaryItems = [headerItem]
+            section.interGroupSpacing = 0
+            section.boundarySupplementaryItems = [headerItem]
 
-            return sectionLayout
+            return section
         }
         // =========================================================
         // SECTION 1 — Latest Content Performance
@@ -380,7 +406,7 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
             )
 
             let section = NSCollectionLayoutSection(group: group)
-            section.boundarySupplementaryItems = [headerItem]
+            section.boundarySupplementaryItems = [makeHeaderItem()]
 
             return section
         }
@@ -411,7 +437,7 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
             )
 
             let sectionLayout = NSCollectionLayoutSection(group: group)
-            sectionLayout.boundarySupplementaryItems = [headerItem]
+            sectionLayout.boundarySupplementaryItems = [makeHeaderItem()]
 
             return sectionLayout
         }
@@ -436,10 +462,10 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
                 subitems: [item]
             )
 
-            let sectionLayout = NSCollectionLayoutSection(group: group)
-            sectionLayout.boundarySupplementaryItems = [headerItem]
+            let section = NSCollectionLayoutSection(group: group)
+            section.boundarySupplementaryItems = [makeHeaderItem()]
 
-            return sectionLayout
+            return section
         }
 
         // =========================================================
@@ -462,10 +488,10 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
                 subitems: [item]
             )
 
-            let sectionLayout = NSCollectionLayoutSection(group: group)
-            sectionLayout.boundarySupplementaryItems = [headerItem]
+            let section = NSCollectionLayoutSection(group: group)
+            section.boundarySupplementaryItems = [makeHeaderItem()]
 
-            return sectionLayout
+            return section
         }
     }
 

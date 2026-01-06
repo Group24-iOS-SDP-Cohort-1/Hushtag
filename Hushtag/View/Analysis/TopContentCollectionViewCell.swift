@@ -25,7 +25,7 @@ class TopContentCollectionViewCell: UICollectionViewCell {
     }
     func configure(with item: TopContentItem) {
         titleLabel.text = item.title
-        viewsLabel.text = item.views
+        viewsLabel.text = "\(item.views) • \(item.publishedTime)"
         thumbnailImageView.image = UIImage(named: item.thumbnail)
     }
 
