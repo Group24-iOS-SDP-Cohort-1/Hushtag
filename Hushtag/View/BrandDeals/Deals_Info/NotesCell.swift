@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 
-import UIKit
 
 final class NotesCell: UICollectionViewCell {
     // public label we will set from the data source

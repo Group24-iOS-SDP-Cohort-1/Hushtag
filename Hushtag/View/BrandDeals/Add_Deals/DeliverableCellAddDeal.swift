@@ -23,14 +23,15 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
     private var deliverableDates: [Date?] = []
     override func awakeFromNib() {
         super.awakeFromNib()
+        backgroundColor = .clear
+        contentView.backgroundColor = .clear
         selectionStyle = .none
 
                 // Card style
                 cardView.layer.cornerRadius = 16
-                cardView.layer.masksToBounds = true
-                cardView.layer.borderWidth = 0.5
-                cardView.layer.borderColor = UIColor.systemGray4.cgColor
-
+                cardView.layer.masksToBounds = false
+                cardView.backgroundColor = .clear
+                cardView.applyLiquidGlassEffect()
                 // Button style
                 addButton.setTitle("+ Deliverables", for: .normal)
     }

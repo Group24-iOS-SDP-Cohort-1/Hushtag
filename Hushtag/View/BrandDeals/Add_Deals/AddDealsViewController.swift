@@ -31,6 +31,8 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
 
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 56

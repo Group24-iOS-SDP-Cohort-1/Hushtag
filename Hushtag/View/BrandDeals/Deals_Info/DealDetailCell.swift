@@ -48,7 +48,7 @@ final class DealDetailCell: UICollectionViewListCell {
             titleLabel.trailingAnchor.constraint(equalTo: margins.trailingAnchor),
 
             valueLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
-            valueLabel.leadingAnchor.constraint(equalTo: iconView.leadingAnchor), 
+            valueLabel.leadingAnchor.constraint(equalTo: iconView.leadingAnchor),
             valueLabel.trailingAnchor.constraint(equalTo: margins.trailingAnchor),
             valueLabel.bottomAnchor.constraint(equalTo: margins.bottomAnchor)
         ])
