@@ -49,7 +49,7 @@ class DataStore {
                 reminder: ["1 hour before", "15 mins before"],
                 isCompleted: false
             ),
-
+            
             Task(
                 name: "Unboxing New Cosmetic Products",
                 startDate: DateData(
@@ -66,7 +66,7 @@ class DataStore {
                 reminder: ["30 mins before"],
                 isCompleted: true
             ),
-
+            
             Task(
                 name: "Recreate Model Look",
                 startDate: DateData(
@@ -83,7 +83,7 @@ class DataStore {
                 reminder: ["1 hour before"],
                 isCompleted: false
             ),
-
+            
             Task(
                 name: "Edit & Schedule Instagram Post",
                 startDate: DateData(
@@ -100,7 +100,7 @@ class DataStore {
                 reminder: ["45 mins before"],
                 isCompleted: false
             ),
-
+            
             Task(
                 name: "Research Upcoming Beauty Trends",
                 startDate: DateData(
@@ -149,7 +149,7 @@ class DataStore {
                 payment: 5000,
                 selectedIdeaIndex: "i1"
             ),
-
+            
             Deal(
                 name: "H&M Lifestyle",
                 deliverable: [
@@ -188,7 +188,7 @@ class DataStore {
                 payment: 7000,
                 selectedIdeaIndex: "i2"
             ),
-
+            
             Deal(
                 name: "Nykaa Beauty",
                 deliverable: [
@@ -209,7 +209,7 @@ class DataStore {
                 payment: 6000,
                 selectedIdeaIndex: "i3"
             ),
-
+            
             Deal(
                 name: "Myntra",
                 deliverable: [
@@ -293,7 +293,7 @@ class DataStore {
                 reminder: ["1 hour before", "15 minutes before"],
                 isCompleted: false
             ),
-
+            
             Post(
                 name: "YouTube Video – Studio Makeup Tutorial",
                 postingTime: DateData(
@@ -306,7 +306,7 @@ class DataStore {
                 reminder: ["3 hours before"],
                 isCompleted: false
             ),
-
+            
             Post(
                 name: "Instagram Carousel – Winter Layering Looks",
                 postingTime: DateData(
@@ -319,7 +319,7 @@ class DataStore {
                 reminder: ["45 minutes before"],
                 isCompleted: true
             ),
-
+            
             Post(
                 name: "Facebook Post – Brand Giveaway Announcement",
                 postingTime: DateData(
@@ -332,7 +332,7 @@ class DataStore {
                 reminder: ["2 hours before"],
                 isCompleted: true
             ),
-
+            
             Post(
                 name: "YouTube Shorts – Quick GRWM Coffee Date",
                 postingTime: DateData(
@@ -345,7 +345,7 @@ class DataStore {
                 reminder: ["20 minutes before"],
                 isCompleted: false
             ),
-
+            
             Post(
                 name: "IG Story – Behind the Scenes Shoot",
                 postingTime: DateData(
@@ -361,21 +361,21 @@ class DataStore {
         ]
         
         let sampleAnalysis: [Analysis] = [
-
+            
             Analysis(
                 id: "1",
-
+                
                 // 🔹 Audience grid (4 cards)
                 views: "248.5K",
                 watchTime: "12.4K",
                 subscribers: "+1.2K",
                 estRevenue: "$3,420.50",
-
+                
                 viewsChange: "+12%",
                 watchTimeChange: "+8%",
                 subscribersChange: "-2%",
                 revenueChange: "+15%",
-
+                
                 // 🔹 Existing fields (unchanged)
                 likes: "3.1k",
                 incFollowers: "-8k",
@@ -395,22 +395,50 @@ class DataStore {
                     AnalysisDateData(day: "Saturday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 10, minute: 30), audienceEngagementRate: "2.5"),
                     AnalysisDateData(day: "Sunday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 14, minute: 0), audienceEngagementRate: "4.1")
                 ],
-                engagementRate: "6.1"
+                engagementRate: "6.1",
+                topContent: [
+                    TopContentItem(
+                        id: "tc1",
+                        title: "Best Laptops for Coding 2024",
+                        thumbnail: "laptop_thumb",
+                        views: "124K views"
+                    ),
+                    TopContentItem(
+                        id: "tc2",
+                        title: "Minimal Desk Setup Tour",
+                        thumbnail: "desk_thumb",
+                        views: "89K views"
+                    ),
+                    TopContentItem(
+                        id: "tc3",
+                        title: "Sony A7IV vs Canon R6",
+                        thumbnail: "camera_thumb",
+                        views: "65K views"
+                    )
+                ],
+                latestContent: LatestContentPerformance(
+                    title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
+                    thumbnail: "laptop_thumb",
+                    publishedText: "Published 2 days ago",
+                    ranking: "2 of 10",
+                    views: "42.1K",
+                    avgDuration: "5:24"
+                )
             ),
-
+            
             Analysis(
                 id: "2",
-
+                
                 views: "180.2K",
                 watchTime: "9.1K",
                 subscribers: "+3.0K",
                 estRevenue: "$1,820.75",
-
+                
                 viewsChange: "+6%",
                 watchTimeChange: "+10%",
                 subscribersChange: "+5%",
                 revenueChange: "+9%",
-
+                
                 likes: "2.5k",
                 incFollowers: "3k",
                 followers: "28k",
@@ -429,7 +457,35 @@ class DataStore {
                     AnalysisDateData(day: "Saturday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.2"),
                     AnalysisDateData(day: "Sunday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.7")
                 ],
-                engagementRate: ""
+                engagementRate: "",
+                topContent: [
+                    TopContentItem(
+                        id: "tc1",
+                        title: "Best Laptops for Coding 2024",
+                        thumbnail: "laptop_thumb",
+                        views: "124K views"
+                    ),
+                    TopContentItem(
+                        id: "tc2",
+                        title: "Minimal Desk Setup Tour",
+                        thumbnail: "desk_thumb",
+                        views: "89K views"
+                    ),
+                    TopContentItem(
+                        id: "tc3",
+                        title: "Sony A7IV vs Canon R6",
+                        thumbnail: "camera_thumb",
+                        views: "65K views"
+                    )
+    ],
+                        latestContent: LatestContentPerformance(
+                            title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
+                            thumbnail: "laptop_thumb",
+                            publishedText: "Published 2 days ago",
+                            ranking: "2 of 10",
+                            views: "42.1K",
+                            avgDuration: "5:24"
+                        )
             ),
 
             Analysis(
@@ -463,7 +519,35 @@ class DataStore {
                     AnalysisDateData(day: "Saturday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
                     AnalysisDateData(day: "Sunday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "7.2")
                 ],
-                engagementRate: "-7.3"
+                engagementRate: "-7.3",
+                topContent: [
+                        TopContentItem(
+                            id: "tc1",
+                            title: "Best Laptops for Coding 2024",
+                            thumbnail: "laptop_thumb",
+                            views: "124K views"
+                        ),
+                        TopContentItem(
+                            id: "tc2",
+                            title: "Minimal Desk Setup Tour",
+                            thumbnail: "desk_thumb",
+                            views: "89K views"
+                        ),
+                        TopContentItem(
+                            id: "tc3",
+                            title: "Sony A7IV vs Canon R6",
+                            thumbnail: "camera_thumb",
+                            views: "65K views"
+                        )
+                    ],
+                latestContent: LatestContentPerformance(
+                    title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
+                    thumbnail: "laptop_thumb",
+                    publishedText: "Published 2 days ago",
+                    ranking: "2 of 10",
+                    views: "42.1K",
+                    avgDuration: "5:24"
+                )
             )
         ]
 
