@@ -364,19 +364,14 @@ class DataStore {
             
             Analysis(
                 id: "1",
-                
-                // 🔹 Audience grid (4 cards)
                 views: "248.5K",
                 watchTime: "12.4K",
                 subscribers: "+1.2K",
                 estRevenue: "$3,420.50",
-                
                 viewsChange: "+12%",
                 watchTimeChange: "+8%",
                 subscribersChange: "-2%",
                 revenueChange: "+15%",
-                
-                // 🔹 Existing fields (unchanged)
                 likes: "3.1k",
                 incFollowers: "-8k",
                 followers: "40k",
@@ -426,7 +421,29 @@ class DataStore {
                     ranking: "2 of 10",
                     views: "42.1K",
                     avgDuration: "5:24"
-                )
+                ),
+                revenueSource: [
+                    RevenueSource(
+                        sf: "play.rectangle.fill",
+                        name: "Estimated Ad Revenue",
+                        amount: "2,300"
+                    ),
+                    RevenueSource(
+                        sf: "cart.fill",
+                        name: "From Paid Content",
+                        amount: "3,520"
+                    ),
+                    RevenueSource(
+                        sf: "person.2.fill",
+                        name: "Creator's Share from YPP",
+                        amount: "2,500"
+                    ),
+                    RevenueSource(
+                        sf: "briefcase.fill",
+                        name: "Collaboration Revenue",
+                        amount: "4,200"
+                    )
+                ]
             ),
             
             Analysis(
@@ -483,15 +500,37 @@ class DataStore {
                         views: "65K views",
                         publishedTime: "6 days ago"
                     )
-    ],
-                        latestContent: LatestContentPerformance(
-                            title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
-                            thumbnail: "laptop_thumb",
-                            publishedText: "Published 2 days ago",
-                            ranking: "2 of 10",
-                            views: "42.1K",
-                            avgDuration: "5:24"
-                        )
+                ],
+                latestContent: LatestContentPerformance(
+                    title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
+                    thumbnail: "laptop_thumb",
+                    publishedText: "Published 2 days ago",
+                    ranking: "2 of 10",
+                    views: "42.1K",
+                    avgDuration: "5:24"
+                ),
+                revenueSource: [
+                    RevenueSource(
+                        sf: "play.rectangle.fill",
+                        name: "Estimated Ad Revenue",
+                        amount: "6,800"
+                    ),
+                    RevenueSource(
+                        sf: "cart.fill",
+                        name: "From Paid Content",
+                        amount: "9,450"
+                    ),
+                    RevenueSource(
+                        sf: "person.2.fill",
+                        name: "Creator's Share from YPP",
+                        amount: "7,200"
+                    ),
+                    RevenueSource(
+                        sf: "briefcase.fill",
+                        name: "Collaboration Revenue",
+                        amount: "12,600"
+                    )
+                ]
             ),
 
             Analysis(
@@ -556,7 +595,30 @@ class DataStore {
                     ranking: "2 of 10",
                     views: "42.1K",
                     avgDuration: "5:24"
-                )
+                ),
+                revenueSource: [
+                    RevenueSource(
+                        sf: "play.rectangle.fill",
+                        name: "Estimated Ad Revenue",
+                        amount: "850"
+                    ),
+                    RevenueSource(
+                        sf: "cart.fill",
+                        name: "From Paid Content",
+                        amount: "1,200"
+                    ),
+                    RevenueSource(
+                        sf: "person.2.fill",
+                        name: "Creator's Share from YPP",
+                        amount: "980"
+                    ),
+                    RevenueSource(
+                        sf: "briefcase.fill",
+                        name: "Collaboration Revenue",
+                        amount: "1,750"
+                    )
+
+                ]
             )
         ]
 

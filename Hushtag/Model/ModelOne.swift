@@ -213,24 +213,22 @@ struct LatestContentPerformance: Codable {
     let avgDuration: String     // "5:24"
 }
 
+struct RevenueSource: Codable {
+    let sf: String
+    let name: String
+    let amount: String
+}
+
 struct Analysis: Codable, Identifiable {
     let id: String
-    
-    // 🔹 Audience metrics (NEW)
-        let views: String
-        let watchTime: String
-        let subscribers: String
-        let estRevenue: String
-
-        // 🔹 Change indicators (NEW)
-        let viewsChange: String
-        let watchTimeChange: String
-        let subscribersChange: String
-        let revenueChange: String
-
-        // 🔹 Existing fields (UNCHANGED)
-    
-    //let views: String
+    let views: String
+    let watchTime: String
+    let subscribers: String
+    let estRevenue: String
+    let viewsChange: String
+    let watchTimeChange: String
+    let subscribersChange: String
+    let revenueChange: String
     let likes: String
     let incFollowers: String
     let followers: String
@@ -239,17 +237,16 @@ struct Analysis: Codable, Identifiable {
     let post: Int
     let optimalTime: [AnalysisDateData]
     let engagementRate: String
-    
-    // 🔹 NEW: Top Content (simple)
-        let topContent: [TopContentItem]
-        let latestContent: LatestContentPerformance
+    let topContent: [TopContentItem]
+    let latestContent: LatestContentPerformance
+    let revenueSource: [RevenueSource]
 
     enum CodingKeys: String, CodingKey {
             case id,
                  views, watchTime, subscribers, estRevenue,
                  viewsChange, watchTimeChange, subscribersChange, revenueChange,
                  likes, incFollowers, followers,
-                 ageGroup, gender, post, optimalTime, engagementRate, topContent, latestContent
+                 ageGroup, gender, post, optimalTime, engagementRate, topContent, latestContent, revenueSource
         }
 }
 extension Analysis {

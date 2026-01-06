@@ -56,6 +56,11 @@ class AnalysisDataViewController: UIViewController {
             forCellWithReuseIdentifier: "optimal_time_cell"
         )
         
+        analysisCollectionView.register(
+            UINib(nibName: "RevenueSourceCell", bundle: nil),
+            forCellWithReuseIdentifier: "revenue_cell"
+        )
+        
         let purpleColor = UIColor(red: 139/255, green: 92/255, blue: 246/255, alpha: 1)
         let grayColor = UIColor.darkGray
 
@@ -113,24 +118,25 @@ class AnalysisDataViewController: UIViewController {
 extension AnalysisDataViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 5
+        return 6
     }
     
     
-    func collectionView(_ collectionView: UICollectionView,
-                        numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 
         switch section {
         case 0:
-            return analysisData?.audienceGrid.count ?? 0   // Audience Metrics
+            return analysisData?.audienceGrid.count ?? 0
         case 1:
-            return 1                                       // Latest Content Performance
+            return 1
         case 2:
-            return analysisData?.topContent.count ?? 0     // Top Content
+            return analysisData?.topContent.count ?? 0
         case 3:
-            return 1                                       // Audience Demographic
+            return 4
         case 4:
-            return 1                                       // Optimal Upload Times
+            return 1
+        case 5:
+            return 1
         default:
             return 0
         }
@@ -224,9 +230,21 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
 
             return cell
         }
-
-        // SECTION 2 – Audience Demographic
+        
         if indexPath.section == 3 {
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "revenue_cell",
+                for: indexPath
+            ) as! RevenueSourceCell
+
+            if let item = analysisData?.revenueSource[indexPath.row] {
+                cell.configure(with: item)
+            }
+            return cell
+        }
+        
+        // SECTION 2 – Audience Demographic
+        if indexPath.section == 4 {
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "gender_analysis_cell",
                 for: indexPath
@@ -239,7 +257,7 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
         }
 
         // SECTION 3 – Optimal Upload Time
-        if indexPath.section == 4 {
+        if indexPath.section == 5 {
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "optimal_time_cell",
                 for: indexPath
@@ -287,8 +305,10 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
         case 2:
             headerView.configureHeader(text: "Top Content")
         case 3:
-            headerView.configureHeader(text: "Audience Demographic")
+            headerView.configureHeader(text: "Revenue Insights")
         case 4:
+            headerView.configureHeader(text: "Audience Demographic")
+        case 5:
             headerView.configureHeader(text: "Optimal Upload Times")
         default:
             break
@@ -325,13 +345,13 @@ func makeHeaderItem() -> NSCollectionLayoutBoundarySupplementaryItem {
 func generateAnalysisLayout() -> UICollectionViewLayout {
 
     let layout = UICollectionViewCompositionalLayout { section, _ in
-
+        
         // Header
         let headerSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .absolute(50)
         )
-
+        
         let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
             layoutSize: headerSize,
             elementKind: "header",
@@ -339,135 +359,163 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
         )
         
         
-
+        
         // =========================================================
         // SECTION 0 — Audience Metrics (2×2 grid)
         // =========================================================
         if section == 0 {
-
+            
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(0.5),
                 heightDimension: .absolute(110)
             )
-
+            
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             item.contentInsets = NSDirectionalEdgeInsets(
                 top: 0, leading: 6, bottom: 0, trailing: 6
             )
-
+            
             let rowSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .absolute(122)
             )
-
+            
             let row = NSCollectionLayoutGroup.horizontal(
                 layoutSize: rowSize,
                 repeatingSubitem: item,
                 count: 2
             )
-
+            
             let groupSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .absolute(244)
             )
-
+            
             let group = NSCollectionLayoutGroup.vertical(
                 layoutSize: groupSize,
                 subitems: [row]
             )
-
+            
             let section = NSCollectionLayoutSection(group: group)
             section.contentInsets = NSDirectionalEdgeInsets(
                 top: 0, leading: 8, bottom: 0, trailing: 8
             )
             section.interGroupSpacing = 0
             section.boundarySupplementaryItems = [headerItem]
-
+            
             return section
         }
-        // =========================================================
-        // SECTION 1 — Latest Content Performance
-        // =========================================================
+        
+        else if section == 3 {
+            
+            let itemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(1.0)
+            )
+            
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = NSDirectionalEdgeInsets(
+                top: 5, leading: 5, bottom: 5, trailing: 5
+            )
+        
+            let groupSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(75)
+            )
+            
+            let group = NSCollectionLayoutGroup.vertical(
+                layoutSize: groupSize,
+                repeatingSubitem: item,
+                count: 1
+            )
+            
+            let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(
+                top: 0, leading: 8, bottom: 0, trailing: 8
+            )
+            section.interGroupSpacing = 0
+            section.boundarySupplementaryItems = [headerItem]
+            
+            return section
+        }
+        
         else if section == 1 {
-
+            
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .estimated(180)
             )
-
+            
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             item.contentInsets = NSDirectionalEdgeInsets(
                 top: 10, leading: 16, bottom: 10, trailing: 16
             )
-
+            
             let group = NSCollectionLayoutGroup.vertical(
                 layoutSize: itemSize,
                 subitems: [item]
             )
-
+            
             let section = NSCollectionLayoutSection(group: group)
             section.boundarySupplementaryItems = [makeHeaderItem()]
-
+            
             return section
         }
-
-        // =========================================================
-        // SECTION 1 — Top Content (table-style list)
-        // =========================================================
+        
         else if section == 2 {
-
+            
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .absolute(90)
             )
-
+            
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             item.contentInsets = NSDirectionalEdgeInsets(
                 top: 6, leading: 16, bottom: 6, trailing: 16
             )
-
+            
             let groupSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .estimated(300)
             )
-
+            
             let group = NSCollectionLayoutGroup.vertical(
                 layoutSize: groupSize,
                 subitems: [item]
             )
-
+            
             let sectionLayout = NSCollectionLayoutSection(group: group)
             sectionLayout.boundarySupplementaryItems = [makeHeaderItem()]
-
+            
             return sectionLayout
         }
-
+        
         // =========================================================
         // SECTION 2 — Audience Demographic
         // =========================================================
-        else if section == 3 {
-
+        else if section == 4 {
+            
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .estimated(200)
             )
-
+            
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             item.contentInsets = NSDirectionalEdgeInsets(
                 top: 10, leading: 20, bottom: 10, trailing: 20
             )
-
+            
             let group = NSCollectionLayoutGroup.horizontal(
                 layoutSize: itemSize,
                 subitems: [item]
             )
-
+            
             let section = NSCollectionLayoutSection(group: group)
             section.boundarySupplementaryItems = [makeHeaderItem()]
-
+            
             return section
         }
-
+        
         // =========================================================
         // SECTION 3 — Optimal Upload Times
         // =========================================================
@@ -477,7 +525,7 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .estimated(200)
             )
-
+            
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             item.contentInsets = NSDirectionalEdgeInsets(
                 top: 10, leading: 20, bottom: 10, trailing: 20

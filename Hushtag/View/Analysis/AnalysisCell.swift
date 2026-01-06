@@ -11,7 +11,6 @@ class AnalysisCell: UICollectionViewCell {
 
     @IBOutlet weak var analysisValue: UILabel!
     @IBOutlet weak var analysisType: UILabel!
-    
     @IBOutlet weak var changeLabel: UILabel!
     @IBOutlet weak var sfSymbol: UIImageView!
     
