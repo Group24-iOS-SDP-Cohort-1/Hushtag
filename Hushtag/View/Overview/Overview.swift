@@ -284,11 +284,24 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             }
         }
         if segue.identifier == "goToActivities" {
+            guard let row = sender as? Int else { return }
             let vc = segue.destination as! Activities
-            vc.posts = post
-            vc.deals = deal
-            vc.tasks = task
+
+            vc.scheduleItems = filteredSchedule
+
+            switch row {
+            case 0:
+                vc.title = "All"
+                vc.filter = .all
+            case 1:
+                vc.title = "Completed"
+                vc.filter = .completed
+            default:
+                break
+            }
         }
+
+
         if segue.identifier == "goToDetails" {
             let vc = segue.destination as! Details
             guard let item = selectedScheduleItem else { return }
@@ -318,7 +331,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         case 0:
             performSegue(withIdentifier: "goToAnalysis", sender: nil)
         case 1:
-            performSegue(withIdentifier: "goToActivities", sender: nil)
+            performSegue(withIdentifier: "goToActivities", sender: indexPath.row)
         case 2:
             selectedScheduleItem = filteredSchedule[indexPath.row]
             performSegue(withIdentifier: "goToDetails", sender: self)

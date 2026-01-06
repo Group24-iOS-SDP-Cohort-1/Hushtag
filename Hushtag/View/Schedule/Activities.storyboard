@@ -81,12 +81,8 @@
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="B6M-eu-uZT" secondAttribute="trailing" id="dhG-zb-a5G"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="2jA-oz-P53">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="plus" catalog="system" id="UDT-Mw-Ou3">
-                            <connections>
-                                <action selector="buttonPressed:" destination="Y6W-OH-hqX" id="Jnu-8S-JYp"/>
-                            </connections>
-                        </barButtonItem>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="2jA-oz-P53">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="plus" catalog="system" id="UDT-Mw-Ou3"/>
                     </navigationItem>
                     <connections>
                         <outlet property="addButton" destination="UDT-Mw-Ou3" id="bnJ-Xb-w88"/>

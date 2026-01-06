@@ -197,9 +197,41 @@ struct Deliverable: Codable {
 }
 
 
+struct TopContentItem: Codable, Identifiable {
+    let id: String
+    let title: String
+    let thumbnail: String   // asset name or URL
+    let views: String
+    let publishedTime: String
+}
+
+struct LatestContentPerformance: Codable {
+    let title: String
+    let thumbnail: String
+    let publishedText: String   // e.g. "Published 2 days ago"
+    let ranking: String         // "2 of 10"
+    let views: String           // "42.1K"
+    let avgDuration: String     // "5:24"
+}
+
 struct Analysis: Codable, Identifiable {
     let id: String
+    
+    // Audience metrics (NEW)
     let views: String
+    let watchTime: String
+    let subscribers: String
+    let estRevenue: String
+
+    // Change indicators (NEW)
+    let viewsChange: String
+    let watchTimeChange: String
+    let subscribersChange: String
+    let revenueChange: String
+
+    // Existing fields (UNCHANGED)
+    
+    //let views: String
     let likes: String
     let incFollowers: String
     let followers: String
@@ -208,9 +240,29 @@ struct Analysis: Codable, Identifiable {
     let post: Int
     let optimalTime: [AnalysisDateData]
     let engagementRate: String
+    
+    // NEW: Top Content (simple)
+    let topContent: [TopContentItem]
+    let latestContent: LatestContentPerformance
 
     enum CodingKeys: String, CodingKey {
-        case id,views,likes,incFollowers,followers,ageGroup,gender,optimalTime,engagementRate,post
+            case id,
+                 views, watchTime, subscribers, estRevenue,
+                 viewsChange, watchTimeChange, subscribersChange, revenueChange,
+                 likes, incFollowers, followers,
+                 ageGroup, gender, post, optimalTime, engagementRate, topContent, latestContent
+        }
+}
+
+extension Analysis {
+
+    var audienceGrid: [(title: String, value: String, change: String)] {
+        return [
+            ("Views", views, viewsChange),
+            ("Watch time", watchTime, watchTimeChange),
+            ("Subscribers", subscribers, subscribersChange),
+            ("Est. Revenue", estRevenue, revenueChange)
+        ]
     }
 }
 

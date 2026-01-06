@@ -9,12 +9,13 @@ import UIKit
 
 class Analytics: UICollectionViewCell {
 
+    var analysis: Analysis?
     override func awakeFromNib() {
         super.awakeFromNib()
         applyLiquidGlassEffect()
     }
     func configure() {
-        print("hi")
+        
     }
 
 }
