@@ -7,6 +7,12 @@
 
 import UIKit
 
+struct EngagementStyle {
+    let text: String
+    let icon: String
+    let color: UIColor
+}
+ 
 class IdeaCells: UICollectionViewCell {
 
     @IBOutlet weak var ideaTitle: UILabel!
@@ -20,7 +26,6 @@ class IdeaCells: UICollectionViewCell {
     var idea: Idea?
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         ideaView.layer.cornerRadius = 10
         ideaTitle.numberOfLines = 2
         separatorLine.backgroundColor = .separator
@@ -29,37 +34,46 @@ class IdeaCells: UICollectionViewCell {
     }
 
 
-    func configure(idea: Idea, keyword1: [String], keyword2: [String]) {
+    func configure(idea: Idea, keyword1: EngagementStyle, keyword2: EngagementStyle) {
         ideaTitle.text = idea.title
         configureHashtags(idea.hashtag)
-        keywordText1.text = keyword1[0]
-        keywordText2.text = keyword2[0]
-        keywordImage1.image = UIImage(systemName: keyword1[1])
-        keywordImage2.image = UIImage(systemName: keyword2[1])
+//        keywordText1.text = keyword1[0]
+//        keywordText2.text = keyword2[0]
+//        keywordImage1.image = UIImage(systemName: keyword1[1])
+//        keywordImage2.image = UIImage(systemName: keyword2[1])
+            keywordText1.text = keyword1.text
+            keywordText1.textColor = keyword1.color
+            keywordImage1.image = UIImage(systemName: keyword1.icon)
+            keywordImage1.tintColor = keyword1.color
+
+            keywordText2.text = keyword2.text
+            keywordText2.textColor = keyword2.color
+            keywordImage2.image = UIImage(systemName: keyword2.icon)
+            keywordImage2.tintColor = keyword2.color
     }
     
-    static func loadFromNib() -> Badges {
-        let nib = UINib(nibName: "Badges", bundle: nil)
-        guard let badge = nib.instantiate(withOwner: nil, options: nil).first as? Badges else {
-            fatalError("Failed to load Badges from nib")
-        }
-        return badge
-    }
-
 
     private func configureHashtags(_ hashtags: [String]) {
 
-        badgeStack.arrangedSubviews.forEach {
-            badgeStack.removeArrangedSubview($0)
-            $0.removeFromSuperview()
+            badgeStack.arrangedSubviews.forEach {
+                badgeStack.removeArrangedSubview($0)
+                $0.removeFromSuperview()
+            }
+
+            for tag in hashtags {
+                let badge: Badges = Badges.loadFromNib()
+
+                badge.configure(
+                    text: tag,
+                    color: .white,
+                    cornerRadius: 12,
+                    borderWidth: 0.2,
+                    backgroundAlpha: 0.10
+                )
+
+                badgeStack.addArrangedSubview(badge)
+            }
         }
 
-        for tag in hashtags {
-            let badge: Badges = Badges.loadFromNib()
 
-            badge.configure(text: tag)
-
-            badgeStack.addArrangedSubview(badge)
-        }
-    }
 }

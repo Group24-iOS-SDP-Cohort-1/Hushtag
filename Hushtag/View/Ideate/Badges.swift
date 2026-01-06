@@ -9,6 +9,7 @@ import UIKit
 
 class Badges: UIView {
 
+    
     @IBOutlet weak var badgeLabel: UILabel!
     
     private var badgeCornerRadius: CGFloat = 12
@@ -35,24 +36,21 @@ class Badges: UIView {
            badgeLabel.textColor = .white
        }
 
-    func configure(text: String) {
-        badgeLabel.text = text.uppercased()
-        print("Badge text:", text)
+       func configure(
+           text: String,
+           color: UIColor = .white,
+           cornerRadius: CGFloat = 12,
+           borderWidth: CGFloat = 1,
+           backgroundAlpha: CGFloat = 0.15
+       ) {
+           badgeLabel.text = text.uppercased()
+           badgeCornerRadius = cornerRadius
 
-        badgeCornerRadius = 10
-        badgeLabel.textColor = .white
+           badgeLabel.textColor = color
+           layer.borderWidth = borderWidth
+           layer.borderColor = color.cgColor
+           backgroundColor = color.withAlphaComponent(backgroundAlpha)
 
-        layer.borderWidth = 0.5
-        layer.borderColor = UIColor.white.cgColor
-        backgroundColor = UIColor.white.withAlphaComponent(0.15)
-
-        // Allow badge to adjust based on its content size
-        badgeLabel.translatesAutoresizingMaskIntoConstraints = false
-        badgeLabel.setContentHuggingPriority(.required, for: .horizontal)
-        badgeLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
-
-        invalidateIntrinsicContentSize()
-        setNeedsLayout()
-    }
-
-}
+           setNeedsLayout()
+       }
+   }

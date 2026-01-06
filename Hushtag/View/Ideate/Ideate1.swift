@@ -15,28 +15,6 @@ class Ideate1: UIViewController {
     var ideas: [Idea] = []
     var selectedIdea: Idea?
     var selectedIndexPath: IndexPath?
-    var keywords: [[String]] = [
-        ["Viral Potential", "flame"],
-        ["High Impact", "bolt"],
-        ["Massive Reach", "antenna.radiowaves.left.and.right"],
-        ["Explosive Growth", "exclamationmark.triangle.fill"],
-        ["Game Changer", "star.fill"],
-        ["Maximum Engagement", "hand.raised.fill"],
-        ["Instant Virality", "bolt.circle.fill"],
-        ["Wide Appeal", "eye.fill"],
-        ["Buzz-Worthy", "speaker.wave.3.fill"],
-        ["Unstoppable Momentum", "arrow.2.circlepath"],
-        ["Rapid Exposure", "hourglass.tophalf.fill"],
-        ["Trendsetting", "flame.fill"],
-        ["Audience Magnet", "person.3.fill"],
-        ["Share-Worthy", "square.and.arrow.up.fill"],
-        ["Limitless Potential", "infinity.circle.fill"],
-        ["Next-Level Influence", "arrow.up.right.circle.fill"],
-        ["Unmatched Reach", "wifi.circle.fill"],
-        ["Powerful Results", "target"],
-        ["High ROI", "chart.bar.fill"],
-        ["Rapid Growth", "gauge"]
-    ]
 
 
     override func viewDidLoad() {
@@ -101,11 +79,22 @@ class Ideate1: UIViewController {
 
             let section = NSCollectionLayoutSection(group: group)
             section.interGroupSpacing = 10
-            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 20, leading: 0, bottom: 0, trailing: 0)
 
             return section
         }
     }
+    
+    func categorizeIdea(engagementRate: Double) -> String {
+        if engagementRate >= 20 {
+            return "Viral"
+        } else if engagementRate >= 10 {
+            return "Growing"
+        } else {
+            return "Niche"
+        }
+    }
+
 
 }
 
@@ -128,8 +117,55 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         ) as! IdeaCells
 
         let idea = ideas[indexPath.row]
-        let keyword1 = keywords[indexPath.row]
-        let keyword2 = keywords[indexPath.row + 1]
+
+        let engagement = Double(idea.engagementRate) ?? 0.0
+
+        let category = categorizeIdea(engagementRate: engagement)
+            
+        let keyword1: EngagementStyle
+        let keyword2: EngagementStyle
+
+        switch category {
+        case "Viral":
+            keyword2 = EngagementStyle(
+                text: "Trending",
+                icon: "flame",
+                color: .systemRed
+            )
+            keyword1 = EngagementStyle(
+                text: "Beginner",
+                icon: "chart.bar",
+                color: .systemGreen
+            )
+
+        case "Growing":
+            keyword2 = EngagementStyle(
+                text: "Expanding",
+                icon: "bolt",
+                color: .systemOrange
+            )
+            keyword1 = EngagementStyle(
+                text: "Easy",
+                icon: "chart.bar",
+                color: .systemGreen
+            )
+
+        case "Niche":
+            keyword2 = EngagementStyle(
+                text: "Niche",
+                icon: "bolt",
+                color: .systemGreen
+            )
+            keyword1 = EngagementStyle(
+                text: "Medium",
+                icon: "chart.bar",
+                color: .systemOrange
+            )
+
+        default:
+            return cell
+        }
+
         cell.configure(idea: idea, keyword1: keyword1, keyword2: keyword2)
         return cell
     }
@@ -146,6 +182,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             for: indexPath
         ) as! IdeaSearch
 
+        header.delegate = self
         return header
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -164,3 +201,22 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
 
 }
 
+extension Ideate1: IdeaSearchDelegate {
+    func didTapSearch(with keyword: String) {
+        if keyword.isEmpty {
+            ideas = ideaResponse.ideas
+            
+           
+        } else {
+            ideas = ideaResponse.ideas.filter { idea in
+                idea.hashtag.contains { tag in
+                    tag.localizedCaseInsensitiveContains(keyword)
+                }
+            }
+        }
+
+        collectionView.reloadSections(IndexSet(integer: 1))
+     
+
+    }
+}
