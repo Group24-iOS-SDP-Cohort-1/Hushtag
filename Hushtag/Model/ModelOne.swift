@@ -196,6 +196,28 @@ struct Deliverable: Codable {
     var isCompleted : Bool
 }
 
+struct TopContentItem: Codable, Identifiable {
+    let id: String
+    let title: String
+    let thumbnail: String   // asset name or URL
+    let views: String
+    let publishedTime: String
+}
+
+struct LatestContentPerformance: Codable {
+    let title: String
+    let thumbnail: String
+    let publishedText: String   // e.g. "Published 2 days ago"
+    let ranking: String         // "2 of 10"
+    let views: String           // "42.1K"
+    let avgDuration: String     // "5:24"
+}
+
+struct RevenueSource: Codable {
+    let sf: String
+    let name: String
+    let amount: String
+}
 
 struct TopContentItem: Codable, Identifiable {
     let id: String
@@ -240,20 +262,18 @@ struct Analysis: Codable, Identifiable {
     let post: Int
     let optimalTime: [AnalysisDateData]
     let engagementRate: String
-    
-    // NEW: Top Content (simple)
     let topContent: [TopContentItem]
     let latestContent: LatestContentPerformance
+    let revenueSource: [RevenueSource]
 
     enum CodingKeys: String, CodingKey {
             case id,
                  views, watchTime, subscribers, estRevenue,
                  viewsChange, watchTimeChange, subscribersChange, revenueChange,
                  likes, incFollowers, followers,
-                 ageGroup, gender, post, optimalTime, engagementRate, topContent, latestContent
+                 ageGroup, gender, post, optimalTime, engagementRate, topContent, latestContent, revenueSource
         }
 }
-
 extension Analysis {
 
     var audienceGrid: [(title: String, value: String, change: String)] {

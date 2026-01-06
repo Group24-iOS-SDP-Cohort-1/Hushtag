@@ -18,15 +18,15 @@ struct AudienceGenderChart: View {
     var chartData: [GenderMetric] {
         var metrics: [GenderMetric] = []
         
-        let purpleHex = "#8B5CF6"
+        let purpleColor = UIColor(named: "AccentColor")
         
         // Parse Male Data
-        if let mStr = genderData["M"], let mVal = Double(mStr), let mColour = UIColor(hex: purpleHex, alpha: 0.7) {
+        if let mStr = genderData["M"], let mVal = Double(mStr), let mColour = purpleColor?.withAlphaComponent(0.7) {
             metrics.append(GenderMetric(gender: "M", value: mVal, color: Color(uiColor: mColour)))
         }
         
         // Parse Female Data
-        if let fStr = genderData["F"], let fVal = Double(fStr), let fColour = UIColor(hex: purpleHex, alpha: 1.0) {
+        if let fStr = genderData["F"], let fVal = Double(fStr), let fColour = purpleColor?.withAlphaComponent(1.0) {
             metrics.append(GenderMetric(gender: "F", value: fVal, color: Color(uiColor: fColour)))
         }
         

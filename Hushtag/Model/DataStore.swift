@@ -49,7 +49,7 @@ class DataStore {
                 reminder: ["1 hour before", "15 mins before"],
                 isCompleted: false
             ),
-
+            
             Task(
                 name: "Unboxing New Cosmetic Products",
                 startDate: DateData(
@@ -66,7 +66,7 @@ class DataStore {
                 reminder: ["30 mins before"],
                 isCompleted: true
             ),
-
+            
             Task(
                 name: "Recreate Model Look",
                 startDate: DateData(
@@ -83,7 +83,7 @@ class DataStore {
                 reminder: ["1 hour before"],
                 isCompleted: false
             ),
-
+            
             Task(
                 name: "Edit & Schedule Instagram Post",
                 startDate: DateData(
@@ -100,7 +100,7 @@ class DataStore {
                 reminder: ["45 mins before"],
                 isCompleted: false
             ),
-
+            
             Task(
                 name: "Research Upcoming Beauty Trends",
                 startDate: DateData(
@@ -149,7 +149,7 @@ class DataStore {
                 payment: 5000,
                 selectedIdeaIndex: "i1"
             ),
-
+            
             Deal(
                 name: "H&M Lifestyle",
                 deliverable: [
@@ -188,7 +188,7 @@ class DataStore {
                 payment: 7000,
                 selectedIdeaIndex: "i2"
             ),
-
+            
             Deal(
                 name: "Nykaa Beauty",
                 deliverable: [
@@ -209,7 +209,7 @@ class DataStore {
                 payment: 6000,
                 selectedIdeaIndex: "i3"
             ),
-
+            
             Deal(
                 name: "Myntra",
                 deliverable: [
@@ -293,7 +293,7 @@ class DataStore {
                 reminder: ["1 hour before", "15 minutes before"],
                 isCompleted: false
             ),
-
+            
             Post(
                 name: "YouTube Video – Studio Makeup Tutorial",
                 postingTime: DateData(
@@ -306,7 +306,7 @@ class DataStore {
                 reminder: ["3 hours before"],
                 isCompleted: false
             ),
-
+            
             Post(
                 name: "Instagram Carousel – Winter Layering Looks",
                 postingTime: DateData(
@@ -319,7 +319,7 @@ class DataStore {
                 reminder: ["45 minutes before"],
                 isCompleted: true
             ),
-
+            
             Post(
                 name: "Facebook Post – Brand Giveaway Announcement",
                 postingTime: DateData(
@@ -332,7 +332,7 @@ class DataStore {
                 reminder: ["2 hours before"],
                 isCompleted: true
             ),
-
+            
             Post(
                 name: "YouTube Shorts – Quick GRWM Coffee Date",
                 postingTime: DateData(
@@ -345,7 +345,7 @@ class DataStore {
                 reminder: ["20 minutes before"],
                 isCompleted: false
             ),
-
+            
             Post(
                 name: "IG Story – Behind the Scenes Shoot",
                 postingTime: DateData(
@@ -420,7 +420,29 @@ class DataStore {
                     ranking: "2 of 10",
                     views: "42.1K",
                     avgDuration: "5:24"
-                )
+                ),
+                revenueSource: [
+                    RevenueSource(
+                        sf: "play.rectangle.fill",
+                        name: "Estimated Ad Revenue",
+                        amount: "2,300"
+                    ),
+                    RevenueSource(
+                        sf: "cart.fill",
+                        name: "From Paid Content",
+                        amount: "3,520"
+                    ),
+                    RevenueSource(
+                        sf: "person.2.fill",
+                        name: "Creator's Share from YPP",
+                        amount: "2,500"
+                    ),
+                    RevenueSource(
+                        sf: "briefcase.fill",
+                        name: "Collaboration Revenue",
+                        amount: "4,200"
+                    )
+                ]
             ),
             
             Analysis(
@@ -474,15 +496,37 @@ class DataStore {
                         views: "65K views",
                         publishedTime: "6 days ago"
                     )
-    ],
-                        latestContent: LatestContentPerformance(
-                            title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
-                            thumbnail: "laptop_thumb",
-                            publishedText: "Published 2 days ago",
-                            ranking: "2 of 10",
-                            views: "42.1K",
-                            avgDuration: "5:24"
-                        )
+                ],
+                latestContent: LatestContentPerformance(
+                    title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
+                    thumbnail: "laptop_thumb",
+                    publishedText: "Published 2 days ago",
+                    ranking: "2 of 10",
+                    views: "42.1K",
+                    avgDuration: "5:24"
+                ),
+                revenueSource: [
+                    RevenueSource(
+                        sf: "play.rectangle.fill",
+                        name: "Estimated Ad Revenue",
+                        amount: "6,800"
+                    ),
+                    RevenueSource(
+                        sf: "cart.fill",
+                        name: "From Paid Content",
+                        amount: "9,450"
+                    ),
+                    RevenueSource(
+                        sf: "person.2.fill",
+                        name: "Creator's Share from YPP",
+                        amount: "7,200"
+                    ),
+                    RevenueSource(
+                        sf: "briefcase.fill",
+                        name: "Collaboration Revenue",
+                        amount: "12,600"
+                    )
+                ]
             ),
 
             Analysis(
@@ -544,7 +588,30 @@ class DataStore {
                     ranking: "2 of 10",
                     views: "42.1K",
                     avgDuration: "5:24"
-                )
+                ),
+                revenueSource: [
+                    RevenueSource(
+                        sf: "play.rectangle.fill",
+                        name: "Estimated Ad Revenue",
+                        amount: "850"
+                    ),
+                    RevenueSource(
+                        sf: "cart.fill",
+                        name: "From Paid Content",
+                        amount: "1,200"
+                    ),
+                    RevenueSource(
+                        sf: "person.2.fill",
+                        name: "Creator's Share from YPP",
+                        amount: "980"
+                    ),
+                    RevenueSource(
+                        sf: "briefcase.fill",
+                        name: "Collaboration Revenue",
+                        amount: "1,750"
+                    )
+
+                ]
             )
         ]
 

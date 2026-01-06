@@ -55,16 +55,16 @@ class OptimalTimeChartCell: UICollectionViewCell {
 
         contentView.layer.cornerRadius = 12
         contentView.layer.masksToBounds = true
-
+        contentView.applyLiquidGlassEffect()
         layer.cornerRadius = 12
         layer.masksToBounds = false
-        layer.shadowColor = UIColor.label.cgColor
-        layer.shadowOpacity = 0.1
-        layer.shadowOffset = CGSize(width: 0, height: 1)
-        layer.shadowRadius = 8
-
+        //layer.shadowColor = UIColor.black.cgColor
+        //layer.shadowOpacity = 0.1
+        //layer.shadowOffset = CGSize(width: 0, height: 1)
+        //layer.shadowRadius = 8
         backgroundColor = .clear
-        contentView.backgroundColor = .systemBackground
+        contentView.backgroundColor = .clear
+        chartContainer.backgroundColor = .clear
     }
 
     

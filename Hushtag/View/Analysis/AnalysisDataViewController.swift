@@ -22,6 +22,14 @@ class AnalysisDataViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        analysisCollectionView.register(
+            UINib(nibName: "LatestContentPerformanceCell", bundle: nil),
+            forCellWithReuseIdentifier: "latest_content_performance_cell"
+        )
+        analysisCollectionView.register(
+            UINib(nibName: "TopContentCollectionViewCell", bundle: nil),
+            forCellWithReuseIdentifier: "top_content_cell"
+        )
 
         // Do any additional setup after loading the view.
         self.navigationItem.title = "\(platform.capitalized) Analysis"
@@ -46,6 +54,11 @@ class AnalysisDataViewController: UIViewController {
         analysisCollectionView.register(
             UINib(nibName: "OptimalTimeChartCell", bundle: nil),
             forCellWithReuseIdentifier: "optimal_time_cell"
+        )
+        
+        analysisCollectionView.register(
+            UINib(nibName: "RevenueSourceCell", bundle: nil),
+            forCellWithReuseIdentifier: "revenue_cell"
         )
         
         let purpleColor = UIColor(red: 139/255, green: 92/255, blue: 246/255, alpha: 1)
@@ -105,168 +118,431 @@ class AnalysisDataViewController: UIViewController {
 extension AnalysisDataViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 3
+        return 6
     }
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0{
-            return 3
-        }else if section == 1{
+
+        switch section {
+        case 0:
+            return analysisData?.audienceGrid.count ?? 0
+        case 1:
             return 1
-        }else{
+        case 2:
+            return analysisData?.topContent.count ?? 0
+        case 3:
+            return 4
+        case 4:
             return 1
+        case 5:
+            return 1
+        default:
+            return 0
         }
     }
     
     
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//    func collectionView(
+//        _ collectionView: UICollectionView,
+//        cellForItemAt indexPath: IndexPath
+//    ) -> UICollectionViewCell {
+//
+//        // SECTION 1 – Audience Demographics (Gender chart)
+//        if indexPath.section == 1 {
+//            let cell = collectionView.dequeueReusableCell(
+//                withReuseIdentifier: "gender_analysis_cell",
+//                for: indexPath
+//            ) as! AudienceChartCell
+//
+//            if let data = analysisData {
+//                cell.configure(with: data)
+//            }
+//            return cell
+//        }
+//
+//        // SECTION 2 – Optimal Upload Time
+//        if indexPath.section == 2 {
+//            let cell = collectionView.dequeueReusableCell(
+//                withReuseIdentifier: "optimal_time_cell",
+//                for: indexPath
+//            ) as! OptimalTimeChartCell
+//
+//            if let data = analysisData {
+//                cell.configure(with: data.optimalTime)
+//            }
+//            return cell
+//        }
+//
+//        // SECTION 0 – Audience Metrics Cards (4 cards)
+//        let cell = collectionView.dequeueReusableCell(
+//            withReuseIdentifier: "analysis_page_cell",
+//            for: indexPath
+//        ) as! AnalysisCell
+//
+//        guard let metric = analysisData?.audienceGrid[indexPath.row] else {
+//            return cell
+//        }
+//
+////        cell.configureCell(
+////            value: metric.value,
+////            type: metric.title
+////            // If you added change-based arrows later:
+////            // change: metric.change
+////        )
+//        cell.configureCell(
+//            value: metric.value,
+//            type: metric.title,
+//            change: metric.change
+//        )
+//
+//        return cell
+//    }
+//
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+        // SECTION 1 — Latest Content Performance
+        if indexPath.section == 1 {
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "latest_content_performance_cell",
+                for: indexPath
+            ) as! LatestContentPerformanceCell
+
+            if let latest = analysisData?.latestContent {
+                cell.configure(with: latest)
+            }
+
+            return cell
+        }
+        // SECTION 1 – Top Content
+        if indexPath.section == 2 {
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "top_content_cell",
+                for: indexPath
+            ) as! TopContentCollectionViewCell
+
+            if let item = analysisData?.topContent[indexPath.row] {
+                cell.configure(with: item)
+            }
+
+            return cell
+        }
         
-        if indexPath.section == 1{
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "gender_analysis_cell", for: indexPath) as! AudienceChartCell
-                    
+        if indexPath.section == 3 {
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "revenue_cell",
+                for: indexPath
+            ) as! RevenueSourceCell
+
+            if let item = analysisData?.revenueSource[indexPath.row] {
+                cell.configure(with: item)
+            }
+            return cell
+        }
+        
+        // SECTION 2 – Audience Demographic
+        if indexPath.section == 4 {
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "gender_analysis_cell",
+                for: indexPath
+            ) as! AudienceChartCell
+
             if let data = analysisData {
                 cell.configure(with: data)
             }
             return cell
         }
-        
-        if indexPath.section == 2{
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "optimal_time_cell", for: indexPath) as! OptimalTimeChartCell
-            
+
+        // SECTION 3 – Optimal Upload Time
+        if indexPath.section == 5 {
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "optimal_time_cell",
+                for: indexPath
+            ) as! OptimalTimeChartCell
+
             if let data = analysisData {
                 cell.configure(with: data.optimalTime)
             }
             return cell
         }
-        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "analysis_page_cell", for: indexPath) as! AnalysisCell
-        
-        guard let analysisDataUnwrapped = analysisData else { return cell }
-        
-        
-        if indexPath.row == 0{
-            cell.configureCell(value: analysisDataUnwrapped.likes, type: "Likes")
-        }else if indexPath.row == 1{
-            cell.configureCell(value: analysisDataUnwrapped.views, type: "Views")
-        }else{
-            cell.configureCell(value: analysisDataUnwrapped.followers, type: "Followers")
+
+        // SECTION 0 – Audience Metrics
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "analysis_page_cell",
+            for: indexPath
+        ) as! AnalysisCell
+
+        if let metric = analysisData?.audienceGrid[indexPath.row] {
+            cell.configureCell(
+                value: metric.value,
+                type: metric.title,
+                change: metric.change
+            )
         }
-        
+
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        viewForSupplementaryElementOfKind kind: String,
+                        at indexPath: IndexPath) -> UICollectionReusableView {
+
         let headerView = collectionView.dequeueReusableSupplementaryView(
             ofKind: "header",
             withReuseIdentifier: "headerCell",
             for: indexPath
         ) as! HeaderView
-        
-        if indexPath.section == 0{
+
+        switch indexPath.section {
+        case 0:
             headerView.configureHeader(text: "Audience Metrics")
-        }else if indexPath.section == 1{
+        case 1:
+            headerView.configureHeader(text: "Latest Content Performance")
+        case 2:
+            headerView.configureHeader(text: "Top Content")
+        case 3:
+            headerView.configureHeader(text: "Revenue Insights")
+        case 4:
             headerView.configureHeader(text: "Audience Demographic")
-        }else{
+        case 5:
             headerView.configureHeader(text: "Optimal Upload Times")
+        default:
+            break
         }
-        
+
         return headerView
     }
 }
 
+func makeHeaderItem() -> NSCollectionLayoutBoundarySupplementaryItem {
+    let headerSize = NSCollectionLayoutSize(
+        widthDimension: .fractionalWidth(1.0),
+        heightDimension: .absolute(50)
+    )
 
-func generateAnalysisLayout() -> UICollectionViewLayout{
-    
-    
-    /*
-    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+    let header = NSCollectionLayoutBoundarySupplementaryItem(
+        layoutSize: headerSize,
+        elementKind: "header",
+        alignment: .top
+    )
 
-    // create the item
-    let item = NSCollectionLayoutItem(layoutSize: itemSize)
-    item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
+    // THIS is the key alignment fix
+    header.contentInsets = NSDirectionalEdgeInsets(
+        top: 0,
+        leading: 10,
+        bottom: 0,
+        trailing: 16
+    )
 
-    // create the group
-    let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.3), heightDimension: .estimated(115))
-    let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
+    return header
+}
 
-    //create the section
-    let section = NSCollectionLayoutSection(group: group)
-    section.orthogonalScrollingBehavior = .continuous
-    section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom:10, trailing: 20)
-    
-    let layout = UICollectionViewCompositionalLayout(section: section)
-    
-    return layout
-     */
-    
-    
-    
-    let layout = UICollectionViewCompositionalLayout {
-        section, env in
+
+func generateAnalysisLayout() -> UICollectionViewLayout {
+
+    let layout = UICollectionViewCompositionalLayout { section, _ in
         
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
+        // Header
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(50)
+        )
         
-        let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "header", alignment: .top)
+        let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: "header",
+            alignment: .top
+        )
         
         
+        
+        // =========================================================
+        // SECTION 0 — Audience Metrics (2×2 grid)
+        // =========================================================
         if section == 0 {
-            //print("Inside section == 0")
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-
-            // create the item
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
-
-            // create the group
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.3), heightDimension: .estimated(115))
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
-
-            //create the section
-            let section = NSCollectionLayoutSection(group: group)
-            section.orthogonalScrollingBehavior = .continuous
-            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom:10, trailing: 20)
             
+            let itemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(0.5),
+                heightDimension: .absolute(110)
+            )
+            
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = NSDirectionalEdgeInsets(
+                top: 0, leading: 6, bottom: 0, trailing: 6
+            )
+            
+            let rowSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(122)
+            )
+            
+            let row = NSCollectionLayoutGroup.horizontal(
+                layoutSize: rowSize,
+                repeatingSubitem: item,
+                count: 2
+            )
+            
+            let groupSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(244)
+            )
+            
+            let group = NSCollectionLayoutGroup.vertical(
+                layoutSize: groupSize,
+                subitems: [row]
+            )
+            
+            let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(
+                top: 0, leading: 8, bottom: 0, trailing: 8
+            )
+            section.interGroupSpacing = 0
             section.boundarySupplementaryItems = [headerItem]
             
-            return section
-        }else if section == 1{
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-
-            // create the item
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
-
-            // create the group
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(200))
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
-
-            //create the section
-            let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom:10, trailing: 20)
-            section.boundarySupplementaryItems = [headerItem]
-            return section
-        }else{
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-
-            // create the item
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
-
-            // create the group
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(200))
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
-
-            //create the section
-            let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom:10, trailing: 20)
-            section.boundarySupplementaryItems = [headerItem]
             return section
         }
         
+        else if section == 3 {
+            
+            let itemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(1.0)
+            )
+            
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = NSDirectionalEdgeInsets(
+                top: 5, leading: 5, bottom: 5, trailing: 5
+            )
+        
+            let groupSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(75)
+            )
+            
+            let group = NSCollectionLayoutGroup.vertical(
+                layoutSize: groupSize,
+                repeatingSubitem: item,
+                count: 1
+            )
+            
+            let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(
+                top: 0, leading: 8, bottom: 0, trailing: 8
+            )
+            section.interGroupSpacing = 0
+            section.boundarySupplementaryItems = [headerItem]
+            
+            return section
+        }
+        
+        else if section == 1 {
+            
+            let itemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(180)
+            )
+            
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = NSDirectionalEdgeInsets(
+                top: 10, leading: 16, bottom: 10, trailing: 16
+            )
+            
+            let group = NSCollectionLayoutGroup.vertical(
+                layoutSize: itemSize,
+                subitems: [item]
+            )
+            
+            let section = NSCollectionLayoutSection(group: group)
+            section.boundarySupplementaryItems = [makeHeaderItem()]
+            
+            return section
+        }
+        
+        else if section == 2 {
+            
+            let itemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(90)
+            )
+            
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = NSDirectionalEdgeInsets(
+                top: 6, leading: 16, bottom: 6, trailing: 16
+            )
+            
+            let groupSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(300)
+            )
+            
+            let group = NSCollectionLayoutGroup.vertical(
+                layoutSize: groupSize,
+                subitems: [item]
+            )
+            
+            let sectionLayout = NSCollectionLayoutSection(group: group)
+            sectionLayout.boundarySupplementaryItems = [makeHeaderItem()]
+            
+            return sectionLayout
+        }
+        
+        // =========================================================
+        // SECTION 2 — Audience Demographic
+        // =========================================================
+        else if section == 4 {
+            
+            let itemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(200)
+            )
+            
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = NSDirectionalEdgeInsets(
+                top: 10, leading: 20, bottom: 10, trailing: 20
+            )
+            
+            let group = NSCollectionLayoutGroup.horizontal(
+                layoutSize: itemSize,
+                subitems: [item]
+            )
+            
+            let section = NSCollectionLayoutSection(group: group)
+            section.boundarySupplementaryItems = [makeHeaderItem()]
+            
+            return section
+        }
+        
+        // =========================================================
+        // SECTION 3 — Optimal Upload Times
+        // =========================================================
+        else {
+
+            let itemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(200)
+            )
+            
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = NSDirectionalEdgeInsets(
+                top: 10, leading: 20, bottom: 10, trailing: 20
+            )
+
+            let group = NSCollectionLayoutGroup.horizontal(
+                layoutSize: itemSize,
+                subitems: [item]
+            )
+
+            let section = NSCollectionLayoutSection(group: group)
+            section.boundarySupplementaryItems = [makeHeaderItem()]
+
+            return section
+        }
     }
-    
+
     return layout
 }
 

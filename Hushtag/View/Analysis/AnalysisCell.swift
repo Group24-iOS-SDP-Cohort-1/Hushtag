@@ -11,7 +11,7 @@ class AnalysisCell: UICollectionViewCell {
 
     @IBOutlet weak var analysisValue: UILabel!
     @IBOutlet weak var analysisType: UILabel!
-    
+    @IBOutlet weak var changeLabel: UILabel!
     @IBOutlet weak var sfSymbol: UIImageView!
     
     
@@ -22,52 +22,36 @@ class AnalysisCell: UICollectionViewCell {
 
     
     
-    func configureCell(value: String, type: String) {
-        var absoluteValue = value
-        
-        if absoluteValue.hasPrefix("-") {
-            absoluteValue.removeFirst()
-        }
-        
-        analysisValue.text = "\(absoluteValue)"
-        if absoluteValue.isEmpty {
-            analysisValue.text = "--"
-        }
+    func configureCell(value: String, type: String, change: String) {
+
+        // Main value & title
+        analysisValue.text = value
         analysisType.text = type
-        //analysisValue.text = value
-        
-        let rateValue = Double(value) ?? 0
-        
-        var symbolName = "minus.circle.fill"
-        var symbolColor: UIColor = .gray
-        if rateValue > 0 {
-            symbolName = "arrow.up.circle.fill"
-            symbolColor = .systemGreen
-        } else if rateValue < 0 {
-            symbolName = "arrow.down.circle.fill"
-            symbolColor = .systemRed
+
+        // Change label
+        changeLabel.text = change
+
+        // Arrow + color based on change (NOT value)
+        if change.contains("+") {
+            sfSymbol.image = UIImage(systemName: "arrow.up.circle.fill")
+            sfSymbol.tintColor = .systemGreen
+            changeLabel.textColor = .systemGreen
+            sfSymbol.isHidden = false
+        } else if change.contains("-") {
+            sfSymbol.image = UIImage(systemName: "arrow.down.circle.fill")
+            sfSymbol.tintColor = .systemRed
+            changeLabel.textColor = .systemRed
+            sfSymbol.isHidden = false
+        } else {
+            sfSymbol.isHidden = true
+            changeLabel.textColor = .secondaryLabel
         }
-        
-        let config = UIImage.SymbolConfiguration(pointSize: 14, weight: .semibold)
-        sfSymbol.image = UIImage(systemName: symbolName, withConfiguration: config)
-        sfSymbol.tintColor = symbolColor
-        
-//        if type == "Followers" {
-//            sfSymbol.isHidden = true
-//            analysisValue.text = "\(absoluteValue)"
-//        }
-        
-        
+
+        // Styling
         contentView.layer.cornerRadius = 12
         contentView.layer.masksToBounds = true
-        layer.cornerRadius = 12
-        layer.masksToBounds = false
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.1
-        layer.shadowOffset = CGSize(width: 0, height: 1)
-        layer.shadowRadius = 8
+        contentView.applyLiquidGlassEffect()
         backgroundColor = .clear
-        contentView.backgroundColor = .white
     }
     
     
