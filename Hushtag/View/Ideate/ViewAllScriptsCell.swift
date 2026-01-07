@@ -30,7 +30,7 @@ class ViewAllScriptsCell: UICollectionViewCell {
         Title.numberOfLines = 3
         Description.numberOfLines = 2
         Description.textColor = .secondaryLabel
-    }
+}
 
     func configureCell(idea : Idea) {
 

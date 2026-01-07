@@ -8,13 +8,12 @@
 import UIKit
 
 class ViewScriptsViewController: UIViewController {
-
-    
-    var pageTitle: String = "" // Default value
-    var cellReuseIdentifier: String = "allScriptsCell"
-    
     var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
+
+    var pageTitle: String = "" 
+    var cellReuseIdentifier: String = "allScriptsCell"
+
     var isSearchMode = false
     var likedIdeas: [Idea] = []
 
@@ -22,7 +21,7 @@ class ViewScriptsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        ideas = ideaResponse.ideas
         // Do any additional setup after loading the view.
         
         ideas = ideaResponse.ideas
@@ -36,8 +35,8 @@ class ViewScriptsViewController: UIViewController {
         scriptsCollectionView.delegate = self
         
         scriptsCollectionView.register(UINib(nibName: "likedCells", bundle: nil), forCellWithReuseIdentifier: "likedCells")
-        scriptsCollectionView.register(UINib(nibName: "LikedCellsNew", bundle: nil), forCellWithReuseIdentifier: "likedCellsNew")
-        
+        scriptsCollectionView.register(UINib(nibName: "ScriptsCell1", bundle: nil), forCellWithReuseIdentifier: "scriptedIdeas")
+
         let layout = generateScriptsLayout(title: pageTitle)
         scriptsCollectionView.setCollectionViewLayout(layout, animated: true)
         //scriptsCollectionView.clipsToBounds = false
@@ -69,9 +68,9 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if pageTitle == "Your Scripts"{
             let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "allScriptsCell",
+                withReuseIdentifier: "scriptedIdeas",
                 for: indexPath
-            ) as! ViewAllScriptsCell
+            ) as! ScriptsCell1
 
             let idea = ideas[indexPath.row]
             cell.configureCell(idea: idea)
@@ -97,16 +96,16 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
     if title == "Your Scripts"{
         
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(0.5),
+            widthDimension: .fractionalWidth(1.0),
             heightDimension: .fractionalHeight(1.0)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)
-        
+        item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(160)
+            heightDimension: .estimated(145)
         )
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: groupSize,
