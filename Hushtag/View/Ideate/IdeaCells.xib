@@ -32,6 +32,9 @@
                                 <color key="tintColor" name="AccentColor"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="heart" catalog="system"/>
+                                <connections>
+                                    <action selector="likeTapped:" destination="gTV-IL-0wX" eventType="touchUpInside" id="5tb-ZM-2ur"/>
+                                </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="shJ-vj-G5A">
                                 <rect key="frame" x="10" y="57" width="540" height="173"/>
@@ -120,6 +123,7 @@
                 <outlet property="keywordImage2" destination="hmb-Bs-UPX" id="cob-m1-qcu"/>
                 <outlet property="keywordText1" destination="pXX-AZ-kIt" id="Xp9-5x-wbi"/>
                 <outlet property="keywordText2" destination="3so-PO-Ld8" id="zaK-38-Qdt"/>
+                <outlet property="likeButton" destination="f9h-1Q-D93" id="zla-6S-GJJ"/>
                 <outlet property="separatorLine" destination="ZbF-cn-e2G" id="Xo6-pl-GCR"/>
             </connections>
             <point key="canvasLocation" x="528.24427480916029" y="246.47887323943664"/>

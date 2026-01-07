@@ -97,14 +97,12 @@ class ScriptedIdeas: UIViewController {
             let currentStyle = traitCollection.userInterfaceStyle
             let textColor: UIColor = currentStyle == .dark ? .white : .black
 
-            // Apply the appropriate color
             attributed.addAttribute(
                 .foregroundColor,
                 value: textColor,
                 range: NSRange(location: 0, length: attributed.length)
             )
 
-            // Optional: Improve readability
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.lineSpacing = 6
 

@@ -23,6 +23,10 @@ class IdeaCells: UICollectionViewCell {
     @IBOutlet weak var keywordText1: UILabel!
     @IBOutlet weak var keywordImage2: UIImageView!
     @IBOutlet weak var keywordText2: UILabel!
+
+    
+    @IBOutlet weak var likeButton: UIButton!
+
     var idea: Idea?
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -33,14 +37,12 @@ class IdeaCells: UICollectionViewCell {
         applyLiquidGlassEffect()
     }
 
+    private var likedIdeaIds: [String] = []
 
     func configure(idea: Idea, keyword1: EngagementStyle, keyword2: EngagementStyle) {
+        self.idea = idea
         ideaTitle.text = idea.title
         configureHashtags(idea.hashtag)
-//        keywordText1.text = keyword1[0]
-//        keywordText2.text = keyword2[0]
-//        keywordImage1.image = UIImage(systemName: keyword1[1])
-//        keywordImage2.image = UIImage(systemName: keyword2[1])
             keywordText1.text = keyword1.text
             keywordText1.textColor = keyword1.color
             keywordImage1.image = UIImage(systemName: keyword1.icon)
@@ -76,4 +78,26 @@ class IdeaCells: UICollectionViewCell {
         }
 
 
+    @IBAction func likeTapped(_ sender: UIButton) {
+        guard let idea = idea else { return }
+
+        if LikedIds.likedIdeaIds.contains(idea.id) {
+                LikedIds.likedIdeaIds.remove(idea.id)
+            } else {
+                LikedIds.likedIdeaIds.insert(idea.id)
+            }
+
+            print("Liked IDs:", LikedIds.likedIdeaIds)
+            updateLikeUI()
 }
+
+
+private func updateLikeUI() {
+        guard let idea = idea else { return }
+
+                let isLiked = LikedIds.likedIdeaIds.contains(idea.id)
+                let imageName = isLiked ? "heart.fill" : "heart"
+                likeButton.setImage(UIImage(systemName: imageName), for: .normal)
+                likeButton.tintColor = isLiked ? .accent : .accent
+            }
+ }

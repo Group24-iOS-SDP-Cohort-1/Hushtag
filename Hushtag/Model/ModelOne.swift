@@ -12,6 +12,10 @@ struct TimeData: Codable{
     let minute: Int?
 }
 
+struct LikedIds {
+    static var likedIdeaIds: Set<String> = []
+}
+
 struct DateData: Codable{
     let day: String?
     let date: String?
@@ -95,13 +99,12 @@ struct Idea: Codable, Identifiable {
     let script: String
     let hashtag: [String]
     let videos: [Video]
-    var liked: Bool
     let tag: String
     let thumbnail: String
     let engagementRate: Double
 
     enum CodingKeys: String, CodingKey {
-        case id, trending, title, description, script, hashtag, videos, liked, tag, thumbnail, engagementRate
+        case id, trending, title, description, script, hashtag, videos, tag, thumbnail, engagementRate
     }
 }
 

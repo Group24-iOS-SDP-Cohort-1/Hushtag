@@ -34,7 +34,7 @@ class ViewIdea: UIViewController {
             descriptionLabel.numberOfLines = 0
             hashtagLabel.text = "#" +  idea.hashtag.joined(separator: " #")
             video = idea.videos
-            likeButton.image = UIImage(systemName: idea.liked ? "heart.fill" : "heart")
+            //likeButton.image = UIImage(systemName: idea.liked ? "heart.fill" : "heart")
         }
         videoView.setCollectionViewLayout(generateLayout(), animated: true)
     }
@@ -60,7 +60,7 @@ class ViewIdea: UIViewController {
         
         likeButton.image = UIImage(systemName: imageName)
         sender.image = UIImage(systemName: imageName)
-        idea?.liked = isChecked
+        //idea?.liked = isChecked
         if let updatedIdea = idea {
             onLikeStatusChanged?(updatedIdea)
         }

@@ -37,7 +37,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             "Generate script": "Beauty isn’t about hiding who you are.It’s about enhancing what already exists.Every texture, every shade, every detail tells a story.No filters. No pressure. Just self-care and confidence.Because when you feel good, you glow differently. 💄✨",
             "idea": "You can make a beauty product review",
             "title": "Real Beauty, Real Confidence",
-            "default": "Beauty isn’t about perfection — it’s about embracing what makes you you.No filters. No pressure. Just self-care, confidence, and a glow that comes from within."
+            "default": "idk everything bro so find yourself"
         ]
 
     var markedMessages: [String: [Message]] = [
@@ -367,6 +367,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
 }
+
 
 
 
