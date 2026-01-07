@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="LikedCellsNew" customModule="Hushtag" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="493" height="236"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="493" height="236"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G7P-PU-Cdu">
+                        <rect key="frame" x="0.0" y="0.0" width="493" height="236"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y67-7t-W9c">
+                                <rect key="frame" x="10" y="10" width="383" height="24"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="bGd-45-3DE">
+                                <rect key="frame" x="10" y="44" width="288" height="182"/>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L4m-GT-525">
+                                <rect key="frame" x="379.66666666666669" y="194" width="103.33333333333331" height="32"/>
+                                <color key="tintColor" name="AccentColor"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="tinted" title="Draft Script">
+                                    <fontDescription key="titleFontDescription" style="UICTFontTextStyleSubhead"/>
+                                </buttonConfiguration>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rx7-IM-twc">
+                                <rect key="frame" x="437.33333333333331" y="10" width="50.666666666666686" height="34.333333333333336"/>
+                                <color key="tintColor" name="AccentColor"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="heart.fill" catalog="system"/>
+                                <connections>
+                                    <action selector="likeTapped:" destination="gTV-IL-0wX" eventType="touchUpInside" id="804-NJ-KRG"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="L4m-GT-525" secondAttribute="trailing" constant="10" id="5jx-ft-uhQ"/>
+                            <constraint firstItem="Rx7-IM-twc" firstAttribute="top" secondItem="G7P-PU-Cdu" secondAttribute="top" constant="10" id="FuI-wJ-vAv"/>
+                            <constraint firstItem="bGd-45-3DE" firstAttribute="leading" secondItem="G7P-PU-Cdu" secondAttribute="leading" constant="10" id="Ma0-RT-xB0"/>
+                            <constraint firstAttribute="trailing" secondItem="Y67-7t-W9c" secondAttribute="trailing" constant="100" id="O6F-Gs-d64"/>
+                            <constraint firstAttribute="bottom" secondItem="bGd-45-3DE" secondAttribute="bottom" constant="10" id="R6m-K5-xvu"/>
+                            <constraint firstAttribute="trailing" secondItem="Rx7-IM-twc" secondAttribute="trailing" constant="5" id="S4N-px-Oqh"/>
+                            <constraint firstItem="Y67-7t-W9c" firstAttribute="top" secondItem="G7P-PU-Cdu" secondAttribute="top" constant="10" id="Vqo-lc-p8n"/>
+                            <constraint firstItem="bGd-45-3DE" firstAttribute="top" secondItem="Y67-7t-W9c" secondAttribute="bottom" constant="10" id="iE2-1h-Dcu"/>
+                            <constraint firstItem="Y67-7t-W9c" firstAttribute="leading" secondItem="G7P-PU-Cdu" secondAttribute="leading" constant="10" id="rTL-5Y-ibl"/>
+                            <constraint firstAttribute="bottom" secondItem="L4m-GT-525" secondAttribute="bottom" constant="10" id="w7K-tP-bzy"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="G7P-PU-Cdu" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="29T-U2-XC7"/>
+                <constraint firstItem="G7P-PU-Cdu" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="ANq-o0-Wy9"/>
+                <constraint firstAttribute="trailing" secondItem="G7P-PU-Cdu" secondAttribute="trailing" id="Ais-2n-LXV"/>
+                <constraint firstAttribute="bottom" secondItem="G7P-PU-Cdu" secondAttribute="bottom" id="WCD-Z9-Bvo"/>
+            </constraints>
+            <size key="customSize" width="493" height="236"/>
+            <connections>
+                <outlet property="badgeStack" destination="bGd-45-3DE" id="EC9-xQ-AIa"/>
+                <outlet property="draftScriptButton" destination="L4m-GT-525" id="TeW-Ki-9Gc"/>
+                <outlet property="ideaTitle" destination="Y67-7t-W9c" id="EGs-av-ynz"/>
+                <outlet property="ideaView" destination="G7P-PU-Cdu" id="N42-IW-lf4"/>
+                <outlet property="likeButton" destination="Rx7-IM-twc" id="vib-2Y-GlQ"/>
+            </connections>
+            <point key="canvasLocation" x="-359.5419847328244" y="215.49295774647888"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="heart.fill" catalog="system" width="128" height="107"/>
+        <namedColor name="AccentColor">
+            <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

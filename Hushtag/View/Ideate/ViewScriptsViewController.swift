@@ -15,7 +15,7 @@ class ViewScriptsViewController: UIViewController {
     var cellReuseIdentifier: String = "allScriptsCell"
 
     var isSearchMode = false
-    var filteredIdeas: [Idea] = []
+    var likedIdeas: [Idea] = []
 
     @IBOutlet weak var scriptsCollectionView: UICollectionView!
     
@@ -23,6 +23,9 @@ class ViewScriptsViewController: UIViewController {
         super.viewDidLoad()
         ideas = ideaResponse.ideas
         // Do any additional setup after loading the view.
+        
+        ideas = ideaResponse.ideas
+        likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
 
         navigationItem.title = pageTitle
         
@@ -53,7 +56,13 @@ class ViewScriptsViewController: UIViewController {
 
 extension ViewScriptsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return ideas.count
+        if pageTitle == "Your Scripts"{
+            return ideas.count
+        }else{
+            return likedIdeas.count
+        }
+        
+        //return ideas.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -70,11 +79,11 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
         
         
         let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "likedCells",
+            withReuseIdentifier: "likedCellsNew",
             for: indexPath
-        ) as! likedCells
+        ) as! LikedCellsNew
 
-        let idea = ideas[indexPath.row]
+        let idea = likedIdeas[indexPath.row]
         cell.configureCell(idea: idea)
         return cell
     }
@@ -120,7 +129,7 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
     //LAYOUT FOR VIEWING ALL LIKED IDEAS
     
     let itemSize = NSCollectionLayoutSize(
-        widthDimension: .fractionalWidth(0.5),
+        widthDimension: .fractionalWidth(1.0),
         heightDimension: .fractionalHeight(1.0)
     )
     let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -129,7 +138,7 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
 
     let groupSize = NSCollectionLayoutSize(
         widthDimension: .fractionalWidth(1.0),
-        heightDimension: .absolute(190)
+        heightDimension: .estimated(130)
     )
     let group = NSCollectionLayoutGroup.horizontal(
         layoutSize: groupSize,
