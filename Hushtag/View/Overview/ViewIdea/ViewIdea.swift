@@ -6,16 +6,21 @@
 //
 
 import UIKit
+import SwiftUI
 import SafariServices
+import Charts
+
 
 class ViewIdea: UIViewController {
     
     @IBOutlet weak var videoView: UICollectionView!
-    @IBOutlet weak var descriptionLabel: UILabel!
+    //@IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var hashtagLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var likeButton: UIBarButtonItem!
+    @IBOutlet weak var graphStack: UIStackView!
     private var isChecked: Bool = false
+    private var chartHostingController: UIHostingController<EngagementLineChart>?
     var idea: Idea?
     var video: [Video] = []
     var onLikeStatusChanged: ((Idea) -> Void)?
@@ -29,13 +34,15 @@ class ViewIdea: UIViewController {
 
         if let idea = idea {
             titleLabel.text = idea.title
-            titleLabel.numberOfLines = 2
-            descriptionLabel.text = idea.description
-            descriptionLabel.numberOfLines = 0
-            hashtagLabel.text = "#" +  idea.hashtag.joined(separator: " #")
+            titleLabel.numberOfLines = 0
+            hashtagLabel.text = "#" + idea.hashtag.joined(separator: " #")
             video = idea.videos
-            likeButton.image = UIImage(systemName: idea.liked ? "heart.fill" : "heart")
+
+            isChecked = idea.liked
+            likeButton.image = UIImage(systemName: isChecked ? "heart.fill" : "heart")
         }
+
+        setupEngagementChart()
         videoView.setCollectionViewLayout(generateLayout(), animated: true)
     }
     
@@ -67,33 +74,58 @@ class ViewIdea: UIViewController {
     }
     
     func generateLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewCompositionalLayout {
-            section, env in
-            
-        //define the size of the header view
-        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
-        
-        let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "header", alignment: .top)
-        
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(150))
-        
-        // create the item
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
-        
-        // create the group
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.75), heightDimension: .estimated(150))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
-        
-        //create the section
-        let section = NSCollectionLayoutSection(group: group)
-            section.orthogonalScrollingBehavior = .continuous
-//        section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
-        section.boundarySupplementaryItems = [headerItem]
 
-        return section
-    }
-        return layout
+        return UICollectionViewCompositionalLayout { sectionIndex, _ in
+
+            // Only section 0 has horizontal scrolling
+            guard sectionIndex == 0 else {
+                return nil
+            }
+
+            // Header
+            let headerSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(50)
+            )
+
+            let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: headerSize,
+                elementKind: "header",
+                alignment: .top
+            )
+
+            // Item
+            let itemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(150)
+            )
+
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            item.contentInsets = NSDirectionalEdgeInsets(
+                top: 0,
+                leading: 7,
+                bottom: 0,
+                trailing: 7
+            )
+
+            // Group
+            let groupSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(0.75),
+                heightDimension: .estimated(150)
+            )
+
+            let group = NSCollectionLayoutGroup.horizontal(
+                layoutSize: groupSize,
+                subitems: [item]
+            )
+
+            // Section
+            let section = NSCollectionLayoutSection(group: group)
+            section.orthogonalScrollingBehavior = .continuous
+            section.boundarySupplementaryItems = [headerItem]
+
+            return section
+        }
     }
 }
 
@@ -123,15 +155,43 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedVideo = video[indexPath.item]
 
-        // Assuming your Video model has a property: video.url or video.link
-        guard let url = URL(string: selectedVideo.link) else {
-            print("Invalid URL")
-            return
-        }
+        // Update chart with ONLY selected video
+        updateEngagementChart(for: selectedVideo)
 
+        guard let url = URL(string: selectedVideo.link) else { return }
         let safariVC = SFSafariViewController(url: url)
         present(safariVC, animated: true)
     }
+
+    func setupEngagementChart() {
+        guard !video.isEmpty else {
+            print("No videos available")
+            return
+        }
+
+        let chartView = EngagementLineChart(data: video)
+
+        let hostingVC = UIHostingController(rootView: chartView)
+        hostingVC.view.translatesAutoresizingMaskIntoConstraints = false
+        hostingVC.view.backgroundColor = .clear
+
+        addChild(hostingVC)
+        graphStack.addArrangedSubview(hostingVC.view)
+        hostingVC.didMove(toParent: self)
+
+        NSLayoutConstraint.activate([
+            hostingVC.view.heightAnchor.constraint(equalToConstant: 240)
+        ])
+
+        chartHostingController = hostingVC
+    }
+
+    func updateEngagementChart(for video: Video) {
+        chartHostingController?.rootView = EngagementLineChart(data: [video])
+    }
+
+
+    
 //    func extractYouTubeID(from url: String) -> String? {
 //        guard let url = URL(string: url) else { return nil }
 //        

@@ -110,6 +110,12 @@ struct Video: Codable {
     let videoTitle: String
     let views: String
     let link: String
+    let engagementRate: [EngagementPoint]?
+}
+
+struct EngagementPoint: Codable {
+    let date: Date
+    let rate: Double
 }
 
 extension IdeaResponse {
@@ -164,14 +170,12 @@ struct Post: Codable, Identifiable {
         case name,postingTime,platform,description,reminder, isCompleted
     }
 
-    var platformType: [PlatformType]{
-        switch platform.first{
-        case "youtube": return [.youtube]
-        case "instagram": return [.instagram]
-        case "facebook": return [.facebook]
-        default: return [.youtube]
+    var platformType: [PlatformType] {
+        platform.compactMap {
+            PlatformType(rawValue: $0.lowercased())
         }
     }
+
 }
 
 struct Deal: Codable, Identifiable {
@@ -233,10 +237,6 @@ struct Analysis: Codable, Identifiable {
     let watchTimeChange: String
     let subscribersChange: String
     let revenueChange: String
-
-    // Existing fields (UNCHANGED)
-    
-    //let views: String
     let likes: String
     let incFollowers: String
     let followers: String
@@ -257,6 +257,7 @@ struct Analysis: Codable, Identifiable {
                  ageGroup, gender, post, optimalTime, engagementRate, topContent, latestContent, revenueSource
         }
 }
+
 extension Analysis {
 
     var audienceGrid: [(title: String, value: String, change: String)] {
@@ -266,6 +267,43 @@ extension Analysis {
             ("Subscribers", subscribers, subscribersChange),
             ("Est. Revenue", estRevenue, revenueChange)
         ]
+    }
+}
+
+struct AnalysisResponse: Codable {
+    var analysis: [Analysis] = []
+
+    init() {
+        do {
+            let response = try load()
+            analysis = response.analysis
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+}
+
+extension AnalysisResponse {
+
+    func load(from filename: String = "DataStorejson") throws -> AnalysisResponse {
+        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
+            throw NSError(
+                domain: "AnalysisResponse",
+                code: 400,
+                userInfo: [NSLocalizedDescriptionKey: "DataStore.json not found"]
+            )
+        }
+
+        let data = try Data(contentsOf: url)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(AnalysisResponse.self, from: data)
+    }
+
+    func decode(from data: Data) throws -> AnalysisResponse {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(AnalysisResponse.self, from: data)
     }
 }
 

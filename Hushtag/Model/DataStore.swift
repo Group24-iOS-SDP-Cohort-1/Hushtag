@@ -11,7 +11,7 @@ class DataStore {
     private var tasks: [Task] = []
     private var deals: [Deal] = []
     private var posts: [Post] = []
-    private var analysis: [Analysis] = []
+    //private var analysis: [Analysis] = []
     
     static let shared = DataStore()
     
@@ -27,9 +27,9 @@ class DataStore {
     func getPosts() -> [Post] {
         posts
     }
-    func getAnalysis() -> [Analysis] {
-        analysis
-    }
+//    func getAnalysis() -> [Analysis] {
+//        analysis
+//    }
     
     func loadSampleData() {
         let sampleTasks: [Task] = [
@@ -360,264 +360,264 @@ class DataStore {
             )
         ]
         
-        let sampleAnalysis: [Analysis] = [
-            Analysis(
-                id: "1",
-                views: "248.5K",
-                watchTime: "12.4K",
-                subscribers: "+1.2K",
-                estRevenue: "$3,420.50",
-                viewsChange: "+12%",
-                watchTimeChange: "+8%",
-                subscribersChange: "-2%",
-                revenueChange: "+15%",
-                likes: "3.1k",
-                incFollowers: "-8k",
-                followers: "40k",
-                ageGroup: ["18", "34"],
-                gender: [
-                    "M": "45.2",
-                    "F": "54.8"
-                ],
-                post: 5,
-                optimalTime: [
-                    AnalysisDateData(day: "Monday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-                    AnalysisDateData(day: "Tuesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 14, minute: 0), audienceEngagementRate: "4.3"),
-                    AnalysisDateData(day: "Wednesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 14, minute: 0), audienceEngagementRate: "1.7"),
-                    AnalysisDateData(day: "Thursday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 9, minute: 0), audienceEngagementRate: "5.4"),
-                    AnalysisDateData(day: "Friday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 14, minute: 0), audienceEngagementRate: "3.2"),
-                    AnalysisDateData(day: "Saturday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 10, minute: 30), audienceEngagementRate: "2.5"),
-                    AnalysisDateData(day: "Sunday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 14, minute: 0), audienceEngagementRate: "4.1")
-                ],
-                engagementRate: "6.1",
-                topContent: [
-                    TopContentItem(
-                        id: "tc1",
-                        title: "Best Laptops for Coding 2024",
-                        thumbnail: "laptop_thumb",
-                        views: "124K views",
-                        publishedTime: "4 weeks ago"
-                    ),
-                    TopContentItem(
-                        id: "tc2",
-                        title: "Minimal Desk Setup Tour",
-                        thumbnail: "desk_thumb",
-                        views: "89K views",
-                        publishedTime: "2 weeks ago"
-                    ),
-                    TopContentItem(
-                        id: "tc3",
-                        title: "Sony A7IV vs Canon R6",
-                        thumbnail: "camera_thumb",
-                        views: "65K views",
-                        publishedTime: "6 days ago"
-                    )
-                ],
-                latestContent: LatestContentPerformance(
-                    title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
-                    thumbnail: "laptop_thumb",
-                    publishedText: "Published 2 days ago",
-                    ranking: "2 of 10",
-                    views: "42.1K",
-                    avgDuration: "5:24"
-                ),
-                revenueSource: [
-                    RevenueSource(
-                        sf: "play.rectangle.fill",
-                        name: "Estimated Ad Revenue",
-                        amount: "2,300"
-                    ),
-                    RevenueSource(
-                        sf: "cart.fill",
-                        name: "From Paid Content",
-                        amount: "3,520"
-                    ),
-                    RevenueSource(
-                        sf: "person.2.fill",
-                        name: "Creator's Share from YPP",
-                        amount: "2,500"
-                    ),
-                    RevenueSource(
-                        sf: "briefcase.fill",
-                        name: "Collaboration Revenue",
-                        amount: "4,200"
-                    )
-                ]
-            ),
-            
-            Analysis(
-                id: "2",
-                views: "180.2K",
-                watchTime: "9.1K",
-                subscribers: "+3.0K",
-                estRevenue: "$1,820.75",
-                viewsChange: "+6%",
-                watchTimeChange: "+10%",
-                subscribersChange: "+5%",
-                revenueChange: "+9%",
-                likes: "2.5k",
-                incFollowers: "3k",
-                followers: "28k",
-                ageGroup: ["20", "29"],
-                gender: [
-                    "M": "51",
-                    "F": "49"
-                ],
-                post: 4,
-                optimalTime: [
-                    AnalysisDateData(day: "Monday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 16, minute: 0), audienceEngagementRate: "1.0"),
-                    AnalysisDateData(day: "Tuesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-                    AnalysisDateData(day: "Wednesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-                    AnalysisDateData(day: "Thursday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 11, minute: 0), audienceEngagementRate: "1.0"),
-                    AnalysisDateData(day: "Friday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-                    AnalysisDateData(day: "Saturday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.2"),
-                    AnalysisDateData(day: "Sunday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.7")
-                ],
-                engagementRate: "",
-                topContent: [
-                    TopContentItem(
-                        id: "tc1",
-                        title: "Best Laptops for Coding 2024",
-                        thumbnail: "laptop_thumb",
-                        views: "124K views",
-                        publishedTime: "4 weeks ago"
-                    ),
-                    TopContentItem(
-                        id: "tc2",
-                        title: "Minimal Desk Setup Tour",
-                        thumbnail: "desk_thumb",
-                        views: "89K views",
-                        publishedTime: "2 weeks ago"
-                    ),
-                    TopContentItem(
-                        id: "tc3",
-                        title: "Sony A7IV vs Canon R6",
-                        thumbnail: "camera_thumb",
-                        views: "65K views",
-                        publishedTime: "6 days ago"
-                    )
-                ],
-                latestContent: LatestContentPerformance(
-                    title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
-                    thumbnail: "laptop_thumb",
-                    publishedText: "Published 2 days ago",
-                    ranking: "2 of 10",
-                    views: "42.1K",
-                    avgDuration: "5:24"
-                ),
-                revenueSource: [
-                    RevenueSource(
-                        sf: "play.rectangle.fill",
-                        name: "Estimated Ad Revenue",
-                        amount: "6,800"
-                    ),
-                    RevenueSource(
-                        sf: "cart.fill",
-                        name: "From Paid Content",
-                        amount: "9,450"
-                    ),
-                    RevenueSource(
-                        sf: "person.2.fill",
-                        name: "Creator's Share from YPP",
-                        amount: "7,200"
-                    ),
-                    RevenueSource(
-                        sf: "briefcase.fill",
-                        name: "Collaboration Revenue",
-                        amount: "12,600"
-                    )
-                ]
-            ),
-
-            Analysis(
-                id: "3",
-                views: "320.9K",
-                watchTime: "18.7K",
-                subscribers: "+12K",
-                estRevenue: "$5,890.00",
-                viewsChange: "+18%",
-                watchTimeChange: "+22%",
-                subscribersChange: "+11%",
-                revenueChange: "+20%",
-                likes: "5.6k",
-                incFollowers: "12k",
-                followers: "55k",
-                ageGroup: ["25", "40"],
-                gender: [
-                    "M": "40.4",
-                    "F": "59.6"
-                ],
-                post: 6,
-                optimalTime: [
-                    AnalysisDateData(day: "Monday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-                    AnalysisDateData(day: "Tuesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 18, minute: 0), audienceEngagementRate: "7.6"),
-                    AnalysisDateData(day: "Wednesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-                    AnalysisDateData(day: "Thursday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-                    AnalysisDateData(day: "Friday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 15, minute: 0), audienceEngagementRate: "1.0"),
-                    AnalysisDateData(day: "Saturday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-                    AnalysisDateData(day: "Sunday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "7.2")
-                ],
-                engagementRate: "-7.3",
-                topContent: [
-                        TopContentItem(
-                            id: "tc1",
-                            title: "Best Laptops for Coding 2024",
-                            thumbnail: "laptop_thumb",
-                            views: "124K views",
-                            publishedTime: "4 weeks ago"
-                        ),
-                        TopContentItem(
-                            id: "tc2",
-                            title: "Minimal Desk Setup Tour",
-                            thumbnail: "desk_thumb",
-                            views: "89K views",
-                            publishedTime: "2 weeks ago"
-                        ),
-                        TopContentItem(
-                            id: "tc3",
-                            title: "Sony A7IV vs Canon R6",
-                            thumbnail: "camera_thumb",
-                            views: "65K views",
-                            publishedTime: "6 days ago"
-                        )
-                    ],
-                latestContent: LatestContentPerformance(
-                    title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
-                    thumbnail: "laptop_thumb",
-                    publishedText: "Published 2 days ago",
-                    ranking: "2 of 10",
-                    views: "42.1K",
-                    avgDuration: "5:24"
-                ),
-                revenueSource: [
-                    RevenueSource(
-                        sf: "play.rectangle.fill",
-                        name: "Estimated Ad Revenue",
-                        amount: "850"
-                    ),
-                    RevenueSource(
-                        sf: "cart.fill",
-                        name: "From Paid Content",
-                        amount: "1,200"
-                    ),
-                    RevenueSource(
-                        sf: "person.2.fill",
-                        name: "Creator's Share from YPP",
-                        amount: "980"
-                    ),
-                    RevenueSource(
-                        sf: "briefcase.fill",
-                        name: "Collaboration Revenue",
-                        amount: "1,750"
-                    )
-
-                ]
-            )
-        ]
+//        let sampleAnalysis: [Analysis] = [
+//            Analysis(
+//                id: "1",
+//                views: "248.5K",
+//                watchTime: "12.4K",
+//                subscribers: "+1.2K",
+//                estRevenue: "$3,420.50",
+//                viewsChange: "+12%",
+//                watchTimeChange: "+8%",
+//                subscribersChange: "-2%",
+//                revenueChange: "+15%",
+//                likes: "3.1k",
+//                incFollowers: "-8k",
+//                followers: "40k",
+//                ageGroup: ["18", "34"],
+//                gender: [
+//                    "M": "45.2",
+//                    "F": "54.8"
+//                ],
+//                post: 5,
+//                optimalTime: [
+//                    AnalysisDateData(day: "Monday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
+//                    AnalysisDateData(day: "Tuesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 14, minute: 0), audienceEngagementRate: "4.3"),
+//                    AnalysisDateData(day: "Wednesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 14, minute: 0), audienceEngagementRate: "1.7"),
+//                    AnalysisDateData(day: "Thursday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 9, minute: 0), audienceEngagementRate: "5.4"),
+//                    AnalysisDateData(day: "Friday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 14, minute: 0), audienceEngagementRate: "3.2"),
+//                    AnalysisDateData(day: "Saturday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 10, minute: 30), audienceEngagementRate: "2.5"),
+//                    AnalysisDateData(day: "Sunday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 14, minute: 0), audienceEngagementRate: "4.1")
+//                ],
+//                engagementRate: "6.1",
+//                topContent: [
+//                    TopContentItem(
+//                        id: "tc1",
+//                        title: "Best Laptops for Coding 2024",
+//                        thumbnail: "laptop_thumb",
+//                        views: "124K views",
+//                        publishedTime: "4 weeks ago"
+//                    ),
+//                    TopContentItem(
+//                        id: "tc2",
+//                        title: "Minimal Desk Setup Tour",
+//                        thumbnail: "desk_thumb",
+//                        views: "89K views",
+//                        publishedTime: "2 weeks ago"
+//                    ),
+//                    TopContentItem(
+//                        id: "tc3",
+//                        title: "Sony A7IV vs Canon R6",
+//                        thumbnail: "camera_thumb",
+//                        views: "65K views",
+//                        publishedTime: "6 days ago"
+//                    )
+//                ],
+//                latestContent: LatestContentPerformance(
+//                    title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
+//                    thumbnail: "laptop_thumb",
+//                    publishedText: "Published 2 days ago",
+//                    ranking: "2 of 10",
+//                    views: "42.1K",
+//                    avgDuration: "5:24"
+//                ),
+//                revenueSource: [
+//                    RevenueSource(
+//                        sf: "play.rectangle.fill",
+//                        name: "Estimated Ad Revenue",
+//                        amount: "2,300"
+//                    ),
+//                    RevenueSource(
+//                        sf: "cart.fill",
+//                        name: "From Paid Content",
+//                        amount: "3,520"
+//                    ),
+//                    RevenueSource(
+//                        sf: "person.2.fill",
+//                        name: "Creator's Share from YPP",
+//                        amount: "2,500"
+//                    ),
+//                    RevenueSource(
+//                        sf: "briefcase.fill",
+//                        name: "Collaboration Revenue",
+//                        amount: "4,200"
+//                    )
+//                ]
+//            ),
+//            
+//            Analysis(
+//                id: "2",
+//                views: "180.2K",
+//                watchTime: "9.1K",
+//                subscribers: "+3.0K",
+//                estRevenue: "$1,820.75",
+//                viewsChange: "+6%",
+//                watchTimeChange: "+10%",
+//                subscribersChange: "+5%",
+//                revenueChange: "+9%",
+//                likes: "2.5k",
+//                incFollowers: "3k",
+//                followers: "28k",
+//                ageGroup: ["20", "29"],
+//                gender: [
+//                    "M": "51",
+//                    "F": "49"
+//                ],
+//                post: 4,
+//                optimalTime: [
+//                    AnalysisDateData(day: "Monday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 16, minute: 0), audienceEngagementRate: "1.0"),
+//                    AnalysisDateData(day: "Tuesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
+//                    AnalysisDateData(day: "Wednesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
+//                    AnalysisDateData(day: "Thursday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 11, minute: 0), audienceEngagementRate: "1.0"),
+//                    AnalysisDateData(day: "Friday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
+//                    AnalysisDateData(day: "Saturday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.2"),
+//                    AnalysisDateData(day: "Sunday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.7")
+//                ],
+//                engagementRate: "",
+//                topContent: [
+//                    TopContentItem(
+//                        id: "tc1",
+//                        title: "Best Laptops for Coding 2024",
+//                        thumbnail: "laptop_thumb",
+//                        views: "124K views",
+//                        publishedTime: "4 weeks ago"
+//                    ),
+//                    TopContentItem(
+//                        id: "tc2",
+//                        title: "Minimal Desk Setup Tour",
+//                        thumbnail: "desk_thumb",
+//                        views: "89K views",
+//                        publishedTime: "2 weeks ago"
+//                    ),
+//                    TopContentItem(
+//                        id: "tc3",
+//                        title: "Sony A7IV vs Canon R6",
+//                        thumbnail: "camera_thumb",
+//                        views: "65K views",
+//                        publishedTime: "6 days ago"
+//                    )
+//                ],
+//                latestContent: LatestContentPerformance(
+//                    title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
+//                    thumbnail: "laptop_thumb",
+//                    publishedText: "Published 2 days ago",
+//                    ranking: "2 of 10",
+//                    views: "42.1K",
+//                    avgDuration: "5:24"
+//                ),
+//                revenueSource: [
+//                    RevenueSource(
+//                        sf: "play.rectangle.fill",
+//                        name: "Estimated Ad Revenue",
+//                        amount: "6,800"
+//                    ),
+//                    RevenueSource(
+//                        sf: "cart.fill",
+//                        name: "From Paid Content",
+//                        amount: "9,450"
+//                    ),
+//                    RevenueSource(
+//                        sf: "person.2.fill",
+//                        name: "Creator's Share from YPP",
+//                        amount: "7,200"
+//                    ),
+//                    RevenueSource(
+//                        sf: "briefcase.fill",
+//                        name: "Collaboration Revenue",
+//                        amount: "12,600"
+//                    )
+//                ]
+//            ),
+//
+//            Analysis(
+//                id: "3",
+//                views: "320.9K",
+//                watchTime: "18.7K",
+//                subscribers: "+12K",
+//                estRevenue: "$5,890.00",
+//                viewsChange: "+18%",
+//                watchTimeChange: "+22%",
+//                subscribersChange: "+11%",
+//                revenueChange: "+20%",
+//                likes: "5.6k",
+//                incFollowers: "12k",
+//                followers: "55k",
+//                ageGroup: ["25", "40"],
+//                gender: [
+//                    "M": "40.4",
+//                    "F": "59.6"
+//                ],
+//                post: 6,
+//                optimalTime: [
+//                    AnalysisDateData(day: "Monday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
+//                    AnalysisDateData(day: "Tuesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 18, minute: 0), audienceEngagementRate: "7.6"),
+//                    AnalysisDateData(day: "Wednesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
+//                    AnalysisDateData(day: "Thursday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
+//                    AnalysisDateData(day: "Friday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 15, minute: 0), audienceEngagementRate: "1.0"),
+//                    AnalysisDateData(day: "Saturday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
+//                    AnalysisDateData(day: "Sunday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "7.2")
+//                ],
+//                engagementRate: "-7.3",
+//                topContent: [
+//                        TopContentItem(
+//                            id: "tc1",
+//                            title: "Best Laptops for Coding 2024",
+//                            thumbnail: "laptop_thumb",
+//                            views: "124K views",
+//                            publishedTime: "4 weeks ago"
+//                        ),
+//                        TopContentItem(
+//                            id: "tc2",
+//                            title: "Minimal Desk Setup Tour",
+//                            thumbnail: "desk_thumb",
+//                            views: "89K views",
+//                            publishedTime: "2 weeks ago"
+//                        ),
+//                        TopContentItem(
+//                            id: "tc3",
+//                            title: "Sony A7IV vs Canon R6",
+//                            thumbnail: "camera_thumb",
+//                            views: "65K views",
+//                            publishedTime: "6 days ago"
+//                        )
+//                    ],
+//                latestContent: LatestContentPerformance(
+//                    title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
+//                    thumbnail: "laptop_thumb",
+//                    publishedText: "Published 2 days ago",
+//                    ranking: "2 of 10",
+//                    views: "42.1K",
+//                    avgDuration: "5:24"
+//                ),
+//                revenueSource: [
+//                    RevenueSource(
+//                        sf: "play.rectangle.fill",
+//                        name: "Estimated Ad Revenue",
+//                        amount: "850"
+//                    ),
+//                    RevenueSource(
+//                        sf: "cart.fill",
+//                        name: "From Paid Content",
+//                        amount: "1,200"
+//                    ),
+//                    RevenueSource(
+//                        sf: "person.2.fill",
+//                        name: "Creator's Share from YPP",
+//                        amount: "980"
+//                    ),
+//                    RevenueSource(
+//                        sf: "briefcase.fill",
+//                        name: "Collaboration Revenue",
+//                        amount: "1,750"
+//                    )
+//
+//                ]
+//            )
+//        ]
 
         self.tasks = sampleTasks
         self.deals = sampleDeals
         self.posts = samplePosts
-        self.analysis = sampleAnalysis
+        //self.analysis = sampleAnalysis
     }
 }

@@ -30,6 +30,7 @@ class Overview: UIViewController {
 
     var dataStore: DataStore = DataStore.shared
     
+    let analysisResponse = AnalysisResponse()
     var analysis: [Analysis] = []
     var post: [Post] = []
     var task: [Task] = []
@@ -52,7 +53,7 @@ class Overview: UIViewController {
         task = dataStore.getTasks()
         deal = dataStore.getDeals()
         
-        analysis = dataStore.getAnalysis().prefix(1).map { $0 }
+        analysis = analysisResponse.analysis
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
@@ -280,7 +281,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             let vc = segue.destination as! AnalysisDataViewController
             if indexPath.row == 0{
                 vc.platform = "YouTube"
-                vc.fullAnalysis = dataStore.getAnalysis()
+                vc.fullAnalysis = analysis
             }
         }
         if segue.identifier == "goToActivities" {

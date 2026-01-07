@@ -11,8 +11,8 @@ class AnalysisDataViewController: UIViewController {
 
     var analysisData: Analysis?
     var platform: String = ""
-    
-    var fullAnalysis: [Analysis] = []
+
+    var fullAnalysis: [Analysis]?
     
     @IBOutlet weak var analysisCollectionView: UICollectionView!
     
@@ -83,36 +83,31 @@ class AnalysisDataViewController: UIViewController {
         
         //print(fullAnalysis)
         loadDataFor(segmentIndex: 0)
+        print(fullAnalysis)
     }
-    
-    
     
     //FUNCTION TO LOAD THE DATA FOR THE SELECTED INDEX
     
     func loadDataFor(segmentIndex: Int) {
-        let targetID = String(segmentIndex + 1) // Convert 0 -> "1"
-            
-            // Find the matching object in the full list
-        if let selectedData = fullAnalysis.first(where: { $0.id == targetID }) {
-            self.analysisData = selectedData
-            //print(analysisData)
-            // CRITICAL: Reload the collection view to show new data
-            self.analysisCollectionView.reloadData()
-            
-            //print("Switched to ID: \(targetID)")
-        } else {
-            print("Could not find data for ID: \(targetID)")
+        guard
+            let fullAnalysis,
+            segmentIndex < fullAnalysis.count
+        else {
+            print("Data not loaded")
+            return
         }
+
+        analysisData = fullAnalysis[segmentIndex]
+        analysisCollectionView.reloadData()
     }
+
+
     
     //FUNCTION TO CHANGE DATA WHEN THE SELECTED SEGMENT CHANGES
     
     @IBAction func segmentChanged(_ sender: UISegmentedControl) {
         loadDataFor(segmentIndex: sender.selectedSegmentIndex)
-        
     }
-    
-
 }
 
 extension AnalysisDataViewController: UICollectionViewDataSource {
