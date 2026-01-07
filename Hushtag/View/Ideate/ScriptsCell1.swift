@@ -36,7 +36,7 @@ class ScriptsCell1: UICollectionViewCell {
         //        self.backgroundColor = .white
         //Title.font = .systemFont(ofSize: 14, weight: .regular)
         Title.numberOfLines = 3
-        Description.numberOfLines = 2
+        Description.numberOfLines = 1
         Description.textColor = .secondaryLabel
         
     }

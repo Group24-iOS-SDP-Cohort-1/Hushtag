@@ -18,6 +18,9 @@ class Ideate1: UIViewController {
 
     @IBOutlet weak var scriptButton: UIButton!
 
+
+    @IBOutlet weak var scriptView: UIBarButtonItem!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         ideas = ideaResponse.ideas
@@ -33,11 +36,27 @@ class Ideate1: UIViewController {
 
     @IBAction func scriptTap(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
-            let vc = storyboard.instantiateViewController(withIdentifier: "Chatbot")
+            let vc = storyboard.instantiateViewController(withIdentifier: "viewScripts")
             navigationController?.pushViewController(vc, animated: true)
+        
 
     }
+
+    @IBAction func viewScriptTap(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
+//            let vc = storyboard.instantiateViewController(withIdentifier: "viewScripts")
+//            navigationController?.pushViewController(vc, animated: true)
+//        vc.title = "Your Scripts"
+        guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
+        guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
+        destinationVC.pageTitle = "Your Scripts"
+        self.navigationController?.pushViewController(destinationVC, animated: true)
+    }
+
     
+
+    
+
 
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
@@ -248,7 +267,6 @@ extension Ideate1: IdeaSearchDelegate {
                 }
             }
         }
-
         collectionView.reloadSections(IndexSet(integer: 1))
      
 
