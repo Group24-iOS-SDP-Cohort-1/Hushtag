@@ -75,7 +75,7 @@
         "tips",
         "coffee"
       ],
-      "engagementRate": 20,
+      "engagementRate": 10,
       "videos": [
           {
               "id": "v1",
@@ -140,7 +140,7 @@
             "makeup",
             "beauty"
         ],
-        "engagementRate": 20,
+        "engagementRate": 10,
         "videos": [
             {
                 "id": "v1",
@@ -272,7 +272,7 @@
       "fashion",
       "beauty"
     ],
-    "engagementRate": 20,
+    "engagementRate": 5,
     "videos": [
       {
         "id": "v1",
