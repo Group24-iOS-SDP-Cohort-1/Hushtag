@@ -40,6 +40,8 @@ class IdeaCells: UICollectionViewCell {
         self.idea = idea
         ideaTitle.text = idea.title
         configureHashtags(idea.hashtag)
+        updateLikeUI()
+        
 //            keywordText1.text = keyword1.text
 //            keywordText1.textColor = keyword1.color
 //            keywordImage1.image = UIImage(systemName: keyword1.icon)
@@ -79,13 +81,15 @@ class IdeaCells: UICollectionViewCell {
         guard let idea = idea else { return }
 
         if LikedIds.likedIdeaIds.contains(idea.id) {
-                LikedIds.likedIdeaIds.remove(idea.id)
-            } else {
-                LikedIds.likedIdeaIds.insert(idea.id)
-            }
+            LikedIds.likedIdeaIds.remove(idea.id)
+        } else {
+            LikedIds.likedIdeaIds.insert(idea.id)
+        }
 
-            print("Liked IDs:", LikedIds.likedIdeaIds)
-            updateLikeUI()
+        print("Liked IDs:", LikedIds.likedIdeaIds)
+        updateLikeUI()
+        
+        NotificationCenter.default.post(name: .didUpdateLikedStatus, object: nil)
 }
 
 

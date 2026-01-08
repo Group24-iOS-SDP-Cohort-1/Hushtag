@@ -72,6 +72,9 @@
                         <rightBarButtonItems>
                             <barButtonItem title="Item" image="heart" catalog="system" id="QpP-54-ASd">
                                 <color key="tintColor" name="AccentColor"/>
+                                <connections>
+                                    <action selector="viewLikedTap:" destination="Y6W-OH-hqX" id="7hx-Fr-qfZ"/>
+                                </connections>
                             </barButtonItem>
                             <barButtonItem title="Item" image="pencil.and.scribble" catalog="system" id="Emg-PX-vHj">
                                 <color key="tintColor" name="AccentColor"/>

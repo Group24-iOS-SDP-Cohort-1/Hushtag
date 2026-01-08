@@ -16,6 +16,8 @@ class LikedCellsNew: UICollectionViewCell {
     
     var idea: Idea?
     
+    var onLikeToggle: (() -> Void)?
+    
     @IBOutlet weak var likeButton: UIButton!
     
     override func awakeFromNib() {
@@ -31,6 +33,7 @@ class LikedCellsNew: UICollectionViewCell {
     func configureCell(idea: Idea){
         self.idea = idea
         ideaTitle.text = idea.title
+        updateLikeUI()
         configureHashtags(idea.hashtag)
     }
     
@@ -61,13 +64,17 @@ class LikedCellsNew: UICollectionViewCell {
         guard let idea = idea else { return }
 
         if LikedIds.likedIdeaIds.contains(idea.id) {
-                LikedIds.likedIdeaIds.remove(idea.id)
-            } else {
-                LikedIds.likedIdeaIds.insert(idea.id)
-            }
+            LikedIds.likedIdeaIds.remove(idea.id)
+        } else {
+            LikedIds.likedIdeaIds.insert(idea.id)
+        }
 
-            print("Liked IDs:", LikedIds.likedIdeaIds)
-            updateLikeUI()
+        print("Liked IDs:", LikedIds.likedIdeaIds)
+        updateLikeUI()
+        
+        onLikeToggle?()
+        NotificationCenter.default.post(name: .didUpdateLikedStatus, object: nil)
+        
     }
     
     private func updateLikeUI() {

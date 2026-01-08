@@ -21,7 +21,6 @@ class ViewScriptsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        ideas = ideaResponse.ideas
         // Do any additional setup after loading the view.
         
         ideas = ideaResponse.ideas
@@ -36,11 +35,22 @@ class ViewScriptsViewController: UIViewController {
         
         scriptsCollectionView.register(UINib(nibName: "likedCells", bundle: nil), forCellWithReuseIdentifier: "likedCells")
         scriptsCollectionView.register(UINib(nibName: "ScriptsCell1", bundle: nil), forCellWithReuseIdentifier: "scriptedIdeas")
+        scriptsCollectionView.register(UINib(nibName: "LikedCellsNew", bundle: nil), forCellWithReuseIdentifier: "likedCellsNew")
 
         let layout = generateScriptsLayout(title: pageTitle)
         scriptsCollectionView.setCollectionViewLayout(layout, animated: true)
         //scriptsCollectionView.clipsToBounds = false
         
+        NotificationCenter.default.addObserver(self, selector: #selector(syncLikedIdeas), name: .didUpdateLikedStatus, object: nil)
+        
+    }
+    
+    @objc func syncLikedIdeas() {
+        // 1. Re-filter the global ideas list to get the current liked ones
+        likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
+        
+        // 2. Refresh the UI
+        scriptsCollectionView.reloadData()
     }
     
     
@@ -85,6 +95,24 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
 
         let idea = likedIdeas[indexPath.row]
         cell.configureCell(idea: idea)
+        
+        cell.onLikeToggle = { [weak self, weak collectionView] in
+                guard let self = self else { return }
+                
+                // 1. Find the current index of this idea in our local array
+                if let currentIndex = self.likedIdeas.firstIndex(where: { $0.id == idea.id }) {
+                    
+                    // 2. Update the data source first (Remove from array)
+                    self.likedIdeas.remove(at: currentIndex)
+                    
+                    // 3. Animate the deletion in the CollectionView
+                    let indexPathToDelete = IndexPath(item: currentIndex, section: 0)
+                    collectionView?.performBatchUpdates({
+                        collectionView?.deleteItems(at: [indexPathToDelete])
+                    }, completion: nil)
+                }
+            }
+        
         return cell
     }
     

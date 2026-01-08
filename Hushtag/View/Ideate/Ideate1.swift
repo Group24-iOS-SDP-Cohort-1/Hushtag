@@ -31,7 +31,14 @@ class Ideate1: UIViewController {
         collectionView.register(UINib(nibName: "IdeaCells", bundle: nil), forCellWithReuseIdentifier: "ideaCell")
         collectionView.register(UINib(nibName: "IdeaSearch", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "IdeaSearch")
         collectionView.register(UINib(nibName: "SuggestedFYHeader", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "suggestedHeader")
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshUI), name: .didUpdateLikedStatus, object: nil)
 
+    }
+    
+    @objc func refreshUI() {
+        // Reload the collection view to update heart icons
+        collectionView.reloadData()
     }
 
     @IBAction func scriptTap(_ sender: UIButton) {
@@ -54,7 +61,17 @@ class Ideate1: UIViewController {
     }
 
     
-
+    @IBAction func viewLikedTap(_ sender: UIBarButtonItem) {
+        let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
+//            let vc = storyboard.instantiateViewController(withIdentifier: "viewScripts")
+//            navigationController?.pushViewController(vc, animated: true)
+//        vc.title = "Your Scripts"
+        guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
+        guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
+        destinationVC.pageTitle = "Liked Ideas"
+        self.navigationController?.pushViewController(destinationVC, animated: true)
+    }
+    
     
 
 
@@ -271,4 +288,8 @@ extension Ideate1: IdeaSearchDelegate {
      
 
     }
+}
+
+extension Notification.Name {
+    static let didUpdateLikedStatus = Notification.Name("didUpdateLikedStatus")
 }
