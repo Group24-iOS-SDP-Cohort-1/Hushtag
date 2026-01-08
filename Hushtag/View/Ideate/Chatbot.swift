@@ -30,15 +30,18 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     var autoSendMessage: String?
 
     let botDatabase: [String: String] = [
-            "hi": "hello",
-            "hello": "Hi! How can I help you today?",
-            "script": "Beauty isn’t about hiding who you are.It’s about enhancing what already exists.Every texture, every shade, every detail tells a story.No filters. No pressure. Just self-care and confidence.Because when you feel good, you glow differently. 💄✨",
-            "Generate title": "Real Beauty, Real Confidence",
-            "Generate script": "Beauty isn’t about hiding who you are.It’s about enhancing what already exists.Every texture, every shade, every detail tells a story.No filters. No pressure. Just self-care and confidence.Because when you feel good, you glow differently. 💄✨",
-            "idea": "You can make a beauty product review",
-            "title": "Real Beauty, Real Confidence",
-            "default": "idk everything bro so find yourself"
-        ]
+        "hi": "hello",
+        "hello": "Hi! How can I help you today?",
+        "script": "Real beauty isn’t about perfection.It’s about embracing who you are—your skin, your smile, your story.Every freckle, every flaw, every feature makes you unique.",
+        "generate title": "Real Beauty, Real Confidence",
+        "generate description": "Real Beauty, Real Confidence.Real beauty isn’t about perfection.",
+        "description": "Real Beauty, Real Confidence.Real beauty isn’t about perfection.",
+        "generate script": "Real beauty isn’t about perfection.It’s about embracing who you are—your skin, your smile, your story.Every freckle, every flaw, every feature makes you unique.",
+        "idea": "You can make a beauty product review",
+        "title": "Real Beauty, Real Confidence",
+        "default": "idk everything bro so find yourself"
+    ]
+
 
     var markedMessages: [String: [Message]] = [
         "script": [],
