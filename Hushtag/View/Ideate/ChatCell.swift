@@ -43,8 +43,8 @@ class ChatCell: UITableViewCell {
             leftSpacer.isHidden = false
             rightSpacer.isHidden = true
                 } else {
-                    chatView.backgroundColor = UIColor.systemGray5
-                    chatLabel.textColor = .black
+                    chatView.backgroundColor = UIColor.systemGray4
+                    chatLabel.textColor = .white
                     leftSpacer.isHidden = true
                     rightSpacer.isHidden = false
                 }

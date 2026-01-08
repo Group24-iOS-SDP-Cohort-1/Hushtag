@@ -30,15 +30,18 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     var autoSendMessage: String?
 
     let botDatabase: [String: String] = [
-            "hi": "hello",
-            "hello": "Hi! How can I help you today?",
-            "script": "Beauty isn’t about hiding who you are.It’s about enhancing what already exists.Every texture, every shade, every detail tells a story.No filters. No pressure. Just self-care and confidence.Because when you feel good, you glow differently. 💄✨",
-            "Generate title": "Real Beauty, Real Confidence",
-            "Generate script": "Beauty isn’t about hiding who you are.It’s about enhancing what already exists.Every texture, every shade, every detail tells a story.No filters. No pressure. Just self-care and confidence.Because when you feel good, you glow differently. 💄✨",
-            "idea": "You can make a beauty product review",
-            "title": "Real Beauty, Real Confidence",
-            "default": "Beauty isn’t about perfection — it’s about embracing what makes you you.No filters. No pressure. Just self-care, confidence, and a glow that comes from within."
-        ]
+        "hi": "hello",
+        "hello": "Hi! How can I help you today?",
+        "script": "Real beauty isn’t about perfection.It’s about embracing who you are—your skin, your smile, your story.Every freckle, every flaw, every feature makes you unique.",
+        "generate title": "Real Beauty, Real Confidence",
+        "generate description": "Real Beauty, Real Confidence.Real beauty isn’t about perfection.",
+        "description": "Real Beauty, Real Confidence.Real beauty isn’t about perfection.",
+        "generate script": "Real beauty isn’t about perfection.It’s about embracing who you are—your skin, your smile, your story.Every freckle, every flaw, every feature makes you unique.",
+        "idea": "You can make a beauty product review",
+        "title": "Real Beauty, Real Confidence",
+        "default": "idk everything bro so find yourself"
+    ]
+
 
     var markedMessages: [String: [Message]] = [
         "script": [],
@@ -70,8 +73,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 // UITextView setup
                 textFieldView.delegate = self
                 textFieldView.isScrollEnabled = false
-                textFieldView.layer.borderWidth = 0.1
-                textFieldView.layer.borderColor = UIColor.gray.cgColor
+                textFieldView.layer.borderWidth = 0.2
+                textFieldView.layer.borderColor = UIColor.white.cgColor
                 textFieldView.layer.cornerRadius = 16
                 textFieldView.clipsToBounds = true
                 textFieldView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
@@ -96,7 +99,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     autoSendMessage = nil // prevent duplication
                 }
         
-        //NEW
+
         setupKeyboardObservers()
         setupTapToDismiss()
     }
@@ -104,7 +107,18 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if messages.isEmpty {
+            let welcomeMessage = "Welcome! I’m your scripting assistant. Lets write a script for you."
+            messages.append(Message(text: welcomeMessage, isUser: false))
+            tableView.reloadData()
+            scrollToBottom()
+        }
+    }
+
+
     func setupTapToDismiss() {
             // Allows user to tap the table view (messages) to close the keyboard
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -214,7 +228,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         textViewDidChange(textFieldView)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.generateBotReply(for: text)
+            self.generateBotReply(for: text)
                 }
     }
 
@@ -356,6 +370,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
 }
+
 
 
 

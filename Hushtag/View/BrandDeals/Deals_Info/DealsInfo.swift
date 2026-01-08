@@ -74,8 +74,8 @@ class DealsInfo: UIViewController {
         collectionView.delegate = self
 
         collectionView.register(
-            UINib(nibName: "IdeaCollectionViewCell", bundle: nil),
-            forCellWithReuseIdentifier: "ideas_cell"
+            UINib(nibName: "ScriptsCell1", bundle: nil),
+            forCellWithReuseIdentifier: "ideaCell"
         )
 
         collectionView.register(
@@ -309,9 +309,9 @@ extension DealsInfo: UICollectionViewDataSource {
             
         case .selectedIdeas:
             guard let idea = selectedIdea else { return UICollectionViewCell() }
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideas_cell", for: indexPath)
-            if let ideaCell = cell as? IdeaCollectionViewCell {
-                ideaCell.configureCell(ideas: idea)
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideaCell", for: indexPath)
+            if let ideaCell = cell as? ScriptsCell1 {
+                ideaCell.configureCell(idea: idea)
             }
             return cell
             

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="Badges" customModule="Hushtag" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="250" height="50"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9kJ-X6-NJU">
+                    <rect key="frame" x="7" y="5" width="236" height="40"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <constraints>
+                <constraint firstItem="9kJ-X6-NJU" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="7" id="0aJ-vF-LRZ"/>
+                <constraint firstItem="9kJ-X6-NJU" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="kSU-s6-EKe"/>
+                <constraint firstAttribute="trailing" secondItem="9kJ-X6-NJU" secondAttribute="trailing" constant="7" id="v0a-WJ-4qH"/>
+                <constraint firstAttribute="bottom" secondItem="9kJ-X6-NJU" secondAttribute="bottom" constant="5" id="vTW-Kx-GG8"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="badgeLabel" destination="9kJ-X6-NJU" id="caH-Wd-IIf"/>
+            </connections>
+            <point key="canvasLocation" x="132.82442748091603" y="117.60563380281691"/>
+        </view>
+    </objects>
+</document>

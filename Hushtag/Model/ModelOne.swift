@@ -18,6 +18,9 @@ struct DateData: Codable{
     let time: TimeData?
 }
 
+struct LikedIds {
+    static var likedIdeaIds: Set<String> = []
+}
 extension DateData {
 
     func toDate() -> Date? {
@@ -98,9 +101,10 @@ struct Idea: Codable, Identifiable {
     var liked: Bool
     let tag: String
     let thumbnail: String
+    let engagementRate: Double
 
     enum CodingKeys: String, CodingKey {
-        case id, trending, title, description, script, hashtag, videos, liked, tag, thumbnail
+        case id, trending, title, description, script, hashtag, videos, liked, tag, thumbnail, engagementRate
     }
 }
 

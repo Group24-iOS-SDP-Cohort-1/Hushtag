@@ -8,22 +8,23 @@
 import UIKit
 
 class ViewScriptsViewController: UIViewController {
-
-    
-    var pageTitle: String = "" // Default value
-    var cellReuseIdentifier: String = "allScriptsCell"
-    
-    //var ideaResponse = IdeaResponse()
+    var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
+
+    var pageTitle: String = "" 
+    var cellReuseIdentifier: String = "allScriptsCell"
+
     var isSearchMode = false
-    var filteredIdeas: [Idea] = []
+    var likedIdeas: [Idea] = []
 
     @IBOutlet weak var scriptsCollectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Do any additional setup after loading the view.
+        
+        ideas = ideaResponse.ideas
+        likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
 
         navigationItem.title = pageTitle
         
@@ -33,11 +34,23 @@ class ViewScriptsViewController: UIViewController {
         scriptsCollectionView.delegate = self
         
         scriptsCollectionView.register(UINib(nibName: "likedCells", bundle: nil), forCellWithReuseIdentifier: "likedCells")
-        
+        scriptsCollectionView.register(UINib(nibName: "ScriptsCell1", bundle: nil), forCellWithReuseIdentifier: "scriptedIdeas")
+        scriptsCollectionView.register(UINib(nibName: "LikedCellsNew", bundle: nil), forCellWithReuseIdentifier: "likedCellsNew")
+
         let layout = generateScriptsLayout(title: pageTitle)
         scriptsCollectionView.setCollectionViewLayout(layout, animated: true)
         //scriptsCollectionView.clipsToBounds = false
         
+        NotificationCenter.default.addObserver(self, selector: #selector(syncLikedIdeas), name: .didUpdateLikedStatus, object: nil)
+        
+    }
+    
+    @objc func syncLikedIdeas() {
+        // 1. Re-filter the global ideas list to get the current liked ones
+        likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
+        
+        // 2. Refresh the UI
+        scriptsCollectionView.reloadData()
     }
     
     
@@ -53,15 +66,21 @@ class ViewScriptsViewController: UIViewController {
 
 extension ViewScriptsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return ideas.count
+        if pageTitle == "Your Scripts"{
+            return ideas.count
+        }else{
+            return likedIdeas.count
+        }
+        
+        //return ideas.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if pageTitle == "Your Scripts"{
             let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "allScriptsCell",
+                withReuseIdentifier: "scriptedIdeas",
                 for: indexPath
-            ) as! ViewAllScriptsCell
+            ) as! ScriptsCell1
 
             let idea = ideas[indexPath.row]
             cell.configureCell(idea: idea)
@@ -70,12 +89,30 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
         
         
         let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "likedCells",
+            withReuseIdentifier: "likedCellsNew",
             for: indexPath
-        ) as! likedCells
+        ) as! LikedCellsNew
 
-        let idea = ideas[indexPath.row]
+        let idea = likedIdeas[indexPath.row]
         cell.configureCell(idea: idea)
+        
+        cell.onLikeToggle = { [weak self, weak collectionView] in
+                guard let self = self else { return }
+                
+                // 1. Find the current index of this idea in our local array
+                if let currentIndex = self.likedIdeas.firstIndex(where: { $0.id == idea.id }) {
+                    
+                    // 2. Update the data source first (Remove from array)
+                    self.likedIdeas.remove(at: currentIndex)
+                    
+                    // 3. Animate the deletion in the CollectionView
+                    let indexPathToDelete = IndexPath(item: currentIndex, section: 0)
+                    collectionView?.performBatchUpdates({
+                        collectionView?.deleteItems(at: [indexPathToDelete])
+                    }, completion: nil)
+                }
+            }
+        
         return cell
     }
     
@@ -87,16 +124,16 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
     if title == "Your Scripts"{
         
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(0.5),
+            widthDimension: .fractionalWidth(1.0),
             heightDimension: .fractionalHeight(1.0)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)
-        
+        item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .absolute(160)
+            heightDimension: .estimated(153)
         )
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: groupSize,
@@ -120,8 +157,8 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
     //LAYOUT FOR VIEWING ALL LIKED IDEAS
     
     let itemSize = NSCollectionLayoutSize(
-        widthDimension: .fractionalWidth(0.5),
-        heightDimension: .fractionalHeight(1.0)
+        widthDimension: .fractionalWidth(1.0),
+        heightDimension: .estimated(120)
     )
     let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
@@ -129,7 +166,7 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
 
     let groupSize = NSCollectionLayoutSize(
         widthDimension: .fractionalWidth(1.0),
-        heightDimension: .absolute(190)
+        heightDimension: .estimated(170)
     )
     let group = NSCollectionLayoutGroup.horizontal(
         layoutSize: groupSize,
