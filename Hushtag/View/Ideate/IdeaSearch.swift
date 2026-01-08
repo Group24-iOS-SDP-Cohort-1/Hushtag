@@ -37,6 +37,9 @@ class IdeaSearch: UICollectionReusableView {
     
     @IBAction func searchTap(_ sender: UIButton) {
         let keyword = textLabel.text ?? ""
+        guard !keyword.isEmpty else {
+               return   
+           }
         textStack.isHidden = true
         crossButton.isHidden = false
         delegate?.didTapSearch(with: keyword)

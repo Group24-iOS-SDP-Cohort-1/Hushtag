@@ -33,7 +33,8 @@ class Ideate1: UIViewController {
         collectionView.register(UINib(nibName: "SuggestedFYHeader", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "suggestedHeader")
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshUI), name: .didUpdateLikedStatus, object: nil)
-
+        scriptButton.layer.borderWidth = 1
+        scriptButton.layer.borderColor = UIColor.accent.cgColor
     }
     
     @objc func refreshUI() {

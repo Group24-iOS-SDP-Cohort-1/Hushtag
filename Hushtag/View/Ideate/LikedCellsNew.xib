@@ -26,11 +26,11 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="bGd-45-3DE">
-                                <rect key="frame" x="10" y="44" width="288" height="182"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="bGd-45-3DE">
+                                <rect key="frame" x="10" y="44" width="288" height="179"/>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L4m-GT-525">
-                                <rect key="frame" x="379.66666666666669" y="194" width="103.33333333333331" height="32"/>
+                                <rect key="frame" x="379.66666666666669" y="190" width="103.33333333333331" height="32"/>
                                 <color key="tintColor" name="AccentColor"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="tinted" title="Draft Script">
@@ -52,12 +52,13 @@
                             <constraint firstItem="Rx7-IM-twc" firstAttribute="top" secondItem="G7P-PU-Cdu" secondAttribute="top" constant="10" id="FuI-wJ-vAv"/>
                             <constraint firstItem="bGd-45-3DE" firstAttribute="leading" secondItem="G7P-PU-Cdu" secondAttribute="leading" constant="10" id="Ma0-RT-xB0"/>
                             <constraint firstAttribute="trailing" secondItem="Y67-7t-W9c" secondAttribute="trailing" constant="100" id="O6F-Gs-d64"/>
-                            <constraint firstAttribute="bottom" secondItem="bGd-45-3DE" secondAttribute="bottom" constant="10" id="R6m-K5-xvu"/>
+                            <constraint firstAttribute="bottom" secondItem="bGd-45-3DE" secondAttribute="bottom" constant="13" id="R6m-K5-xvu"/>
                             <constraint firstAttribute="trailing" secondItem="Rx7-IM-twc" secondAttribute="trailing" constant="5" id="S4N-px-Oqh"/>
                             <constraint firstItem="Y67-7t-W9c" firstAttribute="top" secondItem="G7P-PU-Cdu" secondAttribute="top" constant="10" id="Vqo-lc-p8n"/>
                             <constraint firstItem="bGd-45-3DE" firstAttribute="top" secondItem="Y67-7t-W9c" secondAttribute="bottom" constant="10" id="iE2-1h-Dcu"/>
                             <constraint firstItem="Y67-7t-W9c" firstAttribute="leading" secondItem="G7P-PU-Cdu" secondAttribute="leading" constant="10" id="rTL-5Y-ibl"/>
-                            <constraint firstAttribute="bottom" secondItem="L4m-GT-525" secondAttribute="bottom" constant="10" id="w7K-tP-bzy"/>
+                            <constraint firstItem="L4m-GT-525" firstAttribute="leading" secondItem="bGd-45-3DE" secondAttribute="trailing" constant="81.666666666666742" id="t4X-Jc-rMB"/>
+                            <constraint firstAttribute="bottom" secondItem="L4m-GT-525" secondAttribute="bottom" constant="14" id="w7K-tP-bzy"/>
                         </constraints>
                     </view>
                 </subviews>

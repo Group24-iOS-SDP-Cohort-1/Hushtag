@@ -51,7 +51,10 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oGG-eh-lG7">
                                 <rect key="frame" x="248.33333333333334" y="729" width="124.66666666666666" height="35"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Script with AI"/>
+                                <buttonConfiguration key="configuration" style="tinted" title="Script with AI">
+                                    <color key="baseForegroundColor" systemColor="labelColor"/>
+                                    <color key="baseBackgroundColor" name="AccentColor"/>
+                                </buttonConfiguration>
                                 <connections>
                                     <action selector="scriptTap:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="bHB-Xx-Qxh"/>
                                 </connections>
