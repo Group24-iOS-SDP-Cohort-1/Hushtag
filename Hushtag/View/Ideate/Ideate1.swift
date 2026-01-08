@@ -94,7 +94,7 @@ class Ideate1: UIViewController {
 
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
-                heightDimension: .estimated(170)
+                heightDimension: .estimated(120)
             )
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
 

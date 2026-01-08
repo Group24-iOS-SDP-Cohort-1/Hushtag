@@ -14,14 +14,11 @@ class ScriptsCell1: UICollectionViewCell {
     
     
     @IBOutlet weak var Description: UILabel!
-    
-    
-    @IBOutlet weak var Hashtag: UILabel!
-    
-    
+
     @IBOutlet weak var progressView: CircularProgressView!
     
     
+    @IBOutlet weak var badgeStack: UIStackView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -38,15 +35,15 @@ class ScriptsCell1: UICollectionViewCell {
         Title.numberOfLines = 3
         Description.numberOfLines = 1
         Description.textColor = .secondaryLabel
-        
-    }
+}
     
     func configureCell(idea : Idea) {
 
         Title.text = idea.title
         Description.text = idea.description
-        Hashtag.text = idea.hashtag.map { "#\($0)" }.joined(separator: " ")
-        Hashtag.textColor = .accent
+        configureHashtags(idea.hashtag)
+//        Hashtag.text = idea.hashtag.map { "#\($0)" }.joined(separator: " ")
+//        Hashtag.textColor = .accent
         
         //progressView.setProgress(value: progress)
         
@@ -79,4 +76,27 @@ class ScriptsCell1: UICollectionViewCell {
             // 4. Update the view
             progressView.setProgress(value: progress)
     }
+
+    private func configureHashtags(_ hashtags: [String]) {
+
+            badgeStack.arrangedSubviews.forEach {
+                badgeStack.removeArrangedSubview($0)
+                $0.removeFromSuperview()
+            }
+
+            for tag in hashtags {
+                let badge: Badges = Badges.loadFromNib()
+
+                badge.configure(
+                    text: tag,
+                    color: .white,
+                    cornerRadius: 12,
+                    borderWidth: 0.2,
+                    backgroundAlpha: 0.10
+                )
+
+                badgeStack.addArrangedSubview(badge)
+            }
+        }
+
 }

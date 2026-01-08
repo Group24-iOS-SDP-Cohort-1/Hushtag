@@ -29,12 +29,6 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E77-I6-Sgc">
-                        <rect key="frame" x="10" y="72.333333333333329" width="353" height="14.333333333333329"/>
-                        <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tDx-bd-U3z" customClass="CircularProgressView" customModule="Hushtag" customModuleProvider="target">
                         <rect key="frame" x="320" y="4.6666666666666679" width="45" height="45"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -43,6 +37,9 @@
                             <constraint firstAttribute="width" constant="45" id="oiN-JC-wxg"/>
                         </constraints>
                     </view>
+                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="iLd-Bo-tRt">
+                        <rect key="frame" x="10" y="71" width="353" height="110"/>
+                    </stackView>
                 </subviews>
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
@@ -51,19 +48,18 @@
                 <constraint firstItem="i6m-aB-d6n" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="DPG-QJ-tZx"/>
                 <constraint firstItem="ERR-cR-hGb" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="HUh-P6-uaq"/>
                 <constraint firstItem="i6m-aB-d6n" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="15" id="MOg-Gu-9Hm"/>
-                <constraint firstAttribute="trailing" secondItem="E77-I6-Sgc" secondAttribute="trailing" constant="10" id="Ndh-tC-qKd"/>
                 <constraint firstAttribute="trailing" secondItem="tDx-bd-U3z" secondAttribute="trailing" constant="8" id="QEM-oW-Vex"/>
-                <constraint firstItem="ERR-cR-hGb" firstAttribute="top" secondItem="i6m-aB-d6n" secondAttribute="bottom" constant="10" id="ZBB-LW-jr0"/>
-                <constraint firstItem="E77-I6-Sgc" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="hqX-jN-Rxz"/>
                 <constraint firstAttribute="trailing" secondItem="ERR-cR-hGb" secondAttribute="trailing" constant="10" id="iWo-db-AYj"/>
-                <constraint firstItem="E77-I6-Sgc" firstAttribute="top" secondItem="ERR-cR-hGb" secondAttribute="bottom" constant="10" id="nai-e9-XAk"/>
+                <constraint firstItem="iLd-Bo-tRt" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="l56-wA-q6B"/>
+                <constraint firstItem="iLd-Bo-tRt" firstAttribute="top" secondItem="ERR-cR-hGb" secondAttribute="bottom" constant="10" id="mKN-RA-zSS"/>
                 <constraint firstItem="tDx-bd-U3z" firstAttribute="leading" secondItem="i6m-aB-d6n" secondAttribute="trailing" constant="15" id="q4t-po-bg2"/>
+                <constraint firstItem="ERR-cR-hGb" firstAttribute="top" secondItem="i6m-aB-d6n" secondAttribute="bottom" constant="10" id="vxf-32-QM7"/>
             </constraints>
             <size key="customSize" width="373" height="207"/>
             <connections>
                 <outlet property="Description" destination="ERR-cR-hGb" id="kb5-VG-A1F"/>
-                <outlet property="Hashtag" destination="E77-I6-Sgc" id="AMH-Bb-WnS"/>
                 <outlet property="Title" destination="i6m-aB-d6n" id="axj-Qb-LJS"/>
+                <outlet property="badgeStack" destination="iLd-Bo-tRt" id="IXw-lB-4BL"/>
                 <outlet property="progressView" destination="tDx-bd-U3z" id="0kU-ma-YmN"/>
             </connections>
             <point key="canvasLocation" x="385.49618320610688" y="208.80281690140845"/>

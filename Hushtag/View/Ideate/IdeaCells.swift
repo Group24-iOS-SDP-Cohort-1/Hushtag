@@ -18,9 +18,6 @@ class IdeaCells: UICollectionViewCell {
     @IBOutlet weak var ideaTitle: UILabel!
     @IBOutlet weak var ideaView: UIView!
     @IBOutlet weak var badgeStack: UIStackView!
-    @IBOutlet weak var separatorLine: UIView!
-    @IBOutlet weak var keywordImage1: UIImageView!
-    @IBOutlet weak var keywordText1: UILabel!
     @IBOutlet weak var keywordImage2: UIImageView!
     @IBOutlet weak var keywordText2: UILabel!
 
@@ -32,7 +29,7 @@ class IdeaCells: UICollectionViewCell {
         super.awakeFromNib()
         ideaView.layer.cornerRadius = 10
         ideaTitle.numberOfLines = 2
-        separatorLine.backgroundColor = .separator
+        //separatorLine.backgroundColor = .separator
 
         applyLiquidGlassEffect()
     }
@@ -43,10 +40,10 @@ class IdeaCells: UICollectionViewCell {
         self.idea = idea
         ideaTitle.text = idea.title
         configureHashtags(idea.hashtag)
-            keywordText1.text = keyword1.text
-            keywordText1.textColor = keyword1.color
-            keywordImage1.image = UIImage(systemName: keyword1.icon)
-            keywordImage1.tintColor = keyword1.color
+//            keywordText1.text = keyword1.text
+//            keywordText1.textColor = keyword1.color
+//            keywordImage1.image = UIImage(systemName: keyword1.icon)
+//            keywordImage1.tintColor = keyword1.color
 
             keywordText2.text = keyword2.text
             keywordText2.textColor = keyword2.color
