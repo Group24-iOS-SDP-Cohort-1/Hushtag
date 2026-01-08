@@ -36,7 +36,7 @@ class Ideate1: UIViewController {
 
     @IBAction func scriptTap(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
-            let vc = storyboard.instantiateViewController(withIdentifier: "viewScripts")
+            let vc = storyboard.instantiateViewController(withIdentifier: "Chatbot")
             navigationController?.pushViewController(vc, animated: true)
         
 
