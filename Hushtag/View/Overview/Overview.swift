@@ -87,7 +87,6 @@ class Overview: UIViewController {
                   bundle: nil),
             forSupplementaryViewOfKind: "headerButton",
             withReuseIdentifier: "header_button")
-
     }
     
     func generateLayout() -> UICollectionViewLayout {
@@ -267,10 +266,8 @@ class Overview: UIViewController {
             ("Deals", dailyDeals.count),
             ("Posts", dailyPosts.count)
         ]
-
         collectionView.reloadSections(IndexSet(integer: 1))
     }
-
 }
 
 extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -300,6 +297,9 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             default:
                 break
             }
+        }
+        if segue.identifier == "goToSchedule" {
+            let vc = segue.destination as! AddViewController
         }
 
 
@@ -334,8 +334,13 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         case 1:
             performSegue(withIdentifier: "goToActivities", sender: indexPath.row)
         case 2:
-            selectedScheduleItem = filteredSchedule[indexPath.row]
-            performSegue(withIdentifier: "goToDetails", sender: self)
+            if indexPath.row == filteredSchedule.count {
+                performSegue(withIdentifier: "goToAddSchedule", sender: self)
+            } else {
+                selectedScheduleItem = filteredSchedule[indexPath.row]
+                performSegue(withIdentifier: "goToDetails", sender: self)
+            }
+
         default:
             break
         }
@@ -354,7 +359,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         else if (section == 1) {
             return activities.count
         }
-        return filteredSchedule.count
+        return filteredSchedule.count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -374,6 +379,17 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             cell.layer.cornerRadius = 12
             cell.layer.masksToBounds = false
             return cell
+        }
+        else if indexPath.section == 2 {
+            
+            if indexPath.row == filteredSchedule.count {
+                let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: "addScheduleCell",
+                    for: indexPath
+                )
+                cell.applyLiquidGlassEffect()
+                return cell
+            }
         }
         let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "upcoming_schedule",
@@ -426,8 +442,6 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             headerView.configureHeader(text: "Upcoming Schedule")
             return headerView
         }
-
-
         return UICollectionReusableView()
     }
 }

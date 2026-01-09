@@ -27,6 +27,10 @@ class Activities: UIViewController {
 
         listingView.dataSource = self
         listingView.delegate = self
+        listingView.register(
+            UINib(nibName: "BlankScheduleTableViewCell", bundle: nil),
+            forCellReuseIdentifier: "blankCell"
+        )
         listingView.reloadData()
     }
     private var visibleItems: [Overview.ScheduleItem] {
@@ -52,9 +56,16 @@ class Activities: UIViewController {
 
 extension Activities: UITableViewDataSource, UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return visibleItems.count
+        return scheduleItems.isEmpty ? 1 : visibleItems.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if scheduleItems.isEmpty {
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: "blankCell",
+                for: indexPath
+            ) as! BlankScheduleTableViewCell
+            return cell
+        }
         let cell = tableView.dequeueReusableCell(
             withIdentifier: "taskCell",
             for: indexPath
@@ -76,9 +87,12 @@ extension Activities: UITableViewDataSource, UITableViewDelegate{
 
         return cell
     }
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 55
-    }
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        if  scheduleItems.isEmpty {
+//            return 100
+//        }
+//        return 55
+//    }
 }
 
 extension Activities: TasksTableViewCellDelegate {

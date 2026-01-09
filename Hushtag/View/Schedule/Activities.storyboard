@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Y6W-OH-hqX">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Y6W-OH-hqX">
     <device id="retina6_12" orientation="portrait" appearance="dark"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -41,26 +41,14 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UzA-GX-NdV">
-                                                    <rect key="frame" x="328" y="0.0" width="50" height="35.333333333333336"/>
-                                                    <state key="normal" title="Button"/>
-                                                    <buttonConfiguration key="configuration" style="plain" image="info.circle" catalog="system"/>
-                                                    <connections>
-                                                        <action selector="detailsButtonPressed:" destination="ePo-F0-gzA" eventType="touchUpInside" id="zqH-85-fQN"/>
-                                                        <segue destination="oqT-8U-orn" kind="presentation" id="WFw-Zv-0Pj"/>
-                                                    </connections>
-                                                </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="UzA-GX-NdV" secondAttribute="trailing" constant="15" id="GPv-pk-BKG"/>
                                                 <constraint firstItem="Yas-gd-Cx4" firstAttribute="leading" secondItem="Pag-A1-8Ki" secondAttribute="leading" constant="10" id="Lku-xC-XQT"/>
                                                 <constraint firstAttribute="bottom" secondItem="Yas-gd-Cx4" secondAttribute="bottom" id="Q8H-W4-0iP"/>
                                                 <constraint firstItem="Yas-gd-Cx4" firstAttribute="top" secondItem="Pag-A1-8Ki" secondAttribute="top" id="SNz-No-wUf"/>
                                                 <constraint firstItem="ydp-TS-xHB" firstAttribute="top" secondItem="Pag-A1-8Ki" secondAttribute="top" id="SXP-xv-mER"/>
-                                                <constraint firstAttribute="bottom" secondItem="UzA-GX-NdV" secondAttribute="bottom" id="UeJ-UH-qiG"/>
                                                 <constraint firstAttribute="bottom" secondItem="ydp-TS-xHB" secondAttribute="bottom" id="Ydu-cX-6B1"/>
                                                 <constraint firstAttribute="trailing" secondItem="ydp-TS-xHB" secondAttribute="trailing" constant="60" id="aKr-R0-y0I"/>
-                                                <constraint firstItem="UzA-GX-NdV" firstAttribute="top" secondItem="Pag-A1-8Ki" secondAttribute="top" id="szG-Rk-76x"/>
                                                 <constraint firstItem="ydp-TS-xHB" firstAttribute="leading" secondItem="Pag-A1-8Ki" secondAttribute="leading" constant="60" id="zOI-ft-NM2"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -184,11 +172,11 @@
             <objects>
                 <viewController storyboardIdentifier="Details" title="Detail" id="oqT-8U-orn" customClass="Details" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="oGv-ML-let">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="793"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Zhe-cU-Xon">
-                                <rect key="frame" x="0.0" y="54" width="393" height="739"/>
+                                <rect key="frame" x="0.0" y="54" width="393" height="730"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="detailCell" rowHeight="107" id="ot9-L2-YTG" customClass="DetailsTableViewCell" customModule="Hushtag" customModuleProvider="target">
@@ -277,7 +265,6 @@
     </scenes>
     <resources>
         <image name="circle" catalog="system" width="128" height="123"/>
-        <image name="info.circle" catalog="system" width="128" height="123"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
