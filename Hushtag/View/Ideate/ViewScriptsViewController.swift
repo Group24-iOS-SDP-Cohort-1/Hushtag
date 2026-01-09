@@ -96,6 +96,8 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
         let idea = likedIdeas[indexPath.row]
         cell.configureCell(idea: idea)
         
+        cell.delegate = self
+        
         cell.onLikeToggle = { [weak self, weak collectionView] in
                 guard let self = self else { return }
                 
@@ -220,4 +222,20 @@ extension ViewScriptsViewController: UICollectionViewDelegate {
         
     }
     
+}
+
+extension ViewScriptsViewController: LikedCellDelegate {
+
+    func didTapDraftScript(for idea: Idea) {
+
+        let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
+        guard let chatVC = storyboard.instantiateViewController(
+            withIdentifier: "Chatbot"
+        ) as? Chatbot else { return }
+
+        // Passing the idea script text
+        chatVC.autoSendMessage = "script"
+
+        navigationController?.pushViewController(chatVC, animated: true)
+    }
 }
