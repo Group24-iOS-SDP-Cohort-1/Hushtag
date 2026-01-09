@@ -19,8 +19,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Mxq-Iu-w0r">
-                                <rect key="frame" x="0.0" y="172" width="393" height="612"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Mxq-Iu-w0r">
+                                <rect key="frame" x="17" y="172" width="359" height="680"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="phT-df-XR0">
                                     <size key="itemSize" width="128" height="128"/>
@@ -30,10 +30,10 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ideaCell" id="OCs-FB-zGC" customClass="IdeaCells" customModule="Hushtag" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="X18-Es-n5T">
-                                            <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NMK-0f-2rC">
@@ -51,7 +51,7 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oGG-eh-lG7">
                                 <rect key="frame" x="248.33333333333334" y="729" width="124.66666666666666" height="35"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="tinted" title="Script with AI">
+                                <buttonConfiguration key="configuration" style="filled" title="Script with AI">
                                     <color key="baseForegroundColor" systemColor="labelColor"/>
                                     <color key="baseBackgroundColor" name="AccentColor"/>
                                 </buttonConfiguration>
@@ -64,11 +64,11 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="oGG-eh-lG7" secondAttribute="bottom" constant="20" id="2iX-tH-yTE"/>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="Mxq-Iu-w0r" secondAttribute="bottom" id="VD8-Qq-KbX"/>
+                            <constraint firstAttribute="bottom" secondItem="Mxq-Iu-w0r" secondAttribute="bottom" id="VD8-Qq-KbX"/>
                             <constraint firstItem="Mxq-Iu-w0r" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="Xaf-sN-vZI"/>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Mxq-Iu-w0r" secondAttribute="trailing" id="iit-Dw-olB"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Mxq-Iu-w0r" secondAttribute="trailing" constant="17" id="iit-Dw-olB"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="oGG-eh-lG7" secondAttribute="trailing" constant="20" id="qSq-lr-gX1"/>
-                            <constraint firstItem="Mxq-Iu-w0r" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="u6g-MN-j8G"/>
+                            <constraint firstItem="Mxq-Iu-w0r" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="17" id="u6g-MN-j8G"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="Z17-7z-gvD">

@@ -52,9 +52,6 @@ class Ideate1: UIViewController {
 
     @IBAction func viewScriptTap(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
-//            let vc = storyboard.instantiateViewController(withIdentifier: "viewScripts")
-//            navigationController?.pushViewController(vc, animated: true)
-//        vc.title = "Your Scripts"
         guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
         guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
         destinationVC.pageTitle = "Your Scripts"
@@ -64,9 +61,6 @@ class Ideate1: UIViewController {
     
     @IBAction func viewLikedTap(_ sender: UIBarButtonItem) {
         let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
-//            let vc = storyboard.instantiateViewController(withIdentifier: "viewScripts")
-//            navigationController?.pushViewController(vc, animated: true)
-//        vc.title = "Your Scripts"
         guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
         guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
         destinationVC.pageTitle = "Liked Ideas"
@@ -112,7 +106,7 @@ class Ideate1: UIViewController {
 
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
-                heightDimension: .estimated(120)
+                heightDimension: .estimated(112)
             )
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
@@ -124,7 +118,7 @@ class Ideate1: UIViewController {
                 layoutSize: groupSize,
                 subitems: [item]
             )
-
+            
             let section = NSCollectionLayoutSection(group: group)
 
             let headerSize = NSCollectionLayoutSize(
@@ -138,7 +132,7 @@ class Ideate1: UIViewController {
             )
             
             section.boundarySupplementaryItems = [header]
-            section.interGroupSpacing = 10
+            section.interGroupSpacing = 15
             section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
 
             return section
@@ -244,21 +238,30 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         }
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "goToScript" {
-            let vc = segue.destination as! ScriptedIdeas
-            vc.idea = selectedIdea
-        }
-    }
-
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard indexPath.section == 1 else { return }
-        selectedIdea = ideas[indexPath.row]
-        performSegue(withIdentifier: "goToScript", sender: nil)
+
+        let idea = ideas[indexPath.row]
+
+        let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
+        guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {
+            return
+        }
+
+        if let vc = navVC.topViewController as? ViewIdea {
+            vc.idea = idea
+        }
+
+        navVC.modalPresentationStyle = .pageSheet
+        present(navVC, animated: true)
     }
 
 
 }
+
+
+
+
 
 extension Ideate1: IdeaSearchDelegate {
     func didTapSearch(with keyword: String) {

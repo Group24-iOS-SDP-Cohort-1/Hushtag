@@ -107,13 +107,13 @@
                                 <viewLayoutGuide key="frameLayoutGuide" id="DGu-i1-FWF"/>
                             </scrollView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c7U-vD-YmN">
-                                <rect key="frame" x="24" y="710" width="345" height="66"/>
+                                <rect key="frame" x="16" y="710" width="361" height="66"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ygC-V6-BK5">
-                                        <rect key="frame" x="8" y="8" width="329" height="50"/>
+                                        <rect key="frame" x="0.0" y="8" width="361" height="50"/>
                                         <subviews>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="juk-cQ-ZRr">
-                                                <rect key="frame" x="0.0" y="0.0" width="279" height="50"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="311" height="50"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="50" id="00h-x9-dme"/>
@@ -123,7 +123,7 @@
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nYb-18-tvh">
-                                                <rect key="frame" x="279" y="0.0" width="50" height="50"/>
+                                                <rect key="frame" x="311" y="0.0" width="50" height="50"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="50" id="t24-0e-Zr8"/>
                                                 </constraints>
@@ -142,9 +142,9 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstItem="ygC-V6-BK5" firstAttribute="leading" secondItem="c7U-vD-YmN" secondAttribute="leading" constant="8" id="OcM-ut-37K"/>
+                                    <constraint firstItem="ygC-V6-BK5" firstAttribute="leading" secondItem="c7U-vD-YmN" secondAttribute="leading" id="OcM-ut-37K"/>
                                     <constraint firstItem="ygC-V6-BK5" firstAttribute="top" secondItem="c7U-vD-YmN" secondAttribute="top" constant="8" id="gRd-JH-iDG"/>
-                                    <constraint firstAttribute="trailing" secondItem="ygC-V6-BK5" secondAttribute="trailing" constant="8" id="rJE-od-hkc"/>
+                                    <constraint firstAttribute="trailing" secondItem="ygC-V6-BK5" secondAttribute="trailing" id="rJE-od-hkc"/>
                                     <constraint firstAttribute="bottom" secondItem="ygC-V6-BK5" secondAttribute="bottom" constant="8" id="vno-83-wDu"/>
                                 </constraints>
                             </view>
@@ -152,7 +152,7 @@
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="c7U-vD-YmN" secondAttribute="trailing" constant="8" id="28I-SJ-eUc"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="c7U-vD-YmN" secondAttribute="trailing" id="28I-SJ-eUc"/>
                             <constraint firstAttribute="trailing" secondItem="Nuj-q1-pSo" secondAttribute="trailing" id="683-Ar-XQ6"/>
                             <constraint firstItem="SNm-vA-oEx" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="NCO-KK-lXe"/>
                             <constraint firstItem="c7U-vD-YmN" firstAttribute="top" secondItem="SNm-vA-oEx" secondAttribute="bottom" constant="10" id="eIt-V9-Hyn"/>
@@ -161,7 +161,7 @@
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="c7U-vD-YmN" secondAttribute="bottom" constant="8" id="k1n-mV-YhR"/>
                             <constraint firstItem="SNm-vA-oEx" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="p45-hi-EOD"/>
                             <constraint firstItem="SNm-vA-oEx" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="tuw-iU-HIN"/>
-                            <constraint firstItem="c7U-vD-YmN" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leadingMargin" constant="8" id="ucu-8c-3x9"/>
+                            <constraint firstItem="c7U-vD-YmN" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leadingMargin" id="ucu-8c-3x9"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Scripting" largeTitleDisplayMode="never" id="iNc-XK-pMm"/>
@@ -211,7 +211,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray5Color">
-            <color red="0.8980392157" green="0.8980392157" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

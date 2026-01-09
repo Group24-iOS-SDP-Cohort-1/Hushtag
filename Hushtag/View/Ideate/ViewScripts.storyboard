@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Rvi-Zn-zLk">
-                                <rect key="frame" x="10" y="281" width="373" height="488"/>
+                                <rect key="frame" x="17" y="281" width="359" height="571"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="xJS-R5-7yY">
                                     <size key="itemSize" width="221" height="194"/>
@@ -28,7 +28,7 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="allScriptsCell" id="PQn-7v-2Z2" customClass="ViewAllScriptsCell" customModule="Hushtag" customModuleProvider="target">
-                                        <rect key="frame" x="76" y="0.0" width="221" height="194"/>
+                                        <rect key="frame" x="69" y="0.0" width="221" height="194"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="HBo-UL-CvN">
                                             <rect key="frame" x="0.0" y="0.0" width="221" height="194"/>
@@ -87,11 +87,11 @@
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="Rvi-Zn-zLk" secondAttribute="bottom" constant="15" id="6PW-Rw-bqP"/>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Rvi-Zn-zLk" secondAttribute="trailing" constant="10" id="85q-Qh-HRB"/>
+                            <constraint firstAttribute="bottom" secondItem="Rvi-Zn-zLk" secondAttribute="bottom" id="6PW-Rw-bqP"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Rvi-Zn-zLk" secondAttribute="trailing" constant="17" id="85q-Qh-HRB"/>
                             <constraint firstItem="hms-kQ-QPA" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="VrK-8y-1KL"/>
                             <constraint firstItem="Rvi-Zn-zLk" firstAttribute="top" secondItem="hms-kQ-QPA" secondAttribute="bottom" constant="30" id="cGs-fS-3pJ"/>
-                            <constraint firstItem="Rvi-Zn-zLk" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="10" id="kBo-yK-5HE"/>
+                            <constraint firstItem="Rvi-Zn-zLk" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="17" id="kBo-yK-5HE"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="hms-kQ-QPA" secondAttribute="trailing" constant="20" id="r6H-tx-yIM"/>
                             <constraint firstItem="hms-kQ-QPA" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="15" id="zVv-9R-p68"/>
                         </constraints>
