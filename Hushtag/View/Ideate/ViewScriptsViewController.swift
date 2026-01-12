@@ -28,7 +28,6 @@ class ViewScriptsViewController: UIViewController {
 
         navigationItem.title = pageTitle
         
-        //ideas = ideaResponse.ideas
         
         scriptsCollectionView.dataSource = self
         scriptsCollectionView.delegate = self
@@ -71,8 +70,6 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
         }else{
             return likedIdeas.count
         }
-        
-        //return ideas.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -101,13 +98,13 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
         cell.onLikeToggle = { [weak self, weak collectionView] in
                 guard let self = self else { return }
                 
-                // 1. Find the current index of this idea in our local array
+                //Finding index where idea has been unliked
                 if let currentIndex = self.likedIdeas.firstIndex(where: { $0.id == idea.id }) {
                     
-                    // 2. Update the data source first (Remove from array)
+                    
                     self.likedIdeas.remove(at: currentIndex)
                     
-                    // 3. Animate the deletion in the CollectionView
+                    
                     let indexPathToDelete = IndexPath(item: currentIndex, section: 0)
                     collectionView?.performBatchUpdates({
                         collectionView?.deleteItems(at: [indexPathToDelete])
@@ -233,7 +230,7 @@ extension ViewScriptsViewController: LikedCellDelegate {
             withIdentifier: "Chatbot"
         ) as? Chatbot else { return }
 
-        // Passing the idea script text
+        //Passing the idea script text
         chatVC.autoSendMessage = "script"
 
         navigationController?.pushViewController(chatVC, animated: true)
