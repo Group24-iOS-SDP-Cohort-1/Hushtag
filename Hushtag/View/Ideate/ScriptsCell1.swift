@@ -22,31 +22,18 @@ class ScriptsCell1: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
         self.layer.cornerRadius = 12
         self.layer.masksToBounds = false
         applyLiquidGlassEffect()
-        //        self.layer.shadowColor = UIColor.black.cgColor
-        //        self.layer.shadowOpacity = 0.15
-        //        self.layer.shadowOffset = CGSize(width: 0, height: 0)
-        //        self.layer.shadowRadius = 6
-        //        self.backgroundColor = .white
-        //Title.font = .systemFont(ofSize: 14, weight: .regular)
         Title.numberOfLines = 3
         Description.numberOfLines = 1
         Description.textColor = .secondaryLabel
 }
     
     func configureCell(idea : Idea) {
-
         Title.text = idea.title
         Description.text = idea.description
         configureHashtags(idea.hashtag)
-//        Hashtag.text = idea.hashtag.map { "#\($0)" }.joined(separator: " ")
-//        Hashtag.textColor = .accent
-        
-        //progressView.setProgress(value: progress)
-        
         let totalCriteria: Float = 4.0
         var filledCriteria: Float = 0.0
             
@@ -74,12 +61,10 @@ class ScriptsCell1: UICollectionViewCell {
     }
 
     private func configureHashtags(_ hashtags: [String]) {
-
             badgeStack.arrangedSubviews.forEach {
                 badgeStack.removeArrangedSubview($0)
                 $0.removeFromSuperview()
             }
-
             for tag in hashtags {
                 let badge: Badges = Badges.loadFromNib()
 
@@ -94,5 +79,4 @@ class ScriptsCell1: UICollectionViewCell {
                 badgeStack.addArrangedSubview(badge)
             }
         }
-
 }

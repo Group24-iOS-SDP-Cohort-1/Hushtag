@@ -9,36 +9,30 @@ import UIKit
 
 class Ideate1: UIViewController {
 
-    @IBOutlet weak var collectionView: UICollectionView!
-
     var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
     var selectedIdea: Idea?
     var selectedIndexPath: IndexPath?
 
+    @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var scriptButton: UIButton!
-
-
     @IBOutlet weak var scriptView: UIBarButtonItem!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         ideas = ideaResponse.ideas
-
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(UINib(nibName: "IdeaCells", bundle: nil), forCellWithReuseIdentifier: "ideaCell")
         collectionView.register(UINib(nibName: "IdeaSearch", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "IdeaSearch")
         collectionView.register(UINib(nibName: "SuggestedFYHeader", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "suggestedHeader")
-        
         NotificationCenter.default.addObserver(self, selector: #selector(refreshUI), name: .didUpdateLikedStatus, object: nil)
         scriptButton.layer.borderWidth = 1
         scriptButton.layer.borderColor = UIColor.accent.cgColor
     }
     
     @objc func refreshUI() {
-        // Reload the collection view to update heart icons
         collectionView.reloadData()
     }
 
@@ -46,8 +40,6 @@ class Ideate1: UIViewController {
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
             let vc = storyboard.instantiateViewController(withIdentifier: "Chatbot")
             navigationController?.pushViewController(vc, animated: true)
-        
-
     }
 
     @IBAction func viewScriptTap(_ sender: UIButton) {
@@ -58,7 +50,6 @@ class Ideate1: UIViewController {
         self.navigationController?.pushViewController(destinationVC, animated: true)
     }
 
-    
     @IBAction func viewLikedTap(_ sender: UIBarButtonItem) {
         let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
         guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
@@ -66,9 +57,6 @@ class Ideate1: UIViewController {
         destinationVC.pageTitle = "Liked Ideas"
         self.navigationController?.pushViewController(destinationVC, animated: true)
     }
-    
-    
-
 
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
@@ -148,8 +136,6 @@ class Ideate1: UIViewController {
             return "Niche"
         }
     }
-
-
 }
 
 extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -171,12 +157,8 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         ) as! IdeaCells
 
         let idea = ideas[indexPath.row]
-
         let engagement = Double(idea.engagementRate) ?? 0.0
-
         let category = categorizeIdea(engagementRate: engagement)
-            
-      
         let keyword2: EngagementStyle
 
         switch category {
@@ -187,7 +169,6 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
                 color: .systemRed
             )
 
-
         case "Growing":
             keyword2 = EngagementStyle(
                 text: "Growing",
@@ -195,14 +176,12 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
                 color: .systemOrange
             )
 
-
         case "Niche":
             keyword2 = EngagementStyle(
                 text: "Niche",
                 icon: "bolt",
                 color: .systemGreen
             )
-
 
         default:
             return cell
@@ -240,35 +219,20 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard indexPath.section == 1 else { return }
-
         let idea = ideas[indexPath.row]
-
         let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
-        guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {
-            return
-        }
-
-        if let vc = navVC.topViewController as? ViewIdea {
-            vc.idea = idea
-        }
-
-        navVC.modalPresentationStyle = .pageSheet
-        present(navVC, animated: true)
+        guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
+        guard let destinationVC = navVC.topViewController as? ViewIdea else {return}
+        destinationVC.idea = idea
+        self.navigationController?.pushViewController(destinationVC, animated: true)
     }
 
-
 }
-
-
-
-
 
 extension Ideate1: IdeaSearchDelegate {
     func didTapSearch(with keyword: String) {
         if keyword.isEmpty {
             ideas = ideaResponse.ideas
-            
-           
         } else {
             ideas = ideaResponse.ideas.filter { idea in
                 idea.hashtag.contains { tag in
@@ -277,8 +241,6 @@ extension Ideate1: IdeaSearchDelegate {
             }
         }
         collectionView.reloadSections(IndexSet(integer: 1))
-     
-
     }
 }
 

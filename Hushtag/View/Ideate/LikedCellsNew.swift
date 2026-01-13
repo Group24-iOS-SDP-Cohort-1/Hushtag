@@ -12,35 +12,26 @@ protocol LikedCellDelegate: AnyObject {
     func didTapDraftScript(for idea: Idea)
 }
 
-
 class LikedCellsNew: UICollectionViewCell {
-
     @IBOutlet weak var ideaTitle: UILabel!
     @IBOutlet weak var ideaView: UIView!
     @IBOutlet weak var badgeStack: UIStackView!
     @IBOutlet weak var draftScriptButton: UIButton!
-    
-    
+
     weak var delegate: LikedCellDelegate?
-    
-    
     var idea: Idea?
-    
     var onLikeToggle: (() -> Void)?
-    
     @IBOutlet weak var likeButton: UIButton!
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         ideaView.layer.cornerRadius = 10
         ideaTitle.numberOfLines = 2
-
         applyLiquidGlassEffect()
         draftScriptButton.addTarget(self, action: #selector(draftScriptTapped), for: .touchUpInside)
     }
 
-    
     func configureCell(idea: Idea){
         self.idea = idea
         ideaTitle.text = idea.title
@@ -69,8 +60,7 @@ class LikedCellsNew: UICollectionViewCell {
                 badgeStack.addArrangedSubview(badge)
             }
         }
-    
-    
+
     @IBAction func likeTapped(_ sender: UIButton) {
         guard let idea = idea else { return }
 
@@ -82,27 +72,22 @@ class LikedCellsNew: UICollectionViewCell {
 
         print("Liked IDs:", LikedIds.likedIdeaIds)
         updateLikeUI()
-        
         onLikeToggle?()
         NotificationCenter.default.post(name: .didUpdateLikedStatus, object: nil)
-        
     }
     
     private func updateLikeUI() {
             guard let idea = idea else { return }
-
-                    let isLiked = LikedIds.likedIdeaIds.contains(idea.id)
-                    let imageName = isLiked ? "heart.fill" : "heart"
-                    likeButton.setImage(UIImage(systemName: imageName), for: .normal)
-                    likeButton.tintColor = isLiked ? .accent : .accent
+            let isLiked = LikedIds.likedIdeaIds.contains(idea.id)
+            let imageName = isLiked ? "heart.fill" : "heart"
+            likeButton.setImage(UIImage(systemName: imageName), for: .normal)
+            likeButton.tintColor = isLiked ? .accent : .accent
     }
-    
-    
+
     @objc private func draftScriptTapped() {
             guard let idea = idea else { return }
             delegate?.didTapDraftScript(for: idea)
-        }
-
+   }
 }
 
 

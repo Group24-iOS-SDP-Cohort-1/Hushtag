@@ -14,18 +14,14 @@ import UIKit
 class likedCells: UICollectionViewCell{
 
     @IBOutlet weak var Title: UILabel!
-
     @IBOutlet weak var Description: UILabel!
-
     @IBOutlet weak var Hashtag: UILabel!
-
     @IBOutlet weak var draftScript: UIButton!
 
     private var currentIdea: Idea?
     weak var delegate: LikedCellDelegate?
     override func awakeFromNib() {
         super.awakeFromNib()
-
         self.layer.cornerRadius = 12
         self.layer.masksToBounds = false
         self.layer.shadowColor = UIColor.black.cgColor
@@ -53,5 +49,5 @@ class likedCells: UICollectionViewCell{
     @objc private func draftScriptTapped() {
             guard let idea = currentIdea else { return }
             delegate?.didTapDraftScript(for: idea)
-        }
+    }
 }

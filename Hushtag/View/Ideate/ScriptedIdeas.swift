@@ -33,7 +33,6 @@ class ScriptedIdeas: UIViewController {
             script.text = "No idea received."
             return
         }
-
         // Navigation title
         let titleLabel = UILabel()
         titleLabel.text = idea.title
@@ -45,7 +44,6 @@ class ScriptedIdeas: UIViewController {
         NSLayoutConstraint.activate([
             titleLabel.widthAnchor.constraint(lessThanOrEqualToConstant: view.bounds.width - 150)
         ])
-
         // Description
         if idea.description.isEmpty {
             descriptionStack.isHidden = true
@@ -55,7 +53,6 @@ class ScriptedIdeas: UIViewController {
             Description.text = idea.description
             Description.numberOfLines = 10
         }
-
         // Image
         if idea.thumbnail.isEmpty || UIImage(named: idea.thumbnail) == nil {
             imageStack.isHidden = true
@@ -68,9 +65,7 @@ class ScriptedIdeas: UIViewController {
         loadHTMLFile(for: idea)
     }
     private func loadHTMLFile(for idea: Idea) {
-        // Hide by default
         scriptStack.isHidden = true
-
         // Checking if idea.script exists
         let scriptName = idea.script.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !scriptName.isEmpty else {
@@ -126,17 +121,13 @@ class ScriptedIdeas: UIViewController {
     }
 
     func setupBrandMenu() {
-        // Default shown text
         popupButton.setTitle("Tag Idea", for: .normal)
-
         let deals = self.deals
-
         guard !deals.isEmpty else {
             popupButton.menu = UIMenu(title: "No Deals Available", children: [])
             popupButton.showsMenuAsPrimaryAction = true
             return
         }
-
         let actions = deals.map { deal in
             UIAction(title: deal.name) { _ in
                 self.popupButton.setTitle(deal.name, for: .normal)

@@ -18,7 +18,6 @@ class ViewAllScriptsCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-
         self.layer.cornerRadius = 12
         self.layer.masksToBounds = false
         self.layer.shadowColor = UIColor.black.cgColor
@@ -33,7 +32,6 @@ class ViewAllScriptsCell: UICollectionViewCell {
 }
 
     func configureCell(idea : Idea) {
-
         Title.text = idea.title
         Description.text = idea.description
         Hashtag.text = idea.hashtag.map { "#\($0)" }.joined(separator: " ")

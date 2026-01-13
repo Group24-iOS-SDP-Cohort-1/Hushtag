@@ -96,7 +96,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
                 if let text = autoSendMessage {
                     sendAutoMessage(text)
-                    autoSendMessage = nil // prevent duplication
+                    autoSendMessage = nil
                 }
         
 
@@ -136,24 +136,19 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     
     @objc func keyboardWillShow(notification: NSNotification) {
             if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-                // Adjust the bottom constraint.
-                // We subtract safeAreaInsets.bottom because the keyboard height includes the bottom safe area,
-                // but our constraint is likely pinned to the Safe Area, not the Superview edge.
+
                 let bottomPadding = view.safeAreaInsets.bottom
                 self.inputViewBottomConstraint.constant = keyboardSize.height - bottomPadding
-                
-                // Animate the movement
+
                 UIView.animate(withDuration: 0.3) {
                     self.view.layoutIfNeeded()
                 }
-                
-                // Scroll to the last message so it isn't hidden
+
                 scrollToBottom()
             }
         }
     
     @objc func keyboardWillHide(notification: NSNotification) {
-            // Reset the constraint to 0 (or whatever your default margin is)
             self.inputViewBottomConstraint.constant = 8
             
             UIView.animate(withDuration: 0.3) {
@@ -262,7 +257,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
     @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
-
         //to trigger action once the press begins
         guard gesture.state == .began else { return }
         //to get the view that we long pressed
@@ -311,7 +305,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
            self.present(alert, animated: true)
 
     }
-
 
     func showScriptSuggestions(except excludedTypes: [String] = []) {
         // Remove previous buttons
