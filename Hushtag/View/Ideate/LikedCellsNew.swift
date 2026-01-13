@@ -7,12 +7,22 @@
 
 import UIKit
 
+
+protocol LikedCellDelegate: AnyObject {
+    func didTapDraftScript(for idea: Idea)
+}
+
+
 class LikedCellsNew: UICollectionViewCell {
 
     @IBOutlet weak var ideaTitle: UILabel!
     @IBOutlet weak var ideaView: UIView!
     @IBOutlet weak var badgeStack: UIStackView!
     @IBOutlet weak var draftScriptButton: UIButton!
+    
+    
+    weak var delegate: LikedCellDelegate?
+    
     
     var idea: Idea?
     
@@ -27,6 +37,7 @@ class LikedCellsNew: UICollectionViewCell {
         ideaTitle.numberOfLines = 2
 
         applyLiquidGlassEffect()
+        draftScriptButton.addTarget(self, action: #selector(draftScriptTapped), for: .touchUpInside)
     }
 
     
@@ -85,6 +96,12 @@ class LikedCellsNew: UICollectionViewCell {
                     likeButton.setImage(UIImage(systemName: imageName), for: .normal)
                     likeButton.tintColor = isLiked ? .accent : .accent
     }
+    
+    
+    @objc private func draftScriptTapped() {
+            guard let idea = idea else { return }
+            delegate?.didTapDraftScript(for: idea)
+        }
 
 }
 

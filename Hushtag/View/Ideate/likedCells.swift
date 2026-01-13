@@ -7,9 +7,9 @@
 
 import UIKit
 
-protocol LikedCellDelegate: AnyObject {
-    func didTapDraftScript(for idea: Idea)
-}
+//protocol LikedCellDelegate: AnyObject {
+//    func didTapDraftScript(for idea: Idea)
+//}
 
 class likedCells: UICollectionViewCell{
 

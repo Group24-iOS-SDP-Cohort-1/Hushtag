@@ -48,33 +48,29 @@ class ScriptsCell1: UICollectionViewCell {
         //progressView.setProgress(value: progress)
         
         let totalCriteria: Float = 4.0
-            var filledCriteria: Float = 0.0
+        var filledCriteria: Float = 0.0
             
-            // Check Title
-            if !idea.title.isEmpty {
-                filledCriteria += 1
-            }
+        if !idea.title.isEmpty {
+            filledCriteria += 1
+        }
             
-            // Check Description
-            if !idea.description.isEmpty {
-                filledCriteria += 1
-            }
+        if !idea.description.isEmpty {
+            filledCriteria += 1
+        }
             
-            // Check Script
-            if !idea.script.isEmpty {
-                filledCriteria += 1
-            }
+        if !idea.script.isEmpty {
+            filledCriteria += 1
+        }
             
-            // Check Thumbnail (assuming it's a URL string or image name)
-            if !idea.thumbnail.isEmpty {
-                filledCriteria += 1
-            }
+        if !idea.thumbnail.isEmpty {
+            filledCriteria += 1
+        }
             
-            // 3. Calculate percentage (e.g., 3/4 = 0.75)
-            let progress = filledCriteria / totalCriteria
+        //Calculating Percentage of completion
+        let progress = filledCriteria / totalCriteria
             
-            // 4. Update the view
-            progressView.setProgress(value: progress)
+        //Setting Progress
+        progressView.setProgress(value: progress)
     }
 
     private func configureHashtags(_ hashtags: [String]) {
