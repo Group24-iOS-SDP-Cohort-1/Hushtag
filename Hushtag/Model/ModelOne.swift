@@ -404,3 +404,30 @@ extension Preferences {
     }
 }
 
+enum ScheduleItem {
+    case task(Task)
+    case deal(Deal)
+    case post(Post)
+
+    func date() -> Date? {
+        switch self {
+        case .task(let task):
+            return task.startDate.toDate()
+        case .deal(let deal):
+            return deal.deliverable.first?.deadline.toDate()
+        case .post(let post):
+            return post.postingTime.toDate()
+        }
+    }
+
+    var isCompleted: Bool {
+        switch self {
+        case .task(let task):
+            return task.isCompleted
+        case .post(let post):
+            return post.isCompleted
+        case .deal(let deal):
+            return deal.deliverable.allSatisfy { $0.isCompleted }
+        }
+    }
+}

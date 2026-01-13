@@ -27,9 +27,51 @@ class DataStore {
     func getPosts() -> [Post] {
         posts
     }
-//    func getAnalysis() -> [Analysis] {
-//        analysis
-//    }
+    func saveTask(_ task: Task) {
+        print("Tasks count after add:", tasks.count)
+        return tasks.append(task)
+    }
+
+    func saveDeal(_ deal: Deal) {
+        deals.append(deal)
+    }
+
+    func savePost(_ post: Post) {
+        posts.append(post)
+    }
+    func scheduleItems(on date: Date) -> [ScheduleItem] {
+        let calendar = Calendar.current
+
+        let taskItems = tasks
+            .filter {
+                guard let d = $0.startDate.toDate() else { return false }
+                return calendar.isDate(d, inSameDayAs: date)
+            }
+            .map { ScheduleItem.task($0) }
+
+        let postItems = posts
+            .filter {
+                guard let d = $0.postingTime.toDate() else { return false }
+                return calendar.isDate(d, inSameDayAs: date)
+            }
+            .map { ScheduleItem.post($0) }
+
+        let dealItems = deals
+            .filter { deal in
+                deal.deliverable.contains {
+                    guard let d = $0.deadline.toDate() else { return false }
+                    return calendar.isDate(d, inSameDayAs: date)
+                }
+            }
+            .map { ScheduleItem.deal($0) }
+
+        return (taskItems + postItems + dealItems)
+            .sorted { ($0.date() ?? .distantFuture) < ($1.date() ?? .distantFuture) }
+    }
+
+    func completedScheduleItems(on date: Date) -> [ScheduleItem] {
+        scheduleItems(on: date).filter { $0.isCompleted }
+    }
     
     func loadSampleData() {
         let sampleTasks: [Task] = [
@@ -71,7 +113,7 @@ class DataStore {
                 name: "Recreate Model Look",
                 startDate: DateData(
                     day: "Wednesday",
-                    date: "2025-11-20T00:00:00Z",
+                    date: "2026-1-12T00:00:00Z",
                     time: TimeData(hour: 9, minute: 30)
                 ),
                 endDate: DateData(
@@ -88,7 +130,7 @@ class DataStore {
                 name: "Edit & Schedule Instagram Post",
                 startDate: DateData(
                     day: "Thursday",
-                    date: "2025-11-21T00:00:00Z",
+                    date: "2026-1-14T00:00:00Z",
                     time: TimeData(hour: 15, minute: 0)
                 ),
                 endDate: DateData(

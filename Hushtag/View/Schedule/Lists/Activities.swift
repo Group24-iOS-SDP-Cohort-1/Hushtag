@@ -8,7 +8,7 @@
 import UIKit
 
 class Activities: UIViewController {
-    var scheduleItems: [Overview.ScheduleItem] = []
+    var scheduleItems: [ScheduleItem] = []
     var onTasksUpdated: (([Task]) -> Void)?
     var onDealsUpdated: (([Deal]) -> Void)?
     var onPostsUpdated: (([Post]) -> Void)?
@@ -33,7 +33,7 @@ class Activities: UIViewController {
         )
         listingView.reloadData()
     }
-    private var visibleItems: [Overview.ScheduleItem] {
+    private var visibleItems: [ScheduleItem] {
         switch filter {
         case .all:
             return scheduleItems

@@ -9,32 +9,12 @@ import UIKit
 class Overview: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
-    enum ScheduleItem {
-        case task(Task)
-        case deal(Deal)
-        case post(Post)
-
-        func date() -> Date? {
-            switch self {
-            case .task(let task):
-                return task.startDate.toDate()
-            case .deal(let deal):
-                return deal.deliverable.first?.deadline.toDate()
-            case .post(let post):
-                return post.postingTime.toDate()
-            }
-        }
-    }
 
     var ideaResponse = IdeaResponse()
-
     var dataStore: DataStore = DataStore.shared
     
     let analysisResponse = AnalysisResponse()
     var analysis: [Analysis] = []
-    var post: [Post] = []
-    var task: [Task] = []
-    var deal: [Deal] = []
     var ideas: [Idea] = []
     var selectedIndexPath: IndexPath?
     var selectedScheduleItem: ScheduleItem?
@@ -47,17 +27,12 @@ class Overview: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
-        // fetch the data
-        
-        post = dataStore.getPosts()
-        task = dataStore.getTasks()
-        deal = dataStore.getDeals()
         
         analysis = analysisResponse.analysis
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
-        
+        loadSchedule(for: Date())
     }
     func registerCell() {
         collectionView.register(
@@ -87,6 +62,12 @@ class Overview: UIViewController {
                   bundle: nil),
             forSupplementaryViewOfKind: "headerButton",
             withReuseIdentifier: "header_button")
+        
+        collectionView.register(
+            UINib(nibName: "HeaderChevronView",
+                  bundle: nil),
+            forSupplementaryViewOfKind: "headerChevron",
+            withReuseIdentifier: "header_chevron")
     }
     
     func generateLayout() -> UICollectionViewLayout {
@@ -98,7 +79,7 @@ class Overview: UIViewController {
             
             let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "header", alignment: .top)
             
-            let headerButton = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "headerButton", alignment: .top)
+            let headerChevron = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "headerChevron", alignment: .top)
 
             if section == 0 {
 
@@ -119,24 +100,6 @@ class Overview: UIViewController {
                 section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom:10, trailing: 20)
 
                 return section
-            } else if section == 1 {
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-                
-                // create the item
-                let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 7, bottom: 0, trailing: 7)
-                
-                // create the group
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.45), heightDimension: .estimated(100))
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
-                
-                //create the section
-                let section = NSCollectionLayoutSection(group: group)
-                section.orthogonalScrollingBehavior = .continuous
-                section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 10, trailing: 20)
-                section.boundarySupplementaryItems = [headerButton]
-                
-                return section
             }
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
             
@@ -145,127 +108,21 @@ class Overview: UIViewController {
             item.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 7, bottom: 7, trailing: 7)
             
             // create the group
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(120))
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(110))
             let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, repeatingSubitem: item, count: 1)
             
             //create the section
             let section = NSCollectionLayoutSection(group: group)
             section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
-            section.boundarySupplementaryItems = [headerItem]
+            section.boundarySupplementaryItems = [headerChevron]
 
             return section
         }
         return layout
     }
-    
-    func filterSection(by selectedDate: Date) {
-        let calendar = Calendar.current
 
-        let dailyPosts = post
-            .filter {
-                guard let d = $0.postingTime.toDate() else { return false }
-                return calendar.isDate(d, inSameDayAs: selectedDate)
-            }
-            .map { ScheduleItem.post($0) }
-
-        let dailyTasks = task
-            .filter {
-                guard let d = $0.startDate.toDate() else { return false }
-                return calendar.isDate(d, inSameDayAs: selectedDate)
-            }
-            .map { ScheduleItem.task($0) }
-
-        let dailyDeals = deal
-            .filter { deal in
-                deal.deliverable.contains {
-                    guard let d = $0.deadline.toDate() else { return false }
-                    return calendar.isDate(d, inSameDayAs: selectedDate)
-                }
-            }
-            .map { ScheduleItem.deal($0) }
-
-        filteredSchedule = (dailyPosts + dailyTasks + dailyDeals)
-            .sorted {
-                ($0.date() ?? .distantFuture) < ($1.date() ?? .distantFuture)
-            }
-
-        collectionView.reloadSections(IndexSet(integer: 2))
-    }
-
-    
-    func tasks(on date: Date) -> [Task] {
-        let calendar = Calendar.current
-        return task.filter {
-            guard let start = $0.startDate.toDate() else { return false }
-            return calendar.isDate(start, inSameDayAs: date)
-        }
-    }
-
-    func completedTasks(on date: Date) -> [Task] {
-        tasks(on: date).filter { $0.isCompleted }
-    }
-
-    func deals(on date: Date) -> [Deal] {
-        let calendar = Calendar.current
-
-        return deal.filter { deal in
-            deal.deliverable.contains {
-                guard let deadline = $0.deadline.toDate() else { return false }
-                return calendar.isDate(deadline, inSameDayAs: date)
-            }
-        }
-    }
-
-    func completedDeals(on date: Date) -> [Deal] {
-        deals(on: date).filter {
-            let total = $0.deliverable.count
-            let completed = $0.deliverable.filter { $0.isCompleted }.count
-            return total > 0 && completed == total
-        }
-    }
-
-    func posts(on date: Date) -> [Post] {
-        let calendar = Calendar.current
-        return post.filter {
-            guard let postDate = $0.postingTime.toDate() else { return false }
-            return calendar.isDate(postDate, inSameDayAs: date)
-        }
-    }
-
-    func completedPosts(on date: Date) -> [Post] {
-        posts(on: date).filter { $0.isCompleted }
-    }
-
-    func updateActivities(for selectedDate: Date) {
-
-        let dailyTasks = tasks(on: selectedDate)
-        let dailyDeals = deals(on: selectedDate)
-        let dailyPosts = posts(on: selectedDate)
-
-        let completedDailyTasks = completedTasks(on: selectedDate)
-        let completedDailyDeals = completedDeals(on: selectedDate)
-        let completedDailyPosts = completedPosts(on: selectedDate)
-
-        let totalActivities =
-            dailyTasks.count +
-            dailyDeals.count +
-            dailyPosts.count
-
-        let totalCompleted =
-            completedDailyTasks.count +
-            completedDailyDeals.count +
-            completedDailyPosts.count
-
-        activities = [
-            ("All", totalActivities, "tray.circle.fill"),
-            ("Completed", totalCompleted, "checkmark.circle.fill")
-        ]
-
-        lists = [
-            ("Tasks", dailyTasks.count),
-            ("Deals", dailyDeals.count),
-            ("Posts", dailyPosts.count)
-        ]
+    func loadSchedule(for date: Date) {
+        filteredSchedule = dataStore.scheduleItems(on: date)
         collectionView.reloadSections(IndexSet(integer: 1))
     }
 }
@@ -298,10 +155,16 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
                 break
             }
         }
-        if segue.identifier == "goToSchedule" {
+        if segue.identifier == "goToAddSchedule" {
             let vc = segue.destination as! AddViewController
+            vc.delegate = self
         }
-
+        
+        if segue.identifier == "goToSchedule" {
+            //let nav = segue.destination as! UINavigationController
+            let vc = segue.destination as! Schedule
+            vc.scheduleItem = filteredSchedule
+        }
 
         if segue.identifier == "goToDetails" {
             let vc = segue.destination as! Details
@@ -332,8 +195,6 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         case 0:
             performSegue(withIdentifier: "goToAnalysis", sender: nil)
         case 1:
-            performSegue(withIdentifier: "goToActivities", sender: indexPath.row)
-        case 2:
             if indexPath.row == filteredSchedule.count {
                 performSegue(withIdentifier: "goToAddSchedule", sender: self)
             } else {
@@ -347,19 +208,16 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
     }
 
     
-    // to make 3 sections; by default collection view only has 1 section
+    // to make 2 sections; by default collection view only has 1 section
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 3
+        return 2
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if  (section == 0) {
             return 1
         }
-        else if (section == 1) {
-            return activities.count
-        }
-        return filteredSchedule.count + 1
+        return filteredSchedule.isEmpty ? 1 : filteredSchedule.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -369,18 +227,6 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
             return cell
         }
         else if indexPath.section == 1 {
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "schedule_cell",
-                for: indexPath
-            ) as! ActivitiesCell
-            
-            let item = activities[indexPath.row]
-            cell.configure(item.0, item.1, item.2)
-            cell.layer.cornerRadius = 12
-            cell.layer.masksToBounds = false
-            return cell
-        }
-        else if indexPath.section == 2 {
             
             if indexPath.row == filteredSchedule.count {
                 let cell = collectionView.dequeueReusableCell(
@@ -391,10 +237,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
                 return cell
             }
         }
-        let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "upcoming_schedule",
-            for: indexPath
-        ) as! ScheduleCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "upcoming_schedule", for: indexPath) as! ScheduleCollectionViewCell
         
         let item = filteredSchedule[indexPath.row]
 
@@ -411,41 +254,24 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         return cell
     }
     
-    func collectionView(
-        _ collectionView: UICollectionView,
-        viewForSupplementaryElementOfKind kind: String,
-        at indexPath: IndexPath
-    ) -> UICollectionReusableView {
-
-        if kind == "headerButton", indexPath.section == 1 {
-            let headerView = collectionView.dequeueReusableSupplementaryView(
-                ofKind: "headerButton",
-                withReuseIdentifier: "header_button",
-                for: indexPath
-            ) as! HeaderButton
-
-            headerView.configure()
-            headerView.onDateChanged = { [weak self] selectedDate in
-                self?.filterSection(by: selectedDate)
-                self?.updateActivities(for: selectedDate)
-            }
-            return headerView
-        }
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
-        if kind == "header", indexPath.section == 2 {
+        if kind == "headerChevron", indexPath.section == 1 {
             let headerView = collectionView.dequeueReusableSupplementaryView(
-                ofKind: "header",
-                withReuseIdentifier: "headerCell",
+                ofKind: "headerChevron",
+                withReuseIdentifier: "header_chevron",
                 for: indexPath
-            ) as! HeaderView
+            ) as! HeaderChevronView
 
-            headerView.configureHeader(text: "Upcoming Schedule")
+            headerView.configure(title: "Upcoming Schedule")
+            headerView.onTap = { [weak self] in
+                self?.performSegue(withIdentifier: "goToSchedule", sender: nil)
+            }
             return headerView
         }
         return UICollectionReusableView()
     }
 }
-
 
 extension UIColor {
     convenience init?(hex: String, alpha: CGFloat = 1.0) {
@@ -466,4 +292,34 @@ extension UIColor {
 
         self.init(red: r, green: g, blue: b, alpha: alpha)
     }
+}
+
+extension Overview: AddViewControllerDelegate {
+
+    func addViewController(_ controller: AddViewController, didAddTask task: Task) {
+        dataStore.saveTask(task)
+        //refreshTodaySchedule()
+    }
+
+    func addViewController(_ controller: AddViewController, didAddDeal deal: Deal) {
+        dataStore.saveDeal(deal)
+        //refreshTodaySchedule()
+    }
+
+    func addViewController(_ controller: AddViewController, didAddPost post: Post) {
+        dataStore.savePost(post)
+        //refreshTodaySchedule()
+    }
+
+//    private func refreshTodaySchedule() {
+//        post = dataStore.getPosts()
+//        task = dataStore.getTasks()
+//        deal = dataStore.getDeals()
+//
+//        loadSchedule(for: Date())
+//
+//        collectionView.performBatchUpdates {
+//            collectionView.reloadSections(IndexSet(integer: 1))
+//        }
+//    }
 }

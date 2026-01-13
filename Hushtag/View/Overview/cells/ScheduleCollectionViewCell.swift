@@ -12,7 +12,6 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var dayLabel: UILabel!
-    @IBOutlet weak var platformLabel: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -22,7 +21,6 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         timeLabel.text = "--:--"
         titleLabel.text = ""
         dayLabel.text = ""
-        platformLabel.text = ""
 
         if let post = post {
             if let time = post.postingTime.time,
@@ -32,11 +30,9 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
             }
 
             titleLabel.text = post.name
-            titleLabel.numberOfLines = 0
+            titleLabel.numberOfLines = 1
             dayLabel.text = post.postingTime.day
-
-            let platform = post.platform.first?.lowercased() ?? ""
-            platformLabel.text = platform.capitalized
+            
             return
         }
 
@@ -48,9 +44,8 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
             }
 
             titleLabel.text = task.name
-            titleLabel.numberOfLines = 0
+            titleLabel.numberOfLines = 1
             dayLabel.text = task.startDate.day
-            platformLabel.text = "Task"
             return
         }
 
@@ -64,9 +59,8 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
             }
 
             titleLabel.text = deal.name
-            titleLabel.numberOfLines = 0
+            titleLabel.numberOfLines = 1
             dayLabel.text = deliverable.deadline.day
-            platformLabel.text = deal.platform.first?.capitalized ?? "Deal"
             return
         }
     }
