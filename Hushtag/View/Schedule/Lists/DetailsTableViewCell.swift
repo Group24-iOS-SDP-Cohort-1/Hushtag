@@ -12,9 +12,8 @@ class DetailsTableViewCell: UITableViewCell {
     @IBOutlet weak var valueLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     let values = [
-        ["Name", "Start Date", "End Date", "Description", "Reminder(s)"],
         ["Name", "Deliverables", "Platform", "Phone", "Email"],
-        ["Name", "Posting Time", "Platform", "Description", "Reminder(s)"]
+        ["Name", "Posting Time", "Platform", "Tasks", "Reminder(s)"]
     ]
     
     override func awakeFromNib() {
@@ -58,30 +57,20 @@ class DetailsTableViewCell: UITableViewCell {
 
     func configure(task: Task?, deal: Deal?, post: Post?, index: Int) {
 
-        // Set left-side label
-        if task != nil {
+        // Left-side label
+        if deal != nil {
             descriptionLabel.text = values[0][index]
-        } else if deal != nil {
-            descriptionLabel.text = values[1][index]
         } else {
-            descriptionLabel.text = values[2][index]
+            descriptionLabel.text = values[1][index]
         }
 
         var value = ""
 
-        if let task = task {
-            let rows: [String] = [
-                task.name,
-                formatDate(task.startDate),
-                formatDate(task.endDate),
-                task.description,
-                stringFromArray(task.reminder)
-            ]
-            value = rows[index]
-        }
+        if let deal = deal {
 
-        else if let deal = deal {
-            let deliverables = deal.deliverable.map { $0.name }.joined(separator: ", ")
+            let deliverables = deal.deliverable
+                .map { $0.name }
+                .joined(separator: ", ")
 
             let rows: [String] = [
                 deal.name,
@@ -90,29 +79,32 @@ class DetailsTableViewCell: UITableViewCell {
                 deal.phone,
                 deal.email
             ]
+
             value = rows[index]
         }
 
         else if let post = post {
+
+            let postingDate = post.tasks?.first?.deadline
+
+            let tasksString = post.tasks?
+                .map { $0.name }
+                .joined(separator: ", ") ?? "--"
+
             let rows: [String] = [
                 post.name,
-                formatDate(post.postingTime),
+                formatDate(postingDate),
                 stringFromArray(post.platform),
-                post.description,
+                tasksString,
                 stringFromArray(post.reminder)
             ]
+
             value = rows[index]
         }
 
-        if index == 1 || index == 3 {
-            valueLabel.numberOfLines = 0
-        } else {
-            valueLabel.numberOfLines = 1
-        }
-
+        valueLabel.numberOfLines = (index == 1 || index == 3) ? 0 : 1
         valueLabel.text = value
     }
-
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)

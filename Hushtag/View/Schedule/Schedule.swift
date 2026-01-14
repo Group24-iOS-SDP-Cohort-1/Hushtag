@@ -61,7 +61,7 @@ class Schedule: UIViewController {
 
                 // create the item
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 7, bottom: 2, trailing: 7)
+                item.contentInsets = NSDirectionalEdgeInsets(top: 2, leading: 2, bottom: 2, trailing: 2)
 
                 // create the group
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.12), heightDimension: .estimated(70))
@@ -70,7 +70,7 @@ class Schedule: UIViewController {
                 //create the section
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
-                section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom:10, trailing: 20)
+                section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom:10, trailing: 0)
                 return section
         }
 
@@ -87,7 +87,6 @@ class Schedule: UIViewController {
             
             //create the section
             let section = NSCollectionLayoutSection(group: group)
-            //section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
             section.boundarySupplementaryItems = [headerItem]
 
             return section
@@ -161,11 +160,9 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
         let item = todayItems[indexPath.row]
         switch item {
         case .post(let post):
-            cell.configureCell(post, nil, nil)
-        case .task(let task):
-            cell.configureCell(nil, nil, task)
+            cell.configureCell(post, nil)
         case .deal(let deal):
-            cell.configureCell(nil, deal, nil)
+            cell.configureCell(nil, deal)
         }
 
         return cell

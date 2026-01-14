@@ -8,7 +8,6 @@
 import UIKit
 
 protocol AddViewControllerDelegate: AnyObject {
-    func addViewController(_ controller: AddViewController, didAddTask task: Task)
     func addViewController(_ controller: AddViewController, didAddDeal deal: Deal)
     func addViewController(_ controller: AddViewController, didAddPost post: Post)
 }
@@ -77,67 +76,44 @@ class AddViewController: UIViewController {
         view.endEditing(true)
 
         switch category {
-        case "Tasks":
-            let name = textValues[0]
-            let start = dateValues[1]
-            let end = dateValues[2]
-            let description = textValues[3]
-            let remindersString = textValues[4]
-
-            let startDateData = start.map { convertToDateData($0) }
-            let endDateData = end.map { convertToDateData($0) }
-
-            let emptyDate = DateData(day: "", date: "", time: TimeData(hour: 0, minute: 0))
-
-            let remindersArray = remindersString.isEmpty
-                ? []
-                : remindersString
-                    .split(separator: ",")
-                    .map { $0.trimmingCharacters(in: .whitespaces) }
-
-            // if your Task model accepts optional dates you can pass startDateData / endDateData directly.
-            // Here we pass non-optional DateData by falling back to emptyDate (you can change if model is optional)
-            let newTask = Task(
-                name: name,
-                startDate: startDateData ?? emptyDate,
-                endDate: endDateData ?? emptyDate,
-                description: description,
-                reminder: remindersArray,
-                isCompleted: false
-            )
-            delegate?.addViewController(self, didAddTask: newTask)
-
+        
         // commented out deals — left as is
         case "Posts":
             let name = textValues[0]
-            let postingTime = dateValues[1]
-            let platform = textValues[2]
-            let description = textValues[3]
-            let reminders = textValues[4]
+            let postingDate = dateValues[1]
+            let platformText = textValues[2]
+            let remindersText = textValues[4]
 
-            let postTime = postingTime.map { convertToDateData($0) }
-            let emptyDate = DateData(day: "", date: "", time: TimeData(hour: 0, minute: 0))
+            guard let postingDate else { return }
 
-            let remindersArray = reminders.isEmpty
+            // Platform array
+            let platformArray = platformText.isEmpty
                 ? []
-                : reminders
+                : platformText
                     .split(separator: ",")
                     .map { $0.trimmingCharacters(in: .whitespaces) }
 
-            let platformArray = platform.isEmpty
+            // Reminder array
+            let remindersArray = remindersText.isEmpty
                 ? []
-                : platform
+                : remindersText
                     .split(separator: ",")
                     .map { $0.trimmingCharacters(in: .whitespaces) }
+
+            // Create ONE task for the post
+            let task = Task(
+                name: "Publish Post",
+                deadline: convertToDateData(postingDate),
+                isCompleted: false
+            )
 
             let newPost = Post(
                 name: name,
-                postingTime: postTime ?? emptyDate,
                 platform: platformArray,
-                description: description,
-                reminder: remindersArray,
-                isCompleted: false
+                tasks: [task],
+                reminder: remindersArray
             )
+
             delegate?.addViewController(self, didAddPost: newPost)
 
         default:

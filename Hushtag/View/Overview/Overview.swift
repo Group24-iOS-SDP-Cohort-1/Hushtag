@@ -175,12 +175,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
                 vc.post = post
                 vc.task = nil
                 vc.deal = nil
-
-            case .task(let task):
-                vc.task = task
-                vc.post = nil
-                vc.deal = nil
-
+                
             case .deal(let deal):
                 vc.deal = deal
                 vc.post = nil
@@ -243,13 +238,10 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
 
         switch item {
         case .post(let post):
-            cell.configureCell(post, nil, nil)
-
-        case .task(let task):
-            cell.configureCell(nil, nil, task)
+            cell.configureCell(post, nil)
 
         case .deal(let deal):
-            cell.configureCell(nil, deal, nil)
+            cell.configureCell(nil, deal)
         }
         return cell
     }
@@ -295,11 +287,6 @@ extension UIColor {
 }
 
 extension Overview: AddViewControllerDelegate {
-
-    func addViewController(_ controller: AddViewController, didAddTask task: Task) {
-        dataStore.saveTask(task)
-        //refreshTodaySchedule()
-    }
 
     func addViewController(_ controller: AddViewController, didAddDeal deal: Deal) {
         dataStore.saveDeal(deal)

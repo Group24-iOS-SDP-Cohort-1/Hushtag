@@ -8,13 +8,12 @@
 import UIKit
 
 protocol TasksTableViewCellDelegate: AnyObject {
-    func didTapOpenModal(task: Task?, deal: Deal?, post: Post?)
-    func didUpdateCompletion(task: Task?, deal: Deal?, post: Post?)
+    func didTapOpenModal(deal: Deal?, post: Post?)
+    func didUpdateCompletion(deal: Deal?, post: Post?)
 }
 
 class TasksTableViewCell: UITableViewCell {
     weak var delegate: TasksTableViewCellDelegate?
-    private var task: Task?
     private var deal: Deal?
     private var post: Post?
 
@@ -28,45 +27,51 @@ class TasksTableViewCell: UITableViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        // Reset to a known state so reused cells don't show stale UI
-        task = nil
-        post = nil
         deal = nil
-        nameLabel.text = " "
+        post = nil
+        nameLabel.text = ""
         updateUI(isCompleted: false)
     }
-    
-    func configureCell(_ task: Task?, _ deal: Deal?, _ post: Post?) {
-        self.task = task
+
+    func configureCell(deal: Deal?, post: Post?) {
         self.deal = deal
         self.post = post
 
-        nameLabel.text = task?.name ?? post?.name ?? deal?.name ?? ""
+        nameLabel.text = post?.name ?? deal?.name ?? ""
 
-        let isCompleted =
-            task?.isCompleted == true ||
-            post?.isCompleted == true
-            // deal?.isCompleted == true
+        let isCompleted: Bool
+        if let post {
+            isCompleted = post.tasks?.allSatisfy { $0.isCompleted } ?? false
+        } else if let deal {
+            isCompleted = deal.deliverable.allSatisfy { $0.isCompleted }
+        } else {
+            isCompleted = false
+        }
 
         updateUI(isCompleted: isCompleted)
     }
     
     @IBAction func radioPressed(_ sender: UIButton) {
-        let newValue = !(
-            task?.isCompleted == true ||
-            post?.isCompleted == true
-        )
+        if var post = post {
+            let newValue = !(post.tasks?.allSatisfy { $0.isCompleted } ?? false)
+            post.tasks?.indices.forEach { post.tasks?[$0].isCompleted = newValue }
+            self.post = post
+        }
 
-        task?.isCompleted = newValue
-        post?.isCompleted = newValue
-        // deal?.isCompleted = newValue
+        if var deal = deal {
+            let newValue = !deal.deliverable.allSatisfy { $0.isCompleted }
+            deal.deliverable.indices.forEach { deal.deliverable[$0].isCompleted = newValue }
+            self.deal = deal
+        }
 
-        updateUI(isCompleted: newValue)
+        let updatedCompletion = post?.tasks?.allSatisfy { $0.isCompleted } ?? deal?.deliverable.allSatisfy { $0.isCompleted } ?? false
 
-        delegate?.didUpdateCompletion(task: task, deal: deal, post: post)
+        updateUI(isCompleted: updatedCompletion)
+
+        delegate?.didUpdateCompletion(deal: deal, post: post)
     }
     @IBAction func detailsButtonPressed(_ sender: UIButton) {
-        delegate?.didTapOpenModal(task: task, deal: deal, post: post)
+        delegate?.didTapOpenModal(deal: deal, post: post)
     }
     private func updateUI(isCompleted: Bool) {
         let imageName = isCompleted ? "circle.inset.filled" : "circle"

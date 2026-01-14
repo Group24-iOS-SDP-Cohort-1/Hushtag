@@ -46,28 +46,51 @@
                                         <size key="customSize" width="86" height="33"/>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="addScheduleCell" id="ICl-PV-Q67">
-                                        <rect key="frame" x="0.0" y="226" width="377" height="65"/>
+                                        <rect key="frame" x="0.0" y="226" width="377" height="116"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="ew3-kR-xGQ">
-                                            <rect key="frame" x="0.0" y="0.0" width="377" height="65"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="377" height="116"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eDH-1z-TfL">
-                                                    <rect key="frame" x="23" y="16" width="47" height="35"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <state key="normal" title="Button"/>
-                                                    <buttonConfiguration key="configuration" style="tinted" image="plus" catalog="system"/>
-                                                </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Add schedule" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bur-gL-kB6">
-                                                    <rect key="frame" x="105" y="22" width="104" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
+                                                <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="D45-t5-YuP">
+                                                    <rect key="frame" x="10" y="30.333333333333332" width="357" height="55.666666666666671"/>
+                                                    <subviews>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eDH-1z-TfL">
+                                                            <rect key="frame" x="0.0" y="0.0" width="40" height="55.666666666666664"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="40" id="4KV-sU-MGP"/>
+                                                            </constraints>
+                                                            <state key="normal" title="Button"/>
+                                                            <buttonConfiguration key="configuration" style="plain" image="calendar.badge.plus" catalog="system"/>
+                                                        </button>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="Hkw-oD-Qdu">
+                                                            <rect key="frame" x="55" y="0.0" width="302" height="55.666666666666664"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="No Schedule yet" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bur-gL-kB6">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="302" height="20.333333333333332"/>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="You don’t have any plans yet. Let’s get your day organized!" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X4H-1z-B3u">
+                                                                    <rect key="frame" x="0.0" y="25.333333333333336" width="302" height="30.333333333333336"/>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                            </subviews>
+                                                        </stackView>
+                                                    </subviews>
+                                                </stackView>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="D45-t5-YuP" firstAttribute="leading" secondItem="ew3-kR-xGQ" secondAttribute="leading" constant="10" id="A18-TD-xrv"/>
+                                                <constraint firstItem="D45-t5-YuP" firstAttribute="centerX" secondItem="ew3-kR-xGQ" secondAttribute="centerX" id="GHa-48-Udt"/>
+                                                <constraint firstAttribute="trailing" secondItem="D45-t5-YuP" secondAttribute="trailing" constant="10" id="NDl-gG-jMD"/>
+                                                <constraint firstItem="D45-t5-YuP" firstAttribute="centerY" secondItem="ew3-kR-xGQ" secondAttribute="centerY" id="gwf-t8-yY9"/>
+                                            </constraints>
                                         </collectionViewCellContentView>
-                                        <size key="customSize" width="377" height="65"/>
+                                        <size key="customSize" width="377" height="116"/>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
@@ -162,7 +185,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="plus" catalog="system" width="128" height="113"/>
+        <image name="calendar.badge.plus" catalog="system" width="128" height="109"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

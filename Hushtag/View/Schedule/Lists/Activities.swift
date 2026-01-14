@@ -9,7 +9,6 @@ import UIKit
 
 class Activities: UIViewController {
     var scheduleItems: [ScheduleItem] = []
-    var onTasksUpdated: (([Task]) -> Void)?
     var onDealsUpdated: (([Deal]) -> Void)?
     var onPostsUpdated: (([Post]) -> Void)?
     enum ActivityFilter {
@@ -40,10 +39,10 @@ class Activities: UIViewController {
         case .completed:
             return scheduleItems.filter {
                 switch $0 {
-                case .task(let task):
-                    return task.isCompleted
                 case .post(let post):
-                    return post.isCompleted
+                    let total = post.tasks?.count ?? 0
+                    let completed = post.tasks?.filter { $0.isCompleted }.count ?? 0
+                    return total > 0 && completed == total
                 case .deal(let deal):
                     let total = deal.deliverable.count
                     let completed = deal.deliverable.filter { $0.isCompleted }.count
@@ -56,16 +55,18 @@ class Activities: UIViewController {
 
 extension Activities: UITableViewDataSource, UITableViewDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return scheduleItems.isEmpty ? 1 : visibleItems.count
+        return visibleItems.isEmpty ? 1 : visibleItems.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if scheduleItems.isEmpty {
+
+        if visibleItems.isEmpty {
             let cell = tableView.dequeueReusableCell(
                 withIdentifier: "blankCell",
                 for: indexPath
             ) as! BlankScheduleTableViewCell
             return cell
         }
+
         let cell = tableView.dequeueReusableCell(
             withIdentifier: "taskCell",
             for: indexPath
@@ -75,18 +76,15 @@ extension Activities: UITableViewDataSource, UITableViewDelegate{
         cell.delegate = self
 
         switch item {
-        case .task(let task):
-            cell.configureCell(task, nil, nil)
-
         case .post(let post):
-            cell.configureCell(nil, nil, post)
-
+            cell.configureCell(deal: nil, post: post)
         case .deal(let deal):
-            cell.configureCell(nil, deal, nil)
+            cell.configureCell(deal: deal, post: nil)
         }
 
         return cell
     }
+
 //    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 //        if  scheduleItems.isEmpty {
 //            return 100
@@ -97,25 +95,15 @@ extension Activities: UITableViewDataSource, UITableViewDelegate{
 
 extension Activities: TasksTableViewCellDelegate {
 
-    func didTapOpenModal(task: Task?, deal: Deal?, post: Post?) {
+    func didTapOpenModal(deal: Deal?, post: Post?) {
         let storyboard = UIStoryboard(name: "Activities", bundle: nil)
         let modal = storyboard.instantiateViewController(withIdentifier: "Details") as! Details
-        modal.task = task
         modal.deal = deal
         modal.post = post
         present(modal, animated: true)
     }
 
-    func didUpdateCompletion(task: Task?, deal: Deal?, post: Post?) {
-
-        if let task = task {
-            if let index = scheduleItems.firstIndex(where: {
-                if case .task(let t) = $0 { return t.id == task.id }
-                return false
-            }) {
-                scheduleItems[index] = .task(task)
-            }
-        }
+    func didUpdateCompletion(deal: Deal?, post: Post?) {
 
         if let post = post {
             if let index = scheduleItems.firstIndex(where: {

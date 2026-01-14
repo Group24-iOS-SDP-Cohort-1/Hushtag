@@ -26,6 +26,9 @@
                                 </constraints>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="circle" catalog="system"/>
+                                <connections>
+                                    <action selector="buttonTapped:" destination="gTV-IL-0wX" eventType="touchUpInside" id="8YE-hb-WXe"/>
+                                </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="0Yg-zG-z6W">
                                 <rect key="frame" x="45" y="0.0" width="395" height="50.666666666666664"/>
@@ -73,6 +76,7 @@
             </constraints>
             <size key="customSize" width="470" height="205"/>
             <connections>
+                <outlet property="completedButton" destination="UXj-rP-z93" id="5T2-1j-1C0"/>
                 <outlet property="dayLabel" destination="Wnn-nE-B3x" id="kzC-XY-xJ2"/>
                 <outlet property="timeLabel" destination="SMx-1x-0wh" id="eky-yl-2OK"/>
                 <outlet property="titleLabel" destination="cdp-s7-AOe" id="dZr-U6-g92"/>
