@@ -130,7 +130,7 @@
         <!--Details-->
         <scene sceneID="2U1-zS-8B2">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="Details" storyboardName="Activities" referencedIdentifier="Details" id="RsE-9q-XJa" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardIdentifier="Details" storyboardName="Details" id="RsE-9q-XJa" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iZ0-Vu-YOP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2056" y="137"/>

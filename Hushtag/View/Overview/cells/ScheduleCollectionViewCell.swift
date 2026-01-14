@@ -14,55 +14,48 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var completedButton: UIButton!
     weak var delegate: ScheduleCollectionViewCellDelegate?
-
-    private var post: Post?
-    private var deal: Deal?
+    private var item: ScheduleItem?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         applyLiquidGlassEffect()
     }
-    func configureCell(_ post: Post?, _ deal: Deal?) {
-
-        self.post = post
-        self.deal = deal
+    func configure(with item: ScheduleItem) {
+        self.item = item
 
         timeLabel.text = "--:--"
         titleLabel.text = ""
         dayLabel.text = ""
 
-        if let post = post,
-           let task = post.tasks?.first {
+        switch item {
 
-            if let time = task.deadline.time,
-               let hour = time.hour,
-               let minute = time.minute {
+        case .post(let post):
+            guard let task = post.tasks?.first else { return }
+
+            if let hour = task.deadline.time?.hour,
+               let minute = task.deadline.time?.minute {
                 timeLabel.text = String(format: "%02d:%02d", hour, minute)
             }
 
             titleLabel.text = post.name
             dayLabel.text = task.deadline.day
-
             updateCompletedButton(isCompleted: post.isCompleted)
-            return
-        }
 
-        if let deal = deal,
-           let deliverable = deal.deliverable.first {
+        case .deal(let deal):
+            guard let deliverable = deal.deliverable.first else { return }
 
-            if let time = deliverable.deadline.time,
-               let hour = time.hour,
-               let minute = time.minute {
+            if let hour = deliverable.deadline.time?.hour,
+               let minute = deliverable.deadline.time?.minute {
                 timeLabel.text = String(format: "%02d:%02d", hour, minute)
             }
 
             titleLabel.text = deal.name
             dayLabel.text = deliverable.deadline.day
-
             updateCompletedButton(isCompleted: deal.isCompleted)
-            return
         }
     }
+
     private func updateCompletedButton(isCompleted: Bool) {
         let imageName = isCompleted ? "checkmark.circle.fill" : "circle"
         completedButton.setImage(UIImage(systemName: imageName), for: .normal)
@@ -70,7 +63,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
 
     
     @IBAction func buttonTapped(_ sender: UIButton) {
-        delegate?.didTapCompleted(post: post, deal: deal)
+        delegate?.didTapCompleted(item: item)
     }
 }
 
@@ -89,6 +82,5 @@ extension Deal {
 }
 
 protocol ScheduleCollectionViewCellDelegate: AnyObject {
-    func didTapCompleted(post: Post?, deal: Deal?)
+    func didTapCompleted(item: ScheduleItem?)
 }
-

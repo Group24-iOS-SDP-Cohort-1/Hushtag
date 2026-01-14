@@ -24,8 +24,8 @@ class Activities: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        listingView.dataSource = self
-        listingView.delegate = self
+//        listingView.dataSource = self
+//        listingView.delegate = self
         listingView.register(
             UINib(nibName: "BlankScheduleTableViewCell", bundle: nil),
             forCellReuseIdentifier: "blankCell"
@@ -53,37 +53,37 @@ class Activities: UIViewController {
     }
 }
 
-extension Activities: UITableViewDataSource, UITableViewDelegate{
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return visibleItems.isEmpty ? 1 : visibleItems.count
-    }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//extension Activities: UITableViewDataSource, UITableViewDelegate{
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return visibleItems.isEmpty ? 1 : visibleItems.count
+//    }
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        if visibleItems.isEmpty {
-            let cell = tableView.dequeueReusableCell(
-                withIdentifier: "blankCell",
-                for: indexPath
-            ) as! BlankScheduleTableViewCell
-            return cell
-        }
-
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: "taskCell",
-            for: indexPath
-        ) as! TasksTableViewCell
-
-        let item = visibleItems[indexPath.row]
-        cell.delegate = self
-
-        switch item {
-        case .post(let post):
-            cell.configureCell(deal: nil, post: post)
-        case .deal(let deal):
-            cell.configureCell(deal: deal, post: nil)
-        }
-
-        return cell
-    }
+//        if visibleItems.isEmpty {
+//            let cell = tableView.dequeueReusableCell(
+//                withIdentifier: "blankCell",
+//                for: indexPath
+//            ) as! BlankScheduleTableViewCell
+//            return cell
+//        }
+//
+//        let cell = tableView.dequeueReusableCell(
+//            withIdentifier: "taskCell",
+//            for: indexPath
+//        ) as! TasksTableViewCell
+//
+//        let item = visibleItems[indexPath.row]
+//        cell.delegate = self
+//
+//        switch item {
+//        case .post(let post):
+//            cell.configureCell(deal: nil, post: post)
+//        case .deal(let deal):
+//            cell.configureCell(deal: deal, post: nil)
+//        }
+//
+//        return cell
+//    }
 
 //    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 //        if  scheduleItems.isEmpty {
@@ -91,32 +91,32 @@ extension Activities: UITableViewDataSource, UITableViewDelegate{
 //        }
 //        return 55
 //    }
-}
-
-extension Activities: TasksTableViewCellDelegate {
-
-    func didTapOpenModal(deal: Deal?, post: Post?) {
-        let storyboard = UIStoryboard(name: "Activities", bundle: nil)
-        let modal = storyboard.instantiateViewController(withIdentifier: "Details") as! Details
-        modal.deal = deal
-        modal.post = post
-        present(modal, animated: true)
-    }
-
-    func didUpdateCompletion(deal: Deal?, post: Post?) {
-
-        if let post = post {
-            if let index = scheduleItems.firstIndex(where: {
-                if case .post(let p) = $0 { return p.id == post.id }
-                return false
-            }) {
-                scheduleItems[index] = .post(post)
-            }
-        }
-
-        // deals similar if needed
-
-        listingView.reloadData()
-    }
-}
-
+//}
+//
+//extension Activities: TasksTableViewCellDelegate {
+//
+//    func didTapOpenModal(deal: Deal?, post: Post?) {
+//        let storyboard = UIStoryboard(name: "Activities", bundle: nil)
+//        let modal = storyboard.instantiateViewController(withIdentifier: "Details") as! Details
+//        modal.deal = deal
+//        modal.post = post
+//        present(modal, animated: true)
+//    }
+//
+//    func didUpdateCompletion(deal: Deal?, post: Post?) {
+//
+//        if let post = post {
+//            if let index = scheduleItems.firstIndex(where: {
+//                if case .post(let p) = $0 { return p.id == post.id }
+//                return false
+//            }) {
+//                scheduleItems[index] = .post(post)
+//            }
+//        }
+//
+//        // deals similar if needed
+//
+//        listingView.reloadData()
+//    }
+//}
+//

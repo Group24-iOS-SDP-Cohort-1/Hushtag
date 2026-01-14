@@ -13,7 +13,7 @@ class CalendarCell: UICollectionViewCell {
     
     override func awakeFromNib() {
             super.awakeFromNib()
-        contentView.layer.cornerRadius = 5
+        contentView.layer.cornerRadius = 12
     }
 
     func configure(day: String, date: String, isSelected: Bool) {

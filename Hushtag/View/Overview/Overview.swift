@@ -168,19 +168,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
 
         if segue.identifier == "goToDetails" {
             let vc = segue.destination as! Details
-            guard let item = selectedScheduleItem else { return }
-
-            switch item {
-            case .post(let post):
-                vc.post = post
-                vc.task = nil
-                vc.deal = nil
-                
-            case .deal(let deal):
-                vc.deal = deal
-                vc.post = nil
-                vc.task = nil
-            }
+            vc.schedule = filteredSchedule[indexPath.row]
         }
     }
 
@@ -236,13 +224,7 @@ extension Overview: UICollectionViewDataSource, UICollectionViewDelegate {
         
         let item = filteredSchedule[indexPath.row]
 
-        switch item {
-        case .post(let post):
-            cell.configureCell(post, nil)
-
-        case .deal(let deal):
-            cell.configureCell(nil, deal)
-        }
+        cell.configure(with: item)
         return cell
     }
     

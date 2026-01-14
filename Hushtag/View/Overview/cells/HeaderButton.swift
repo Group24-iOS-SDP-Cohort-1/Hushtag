@@ -10,20 +10,15 @@ import UIKit
 class HeaderButton: UICollectionReusableView {
 
     @IBOutlet weak var headerLabel: UILabel!
-    @IBOutlet weak var datePicker: UIDatePicker!
+    @IBOutlet weak var backward: UIButton!
+    @IBOutlet weak var forward: UIButton!
     var onDateChanged: ((Date) -> Void)?
     override func awakeFromNib() {
         super.awakeFromNib()
-        datePicker.addTarget(
-            self,
-            action: #selector(dateDidChange(_:)),
-            for: .valueChanged
-        )
+        
     }
-    func configure() {
-        headerLabel.text = "Today"
+    func configure(text: String) {
+        headerLabel.text = text
     }
-    @objc private func dateDidChange(_ sender: UIDatePicker) {
-        onDateChanged?(sender.date)
-    }
+
 }

@@ -28,7 +28,7 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="calendar" id="uPX-k9-4Wv" customClass="CalendarCell" customModule="Hushtag" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                        <rect key="frame" x="129" y="0.0" width="128" height="128"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="RgS-L1-du0">
                                             <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
@@ -37,13 +37,13 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="0En-8m-igC">
                                                     <rect key="frame" x="50.333333333333336" y="43.666666666666657" width="27.333333333333336" height="41"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SUN" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hvT-Po-fbo">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="SUN" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hvT-Po-fbo">
                                                             <rect key="frame" x="0.0" y="0.0" width="27.333333333333332" height="15.666666666666666"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="23" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TCd-zA-Vlc">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="23" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TCd-zA-Vlc">
                                                             <rect key="frame" x="0.0" y="20.666666666666664" width="27.333333333333332" height="20.333333333333336"/>
                                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                             <nil key="textColor"/>
@@ -63,12 +63,57 @@
                                         </connections>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="upcoming_schedule" id="PZu-sw-OdV" customClass="ScheduleCollectionViewCell" customModule="Hushtag" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="138" width="128" height="128.00000000000003"/>
+                                        <rect key="frame" x="129" y="138" width="128" height="128"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="epa-Im-GMC">
-                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128.00000000000003"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </collectionViewCellContentView>
+                                        <connections>
+                                            <segue destination="AUQ-Ga-imY" kind="presentation" identifier="goToDetails" id="NDo-Pv-07t"/>
+                                        </connections>
+                                    </collectionViewCell>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="blankCell" id="sBs-Re-cnI">
+                                        <rect key="frame" x="0.0" y="276" width="386" height="150"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="GsB-YQ-x8V">
+                                            <rect key="frame" x="0.0" y="0.0" width="386" height="150"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="NR9-g5-bTn">
+                                                    <rect key="frame" x="10" y="44.666666666666671" width="366" height="60.666666666666671"/>
+                                                    <subviews>
+                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="calendar" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="gUr-O4-t1b">
+                                                            <rect key="frame" x="0.0" y="1.6666666666666643" width="22.333333333333332" height="57.666666666666664"/>
+                                                            <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </imageView>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="4jz-Ha-ugQ">
+                                                            <rect key="frame" x="42.333333333333343" y="0.0" width="323.66666666666663" height="60.666666666666664"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Plans today!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CIS-rj-XWK">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="323.66666666666669" height="20.333333333333332"/>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                                    <nil key="textColor"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Looks like you have a free day! Enjoy your day off or plan ahead for tomorrow." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ssA-Ey-gDO">
+                                                                    <rect key="frame" x="0.0" y="30.333333333333336" width="323.66666666666669" height="30.333333333333336"/>
+                                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                            </subviews>
+                                                        </stackView>
+                                                    </subviews>
+                                                </stackView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="NR9-g5-bTn" firstAttribute="leading" secondItem="GsB-YQ-x8V" secondAttribute="leading" constant="10" id="6d8-ig-ej2"/>
+                                                <constraint firstAttribute="trailing" secondItem="NR9-g5-bTn" secondAttribute="trailing" constant="10" id="SSw-X8-WZ8"/>
+                                                <constraint firstItem="NR9-g5-bTn" firstAttribute="centerY" secondItem="GsB-YQ-x8V" secondAttribute="centerY" id="qom-5H-den"/>
+                                            </constraints>
+                                        </collectionViewCellContentView>
+                                        <size key="customSize" width="386" height="150"/>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
@@ -83,7 +128,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Schedule" largeTitleDisplayMode="never" id="2kR-Fi-Rbt">
-                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="add" id="29a-Y8-Dwg"/>
+                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="add" id="29a-Y8-Dwg">
+                            <connections>
+                                <segue destination="JVo-VW-pJQ" kind="presentation" id="2WD-ii-giS"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="scheduleView" destination="vtI-Oh-EOz" id="8q2-nt-us0"/>
@@ -92,6 +141,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1066.4122137404579" y="91.549295774647888"/>
+        </scene>
+        <!--Details-->
+        <scene sceneID="ULp-CK-ocl">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Details" id="AUQ-Ga-imY" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="S4e-GY-uiF"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="auk-6n-kRk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1656" y="139"/>
+        </scene>
+        <!--AddViewController-->
+        <scene sceneID="6mE-XW-wAE">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="AddVC" storyboardName="Activities" referencedIdentifier="AddViewController" id="JVo-VW-pJQ" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Wif-wD-mjb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1810" y="73"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="cKg-Ov-5md">
@@ -113,6 +180,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="calendar" catalog="system" width="128" height="107"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
