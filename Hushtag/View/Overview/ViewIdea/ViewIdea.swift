@@ -14,11 +14,18 @@ import Charts
 class ViewIdea: UIViewController {
     
     @IBOutlet weak var videoView: UICollectionView!
-    //@IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var hashtagLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var likeButton: UIBarButtonItem!
-    @IBOutlet weak var graphStack: UIStackView!
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var descriptionStack: UIStackView!
+    @IBOutlet weak var descriptionLabel: UILabel!
+    @IBOutlet weak var graphView: UIView!
+
+
+
+
+    @IBOutlet weak var stackView: UIStackView!
     private var isChecked: Bool = false
     private var chartHostingController: UIHostingController<EngagementLineChart>?
     var idea: Idea?
@@ -35,15 +42,23 @@ class ViewIdea: UIViewController {
         if let idea = idea {
             titleLabel.text = idea.title
             titleLabel.numberOfLines = 0
+            descriptionLabel.text = idea.description
+            descriptionLabel.numberOfLines = 10
             hashtagLabel.text = "#" + idea.hashtag.joined(separator: " #")
             video = idea.videos
 
             isChecked = idea.liked
             likeButton.image = UIImage(systemName: isChecked ? "heart.fill" : "heart")
         }
+      //  scrollView.alwaysBounceHorizontal = false
+        videoView.isScrollEnabled = false
 
         setupEngagementChart()
         videoView.setCollectionViewLayout(generateLayout(), animated: true)
+//        scrollView.contentSize.width = stackView.frame.width
+//        scrollView.contentSize.height = stackView.frame.origin.y + stackView.frame.height + 200
+        print("Scroll frame height:", scrollView.frame.height)
+           print("Content height:", scrollView.contentLayoutGuide.layoutFrame.height)
     }
     
     func registerCell() {
@@ -72,7 +87,7 @@ class ViewIdea: UIViewController {
             onLikeStatusChanged?(updatedIdea)
         }
     }
-    
+
     func generateLayout() -> UICollectionViewLayout {
 
         return UICollectionViewCompositionalLayout { sectionIndex, _ in
@@ -176,7 +191,7 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
         hostingVC.view.backgroundColor = .clear
 
         addChild(hostingVC)
-        graphStack.addArrangedSubview(hostingVC.view)
+        graphView.addSubview(hostingVC.view)
         hostingVC.didMove(toParent: self)
 
         NSLayoutConstraint.activate([
