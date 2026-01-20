@@ -147,31 +147,21 @@ extension IdeaResponse {
 
 }
 
-struct Task: Codable, Identifiable {
-    let id = UUID()
+struct Task: Codable {
     let name: String
-    let startDate: DateData
-    let endDate: DateData
-    let description: String
-    let reminder: [String]
+    let deadline: DateData
     var isCompleted : Bool
-
-    enum CodingKeys: String, CodingKey {
-        case name,startDate,endDate,description,reminder, isCompleted
-    }
 }
 
 struct Post: Codable, Identifiable {
     let id = UUID()
     let name: String
-    let postingTime: DateData
     let platform: [String]
-    let description: String
+    var tasks: [Task]?
     let reminder: [String]
-    var isCompleted : Bool
 
     enum CodingKeys: String, CodingKey {
-        case name,postingTime,platform,description,reminder, isCompleted
+        case name, platform, tasks, reminder
     }
 
     var platformType: [PlatformType] {
@@ -404,3 +394,25 @@ extension Preferences {
     }
 }
 
+enum ScheduleItem {
+    case deal(Deal)
+    case post(Post)
+
+    func date() -> Date? {
+        switch self {
+        case .deal(let deal):
+            return deal.deliverable.first?.deadline.toDate()
+        case .post(let post):
+            return post.tasks?.first?.deadline.toDate()
+        }
+    }
+
+    var isCompleted: Bool {
+        switch self {
+        case .post(let post):
+            return post.tasks?.allSatisfy { $0.isCompleted } ?? false
+        case .deal(let deal):
+            return deal.deliverable.allSatisfy { $0.isCompleted }
+        }
+    }
+}

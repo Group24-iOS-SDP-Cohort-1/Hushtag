@@ -8,7 +8,6 @@
 import Foundation
 
 class DataStore {
-    private var tasks: [Task] = []
     private var deals: [Deal] = []
     private var posts: [Post] = []
     //private var analysis: [Analysis] = []
@@ -18,103 +17,113 @@ class DataStore {
     private init() {
         loadSampleData()
     }
-    func getTasks() -> [Task] {
-        tasks
-    }
+    
     func getDeals() -> [Deal] {
         deals
     }
+    
     func getPosts() -> [Post] {
         posts
     }
-//    func getAnalysis() -> [Analysis] {
-//        analysis
-//    }
+
+    func saveDeal(_ deal: Deal) {
+        deals.append(deal)
+    }
+
+    func savePost(_ post: Post) {
+        posts.append(post)
+    }
+    
+    func updatePost(_ updatedPost: Post) {
+        if let index = posts.firstIndex(where: { $0.name == updatedPost.name }) {
+            posts[index] = updatedPost
+        }
+    }
+
+    func updateDeal(_ updatedDeal: Deal) {
+        if let index = deals.firstIndex(where: { $0.name == updatedDeal.name }) {
+            deals[index] = updatedDeal
+        }
+    }
+    
+    func scheduleItems(on date: Date) -> [ScheduleItem] {
+        let calendar = Calendar.current
+
+        let postItems = posts
+            .filter { post in
+                post.tasks?.contains {
+                    guard let d = $0.deadline.toDate() else { return false }
+                    return calendar.isDate(d, inSameDayAs: date)
+                } ?? false
+            }
+            .map { ScheduleItem.post($0) }
+
+        let dealItems = deals
+            .filter { deal in
+                deal.deliverable.contains {
+                    guard let d = $0.deadline.toDate() else { return false }
+                    return calendar.isDate(d, inSameDayAs: date)
+                }
+            }
+            .map { ScheduleItem.deal($0) }
+
+        return (postItems + dealItems)
+            .sorted { ($0.date() ?? .distantFuture) < ($1.date() ?? .distantFuture) }
+    }
+
+    func completedScheduleItems(on date: Date) -> [ScheduleItem] {
+        scheduleItems(on: date).filter { $0.isCompleted }
+    }
     
     func loadSampleData() {
         let sampleTasks: [Task] = [
             Task(
                 name: "Everyday Glam Makeup Reel",
-                startDate: DateData(
+                deadline: DateData(
                     day: "Monday",
                     date: "2025-11-18T00:00:00Z",
                     time: TimeData(hour: 10, minute: 0)
                 ),
-                endDate: DateData(
-                    day: "Monday",
-                    date: "2025-11-18T00:00:00Z",
-                    time: TimeData(hour: 13, minute: 0)
-                ),
-                description: "Create a soft everyday glam makeup reel highlighting natural skin and subtle eyes.",
-                reminder: ["1 hour before", "15 mins before"],
                 isCompleted: false
             ),
             
             Task(
                 name: "Unboxing New Cosmetic Products",
-                startDate: DateData(
+                deadline: DateData(
                     day: "Tuesday",
                     date: "2025-11-19T00:00:00Z",
                     time: TimeData(hour: 11, minute: 0)
                 ),
-                endDate: DateData(
-                    day: "Tuesday",
-                    date: "2025-11-19T00:00:00Z",
-                    time: TimeData(hour: 14, minute: 0)
-                ),
-                description: "Unbox and review newly received cosmetic products and record short clips.",
-                reminder: ["30 mins before"],
                 isCompleted: true
             ),
             
             Task(
                 name: "Recreate Model Look",
-                startDate: DateData(
+                deadline: DateData(
                     day: "Wednesday",
-                    date: "2025-11-20T00:00:00Z",
+                    date: "2026-1-13T00:00:00Z",
                     time: TimeData(hour: 9, minute: 30)
                 ),
-                endDate: DateData(
-                    day: "Wednesday",
-                    date: "2025-11-20T00:00:00Z",
-                    time: TimeData(hour: 12, minute: 0)
-                ),
-                description: "Recreate a trending model look and showcase products used step-by-step.",
-                reminder: ["1 hour before"],
                 isCompleted: false
             ),
             
             Task(
                 name: "Edit & Schedule Instagram Post",
-                startDate: DateData(
+                deadline: DateData(
                     day: "Thursday",
-                    date: "2025-11-21T00:00:00Z",
+                    date: "2026-1-14T00:00:00Z",
                     time: TimeData(hour: 15, minute: 0)
                 ),
-                endDate: DateData(
-                    day: "Thursday",
-                    date: "2025-11-21T00:00:00Z",
-                    time: TimeData(hour: 17, minute: 0)
-                ),
-                description: "Edit selected clips, add captions and hashtags, and schedule the Instagram post.",
-                reminder: ["45 mins before"],
-                isCompleted: false
+                isCompleted: true
             ),
             
             Task(
                 name: "Research Upcoming Beauty Trends",
-                startDate: DateData(
+                deadline: DateData(
                     day: "Friday",
                     date: "2025-11-22T00:00:00Z",
                     time: TimeData(hour: 10, minute: 0)
                 ),
-                endDate: DateData(
-                    day: "Friday",
-                    date: "2025-11-22T00:00:00Z",
-                    time: TimeData(hour: 12, minute: 0)
-                ),
-                description: "Research upcoming beauty and makeup trends to plan next week’s content.",
-                reminder: ["1 hour before"],
                 isCompleted: false
             )
         ]
@@ -283,341 +292,48 @@ class DataStore {
         let samplePosts: [Post] = [
             Post(
                 name: "IG Reel – Nighttime Skincare Reset",
-                postingTime: DateData(
-                    day: "Tuesday",
-                    date: "2025-12-02T00:00:00Z",
-                    time: TimeData(hour: 21, minute: 0)
-                ),
                 platform: ["instagram"],
-                description: "Relaxing nighttime skincare routine focusing on hydration and barrier repair.",
-                reminder: ["1 hour before", "15 minutes before"],
-                isCompleted: false
+                tasks: [sampleTasks[0], sampleTasks[3]],
+                reminder: ["1 hour before", "15 minutes before"]
             ),
             
             Post(
                 name: "YouTube Video – Studio Makeup Tutorial",
-                postingTime: DateData(
-                    day: "Thursday",
-                    date: "2025-12-04T00:00:00Z",
-                    time: TimeData(hour: 19, minute: 30)
-                ),
                 platform: ["youtube"],
-                description: "Detailed makeup tutorial filmed in studio lighting with pro tips.",
-                reminder: ["3 hours before"],
-                isCompleted: false
+                tasks: [],
+                reminder: ["3 hours before"]
             ),
             
             Post(
                 name: "Instagram Carousel – Winter Layering Looks",
-                postingTime: DateData(
-                    day: "Saturday",
-                    date: "2025-12-06T00:00:00Z",
-                    time: TimeData(hour: 13, minute: 0)
-                ),
                 platform: ["instagram"],
-                description: "Carousel showcasing cozy winter layering outfit inspirations.",
-                reminder: ["45 minutes before"],
-                isCompleted: true
+                tasks: sampleTasks,
+                reminder: ["45 minutes before"]
             ),
             
             Post(
                 name: "Facebook Post – Brand Giveaway Announcement",
-                postingTime: DateData(
-                    day: "Monday",
-                    date: "2025-12-01T00:00:00Z",
-                    time: TimeData(hour: 11, minute: 45)
-                ),
                 platform: ["facebook"],
-                description: "Giveaway announcement post with contest rules and deadline.",
-                reminder: ["2 hours before"],
-                isCompleted: true
+                tasks: [],
+                reminder: ["2 hours before"]
             ),
             
             Post(
                 name: "YouTube Shorts – Quick GRWM Coffee Date",
-                postingTime: DateData(
-                    day: "Friday",
-                    date: "2025-12-05T00:00:00Z",
-                    time: TimeData(hour: 17, minute: 15)
-                ),
                 platform: ["youtube", "instagram"],
-                description: "Fast-paced GRWM short clip before heading out for a coffee date.",
-                reminder: ["20 minutes before"],
-                isCompleted: false
+                tasks: [sampleTasks[2]],
+                reminder: ["20 minutes before"]
             ),
             
             Post(
                 name: "IG Story – Behind the Scenes Shoot",
-                postingTime: DateData(
-                    day: "Sunday",
-                    date: "2025-12-07T00:00:00Z",
-                    time: TimeData(hour: 10, minute: 0)
-                ),
                 platform: ["instagram"],
-                description: "Casual behind-the-scenes story from an ongoing photoshoot.",
-                reminder: ["30 minutes before", "5 minutes before"],
-                isCompleted: false
+                tasks: [],
+                reminder: ["30 minutes before", "5 minutes before"]
             )
         ]
-        
-//        let sampleAnalysis: [Analysis] = [
-//            Analysis(
-//                id: "1",
-//                views: "248.5K",
-//                watchTime: "12.4K",
-//                subscribers: "+1.2K",
-//                estRevenue: "$3,420.50",
-//                viewsChange: "+12%",
-//                watchTimeChange: "+8%",
-//                subscribersChange: "-2%",
-//                revenueChange: "+15%",
-//                likes: "3.1k",
-//                incFollowers: "-8k",
-//                followers: "40k",
-//                ageGroup: ["18", "34"],
-//                gender: [
-//                    "M": "45.2",
-//                    "F": "54.8"
-//                ],
-//                post: 5,
-//                optimalTime: [
-//                    AnalysisDateData(day: "Monday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-//                    AnalysisDateData(day: "Tuesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 14, minute: 0), audienceEngagementRate: "4.3"),
-//                    AnalysisDateData(day: "Wednesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 14, minute: 0), audienceEngagementRate: "1.7"),
-//                    AnalysisDateData(day: "Thursday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 9, minute: 0), audienceEngagementRate: "5.4"),
-//                    AnalysisDateData(day: "Friday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 14, minute: 0), audienceEngagementRate: "3.2"),
-//                    AnalysisDateData(day: "Saturday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 10, minute: 30), audienceEngagementRate: "2.5"),
-//                    AnalysisDateData(day: "Sunday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 14, minute: 0), audienceEngagementRate: "4.1")
-//                ],
-//                engagementRate: "6.1",
-//                topContent: [
-//                    TopContentItem(
-//                        id: "tc1",
-//                        title: "Best Laptops for Coding 2024",
-//                        thumbnail: "laptop_thumb",
-//                        views: "124K views",
-//                        publishedTime: "4 weeks ago"
-//                    ),
-//                    TopContentItem(
-//                        id: "tc2",
-//                        title: "Minimal Desk Setup Tour",
-//                        thumbnail: "desk_thumb",
-//                        views: "89K views",
-//                        publishedTime: "2 weeks ago"
-//                    ),
-//                    TopContentItem(
-//                        id: "tc3",
-//                        title: "Sony A7IV vs Canon R6",
-//                        thumbnail: "camera_thumb",
-//                        views: "65K views",
-//                        publishedTime: "6 days ago"
-//                    )
-//                ],
-//                latestContent: LatestContentPerformance(
-//                    title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
-//                    thumbnail: "laptop_thumb",
-//                    publishedText: "Published 2 days ago",
-//                    ranking: "2 of 10",
-//                    views: "42.1K",
-//                    avgDuration: "5:24"
-//                ),
-//                revenueSource: [
-//                    RevenueSource(
-//                        sf: "play.rectangle.fill",
-//                        name: "Estimated Ad Revenue",
-//                        amount: "2,300"
-//                    ),
-//                    RevenueSource(
-//                        sf: "cart.fill",
-//                        name: "From Paid Content",
-//                        amount: "3,520"
-//                    ),
-//                    RevenueSource(
-//                        sf: "person.2.fill",
-//                        name: "Creator's Share from YPP",
-//                        amount: "2,500"
-//                    ),
-//                    RevenueSource(
-//                        sf: "briefcase.fill",
-//                        name: "Collaboration Revenue",
-//                        amount: "4,200"
-//                    )
-//                ]
-//            ),
-//            
-//            Analysis(
-//                id: "2",
-//                views: "180.2K",
-//                watchTime: "9.1K",
-//                subscribers: "+3.0K",
-//                estRevenue: "$1,820.75",
-//                viewsChange: "+6%",
-//                watchTimeChange: "+10%",
-//                subscribersChange: "+5%",
-//                revenueChange: "+9%",
-//                likes: "2.5k",
-//                incFollowers: "3k",
-//                followers: "28k",
-//                ageGroup: ["20", "29"],
-//                gender: [
-//                    "M": "51",
-//                    "F": "49"
-//                ],
-//                post: 4,
-//                optimalTime: [
-//                    AnalysisDateData(day: "Monday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 16, minute: 0), audienceEngagementRate: "1.0"),
-//                    AnalysisDateData(day: "Tuesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-//                    AnalysisDateData(day: "Wednesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-//                    AnalysisDateData(day: "Thursday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 11, minute: 0), audienceEngagementRate: "1.0"),
-//                    AnalysisDateData(day: "Friday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-//                    AnalysisDateData(day: "Saturday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.2"),
-//                    AnalysisDateData(day: "Sunday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.7")
-//                ],
-//                engagementRate: "",
-//                topContent: [
-//                    TopContentItem(
-//                        id: "tc1",
-//                        title: "Best Laptops for Coding 2024",
-//                        thumbnail: "laptop_thumb",
-//                        views: "124K views",
-//                        publishedTime: "4 weeks ago"
-//                    ),
-//                    TopContentItem(
-//                        id: "tc2",
-//                        title: "Minimal Desk Setup Tour",
-//                        thumbnail: "desk_thumb",
-//                        views: "89K views",
-//                        publishedTime: "2 weeks ago"
-//                    ),
-//                    TopContentItem(
-//                        id: "tc3",
-//                        title: "Sony A7IV vs Canon R6",
-//                        thumbnail: "camera_thumb",
-//                        views: "65K views",
-//                        publishedTime: "6 days ago"
-//                    )
-//                ],
-//                latestContent: LatestContentPerformance(
-//                    title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
-//                    thumbnail: "laptop_thumb",
-//                    publishedText: "Published 2 days ago",
-//                    ranking: "2 of 10",
-//                    views: "42.1K",
-//                    avgDuration: "5:24"
-//                ),
-//                revenueSource: [
-//                    RevenueSource(
-//                        sf: "play.rectangle.fill",
-//                        name: "Estimated Ad Revenue",
-//                        amount: "6,800"
-//                    ),
-//                    RevenueSource(
-//                        sf: "cart.fill",
-//                        name: "From Paid Content",
-//                        amount: "9,450"
-//                    ),
-//                    RevenueSource(
-//                        sf: "person.2.fill",
-//                        name: "Creator's Share from YPP",
-//                        amount: "7,200"
-//                    ),
-//                    RevenueSource(
-//                        sf: "briefcase.fill",
-//                        name: "Collaboration Revenue",
-//                        amount: "12,600"
-//                    )
-//                ]
-//            ),
-//
-//            Analysis(
-//                id: "3",
-//                views: "320.9K",
-//                watchTime: "18.7K",
-//                subscribers: "+12K",
-//                estRevenue: "$5,890.00",
-//                viewsChange: "+18%",
-//                watchTimeChange: "+22%",
-//                subscribersChange: "+11%",
-//                revenueChange: "+20%",
-//                likes: "5.6k",
-//                incFollowers: "12k",
-//                followers: "55k",
-//                ageGroup: ["25", "40"],
-//                gender: [
-//                    "M": "40.4",
-//                    "F": "59.6"
-//                ],
-//                post: 6,
-//                optimalTime: [
-//                    AnalysisDateData(day: "Monday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-//                    AnalysisDateData(day: "Tuesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 18, minute: 0), audienceEngagementRate: "7.6"),
-//                    AnalysisDateData(day: "Wednesday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-//                    AnalysisDateData(day: "Thursday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-//                    AnalysisDateData(day: "Friday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 15, minute: 0), audienceEngagementRate: "1.0"),
-//                    AnalysisDateData(day: "Saturday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "6.1"),
-//                    AnalysisDateData(day: "Sunday", date: "2025-11-19T00:00:00Z", time: TimeData(hour: 17, minute: 0), audienceEngagementRate: "7.2")
-//                ],
-//                engagementRate: "-7.3",
-//                topContent: [
-//                        TopContentItem(
-//                            id: "tc1",
-//                            title: "Best Laptops for Coding 2024",
-//                            thumbnail: "laptop_thumb",
-//                            views: "124K views",
-//                            publishedTime: "4 weeks ago"
-//                        ),
-//                        TopContentItem(
-//                            id: "tc2",
-//                            title: "Minimal Desk Setup Tour",
-//                            thumbnail: "desk_thumb",
-//                            views: "89K views",
-//                            publishedTime: "2 weeks ago"
-//                        ),
-//                        TopContentItem(
-//                            id: "tc3",
-//                            title: "Sony A7IV vs Canon R6",
-//                            thumbnail: "camera_thumb",
-//                            views: "65K views",
-//                            publishedTime: "6 days ago"
-//                        )
-//                    ],
-//                latestContent: LatestContentPerformance(
-//                    title: "iPhone 16 Pro Max Review: The Truth After 1 Month",
-//                    thumbnail: "laptop_thumb",
-//                    publishedText: "Published 2 days ago",
-//                    ranking: "2 of 10",
-//                    views: "42.1K",
-//                    avgDuration: "5:24"
-//                ),
-//                revenueSource: [
-//                    RevenueSource(
-//                        sf: "play.rectangle.fill",
-//                        name: "Estimated Ad Revenue",
-//                        amount: "850"
-//                    ),
-//                    RevenueSource(
-//                        sf: "cart.fill",
-//                        name: "From Paid Content",
-//                        amount: "1,200"
-//                    ),
-//                    RevenueSource(
-//                        sf: "person.2.fill",
-//                        name: "Creator's Share from YPP",
-//                        amount: "980"
-//                    ),
-//                    RevenueSource(
-//                        sf: "briefcase.fill",
-//                        name: "Collaboration Revenue",
-//                        amount: "1,750"
-//                    )
-//
-//                ]
-//            )
-//        ]
 
-        self.tasks = sampleTasks
         self.deals = sampleDeals
         self.posts = samplePosts
-        //self.analysis = sampleAnalysis
     }
 }

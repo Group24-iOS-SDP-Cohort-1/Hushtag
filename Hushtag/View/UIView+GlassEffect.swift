@@ -2,48 +2,71 @@ import UIKit
 
 extension UIView {
     
-    /**
-     Applies a UIGlassEffect to the view as a background.
-     
-     This function inserts a UIVisualEffectView at index 0, constrains it
-     to the edges of this view, and animates the glass effect.
-     It also matches the corner radius.
-    */
     func applyLiquidGlassEffect() {
-        
-        // --- Safety Check ---
-        // To prevent adding multiple effect views if called by accident,
-        // we can check if one already exists.
-        let existingGlassView = self.subviews.first { $0 is UIVisualEffectView }
-        if existingGlassView != nil {
-            return // Already has a glass effect
+        if subviews.contains(where: { $0 is UIVisualEffectView }) {
+            return
+        }
+        if #available(iOS 17.0, *) {
+            applyGlassEffect_iOS17()
+        } else {
+            applyCardEffect_Legacy()
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+private extension UIView {
+
+    func applyGlassEffect_iOS17() {
+        let glassView = UIVisualEffectView(effect: nil)
+        glassView.translatesAutoresizingMaskIntoConstraints = false
+        insertSubview(glassView, at: 0)
+
+        NSLayoutConstraint.activate([
+            glassView.topAnchor.constraint(equalTo: topAnchor),
+            glassView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            glassView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            glassView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+
+        let glassEffect = UIGlassEffect()
+        UIView.animate(withDuration: 0.25) {
+            glassView.effect = glassEffect
         }
 
-        // --- Your Code, Modified ---
-        
-        // Create the visual effect view
-        let glassEffectView = UIVisualEffectView()
-        glassEffectView.translatesAutoresizingMaskIntoConstraints = false
-        
-        // Add it to 'self' (the view this is called on)
-        self.insertSubview(glassEffectView, at: 0)
-        
-        // Pin the glass effect view to all edges of 'self'
+        glassView.layer.cornerRadius = 12
+        glassView.clipsToBounds = true
+    }
+}
+
+private extension UIView {
+
+    func applyCardEffect_Legacy() {
+
+        backgroundColor = UIColor.secondarySystemBackground
+
+        layer.cornerRadius = 12
+        layer.masksToBounds = false
+
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.08
+        layer.shadowRadius = 10
+        layer.shadowOffset = CGSize(width: 0, height: 4)
+
+        // Optional subtle blur overlay
+        let blur = UIBlurEffect(style: .systemUltraThinMaterial)
+        let blurView = UIVisualEffectView(effect: blur)
+        blurView.translatesAutoresizingMaskIntoConstraints = false
+        insertSubview(blurView, at: 0)
+
         NSLayoutConstraint.activate([
-            glassEffectView.topAnchor.constraint(equalTo: self.topAnchor),
-            glassEffectView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            glassEffectView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            glassEffectView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+            blurView.topAnchor.constraint(equalTo: topAnchor),
+            blurView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            blurView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            blurView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
-        
-        // Create and apply the glass effect with animation
-        let glassEffect = UIGlassEffect()
-        UIView.animate(withDuration: 0.3) {
-            glassEffectView.effect = glassEffect
-        }
-        
-        // Match corner radius of 'self'
-        glassEffectView.layer.cornerRadius = 12
-        glassEffectView.clipsToBounds = true
+
+        blurView.layer.cornerRadius = 12
+        blurView.clipsToBounds = true
     }
 }

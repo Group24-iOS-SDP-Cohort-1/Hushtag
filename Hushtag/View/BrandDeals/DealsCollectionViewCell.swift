@@ -42,14 +42,9 @@ class DealsCollectionViewCell: UICollectionViewCell{
         cardView.applyLiquidGlassEffect()
         cardView.layer.masksToBounds = false
 
-//        // Subtle shadow
-//        cardView.layer.shadowColor = UIColor.black.cgColor
-//        cardView.layer.shadowOpacity = 0.15
-//        cardView.layer.shadowOffset = CGSize(width: 0, height: 0)
-//        cardView.layer.shadowRadius = 6
-
     }
 
+    //convert the iso date format into Jan 20
     func formatDeadline(_ isoString: String) -> String {
             let isoFormatter = ISO8601DateFormatter()
             isoFormatter.formatOptions = [.withInternetDateTime]
@@ -65,14 +60,19 @@ class DealsCollectionViewCell: UICollectionViewCell{
             return displayFormatter.string(from: date)
         }
     
+    
+    // this function is called by parent view controller for each cell of deals
     func configure(with deal: Deal, isCompleted: Bool) {
         titleLabel.text = deal.name
-        paymentValueLabel.text = "Rs \(deal.payment)"
+        paymentValueLabel.text = "\(deal.payment)"
 
         let total = deal.deliverable.count
+        //closure to count the completed deals
         let completed = deal.deliverable.filter { $0.isCompleted }.count
 
         if isCompleted {
+            // as we are using the same cell for is completed and ongoing we have just hide the bottom stack
+            //caption and updated the deadline icon to the required one
             deadlineIconImageView.image = UIImage(systemName: "play.circle")
             bottomStackView.isHidden = true
             captionLabel.isHidden    = true
@@ -84,6 +84,7 @@ class DealsCollectionViewCell: UICollectionViewCell{
             deadlineValueLabel.textColor = paymentValueLabel.textColor
 
         } else {
+            // Ongoing Deals
             deadlineIconImageView.image = UIImage(systemName: "calendar")
             // show bottom area
             bottomStackView.isHidden = false
@@ -100,7 +101,9 @@ class DealsCollectionViewCell: UICollectionViewCell{
             }
         }
     }
-
+    
+    
+    // As we need date upcoming deliverable first
     private func updateNextDeadline(_ deal: Deal) {
         let isoFormatter = ISO8601DateFormatter()
         isoFormatter.formatOptions = [.withInternetDateTime]

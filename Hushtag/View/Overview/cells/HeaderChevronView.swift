@@ -16,7 +16,6 @@ class HeaderChevronView: UICollectionReusableView {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         navigationButton.addTarget(self, action: #selector(tapped), for: .touchUpInside)
     }
     @objc func tapped() {

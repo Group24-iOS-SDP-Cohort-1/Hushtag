@@ -17,7 +17,6 @@ class FieldTableViewCell: UITableViewCell, UITextFieldDelegate {
     var onDateChanged: ((Date) -> Void)?
     
     let values = [
-        ["Name", "Start Date", "End Date", "Description", "Reminder(s)"],
         ["Name", "Deliverables", "Platform", "Phone", "Email"],
         ["Name", "Posting Time", "Platform", "Description", "Reminder(s)"]
     ]
@@ -38,21 +37,12 @@ class FieldTableViewCell: UITableViewCell, UITextFieldDelegate {
     
     
     func configure(index: Int, category: String, initialText: String? = nil, initialDate: Date? = nil) {
-            if category == "Tasks" {
+            if category == "Deals" {
                 labelName.text = values[0][index]
-                if index == 1 || index == 2 {
-                    datePicker.isHidden = false
-                    textField.isHidden = true
-                } else {
-                    datePicker.isHidden = true
-                    textField.isHidden = false
-                }
-            } else if category == "Deals" {
-                labelName.text = values[1][index]
                 datePicker.isHidden = true
                 textField.isHidden = false
             } else {
-                labelName.text = values[2][index]
+                labelName.text = values[1][index]
                 if index == 1 {
                     datePicker.isHidden = false
                     textField.isHidden = true
@@ -78,7 +68,6 @@ class FieldTableViewCell: UITableViewCell, UITextFieldDelegate {
             return true
         }
 
-        // MARK: - DatePicker
         @objc func dateChanged(_ sender: UIDatePicker) {
             onDateChanged?(sender.date)
         }

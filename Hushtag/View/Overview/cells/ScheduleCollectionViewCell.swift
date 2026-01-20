@@ -12,62 +12,75 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var dayLabel: UILabel!
-    @IBOutlet weak var platformLabel: UILabel!
+    @IBOutlet weak var completedButton: UIButton!
+    weak var delegate: ScheduleCollectionViewCellDelegate?
+    private var item: ScheduleItem?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         applyLiquidGlassEffect()
     }
-    func configureCell(_ post: Post?, _ deal: Deal?, _ task: Task?) {
+    
+    func configure(with item: ScheduleItem) {
+        self.item = item
+
         timeLabel.text = "--:--"
         titleLabel.text = ""
         dayLabel.text = ""
-        platformLabel.text = ""
 
-        if let post = post {
-            if let time = post.postingTime.time,
-               let hour = time.hour,
-               let minute = time.minute {
+        switch item {
+
+        case .post(let post):
+            guard let task = post.tasks?.first else { return }
+
+            if let hour = task.deadline.time?.hour,
+               let minute = task.deadline.time?.minute {
                 timeLabel.text = String(format: "%02d:%02d", hour, minute)
             }
 
             titleLabel.text = post.name
-            titleLabel.numberOfLines = 0
-            dayLabel.text = post.postingTime.day
+            dayLabel.text = task.deadline.day
+            updateCompletedButton(isCompleted: post.isCompleted)
 
-            let platform = post.platform.first?.lowercased() ?? ""
-            platformLabel.text = platform.capitalized
-            return
-        }
+        case .deal(let deal):
+            guard let deliverable = deal.deliverable.first else { return }
 
-        if let task = task {
-            if let time = task.startDate.time,
-               let hour = time.hour,
-               let minute = time.minute {
-                timeLabel.text = String(format: "%02d:%02d", hour, minute)
-            }
-
-            titleLabel.text = task.name
-            titleLabel.numberOfLines = 0
-            dayLabel.text = task.startDate.day
-            platformLabel.text = "Task"
-            return
-        }
-
-        if let deal = deal,
-           let deliverable = deal.deliverable.first {
-
-            if let time = deliverable.deadline.time,
-               let hour = time.hour,
-               let minute = time.minute {
+            if let hour = deliverable.deadline.time?.hour,
+               let minute = deliverable.deadline.time?.minute {
                 timeLabel.text = String(format: "%02d:%02d", hour, minute)
             }
 
             titleLabel.text = deal.name
-            titleLabel.numberOfLines = 0
             dayLabel.text = deliverable.deadline.day
-            platformLabel.text = deal.platform.first?.capitalized ?? "Deal"
-            return
+            updateCompletedButton(isCompleted: deal.isCompleted)
         }
     }
+
+    private func updateCompletedButton(isCompleted: Bool) {
+        let imageName = isCompleted ? "largecircle.fill.circle" : "circle"
+        completedButton.setImage(UIImage(systemName: imageName), for: .normal)
+    }
+
+    
+    @IBAction func buttonTapped(_ sender: UIButton) {
+        delegate?.didTapCompleted(item: item)
+    }
+}
+
+extension Post {
+    var isCompleted: Bool {
+        guard let tasks = tasks, !tasks.isEmpty else { return false }
+        return tasks.allSatisfy { $0.isCompleted }
+    }
+}
+
+extension Deal {
+    var isCompleted: Bool {
+        guard !deliverable.isEmpty else { return false }
+        return deliverable.allSatisfy { $0.isCompleted }
+    }
+}
+
+protocol ScheduleCollectionViewCellDelegate: AnyObject {
+    func didTapCompleted(item: ScheduleItem?)
 }
