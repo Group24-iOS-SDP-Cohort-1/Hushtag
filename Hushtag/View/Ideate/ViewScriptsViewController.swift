@@ -26,7 +26,7 @@ class ViewScriptsViewController: UIViewController {
         navigationItem.title = pageTitle
         scriptsCollectionView.dataSource = self
         scriptsCollectionView.delegate = self
-        scriptsCollectionView.register(UINib(nibName: "likedCells", bundle: nil), forCellWithReuseIdentifier: "likedCells")
+      
         scriptsCollectionView.register(UINib(nibName: "ScriptsCell1", bundle: nil), forCellWithReuseIdentifier: "scriptedIdeas")
         scriptsCollectionView.register(UINib(nibName: "LikedCellsNew", bundle: nil), forCellWithReuseIdentifier: "likedCellsNew")
         let layout = generateScriptsLayout(title: pageTitle)
