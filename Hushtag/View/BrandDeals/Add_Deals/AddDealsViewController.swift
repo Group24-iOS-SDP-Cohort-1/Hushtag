@@ -24,10 +24,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         "Description"
     ]
 
-    var deliverablePlaceholders = [
-        "Deliverable 1",
-        "Deliverable 2"
-    ]
+    var deliverablePlaceholders : [String] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()

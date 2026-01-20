@@ -15,7 +15,6 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
     private let hourRange = Array(0...23)
     private let minuteRange = stride(from: 0, through: 55, by: 5).map { $0 }
 
-    // MARK: - Data
     let mainPlaceholders = [
         "Post Name",
         "Platform",
@@ -26,7 +25,6 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
     var reminderText: String = "1 hour before"
     var reminderOffset: TimeData = TimeData(hour: 1, minute: 0)
 
-    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -39,7 +37,6 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
     }
     @IBAction func submitTapped(_ sender: UIButton) {
 
-        // MARK: - 1️⃣ Collect main fields (Post Name & Platform)
         var values: [String] = []
 
         for row in 0..<mainPlaceholders.count {
@@ -61,7 +58,6 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
                 .split(separator: ",")
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
 
-        // MARK: - 2️⃣ Collect Tasks
         let deliverableIndexPath = IndexPath(row: 0, section: Section.deliverables.rawValue)
 
         guard let deliverableCell = tableView.cellForRow(at: deliverableIndexPath)
@@ -113,7 +109,6 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
             )
         }
 
-        // MARK: - 3️⃣ Create Post
         let post = Post(
             name: postName,
             platform: platforms,
@@ -121,17 +116,13 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
             reminder: [reminderText]
         )
 
-        // MARK: - 4️⃣ Save Post
         DataStore.shared.savePost(post)
 
-        // MARK: - 5️⃣ Notify Overview
         delegate?.addViewController(self, didCreatePost: post)
 
-        // MARK: - 6️⃣ Close Add Screen
         dismiss(animated: true)
     }
 
-    // MARK: - TableView
     override func numberOfSections(in tableView: UITableView) -> Int {
         
         return Section.allCases.count
