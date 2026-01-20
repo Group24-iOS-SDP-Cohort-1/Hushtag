@@ -15,13 +15,10 @@ class CircularProgressView: UIView {
     private var trackLayer = CAShapeLayer()
     private var percentageLabel = UILabel()
     
-    
     private var currentProgress: Float = 0.0
-    
-    
+
     let progressColor = UIColor(named: "AccentColor")
-    
-    
+
     var trackColor: UIColor = .systemGray5
     
     override init(frame: CGRect) {

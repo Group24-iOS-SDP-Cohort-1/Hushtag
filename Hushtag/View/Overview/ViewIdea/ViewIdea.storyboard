@@ -21,7 +21,7 @@
                                 <rect key="frame" x="0.0" y="172" width="393" height="612"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="YLL-H1-qMg">
-                                        <rect key="frame" x="17" y="0.0" width="393" height="600.66666666666663"/>
+                                        <rect key="frame" x="17" y="0.0" width="393" height="645"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="jRf-Vx-hVm">
                                                 <rect key="frame" x="0.0" y="0.0" width="393" height="24"/>
@@ -102,6 +102,11 @@
                                                     </label>
                                                 </subviews>
                                             </stackView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jmw-9s-lyZ">
+                                                <rect key="frame" x="0.0" y="610.66666666666663" width="393" height="34.333333333333371"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="filled" image="pencil.and.scribble" catalog="system" title="Draft Script"/>
+                                            </button>
                                         </subviews>
                                     </stackView>
                                 </subviews>
@@ -171,6 +176,7 @@
     </scenes>
     <resources>
         <image name="heart" catalog="system" width="128" height="107"/>
+        <image name="pencil.and.scribble" catalog="system" width="128" height="86"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

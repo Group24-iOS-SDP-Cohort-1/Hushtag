@@ -32,13 +32,55 @@ class ViewScriptsViewController: UIViewController {
         let layout = generateScriptsLayout(title: pageTitle)
         scriptsCollectionView.setCollectionViewLayout(layout, animated: true)
         NotificationCenter.default.addObserver(self, selector: #selector(syncLikedIdeas), name: .didUpdateLikedStatus, object: nil)
-        
+
+        updateEmptyState()
     }
-    
     @objc func syncLikedIdeas() {
         likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
         scriptsCollectionView.reloadData()
+        updateEmptyState()
     }
+
+    private func updateEmptyState() {
+
+        guard pageTitle != "Your Scripts" else {
+            scriptsCollectionView.backgroundView = nil
+            return
+        }
+
+        if likedIdeas.isEmpty {
+            let emptyView = UIView(frame: scriptsCollectionView.bounds)
+
+            let imageView = UIImageView(image: UIImage(systemName: "heart.slash"))
+            imageView.tintColor = .tertiaryLabel
+            imageView.heightAnchor.constraint(equalToConstant: 38).isActive = true
+            imageView.widthAnchor.constraint(equalToConstant: 38).isActive = true
+
+            let label = UILabel()
+            label.text = "No liked ideas"
+            label.textColor = .secondaryLabel
+            label.font = .systemFont(ofSize: 22, weight: .medium)
+            label.textAlignment = .center
+
+            let stack = UIStackView(arrangedSubviews: [imageView, label])
+            stack.axis = .vertical
+            stack.spacing = 12
+            stack.alignment = .center
+
+            emptyView.addSubview(stack)
+            stack.translatesAutoresizingMaskIntoConstraints = false
+
+            NSLayoutConstraint.activate([
+                stack.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
+                stack.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor)
+            ])
+
+            scriptsCollectionView.backgroundView = emptyView
+        } else {
+            scriptsCollectionView.backgroundView = nil
+        }
+    }
+
 }
 
 extension ViewScriptsViewController: UICollectionViewDataSource {
@@ -79,18 +121,17 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
                     let indexPathToDelete = IndexPath(item: currentIndex, section: 0)
                     collectionView?.performBatchUpdates({
                         collectionView?.deleteItems(at: [indexPathToDelete])
-                    }, completion: nil)
+                    }, completion: { _ in
+                        self.updateEmptyState()
+                    })
+
                 }
             }
-        
         return cell
     }
-    
-    
 }
 
 func generateScriptsLayout(title: String) -> UICollectionViewLayout{
-
     if title == "Your Scripts"{
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
@@ -108,7 +149,6 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
             layoutSize: groupSize,
             subitems: [item]
         )
-        //group.interItemSpacing = .fixed(10)
         
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 15
@@ -122,9 +162,7 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
         
         return layout
     }
-    
-    //LAYOUT FOR VIEWING ALL LIKED IDEAS
-    
+
     let itemSize = NSCollectionLayoutSize(
         widthDimension: .fractionalWidth(1.0),
         heightDimension: .estimated(120)
@@ -141,7 +179,6 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
         layoutSize: groupSize,
         subitems: [item]
     )
-    //group.interItemSpacing = .fixed(10)
 
     let section = NSCollectionLayoutSection(group: group)
     section.interGroupSpacing = 15
@@ -156,8 +193,6 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
     return layout
     
 }
-
-
 
 extension ViewScriptsViewController: UICollectionViewDelegate {
     

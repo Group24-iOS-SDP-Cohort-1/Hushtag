@@ -20,6 +20,7 @@ class Ideate1: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         ideas = ideaResponse.ideas
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
         collectionView.dataSource = self
@@ -154,7 +155,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideaCell",for: indexPath) as! IdeaCells
 
         let idea = ideas[indexPath.row]
-        let engagement = Double(idea.engagementRate) 
+        let engagement = Double(idea.engagementRate)
         let category = categorizeIdea(engagementRate: engagement)
         let keyword2: EngagementStyle
 

@@ -27,10 +27,7 @@ class DataStore {
     func getPosts() -> [Post] {
         posts
     }
-//    func getAnalysis() -> [Analysis] {
-//        analysis
-//    }
-    
+
     func loadSampleData() {
         let sampleTasks: [Task] = [
             Task(

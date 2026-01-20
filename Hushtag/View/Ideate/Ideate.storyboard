@@ -91,7 +91,7 @@
                         <outlet property="collectionView" destination="Mxq-Iu-w0r" id="YeI-Ho-aaB"/>
                         <outlet property="scriptButton" destination="oGG-eh-lG7" id="9QI-78-BeC"/>
                         <outlet property="scriptView" destination="Emg-PX-vHj" id="KwB-Fi-XyU"/>
-                        <segue destination="Yb8-13-5gt" kind="show" identifier="goToScript" id="rsD-Te-pVV"/>
+                        <segue destination="Yb8-13-5gt" kind="show" identifier="goToScript" animates="NO" id="rsD-Te-pVV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
