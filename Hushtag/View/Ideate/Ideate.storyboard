@@ -125,9 +125,6 @@
                                                                 </constraints>
                                                             </imageView>
                                                         </subviews>
-                                                        <constraints>
-                                                            <constraint firstItem="Lsr-OB-oXh" firstAttribute="top" secondItem="OcN-jm-zAl" secondAttribute="top" constant="20" id="zJ9-57-07U"/>
-                                                        </constraints>
                                                     </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="oJf-bY-P9k">
                                                         <rect key="frame" x="0.0" y="180" width="359" height="110"/>
@@ -170,7 +167,7 @@
                                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="Aq3-Lh-GAM">
                                                         <rect key="frame" x="0.0" y="650" width="359" height="34.333333333333371"/>
                                                         <subviews>
-                                                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" showsMenuAsPrimaryAction="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" changesSelectionAsPrimaryAction="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i00-kp-PG6">
+                                                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" showsMenuAsPrimaryAction="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" changesSelectionAsPrimaryAction="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i00-kp-PG6">
                                                                 <rect key="frame" x="0.0" y="0.0" width="185.66666666666666" height="34.333333333333336"/>
                                                                 <color key="tintColor" name="AccentColor"/>
                                                                 <menu key="menu" id="A7d-x1-4h3">
@@ -185,7 +182,7 @@
                                                                     <action selector="popupButton:" destination="w8b-bp-JmW" eventType="touchUpInside" id="XLY-LM-TWE"/>
                                                                 </connections>
                                                             </button>
-                                                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="laQ-wi-jb9">
+                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="laQ-wi-jb9">
                                                                 <rect key="frame" x="225.66666666666663" y="0.0" width="133.33333333333337" height="34.333333333333336"/>
                                                                 <color key="tintColor" name="AccentColor"/>
                                                                 <state key="normal" title="Button"/>

@@ -23,7 +23,6 @@ class ScriptsCell1: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         self.layer.cornerRadius = 12
-        self.layer.masksToBounds = false
         applyLiquidGlassEffect()
         Title.numberOfLines = 3
         Description.numberOfLines = 1

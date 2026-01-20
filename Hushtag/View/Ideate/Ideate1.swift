@@ -151,13 +151,10 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "ideaCell",
-            for: indexPath
-        ) as! IdeaCells
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideaCell",for: indexPath) as! IdeaCells
 
         let idea = ideas[indexPath.row]
-        let engagement = Double(idea.engagementRate) ?? 0.0
+        let engagement = Double(idea.engagementRate) 
         let category = categorizeIdea(engagementRate: engagement)
         let keyword2: EngagementStyle
 

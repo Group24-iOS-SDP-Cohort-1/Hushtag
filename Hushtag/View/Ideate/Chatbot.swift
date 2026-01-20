@@ -25,7 +25,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     @IBOutlet weak var inputViewBottomConstraint: NSLayoutConstraint!
 
-
     var messages: [Message] = []
     var autoSendMessage: String?
 
@@ -43,7 +42,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         "default": "idk everything bro so find yourself"
     ]
 
-
     var markedMessages: [String: [Message]] = [
         "script": [],
         "title": [],
@@ -59,51 +57,29 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Table setup
                 tableView.delegate = self
                 tableView.dataSource = self
                 tableView.separatorStyle = .none
                 tableView.reloadData()
-
-                // Container view
-                textView.clipsToBounds = false
                 textView.layer.backgroundColor = UIColor.clear.cgColor
 
-                // Send button
-                enterbutton.widthAnchor.constraint(equalToConstant: 60).isActive = true
-                enterbutton.heightAnchor.constraint(equalToConstant: 60).isActive = true
                 enterbutton.layer.cornerRadius = 30
-                enterbutton.setImage(UIImage(systemName: "arrow.up.circle.fill"), for: .normal)
-
-                // UITextView setup
                 textFieldView.delegate = self
                 textFieldView.isScrollEnabled = false
                 textFieldView.layer.borderWidth = 0.2
                 textFieldView.layer.borderColor = UIColor.white.cgColor
                 textFieldView.layer.cornerRadius = 16
-                textFieldView.clipsToBounds = true
-                textFieldView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-
-                // Shadow
                 textFieldView.layer.shadowColor = UIColor.gray.cgColor
                 textFieldView.layer.shadowOpacity = 0.2
                 textFieldView.layer.shadowOffset = CGSize(width: 0, height: 2)
                 textFieldView.layer.shadowRadius = 4
-                textFieldView.layer.masksToBounds = false
 
-                // Stack alignment
-                textStack.alignment = .bottom
-                textStack.distribution = .fill
-
-                //to load buttons of generate ideas,title,description
-                //showScriptSuggestions()
                 generateStack.isHidden = true
 
                 if let text = autoSendMessage {
                     sendAutoMessage(text)
                     autoSendMessage = nil
                 }
-
 
         setupKeyboardObservers()
         setupTapToDismiss()
@@ -186,10 +162,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
             let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
             cell.configure(with: messages[indexPath.row])
-
             let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
             longPress.minimumPressDuration = 0.5
             cell.contentView.addGestureRecognizer(longPress)
@@ -442,7 +416,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
     func sendAutoMessage(_ text: String) {
-
         messages.append(Message(text: text, isUser: true))
         tableView.reloadData()
         let indexPath = IndexPath(row: messages.count - 1, section: 0)
