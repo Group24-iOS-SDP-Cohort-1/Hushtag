@@ -45,16 +45,6 @@ class Schedule: UIViewController {
         )
     }
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-//    }
-//
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-//    }
-    
     func registerCell() {
         scheduleView.register(
             UINib (
@@ -180,6 +170,16 @@ class Schedule: UIViewController {
         }
     }
     
+    private func changeMonth(to date: Date) {
+        selectedDate = date
+        generateWeek(for: selectedDate)
+        filterItems(for: selectedDate)
+
+        scheduleView.performBatchUpdates {
+            scheduleView.reloadSections(IndexSet([0, 1]))
+        }
+    }
+    
     @objc private func handleCalendarLeft() {
         changeWeek(by: 1)
     }
@@ -272,7 +272,12 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
                 for: indexPath
             ) as! HeaderButton
             
-            headerView.configure(text: currentMonthText)
+            headerView.configure(text: currentMonthText, date: selectedDate)
+            
+            headerView.onDateChanged = { [weak self] newDate in
+                self?.changeMonth(to: newDate)
+            }
+            
             return headerView
         }
         return UICollectionReusableView()
