@@ -268,27 +268,33 @@ extension UIColor {
     }
 }
 
-extension Overview: AddViewControllerDelegate {
-
-    func addViewController(_ controller: AddViewController, didAddDeal deal: Deal) {
-        dataStore.saveDeal(deal)
-        //refreshTodaySchedule()
-    }
-
-    func addViewController(_ controller: AddViewController, didAddPost post: Post) {
-        dataStore.savePost(post)
-        //refreshTodaySchedule()
-    }
-
-//    private func refreshTodaySchedule() {
-//        post = dataStore.getPosts()
-//        task = dataStore.getTasks()
-//        deal = dataStore.getDeals()
+//extension Overview: AddViewControllerDelegate {
 //
-//        loadSchedule(for: Date())
-//
-//        collectionView.performBatchUpdates {
-//            collectionView.reloadSections(IndexSet(integer: 1))
-//        }
+//    func addViewController(_ controller: AddViewController, didAddDeal deal: Deal) {
+//        dataStore.saveDeal(deal)
+//        //refreshTodaySchedule()
 //    }
+//
+//    func addViewController(_ controller: AddViewController, didAddPost post: Post) {
+//        dataStore.savePost(post)
+//        //refreshTodaySchedule()
+//    }
+//
+////    private func refreshTodaySchedule() {
+////        post = dataStore.getPosts()
+////        task = dataStore.getTasks()
+////        deal = dataStore.getDeals()
+////
+////        loadSchedule(for: Date())
+////
+////        collectionView.performBatchUpdates {
+////            collectionView.reloadSections(IndexSet(integer: 1))
+////        }
+////    }
+//}
+extension Overview: AddViewDelegate {
+
+    func addViewController(_ controller: AddViewController, didCreatePost post: Post) {
+        loadSchedule(for: Date())
+    }
 }
