@@ -9,36 +9,47 @@ import UIKit
 
 class Ideate1: UIViewController {
 
-    @IBOutlet weak var collectionView: UICollectionView!
-
     var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
     var selectedIdea: Idea?
     var selectedIndexPath: IndexPath?
 
+    @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var scriptButton: UIButton!
-
-
     @IBOutlet weak var scriptView: UIBarButtonItem!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         ideas = ideaResponse.ideas
-
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(UINib(nibName: "IdeaCells", bundle: nil), forCellWithReuseIdentifier: "ideaCell")
         collectionView.register(UINib(nibName: "IdeaSearch", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "IdeaSearch")
         collectionView.register(UINib(nibName: "SuggestedFYHeader", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "suggestedHeader")
-        
         NotificationCenter.default.addObserver(self, selector: #selector(refreshUI), name: .didUpdateLikedStatus, object: nil)
         scriptButton.layer.borderWidth = 1
         scriptButton.layer.borderColor = UIColor.accent.cgColor
+        
+        setupGlobalKeyboardDismiss()
+    }
+    
+    private func setupGlobalKeyboardDismiss() {
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard)
+        )
+
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     @objc func refreshUI() {
-        // Reload the collection view to update heart icons
         collectionView.reloadData()
     }
 
@@ -46,35 +57,23 @@ class Ideate1: UIViewController {
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
             let vc = storyboard.instantiateViewController(withIdentifier: "Chatbot")
             navigationController?.pushViewController(vc, animated: true)
-        
-
     }
 
     @IBAction func viewScriptTap(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
-//            let vc = storyboard.instantiateViewController(withIdentifier: "viewScripts")
-//            navigationController?.pushViewController(vc, animated: true)
-//        vc.title = "Your Scripts"
         guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
         guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
         destinationVC.pageTitle = "Your Scripts"
         self.navigationController?.pushViewController(destinationVC, animated: true)
     }
 
-    
     @IBAction func viewLikedTap(_ sender: UIBarButtonItem) {
         let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
-//            let vc = storyboard.instantiateViewController(withIdentifier: "viewScripts")
-//            navigationController?.pushViewController(vc, animated: true)
-//        vc.title = "Your Scripts"
         guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
         guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
         destinationVC.pageTitle = "Liked Ideas"
         self.navigationController?.pushViewController(destinationVC, animated: true)
     }
-    
-    
-
 
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
@@ -112,7 +111,7 @@ class Ideate1: UIViewController {
 
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
-                heightDimension: .estimated(120)
+                heightDimension: .estimated(116)
             )
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
@@ -124,7 +123,7 @@ class Ideate1: UIViewController {
                 layoutSize: groupSize,
                 subitems: [item]
             )
-
+            
             let section = NSCollectionLayoutSection(group: group)
 
             let headerSize = NSCollectionLayoutSize(
@@ -138,7 +137,7 @@ class Ideate1: UIViewController {
             )
             
             section.boundarySupplementaryItems = [header]
-            section.interGroupSpacing = 10
+            section.interGroupSpacing = 15
             section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
 
             return section
@@ -154,8 +153,6 @@ class Ideate1: UIViewController {
             return "Niche"
         }
     }
-
-
 }
 
 extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -171,18 +168,11 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "ideaCell",
-            for: indexPath
-        ) as! IdeaCells
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideaCell",for: indexPath) as! IdeaCells
 
         let idea = ideas[indexPath.row]
-
-        let engagement = Double(idea.engagementRate) ?? 0.0
-
+        let engagement = Double(idea.engagementRate)
         let category = categorizeIdea(engagementRate: engagement)
-            
-      
         let keyword2: EngagementStyle
 
         switch category {
@@ -193,7 +183,6 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
                 color: .systemRed
             )
 
-
         case "Growing":
             keyword2 = EngagementStyle(
                 text: "Growing",
@@ -201,14 +190,12 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
                 color: .systemOrange
             )
 
-
         case "Niche":
             keyword2 = EngagementStyle(
                 text: "Niche",
                 icon: "bolt",
                 color: .systemGreen
             )
-
 
         default:
             return cell
@@ -244,19 +231,15 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         }
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "goToScript" {
-            let vc = segue.destination as! ScriptedIdeas
-            vc.idea = selectedIdea
-        }
-    }
-
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard indexPath.section == 1 else { return }
-        selectedIdea = ideas[indexPath.row]
-        performSegue(withIdentifier: "goToScript", sender: nil)
+        let idea = ideas[indexPath.row]
+        let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
+        guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
+        guard let destinationVC = navVC.topViewController as? ViewIdea else {return}
+        destinationVC.idea = idea
+        self.navigationController?.pushViewController(destinationVC, animated: true)
     }
-
 
 }
 
@@ -264,8 +247,6 @@ extension Ideate1: IdeaSearchDelegate {
     func didTapSearch(with keyword: String) {
         if keyword.isEmpty {
             ideas = ideaResponse.ideas
-            
-           
         } else {
             ideas = ideaResponse.ideas.filter { idea in
                 idea.hashtag.contains { tag in
@@ -274,11 +255,10 @@ extension Ideate1: IdeaSearchDelegate {
             }
         }
         collectionView.reloadSections(IndexSet(integer: 1))
-     
-
     }
 }
 
 extension Notification.Name {
     static let didUpdateLikedStatus = Notification.Name("didUpdateLikedStatus")
 }
+

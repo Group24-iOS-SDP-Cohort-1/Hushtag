@@ -20,9 +20,9 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="j8A-o1-Y0x">
                         <rect key="frame" x="0.0" y="0.0" width="560" height="316"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wGm-Fo-EzB">
-                                <rect key="frame" x="10" y="10" width="450" height="0.0"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="hello" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wGm-Fo-EzB">
+                                <rect key="frame" x="10" y="15" width="450" height="18"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -38,8 +38,8 @@
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="shJ-vj-G5A">
                                 <rect key="frame" x="10" y="57" width="424.66666666666669" height="173"/>
                             </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="qCx-dC-yhc">
-                                <rect key="frame" x="477.66666666666669" y="76.333333333333329" width="60.333333333333314" height="50"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="qCx-dC-yhc">
+                                <rect key="frame" x="477.66666666666669" y="73.333333333333329" width="60.333333333333314" height="50"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hmb-Bs-UPX">
                                         <rect key="frame" x="0.0" y="0.0" width="20" height="50"/>
@@ -59,11 +59,11 @@
                         <constraints>
                             <constraint firstItem="shJ-vj-G5A" firstAttribute="leading" secondItem="j8A-o1-Y0x" secondAttribute="leading" constant="10" id="56e-k7-Ln0"/>
                             <constraint firstAttribute="trailing" secondItem="f9h-1Q-D93" secondAttribute="trailing" constant="5" id="ITR-3u-5YD"/>
+                            <constraint firstItem="qCx-dC-yhc" firstAttribute="centerY" secondItem="shJ-vj-G5A" secondAttribute="centerY" id="JJA-QE-1VV"/>
                             <constraint firstItem="wGm-Fo-EzB" firstAttribute="leading" secondItem="j8A-o1-Y0x" secondAttribute="leading" constant="10" id="QuP-QB-5Rf"/>
-                            <constraint firstItem="shJ-vj-G5A" firstAttribute="top" secondItem="wGm-Fo-EzB" secondAttribute="bottom" constant="10" id="WcV-VS-nfu"/>
-                            <constraint firstItem="qCx-dC-yhc" firstAttribute="top" secondItem="f9h-1Q-D93" secondAttribute="bottom" constant="32" id="Wef-HA-fFm"/>
+                            <constraint firstItem="shJ-vj-G5A" firstAttribute="top" secondItem="wGm-Fo-EzB" secondAttribute="bottom" constant="13" id="WcV-VS-nfu"/>
                             <constraint firstItem="f9h-1Q-D93" firstAttribute="top" secondItem="j8A-o1-Y0x" secondAttribute="top" constant="10" id="Zyu-wM-YdZ"/>
-                            <constraint firstItem="wGm-Fo-EzB" firstAttribute="top" secondItem="j8A-o1-Y0x" secondAttribute="top" constant="10" id="dxA-OL-MTI"/>
+                            <constraint firstItem="wGm-Fo-EzB" firstAttribute="top" secondItem="j8A-o1-Y0x" secondAttribute="top" constant="15" id="dxA-OL-MTI"/>
                             <constraint firstAttribute="trailing" secondItem="qCx-dC-yhc" secondAttribute="trailing" constant="22" id="lr9-dT-GVC"/>
                             <constraint firstAttribute="trailing" secondItem="wGm-Fo-EzB" secondAttribute="trailing" constant="100" id="mCv-WC-FGG"/>
                         </constraints>

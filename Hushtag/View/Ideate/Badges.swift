@@ -30,8 +30,6 @@ class Badges: UIView {
 
        private func setupUI() {
            clipsToBounds = true
-
-         
            badgeLabel.textAlignment = .center
            badgeLabel.textColor = .white
        }
@@ -45,7 +43,6 @@ class Badges: UIView {
        ) {
            badgeLabel.text = "#\(text)"
            badgeCornerRadius = cornerRadius
-
            badgeLabel.textColor = color
            layer.borderWidth = borderWidth
            layer.borderColor = color.cgColor

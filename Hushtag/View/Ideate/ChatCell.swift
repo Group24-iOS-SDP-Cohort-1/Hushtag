@@ -23,8 +23,6 @@ class ChatCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         chatView.layer.cornerRadius = 16
-
-
     }
 
     func configure(with message: Message) {

@@ -54,13 +54,14 @@ struct EngagementLineChart: View {
                 AxisValueLabel(format: .dateTime.day().month())
             }
         }
-        .chartLegend(.hidden) // only one line → legend not needed
-        .frame(height: 140)
+        .chartLegend(.hidden)
+        .frame(width: 369, height: 140)
         .chartPlotStyle { plotArea in
             plotArea
                 .padding(.horizontal, 0)
                 .padding(.vertical, 0)
         }
+        .offset(y: -37)
         .chartXAxisLabel("Past Week", position: .bottom, spacing: 0)
         .chartYAxisLabel("Avg Engagement Rate", position: .trailing, spacing: 0)
 

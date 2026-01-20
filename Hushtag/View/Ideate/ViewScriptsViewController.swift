@@ -21,46 +21,65 @@ class ViewScriptsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        
         ideas = ideaResponse.ideas
         likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
-
         navigationItem.title = pageTitle
-        
-        //ideas = ideaResponse.ideas
-        
         scriptsCollectionView.dataSource = self
         scriptsCollectionView.delegate = self
-        
-        scriptsCollectionView.register(UINib(nibName: "likedCells", bundle: nil), forCellWithReuseIdentifier: "likedCells")
+      
         scriptsCollectionView.register(UINib(nibName: "ScriptsCell1", bundle: nil), forCellWithReuseIdentifier: "scriptedIdeas")
         scriptsCollectionView.register(UINib(nibName: "LikedCellsNew", bundle: nil), forCellWithReuseIdentifier: "likedCellsNew")
-
         let layout = generateScriptsLayout(title: pageTitle)
         scriptsCollectionView.setCollectionViewLayout(layout, animated: true)
-        //scriptsCollectionView.clipsToBounds = false
-        
         NotificationCenter.default.addObserver(self, selector: #selector(syncLikedIdeas), name: .didUpdateLikedStatus, object: nil)
-        
+
+        updateEmptyState()
     }
-    
     @objc func syncLikedIdeas() {
-        // 1. Re-filter the global ideas list to get the current liked ones
         likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
-        
-        // 2. Refresh the UI
         scriptsCollectionView.reloadData()
+        updateEmptyState()
     }
-    
-    
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == "toScriptedIdeas",
-//           let destinationVC = segue.destination as? ScriptedIdeas,
-//           let idea = sender as? Idea {
-//            destinationVC.idea = idea
-//        }
-//    }
+
+    private func updateEmptyState() {
+
+        guard pageTitle != "Your Scripts" else {
+            scriptsCollectionView.backgroundView = nil
+            return
+        }
+
+        if likedIdeas.isEmpty {
+            let emptyView = UIView(frame: scriptsCollectionView.bounds)
+
+            let imageView = UIImageView(image: UIImage(systemName: "heart.slash"))
+            imageView.tintColor = .tertiaryLabel
+            imageView.heightAnchor.constraint(equalToConstant: 38).isActive = true
+            imageView.widthAnchor.constraint(equalToConstant: 38).isActive = true
+
+            let label = UILabel()
+            label.text = "No liked ideas"
+            label.textColor = .secondaryLabel
+            label.font = .systemFont(ofSize: 22, weight: .medium)
+            label.textAlignment = .center
+
+            let stack = UIStackView(arrangedSubviews: [imageView, label])
+            stack.axis = .vertical
+            stack.spacing = 12
+            stack.alignment = .center
+
+            emptyView.addSubview(stack)
+            stack.translatesAutoresizingMaskIntoConstraints = false
+
+            NSLayoutConstraint.activate([
+                stack.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
+                stack.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor)
+            ])
+
+            scriptsCollectionView.backgroundView = emptyView
+        } else {
+            scriptsCollectionView.backgroundView = nil
+        }
+    }
 
 }
 
@@ -71,8 +90,6 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
         }else{
             return likedIdeas.count
         }
-        
-        //return ideas.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -86,8 +103,7 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
             cell.configureCell(idea: idea)
             return cell
         }
-        
-        
+
         let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "likedCellsNew",
             for: indexPath
@@ -96,33 +112,27 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
         let idea = likedIdeas[indexPath.row]
         cell.configureCell(idea: idea)
         
+        cell.delegate = self
+        
         cell.onLikeToggle = { [weak self, weak collectionView] in
                 guard let self = self else { return }
-                
-                // 1. Find the current index of this idea in our local array
                 if let currentIndex = self.likedIdeas.firstIndex(where: { $0.id == idea.id }) {
-                    
-                    // 2. Update the data source first (Remove from array)
                     self.likedIdeas.remove(at: currentIndex)
-                    
-                    // 3. Animate the deletion in the CollectionView
                     let indexPathToDelete = IndexPath(item: currentIndex, section: 0)
                     collectionView?.performBatchUpdates({
                         collectionView?.deleteItems(at: [indexPathToDelete])
-                    }, completion: nil)
+                    }, completion: { _ in
+                        self.updateEmptyState()
+                    })
+
                 }
             }
-        
         return cell
     }
-    
-    
 }
 
 func generateScriptsLayout(title: String) -> UICollectionViewLayout{
-    //LAYOUT FOR VIEWING ALL SCRIPTS
     if title == "Your Scripts"{
-        
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .fractionalHeight(1.0)
@@ -133,13 +143,12 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
 
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(153)
+            heightDimension: .estimated(147)
         )
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: groupSize,
             subitems: [item]
         )
-        //group.interItemSpacing = .fixed(10)
         
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 15
@@ -153,9 +162,7 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
         
         return layout
     }
-    
-    //LAYOUT FOR VIEWING ALL LIKED IDEAS
-    
+
     let itemSize = NSCollectionLayoutSize(
         widthDimension: .fractionalWidth(1.0),
         heightDimension: .estimated(120)
@@ -172,7 +179,6 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
         layoutSize: groupSize,
         subitems: [item]
     )
-    //group.interItemSpacing = .fixed(10)
 
     let section = NSCollectionLayoutSection(group: group)
     section.interGroupSpacing = 15
@@ -188,36 +194,32 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
     
 }
 
-
-
 extension ViewScriptsViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
-
         if pageTitle == "Your Scripts"{
-            
             let idea = ideas[indexPath.row]
             let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
             if let destinationVC = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas {
                 destinationVC.idea = idea
-                    
-                // 3. Push the view controller
                 self.navigationController?.pushViewController(destinationVC, animated: true)
             }
-            
             return
         }
-        
-        let idea = ideas[indexPath.row]
-        let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
-        if let destinationVC = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas {
-            destinationVC.idea = idea
-                
-            // 3. Push the view controller
-            self.navigationController?.pushViewController(destinationVC, animated: true)
-        }
-        
+
     }
     
+}
+
+extension ViewScriptsViewController: LikedCellDelegate {
+
+    func didTapDraftScript(for idea: Idea) {
+        let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
+        guard let chatVC = storyboard.instantiateViewController(
+            withIdentifier: "Chatbot"
+        ) as? Chatbot else { return }
+        chatVC.autoSendMessage = "script"
+        navigationController?.pushViewController(chatVC, animated: true)
+    }
 }

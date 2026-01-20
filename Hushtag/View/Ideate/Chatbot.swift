@@ -24,8 +24,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     @IBOutlet weak var generateStack: UIStackView!
 
     @IBOutlet weak var inputViewBottomConstraint: NSLayoutConstraint!
-    
-    
+
     var messages: [Message] = []
     var autoSendMessage: String?
 
@@ -34,6 +33,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         "hello": "Hi! How can I help you today?",
         "script": "Real beauty isn’t about perfection.It’s about embracing who you are—your skin, your smile, your story.Every freckle, every flaw, every feature makes you unique.",
         "generate title": "Real Beauty, Real Confidence",
+        "generate thumbnail": "Your thumbnail here",
         "generate description": "Real Beauty, Real Confidence.Real beauty isn’t about perfection.",
         "description": "Real Beauty, Real Confidence.Real beauty isn’t about perfection.",
         "generate script": "Real beauty isn’t about perfection.It’s about embracing who you are—your skin, your smile, your story.Every freckle, every flaw, every feature makes you unique.",
@@ -42,71 +42,65 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         "default": "idk everything bro so find yourself"
     ]
 
-
     var markedMessages: [String: [Message]] = [
         "script": [],
         "title": [],
-        "description": []
+        "description": [],
+        "thumbnail": []
     ]
 
     let maxLines: CGFloat = 10
     let minLines: CGFloat = 3
     let lineHeight: CGFloat = 100
+    let requiredMarkTypes = ["script", "title", "description", "thumbnail"]
+    var didShowFinalReadyMessage = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Table setup
                 tableView.delegate = self
                 tableView.dataSource = self
                 tableView.separatorStyle = .none
                 tableView.reloadData()
-
-                // Container view
-                textView.clipsToBounds = false
                 textView.layer.backgroundColor = UIColor.clear.cgColor
 
-                // Send button
-                enterbutton.widthAnchor.constraint(equalToConstant: 60).isActive = true
-                enterbutton.heightAnchor.constraint(equalToConstant: 60).isActive = true
                 enterbutton.layer.cornerRadius = 30
-                enterbutton.setImage(UIImage(systemName: "arrow.up.circle.fill"), for: .normal)
-
-                // UITextView setup
                 textFieldView.delegate = self
                 textFieldView.isScrollEnabled = false
                 textFieldView.layer.borderWidth = 0.2
                 textFieldView.layer.borderColor = UIColor.white.cgColor
                 textFieldView.layer.cornerRadius = 16
-                textFieldView.clipsToBounds = true
-                textFieldView.textContainerInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-
-                // Shadow
                 textFieldView.layer.shadowColor = UIColor.gray.cgColor
                 textFieldView.layer.shadowOpacity = 0.2
                 textFieldView.layer.shadowOffset = CGSize(width: 0, height: 2)
                 textFieldView.layer.shadowRadius = 4
-                textFieldView.layer.masksToBounds = false
 
-                // Stack alignment
-                textStack.alignment = .bottom
-                textStack.distribution = .fill
-
-                //to load buttons of generate ideas,title,description
-                //showScriptSuggestions()
                 generateStack.isHidden = true
 
                 if let text = autoSendMessage {
                     sendAutoMessage(text)
-                    autoSendMessage = nil // prevent duplication
+                    autoSendMessage = nil
                 }
-        
 
         setupKeyboardObservers()
         setupTapToDismiss()
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+
+    func isTypeAlreadyMarked(_ type: String) -> Bool {
+            return !(markedMessages[type]?.isEmpty ?? true)
+        }
+
+        func isAllContentMarked() -> Bool {
+            for type in requiredMarkTypes {
+                if markedMessages[type]?.isEmpty ?? true {
+                    return false
+                }
+            }
+            return true
+        }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -124,59 +118,52 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
             tableView.addGestureRecognizer(tapGesture)
         }
-    
+
     @objc func dismissKeyboard() {
             view.endEditing(true)
         }
-    
+
     func setupKeyboardObservers() {
             NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         }
-    
+
     @objc func keyboardWillShow(notification: NSNotification) {
             if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-                // Adjust the bottom constraint.
-                // We subtract safeAreaInsets.bottom because the keyboard height includes the bottom safe area,
-                // but our constraint is likely pinned to the Safe Area, not the Superview edge.
+
                 let bottomPadding = view.safeAreaInsets.bottom
                 self.inputViewBottomConstraint.constant = keyboardSize.height - bottomPadding
-                
-                // Animate the movement
+
                 UIView.animate(withDuration: 0.3) {
                     self.view.layoutIfNeeded()
                 }
-                
-                // Scroll to the last message so it isn't hidden
+
                 scrollToBottom()
             }
         }
-    
+
     @objc func keyboardWillHide(notification: NSNotification) {
-            // Reset the constraint to 0 (or whatever your default margin is)
             self.inputViewBottomConstraint.constant = 8
-            
+
             UIView.animate(withDuration: 0.3) {
                 self.view.layoutIfNeeded()
             }
         }
-    
+
     func scrollToBottom() {
             if messages.count > 0 {
                 let indexPath = IndexPath(row: messages.count - 1, section: 0)
                 tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
             }
         }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return messages.count
         }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
             let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
             cell.configure(with: messages[indexPath.row])
-
             let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
             longPress.minimumPressDuration = 0.5
             cell.contentView.addGestureRecognizer(longPress)
@@ -253,7 +240,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
     }
 
-    
+
     @IBAction func sendButton(_ sender: Any) {
         let text = textFieldView.text.trimmingCharacters(in: .whitespacesAndNewlines)
             if !text.isEmpty {
@@ -262,7 +249,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
     @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
-
         //to trigger action once the press begins
         guard gesture.state == .began else { return }
         //to get the view that we long pressed
@@ -277,25 +263,61 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
            // Helper to add mark/unmark option
            func addMarkAction(type: String) {
                let isMarked = message.markType == type
-               let title = isMarked ? "Unmark \(type.capitalized)" : "Mark as \(type.capitalized)"
+               if !isMarked && isTypeAlreadyMarked(type) {
+                       return
+                   }
 
+               let title = isMarked ? "Unmark \(type.capitalized)" : "Mark as \(type.capitalized)"
+               
                alert.addAction(UIAlertAction(title: title, style: .default) { _ in
                    if isMarked {
                        message.markType = nil
-                       self.markedMessages[type]?.removeAll(where: { $0.text == message.text })
+                       self.markedMessages[type]?.removeAll {
+                                               $0.text == message.text
+                                }
+                       self.didShowFinalReadyMessage = false
                        self.showScriptSuggestions()
+
                    } else {
+                       if let oldType = message.markType {
+                                      self.markedMessages[oldType]?.removeAll { $0.text == message.text }
+                                  }
+
                        self.generateStack.isHidden = false
                        message.markType = type
                        self.markedMessages[type]?.append(message)
-                       
+
+                       if self.isAllContentMarked() && !self.didShowFinalReadyMessage {
+
+                           self.didShowFinalReadyMessage = true
+
+                           let finalMessage = Message(
+                               text: "less goo your post is ready",
+                               isUser: false
+                           )
+
+                           self.messages.append(finalMessage)
+
+                           let indexPath = IndexPath(
+                               row: self.messages.count - 1,
+                               section: 0
+                           )
+
+                           self.tableView.insertRows(at: [indexPath], with: .fade)
+                           self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+                       }
+
+
                        switch type {
                                case "script":
-                                   self.showScriptSuggestions(except: ["script"])
+                                   self.showScriptSuggestions()
                                case "title":
-                                   self.showScriptSuggestions(except: ["script", "title"])
+                                   self.showScriptSuggestions()
                                case "description":
-                                   self.showScriptSuggestions(except: ["script", "title", "description"])
+                                   self.showScriptSuggestions()
+                               case "thumbnail":
+                                   self.showScriptSuggestions()
+
                                default:
                                    self.showScriptSuggestions()
                                }
@@ -305,7 +327,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                })
            }
 
-           ["script", "title", "description"].forEach { addMarkAction(type: $0) }
+           ["script", "title", "description", "thumbnail"].forEach { addMarkAction(type: $0) }
 
            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
            self.present(alert, animated: true)
@@ -313,28 +335,63 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
 
-    func showScriptSuggestions(except excludedTypes: [String] = []) {
+    func getUnmarkedTypes() -> [String] {
+        return requiredMarkTypes.filter { type in
+            markedMessages[type]?.isEmpty ?? true
+        }
+    }
+
+    func showScriptSuggestions() {
+
         // Remove previous buttons
         generateStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
-        // All possible suggestions
-        var items = ["Generate Title", "Generate Description", "Generate Thumbnail"]
+        // Get only the types which are NOT yet marked
+        let unmarkedTypes = getUnmarkedTypes()
 
-        // Remove excluded items
-        if excludedTypes.contains("script") { items.removeAll { $0 == "Generate Scripts" } }
-        if excludedTypes.contains("title") { items.removeAll { $0 == "Generate Title" } }
-        if excludedTypes.contains("description") { items.removeAll { $0 == "Generate Description" } }
+        // If nothing left to generate, hide stack
+        if unmarkedTypes.isEmpty {
+            generateStack.isHidden = true
+            return
+        }
 
-        for item in items {
-            if let view = Bundle.main.loadNibNamed("SuggestionCell", owner: self, options: nil)?.first as? SuggestionCell {
-                view.generateButton.setTitle(item, for: .normal)
-                view.generateButton.addTarget(self, action: #selector(generateButtonTapped(_:)), for: .touchUpInside)
+        generateStack.isHidden = false
+
+        for type in unmarkedTypes {
+
+            let buttonTitle: String
+
+            switch type {
+            case "script":
+                buttonTitle = "Generate Script"
+            case "title":
+                buttonTitle = "Generate Title"
+            case "description":
+                buttonTitle = "Generate Description"
+            case "thumbnail":
+                buttonTitle = "Generate Thumbnail"
+            default:
+                continue
+            }
+
+            if let view = Bundle.main
+                .loadNibNamed("SuggestionCell", owner: self)?
+                .first as? SuggestionCell {
+
+                view.generateButton.setTitle(buttonTitle, for: .normal)
+                view.generateButton.addTarget(
+                    self,
+                    action: #selector(generateButtonTapped(_:)),
+                    for: .touchUpInside
+                )
+
                 generateStack.addArrangedSubview(view)
             }
         }
 
         generateStack.layoutIfNeeded()
     }
+
 
     @objc func generateButtonTapped(_ sender: UIButton) {
         guard let title = sender.currentTitle else { return }
@@ -355,11 +412,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
         // Show buttons (title, description, thumbnail)
         generateStack.isHidden = false
-        showScriptSuggestions(except: ["script"])
+        showScriptSuggestions()
     }
 
     func sendAutoMessage(_ text: String) {
-
         messages.append(Message(text: text, isUser: true))
         tableView.reloadData()
         let indexPath = IndexPath(row: messages.count - 1, section: 0)
@@ -370,9 +426,3 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
 }
-
-
-
-
-
-
