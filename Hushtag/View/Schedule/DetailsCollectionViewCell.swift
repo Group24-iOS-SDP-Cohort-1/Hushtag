@@ -17,6 +17,11 @@ class DetailsCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var deliverableLabel: UILabel!
     @IBOutlet weak var subNameLabel: UILabel!
     @IBOutlet weak var deadlineLabel: UILabel!
+    @IBOutlet weak var statusButton: UIButton!
+    private var currentTask: Task?
+    var onToggleCompletion: ((Bool) -> Void)?
+    private var isCompleted: Bool = false
+
     override func awakeFromNib() {
         super.awakeFromNib()
     }
@@ -78,7 +83,8 @@ class DetailsCollectionViewCell: UICollectionViewCell {
         } else {
             deadlineLabel.text = "-:—"
         }
-
+        isCompleted = task.isCompleted
+        updateCompletionState(isCompleted: isCompleted)
     }
 
     func configureMultiple(with deliverable: Deliverable) {
@@ -88,6 +94,8 @@ class DetailsCollectionViewCell: UICollectionViewCell {
         } else {
             deadlineLabel.text = "Deadline: —"
         }
+        isCompleted = deliverable.isCompleted
+        updateCompletionState(isCompleted: isCompleted)
     }
     
     private func abbreviatedDay(from day: String) -> String {
@@ -101,5 +109,22 @@ class DetailsCollectionViewCell: UICollectionViewCell {
             "Sunday": "Sun"
         ]
         return map[day] ?? day.prefix(3).capitalized
+    }
+    
+    private func updateCompletionState(isCompleted: Bool) {
+        let symbolName = isCompleted ? "largecircle.fill.circle" : "circle"
+
+        let image = UIImage(
+            systemName: symbolName,
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+        )
+
+        statusButton.setImage(image, for: .normal)
+    }
+    
+    @IBAction func didTapStatusButton(_ sender: UIButton) {
+        isCompleted.toggle()
+        updateCompletionState(isCompleted: isCompleted)
+        onToggleCompletion?(isCompleted)
     }
 }

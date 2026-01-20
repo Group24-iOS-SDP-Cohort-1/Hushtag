@@ -17,5 +17,4 @@ class Analytics: UICollectionViewCell {
     func configure() {
         
     }
-
 }

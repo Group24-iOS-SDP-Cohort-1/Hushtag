@@ -16,7 +16,6 @@ class AnalysisCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var iconStack: UIStackView!
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         applyLiquidGlassEffect()
     }
     func configureCell(analysis: Analysis, category: String, state: Int) {

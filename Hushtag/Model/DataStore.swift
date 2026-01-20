@@ -34,6 +34,18 @@ class DataStore {
         posts.append(post)
     }
     
+    func updatePost(_ updatedPost: Post) {
+        if let index = posts.firstIndex(where: { $0.name == updatedPost.name }) {
+            posts[index] = updatedPost
+        }
+    }
+
+    func updateDeal(_ updatedDeal: Deal) {
+        if let index = deals.firstIndex(where: { $0.name == updatedDeal.name }) {
+            deals[index] = updatedDeal
+        }
+    }
+    
     func scheduleItems(on date: Date) -> [ScheduleItem] {
         let calendar = Calendar.current
 
@@ -102,7 +114,7 @@ class DataStore {
                     date: "2026-1-14T00:00:00Z",
                     time: TimeData(hour: 15, minute: 0)
                 ),
-                isCompleted: false
+                isCompleted: true
             ),
             
             Task(

@@ -78,6 +78,7 @@ class Schedule: UIViewController {
             forSupplementaryViewOfKind: "headerButton",
             withReuseIdentifier: "header_button")
     }
+    
     private func filterItems(for date: Date) {
         selectedDate = date
         todayItems = dataStore.scheduleItems(on: date)
@@ -188,6 +189,39 @@ class Schedule: UIViewController {
         changeWeek(by: -1)
     }
     
+    private func togglePostCompletion(_ post: Post) {
+        guard let tasks = post.tasks, !tasks.isEmpty else { return }
+
+        let shouldCompleteAll = !post.isCompleted
+
+        let updatedTasks = tasks.map { task in
+            var t = task
+            t.isCompleted = shouldCompleteAll
+            return t
+        }
+
+        var updatedPost = post
+        updatedPost.tasks = updatedTasks
+
+        dataStore.updatePost(updatedPost)
+    }
+    
+    private func toggleDealCompletion(_ deal: Deal) {
+        guard !deal.deliverable.isEmpty else { return }
+
+        let shouldCompleteAll = !deal.isCompleted
+
+        let updatedDeliverables = deal.deliverable.map { d -> Deliverable in
+            var deliverable = d
+            deliverable.isCompleted = shouldCompleteAll
+            return deliverable
+        }
+
+        var updatedDeal = deal
+        updatedDeal.deliverable = updatedDeliverables
+
+        DataStore.shared.updateDeal(updatedDeal)
+    }
 }
 
 extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -248,6 +282,7 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
         ) as! ScheduleCollectionViewCell
         
         let item = todayItems[indexPath.row]
+        cell.delegate = self
         cell.configure(with: item)
         return cell
     }
@@ -308,10 +343,31 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
             vc.schedule = selectedScheduleItem
         }
     }
+    
 }
 
 extension Notification.Name {
     static let calendarSwipeLeft = Notification.Name("calendarSwipeLeft")
     static let calendarSwipeRight = Notification.Name("calendarSwipeRight")
+}
+
+extension Schedule: ScheduleCollectionViewCellDelegate {
+
+    func didTapCompleted(item: ScheduleItem?) {
+        guard let item else { return }
+
+        switch item {
+
+        case .post(let post):
+            togglePostCompletion(post)
+
+        case .deal(let deal):
+            toggleDealCompletion(deal)
+        }
+
+        // Refresh only the list section
+        filterItems(for: selectedDate)
+        scheduleView.reloadSections(IndexSet(integer: 1))
+    }
 }
 

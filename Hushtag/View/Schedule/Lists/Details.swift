@@ -11,6 +11,7 @@ class Details: UIViewController {
 
     @IBOutlet weak var detailsView: UICollectionView!
     var schedule: ScheduleItem?
+    var dataStore: DataStore = DataStore.shared
     override func viewDidLoad() {
         super.viewDidLoad()
         detailsView.delegate = self
@@ -97,6 +98,20 @@ class Details: UIViewController {
 
         }
     }
+    
+    private func updateTaskCompletion(taskIndex: Int, isCompleted: Bool) {
+        guard case .post(var post) = schedule,
+              var tasks = post.tasks,
+              taskIndex < tasks.count else { return }
+
+        tasks[taskIndex].isCompleted = isCompleted
+        post.tasks = tasks
+        schedule = .post(post)
+
+        dataStore.updatePost(post)
+
+        detailsView.reloadItems(at: [IndexPath(row: taskIndex, section: 1)])
+    }
 }
 
 extension Details: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -119,7 +134,7 @@ extension Details: UICollectionViewDataSource, UICollectionViewDelegateFlowLayou
         switch schedule {
         case .deal(let deal):
             if section == 1 {
-                return 1   // summary
+                return 1
             }
             return deal.deliverable.count
 

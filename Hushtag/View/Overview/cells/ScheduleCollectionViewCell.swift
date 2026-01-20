@@ -18,9 +18,9 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         applyLiquidGlassEffect()
     }
+    
     func configure(with item: ScheduleItem) {
         self.item = item
 
@@ -57,7 +57,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     }
 
     private func updateCompletedButton(isCompleted: Bool) {
-        let imageName = isCompleted ? "checkmark.circle.fill" : "circle"
+        let imageName = isCompleted ? "largecircle.fill.circle" : "circle"
         completedButton.setImage(UIImage(systemName: imageName), for: .normal)
     }
 
