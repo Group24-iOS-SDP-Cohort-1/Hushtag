@@ -104,16 +104,7 @@
                             <constraint firstItem="rWT-oj-zyq" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="lNM-1q-xIw"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Workplace" id="ZZd-fl-5CJ">
-                        <barButtonItem key="leftBarButtonItem" id="vEG-mC-Rnf">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="aYe-VA-7cR">
-                                <rect key="frame" x="20" y="4.6666666666666687" width="49.666666666666657" height="34.666666666666664"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="person.circle" catalog="system" title=""/>
-                            </button>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Workplace" id="ZZd-fl-5CJ"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="collectionView" destination="rWT-oj-zyq" id="LDk-n7-gth"/>
@@ -195,7 +186,6 @@
     </scenes>
     <resources>
         <image name="calendar.badge.plus" catalog="system" width="128" height="109"/>
-        <image name="person.circle" catalog="system" width="128" height="123"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -25,7 +25,56 @@ class DataStore {
     func getPosts() -> [Post] {
         posts
     }
+    
+    func saveDeal(_ deal: Deal) {
+        deals.append(deal)
+    }
 
+    func savePost(_ post: Post) {
+        posts.append(post)
+    }
+    
+    func updatePost(_ updatedPost: Post) {
+        if let index = posts.firstIndex(where: { $0.name == updatedPost.name }) {
+            posts[index] = updatedPost
+        }
+    }
+
+    func updateDeal(_ updatedDeal: Deal) {
+        if let index = deals.firstIndex(where: { $0.name == updatedDeal.name }) {
+            deals[index] = updatedDeal
+        }
+    }
+    
+    func scheduleItems(on date: Date) -> [ScheduleItem] {
+        let calendar = Calendar.current
+
+        let postItems = posts
+            .filter { post in
+                post.tasks?.contains {
+                    guard let d = $0.deadline.toDate() else { return false }
+                    return calendar.isDate(d, inSameDayAs: date)
+                } ?? false
+            }
+            .map { ScheduleItem.post($0) }
+
+        let dealItems = deals
+            .filter { deal in
+                deal.deliverable.contains {
+                    guard let d = $0.deadline.toDate() else { return false }
+                    return calendar.isDate(d, inSameDayAs: date)
+                }
+            }
+            .map { ScheduleItem.deal($0) }
+
+        return (postItems + dealItems)
+            .sorted { ($0.date() ?? .distantFuture) < ($1.date() ?? .distantFuture) }
+    }
+
+    func completedScheduleItems(on date: Date) -> [ScheduleItem] {
+        scheduleItems(on: date).filter { $0.isCompleted }
+    }
+    
     func loadSampleData() {
         let sampleTasks: [Task] = [
             Task(
