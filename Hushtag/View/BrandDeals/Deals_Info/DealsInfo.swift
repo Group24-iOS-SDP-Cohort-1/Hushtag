@@ -6,20 +6,16 @@ protocol DealsInfoDelegate: AnyObject {
 
 final class DealsInfo: UIViewController {
 
-    // MARK: - Outlet
     @IBOutlet weak var collectionView: UICollectionView!
 
-    // MARK: - Data
     var deals: Deal!
     var dealIndex: Int = -1
     var selectedIdea: Idea?
     weak var delegate: DealsInfoDelegate?
 
-    // MARK: - Constants
     private let cardBackgroundKind = "card-background"
 }
 
-// MARK: - Lifecycle
 extension DealsInfo {
 
     override func viewDidLoad() {
@@ -33,7 +29,6 @@ extension DealsInfo {
     }
 }
 
-// MARK: - Sections
 extension DealsInfo {
 
     enum Section: Int, CaseIterable {
@@ -44,7 +39,7 @@ extension DealsInfo {
     }
 }
 
-// MARK: - CollectionView Setup
+
 extension DealsInfo {
 
     private func configureCollectionView() {
@@ -81,7 +76,6 @@ extension DealsInfo {
     }
 }
 
-// MARK: - Layout Helpers
 extension DealsInfo {
 
     private func makeCardSection(estimatedItemHeight: CGFloat) -> NSCollectionLayoutSection {
@@ -177,7 +171,7 @@ extension DealsInfo {
     }
 }
 
-// MARK: - DataSource
+
 extension DealsInfo: UICollectionViewDataSource {
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -272,7 +266,6 @@ extension DealsInfo: UICollectionViewDataSource {
     }
 }
 
-// MARK: - Delegate
 extension DealsInfo: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView,

@@ -6,7 +6,7 @@ final class DetailsCell: UICollectionViewCell {
     @IBOutlet weak var valueLabel: UILabel!
     @IBOutlet weak var separatorView: UIView!
 
-    // MARK: - Private
+
     private var minHeightConstraint: NSLayoutConstraint?
 
     override func awakeFromNib() {
@@ -25,8 +25,6 @@ final class DetailsCell: UICollectionViewCell {
 
         // Separator color
         separatorView.backgroundColor = UIColor.white.withAlphaComponent(0.15)
-
-        // ✅ FORCE EQUAL ROW HEIGHT (CODE-ONLY)
         setupMinimumHeight()
     }
 
