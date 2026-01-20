@@ -20,6 +20,8 @@ class Schedule: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        
         scheduleView.delegate = self
         scheduleView.dataSource = self
         scheduleView.setCollectionViewLayout(generateLayout(), animated: true)
@@ -27,7 +29,31 @@ class Schedule: UIViewController {
         generateWeek(for: selectedDate)
         filterItems(for: selectedDate)
         scheduleView.reloadSections(IndexSet(integer: 1))
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleCalendarLeft),
+            name: .calendarSwipeLeft,
+            object: nil
+        )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleCalendarRight),
+            name: .calendarSwipeRight,
+            object: nil
+        )
     }
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+//    }
+//
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+//    }
     
     func registerCell() {
         scheduleView.register(
@@ -78,19 +104,18 @@ class Schedule: UIViewController {
             
             if section == 0 {
 
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0 / 7.0), heightDimension: .fractionalHeight(1.0))
 
                 // create the item
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
 
                 // create the group
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.13), heightDimension: .estimated(70))
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(70))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 7)
 
                 //create the section
                 let section = NSCollectionLayoutSection(group: group)
-                section.orthogonalScrollingBehavior = .continuous
                 section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
                 section.boundarySupplementaryItems = [headerButton]
 
@@ -138,6 +163,31 @@ class Schedule: UIViewController {
     private var currentMonthText: String {
         monthFormatter.string(from: selectedDate)
     }
+
+    private func changeWeek(by value: Int) {
+        let calendar = Calendar.current
+
+        guard let newDate = calendar.date(byAdding: .weekOfYear, value: value, to: selectedDate) else {
+            return
+        }
+
+        selectedDate = newDate
+        generateWeek(for: selectedDate)
+        filterItems(for: selectedDate)
+
+        scheduleView.performBatchUpdates {
+            scheduleView.reloadSections(IndexSet([0, 1]))
+        }
+    }
+    
+    @objc private func handleCalendarLeft() {
+        changeWeek(by: 1)
+    }
+
+    @objc private func handleCalendarRight() {
+        changeWeek(by: -1)
+    }
+    
 }
 
 extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -253,6 +303,10 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
             vc.schedule = selectedScheduleItem
         }
     }
+}
 
+extension Notification.Name {
+    static let calendarSwipeLeft = Notification.Name("calendarSwipeLeft")
+    static let calendarSwipeRight = Notification.Name("calendarSwipeRight")
 }
 

@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="vtI-Oh-EOz">
-                                <rect key="frame" x="0.0" y="172" width="393" height="612"/>
+                                <rect key="frame" x="0.0" y="118" width="393" height="666"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ig8-GG-ECR">
                                     <size key="itemSize" width="128" height="128"/>
@@ -35,17 +35,17 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="0En-8m-igC">
-                                                    <rect key="frame" x="50.333333333333336" y="43.666666666666657" width="27.333333333333336" height="41"/>
+                                                    <rect key="frame" x="52.333333333333336" y="47.666666666666671" width="23.666666666666664" height="32.666666666666671"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="SUN" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hvT-Po-fbo">
-                                                            <rect key="frame" x="0.0" y="0.0" width="27.333333333333332" height="15.666666666666666"/>
-                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="SUN" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hvT-Po-fbo">
+                                                            <rect key="frame" x="0.0" y="0.0" width="23.666666666666668" height="13.333333333333334"/>
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="23" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TCd-zA-Vlc">
-                                                            <rect key="frame" x="0.0" y="20.666666666666664" width="27.333333333333332" height="20.333333333333336"/>
-                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="23" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TCd-zA-Vlc">
+                                                            <rect key="frame" x="0.0" y="18.333333333333336" width="23.666666666666668" height="14.333333333333336"/>
+                                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
@@ -57,9 +57,12 @@
                                                 <constraint firstItem="0En-8m-igC" firstAttribute="centerY" secondItem="RgS-L1-du0" secondAttribute="centerY" id="ImH-M9-odE"/>
                                             </constraints>
                                         </collectionViewCellContentView>
+                                        <gestureRecognizers/>
                                         <connections>
                                             <outlet property="dateLabel" destination="TCd-zA-Vlc" id="TWD-HX-zAl"/>
                                             <outlet property="dayLabel" destination="hvT-Po-fbo" id="hff-xK-dxw"/>
+                                            <outletCollection property="gestureRecognizers" destination="Bjh-gV-gkd" appends="YES" id="JoI-y6-at0"/>
+                                            <outletCollection property="gestureRecognizers" destination="BWY-64-9Hg" appends="YES" id="bBo-Sw-feg"/>
                                         </connections>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="upcoming_schedule" id="PZu-sw-OdV" customClass="ScheduleCollectionViewCell" customModule="Hushtag" customModuleProvider="target">
@@ -120,6 +123,7 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="vtI-Oh-EOz" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="7EX-Qb-h24"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="vtI-Oh-EOz" secondAttribute="bottom" id="CRy-Nw-o3z"/>
@@ -139,8 +143,10 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <swipeGestureRecognizer cancelsTouchesInView="NO" direction="left" id="Bjh-gV-gkd"/>
+                <swipeGestureRecognizer cancelsTouchesInView="NO" direction="right" id="BWY-64-9Hg"/>
             </objects>
-            <point key="canvasLocation" x="1066.4122137404579" y="91.549295774647888"/>
+            <point key="canvasLocation" x="1993.1297709923663" y="91.549295774647888"/>
         </scene>
         <!--Details-->
         <scene sceneID="ULp-CK-ocl">
@@ -150,7 +156,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="auk-6n-kRk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1656" y="139"/>
+            <point key="canvasLocation" x="2581.679389312977" y="138.73239436619718"/>
         </scene>
         <!--AddViewController-->
         <scene sceneID="6mE-XW-wAE">
@@ -158,25 +164,7 @@
                 <viewControllerPlaceholder storyboardIdentifier="AddVC" storyboardName="Activities" referencedIdentifier="AddViewController" id="JVo-VW-pJQ" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wif-wD-mjb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1810" y="73"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="cKg-Ov-5md">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="fCu-qs-vCh" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="xuw-Pf-RYa">
-                        <rect key="frame" x="0.0" y="118" width="393" height="54"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="Y6W-OH-hqX" kind="relationship" relationship="rootViewController" id="yID-af-Xiy"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="G3k-T1-zzO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="139.69465648854961" y="91.549295774647888"/>
+            <point key="canvasLocation" x="2736.6412213740455" y="72.535211267605632"/>
         </scene>
     </scenes>
     <resources>
