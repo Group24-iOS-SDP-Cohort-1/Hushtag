@@ -55,7 +55,7 @@ extension DealsInfo {
 
         collectionView.register(
             UINib(nibName: "DetailsCell", bundle: nil),
-            forCellWithReuseIdentifier: DetailsCell.reuseId
+            forCellWithReuseIdentifier: "DetailsCell"
         )
 
         collectionView.register(
@@ -206,7 +206,7 @@ extension DealsInfo: UICollectionViewDataSource {
 
         case .details:
             let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: DetailsCell.reuseId,
+                withReuseIdentifier: "DetailsCell",
                 for: indexPath
             ) as! DetailsCell
 

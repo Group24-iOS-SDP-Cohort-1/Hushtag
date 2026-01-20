@@ -35,6 +35,9 @@ class CalendarCell: UICollectionViewCell, UIGestureRecognizerDelegate {
     }
     
     private func setupGestures() {
+        contentView.gestureRecognizers?.forEach {
+                contentView.removeGestureRecognizer($0)
+            }
         swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
         swipeLeft.direction = .left
         swipeLeft.delegate = self

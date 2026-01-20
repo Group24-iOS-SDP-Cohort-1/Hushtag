@@ -2,8 +2,6 @@ import UIKit
 
 final class DetailsCell: UICollectionViewCell {
 
-    static let reuseId = "DetailsCell"
-
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var valueLabel: UILabel!
     @IBOutlet weak var separatorView: UIView!

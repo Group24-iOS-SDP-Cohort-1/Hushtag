@@ -52,12 +52,6 @@ class Overview: UIViewController {
         )
         
         collectionView.register(
-            UINib(nibName: "HeaderView",
-                  bundle: nil),
-            forSupplementaryViewOfKind: "header",
-            withReuseIdentifier: "headerCell")
-        
-        collectionView.register(
             UINib(nibName: "HeaderButton",
                   bundle: nil),
             forSupplementaryViewOfKind: "headerButton",
@@ -76,8 +70,6 @@ class Overview: UIViewController {
             
             //define the size of the header view
             let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
-            
-            let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "header", alignment: .top)
             
             let headerChevron = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "headerChevron", alignment: .top)
 
@@ -268,30 +260,6 @@ extension UIColor {
     }
 }
 
-//extension Overview: AddViewControllerDelegate {
-//
-//    func addViewController(_ controller: AddViewController, didAddDeal deal: Deal) {
-//        dataStore.saveDeal(deal)
-//        //refreshTodaySchedule()
-//    }
-//
-//    func addViewController(_ controller: AddViewController, didAddPost post: Post) {
-//        dataStore.savePost(post)
-//        //refreshTodaySchedule()
-//    }
-//
-////    private func refreshTodaySchedule() {
-////        post = dataStore.getPosts()
-////        task = dataStore.getTasks()
-////        deal = dataStore.getDeals()
-////
-////        loadSchedule(for: Date())
-////
-////        collectionView.performBatchUpdates {
-////            collectionView.reloadSections(IndexSet(integer: 1))
-////        }
-////    }
-//}
 extension Overview: AddViewDelegate {
 
     func addViewController(_ controller: AddViewController, didCreatePost post: Post) {

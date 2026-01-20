@@ -67,7 +67,7 @@ class DealsCollectionViewCell: UICollectionViewCell{
     
     func configure(with deal: Deal, isCompleted: Bool) {
         titleLabel.text = deal.name
-        paymentValueLabel.text = "Rs \(deal.payment)"
+        paymentValueLabel.text = "\(deal.payment)"
 
         let total = deal.deliverable.count
         let completed = deal.deliverable.filter { $0.isCompleted }.count

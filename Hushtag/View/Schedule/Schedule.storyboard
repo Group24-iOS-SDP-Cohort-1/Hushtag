@@ -132,7 +132,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Schedule" largeTitleDisplayMode="never" id="2kR-Fi-Rbt">
-                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="add" id="29a-Y8-Dwg">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="29a-Y8-Dwg">
                             <connections>
                                 <segue destination="JVo-VW-pJQ" kind="presentation" id="2WD-ii-giS"/>
                             </connections>
