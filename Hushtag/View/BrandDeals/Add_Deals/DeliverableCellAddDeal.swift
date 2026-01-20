@@ -13,6 +13,7 @@ protocol DeliverableCellAddDealDelegate: AnyObject {
 
 class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
     weak var delegate: DeliverableCellAddDealDelegate?
+    var placeholderPrefix: String = "Deliverable"
     
     @IBOutlet weak var cardView: UIView!
     @IBOutlet weak var stackView: UIStackView!
@@ -37,9 +38,8 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
     }
     private func renumberPlaceholders() {
         for (i, tv) in deliverableTextViews.enumerated() {
+            let newPlaceholder = "\(placeholderPrefix) \(i + 1)"
 
-            let newPlaceholder = "Deliverable \(i + 1)"
-            
             if tv.textColor == .secondaryLabel {
                 tv.text = newPlaceholder
             }

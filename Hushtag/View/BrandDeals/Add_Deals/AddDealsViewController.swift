@@ -159,7 +159,8 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             ) as! DeliverableCellAddDeal
 
             cell.delegate = self
-            cell.configure(initialPlaceholders: deliverablePlaceholders)
+            cell.placeholderPrefix = "Deliverable"
+            cell.addButton.setTitle("+ Deliverables", for: .normal)
             return cell
         }
     }
