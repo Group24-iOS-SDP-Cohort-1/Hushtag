@@ -120,6 +120,16 @@ class ScriptedIdeas: UIViewController {
         }
     }
 
+    @IBAction func schedule(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Activities", bundle: nil)
+        let modalVC = storyboard.instantiateViewController(withIdentifier: "AddViewController")
+        modalVC.modalPresentationStyle = .pageSheet
+        modalVC.modalTransitionStyle = .coverVertical
+        present(modalVC, animated: true)
+
+
+    }
+
     func setupBrandMenu() {
         popupButton.setTitle("Tag Idea", for: .normal)
         let deals = self.deals

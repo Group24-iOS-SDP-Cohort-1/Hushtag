@@ -187,6 +187,9 @@
                                                                 <color key="tintColor" name="AccentColor"/>
                                                                 <state key="normal" title="Button"/>
                                                                 <buttonConfiguration key="configuration" style="plain" title="Schedule Post"/>
+                                                                <connections>
+                                                                    <action selector="schedule:" destination="Yb8-13-5gt" eventType="touchUpInside" id="JnN-a6-ibC"/>
+                                                                </connections>
                                                             </button>
                                                         </subviews>
                                                     </stackView>

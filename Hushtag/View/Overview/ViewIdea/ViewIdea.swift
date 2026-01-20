@@ -11,6 +11,7 @@ import SafariServices
 import Charts
 
 
+
 class ViewIdea: UIViewController {
     
     @IBOutlet weak var videoView: UICollectionView!
@@ -22,8 +23,7 @@ class ViewIdea: UIViewController {
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var graphView: UIView!
 
-
-
+    @IBOutlet weak var draftScript: UIButton!
 
     @IBOutlet weak var stackView: UIStackView!
     private var isChecked: Bool = false
@@ -60,7 +60,23 @@ class ViewIdea: UIViewController {
         print("Scroll frame height:", scrollView.frame.height)
            print("Content height:", scrollView.contentLayoutGuide.layoutFrame.height)
     }
-    
+
+
+    @IBAction func draftTap(_ sender: Any) {
+        guard let idea = idea else { return }
+       didTapDraftScript(for: idea)
+
+    }
+
+    func didTapDraftScript(for idea: Idea) {
+        let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
+        guard let chatVC = storyboard.instantiateViewController(
+            withIdentifier: "Chatbot"
+        ) as? Chatbot else { return }
+        chatVC.autoSendMessage = "script"
+        navigationController?.pushViewController(chatVC, animated: true)
+    }
+
     func registerCell() {
         videoView.register(
             UINib (
