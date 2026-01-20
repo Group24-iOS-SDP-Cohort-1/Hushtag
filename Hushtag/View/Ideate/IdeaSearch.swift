@@ -25,7 +25,23 @@ class IdeaSearch: UICollectionReusableView {
         textView.layer.borderWidth = 1
         textView.layer.cornerRadius = 8
         crossButton.isHidden = true
+        
+        setupKeyboardDismissGesture()
     }
+    
+    private func setupKeyboardDismissGesture() {
+            let tapGesture = UITapGestureRecognizer(
+                target: self,
+                action: #selector(dismissKeyboard)
+            )
+
+            tapGesture.cancelsTouchesInView = false
+            addGestureRecognizer(tapGesture)
+        }
+    
+    @objc private func dismissKeyboard() {
+            textLabel.resignFirstResponder()
+        }
     
     @IBAction func searchTap(_ sender: UIButton) {
         let keyword = textLabel.text ?? ""
@@ -34,6 +50,7 @@ class IdeaSearch: UICollectionReusableView {
            }
         textStack.isHidden = true
         crossButton.isHidden = false
+        textLabel.resignFirstResponder()
         delegate?.didTapSearch(with: keyword)
     }
     
@@ -41,6 +58,7 @@ class IdeaSearch: UICollectionReusableView {
         textLabel.text = ""
         textStack.isHidden = false
         crossButton.isHidden = true
+        textLabel.resignFirstResponder()
         delegate?.didTapSearch(with: "")
     }
 }

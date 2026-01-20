@@ -143,7 +143,7 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
 
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
-            heightDimension: .estimated(153)
+            heightDimension: .estimated(147)
         )
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: groupSize,

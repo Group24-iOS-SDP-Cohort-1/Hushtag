@@ -31,6 +31,22 @@ class Ideate1: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(refreshUI), name: .didUpdateLikedStatus, object: nil)
         scriptButton.layer.borderWidth = 1
         scriptButton.layer.borderColor = UIColor.accent.cgColor
+        
+        setupGlobalKeyboardDismiss()
+    }
+    
+    private func setupGlobalKeyboardDismiss() {
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard)
+        )
+
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
     
     @objc func refreshUI() {
@@ -95,7 +111,7 @@ class Ideate1: UIViewController {
 
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
-                heightDimension: .estimated(112)
+                heightDimension: .estimated(116)
             )
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
