@@ -27,7 +27,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="common_details" id="EB4-bN-FXE" customClass="DetailsCell" customModule="Hushtag" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="common_details" id="EB4-bN-FXE" customClass="DetailsCollectionViewCell" customModule="Hushtag" customModuleProvider="target">
                                         <rect key="frame" x="3.6666666666666665" y="0.0" width="345" height="166"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Uhb-25-2w1">
@@ -66,12 +66,12 @@
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="345" height="166"/>
                                         <connections>
-                                            <outlet property="mainName" destination="Fgk-ue-wJS" id="sFS-BQ-Svh"/>
-                                            <outlet property="platformLabel" destination="91e-je-PbU" id="i5K-3r-0gn"/>
-                                            <outlet property="remindersLabel" destination="9qS-p7-sY6" id="cy9-83-pW3"/>
+                                            <outlet property="mainName" destination="Fgk-ue-wJS" id="jWa-7z-8kN"/>
+                                            <outlet property="platformLabel" destination="91e-je-PbU" id="dgS-Mw-6qi"/>
+                                            <outlet property="remindersLabel" destination="9qS-p7-sY6" id="nZp-1R-dDc"/>
                                         </connections>
                                     </collectionViewCell>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="deal_details" id="eS2-nA-c1a" customClass="DetailsCell" customModule="Hushtag" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="deal_details" id="eS2-nA-c1a" customClass="DetailsCollectionViewCell" customModule="Hushtag" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="176" width="352" height="187"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="d9i-uM-upd">
@@ -119,7 +119,7 @@
                                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="WKh-sY-3Rm">
                                                             <rect key="frame" x="247.33333333333329" y="0.0" width="84.666666666666657" height="66.666666666666671"/>
                                                             <subviews>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="Vtq-OQ-MfN">
+                                                                <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="Vtq-OQ-MfN">
                                                                     <rect key="frame" x="0.0" y="0.0" width="84.666666666666671" height="20.333333333333332"/>
                                                                     <subviews>
                                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="indianrupeesign" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="An2-Tu-7Ql">
@@ -134,7 +134,7 @@
                                                                         </label>
                                                                     </subviews>
                                                                 </stackView>
-                                                                <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="QZu-v4-LYk">
+                                                                <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="QZu-v4-LYk">
                                                                     <rect key="frame" x="0.0" y="20.333333333333332" width="84.666666666666671" height="46.333333333333343"/>
                                                                     <subviews>
                                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" image="checkmark.square" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="rfq-jA-TrI">
@@ -165,13 +165,13 @@
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="352" height="187"/>
                                         <connections>
-                                            <outlet property="descriptionLabel" destination="JAb-Tl-Xag" id="vqs-5O-DTW"/>
-                                            <outlet property="emailLabel" destination="y3r-xh-rWW" id="gHn-MW-ZSZ"/>
-                                            <outlet property="paymentLabel" destination="ClB-ik-3dG" id="VgI-oo-zZ6"/>
-                                            <outlet property="phoneLabel" destination="c5G-a3-X64" id="utZ-zG-0vB"/>
+                                            <outlet property="deliverableLabel" destination="JAb-Tl-Xag" id="f6o-RJ-8Cl"/>
+                                            <outlet property="emailLabel" destination="y3r-xh-rWW" id="G13-N8-7D5"/>
+                                            <outlet property="paymentLabel" destination="ClB-ik-3dG" id="SII-Iw-hNY"/>
+                                            <outlet property="phoneLabel" destination="c5G-a3-X64" id="dTk-sb-O3R"/>
                                         </connections>
                                     </collectionViewCell>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="multiple_details" id="KvH-Hj-9RH" customClass="DetailsCell" customModule="Hushtag" customModuleProvider="target">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="multiple_details" id="KvH-Hj-9RH" customClass="DetailsCollectionViewCell" customModule="Hushtag" customModuleProvider="target">
                                         <rect key="frame" x="65" y="373" width="222" height="195"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="SZG-Wl-A3Q">
@@ -220,8 +220,8 @@
                                         </collectionViewCellContentView>
                                         <size key="customSize" width="222" height="195"/>
                                         <connections>
-                                            <outlet property="deadlineLabel" destination="6Fy-Rj-YeJ" id="MaB-tJ-tcN"/>
-                                            <outlet property="subNameLabel" destination="9Sp-Mc-S5G" id="A0N-bn-HjH"/>
+                                            <outlet property="deadlineLabel" destination="6Fy-Rj-YeJ" id="89V-Nz-brk"/>
+                                            <outlet property="subNameLabel" destination="9Sp-Mc-S5G" id="vDn-ZA-s3s"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>

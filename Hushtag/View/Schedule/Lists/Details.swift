@@ -139,7 +139,7 @@ extension Details: UICollectionViewDataSource, UICollectionViewDelegateFlowLayou
                 let cell = collectionView.dequeueReusableCell(
                     withReuseIdentifier: "common_details",
                     for: indexPath
-                ) as! DetailsCell
+                ) as! DetailsCollectionViewCell
                 cell.configureCommon(with: schedule)
                 return cell
             }
@@ -148,7 +148,7 @@ extension Details: UICollectionViewDataSource, UICollectionViewDelegateFlowLayou
                 let cell = collectionView.dequeueReusableCell(
                     withReuseIdentifier: "deal_details",
                     for: indexPath
-                ) as! DetailsCell
+                ) as! DetailsCollectionViewCell
                 cell.DealDetails(with: deal)
                 return cell
             }
@@ -156,7 +156,7 @@ extension Details: UICollectionViewDataSource, UICollectionViewDelegateFlowLayou
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "multiple_details",
                 for: indexPath
-            ) as! DetailsCell
+            ) as! DetailsCollectionViewCell
 
             let deliverable = deal.deliverable[indexPath.row]
             cell.configureMultiple(with: deliverable)
@@ -168,14 +168,14 @@ extension Details: UICollectionViewDataSource, UICollectionViewDelegateFlowLayou
                 let cell = collectionView.dequeueReusableCell(
                     withReuseIdentifier: "common_details",
                     for: indexPath
-                ) as! DetailsCell
+                ) as! DetailsCollectionViewCell
                 cell.configureCommon(with: schedule)
                 return cell
             }
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "multiple_details",
                 for: indexPath
-            ) as! DetailsCell
+            ) as! DetailsCollectionViewCell
 
             if let tasks = post.tasks, indexPath.row < tasks.count {
                 let task = tasks[indexPath.row]

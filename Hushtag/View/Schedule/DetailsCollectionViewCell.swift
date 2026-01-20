@@ -1,21 +1,20 @@
 //
-//  DetailsCell.swift
+//  DetailsCollectionViewCell.swift
 //  Hushtag
 //
-//  Created by SDC-USER on 14/01/26.
+//  Created by SDC-USER on 20/01/26.
 //
 
 import UIKit
 
-class DetailsCell: UICollectionViewCell {
-    
+class DetailsCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var mainName: UILabel!
     @IBOutlet weak var platformLabel: UILabel!
     @IBOutlet weak var remindersLabel: UILabel!
     @IBOutlet weak var paymentLabel: UILabel!
     @IBOutlet weak var phoneLabel: UILabel!
     @IBOutlet weak var emailLabel: UILabel!
-    @IBOutlet weak var descriptionLabel: UILabel!
+    @IBOutlet weak var deliverableLabel: UILabel!
     @IBOutlet weak var subNameLabel: UILabel!
     @IBOutlet weak var deadlineLabel: UILabel!
     override func awakeFromNib() {
@@ -68,8 +67,8 @@ class DetailsCell: UICollectionViewCell {
         emailLabel.text = deal.email
         emailLabel.isHidden = false
 
-        descriptionLabel.text = "\(completedCount) / \(totalCount)"
-        descriptionLabel.isHidden = false
+        deliverableLabel.text = "\(completedCount) / \(totalCount)"
+        deliverableLabel.isHidden = false
     }
     
     func configureMultiple(with task: Task) {
