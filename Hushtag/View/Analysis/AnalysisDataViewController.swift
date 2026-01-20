@@ -83,7 +83,6 @@ class AnalysisDataViewController: UIViewController {
         
         //print(fullAnalysis)
         loadDataFor(segmentIndex: 0)
-        print(fullAnalysis)
     }
     
     //FUNCTION TO LOAD THE DATA FOR THE SELECTED INDEX

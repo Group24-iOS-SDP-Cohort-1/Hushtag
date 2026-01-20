@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="dark"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -19,27 +19,41 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" translatesAutoresizingMaskIntoConstraints="NO" id="zEu-Tx-ivQ">
-                    <rect key="frame" x="180" y="0.0" width="140" height="70"/>
+                <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IWT-rT-ccv">
+                    <rect key="frame" x="265" y="36" width="25" height="35"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="140" id="5NZ-TB-QCu"/>
+                        <constraint firstAttribute="width" constant="25" id="17a-D3-gmE"/>
                     </constraints>
-                </datePicker>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" image="chevron.left" catalog="system"/>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VSa-Rk-jsH">
+                    <rect key="frame" x="295" y="36" width="25" height="35"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="25" id="ijo-NS-wtu"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" image="chevron.right" catalog="system"/>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="VXr-Tz-HHm"/>
             <constraints>
+                <constraint firstItem="VSa-Rk-jsH" firstAttribute="leading" secondItem="IWT-rT-ccv" secondAttribute="trailing" constant="5" id="9Hx-em-pdB"/>
                 <constraint firstItem="KoO-Gy-UgS" firstAttribute="leading" secondItem="U6b-Vx-4bR" secondAttribute="leading" id="Lga-4v-knQ"/>
-                <constraint firstItem="zEu-Tx-ivQ" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" id="Ngb-F6-f07"/>
                 <constraint firstAttribute="bottom" secondItem="KoO-Gy-UgS" secondAttribute="bottom" id="Wij-Sg-mgy"/>
+                <constraint firstAttribute="trailing" secondItem="VSa-Rk-jsH" secondAttribute="trailing" id="aDH-v0-gDv"/>
                 <constraint firstItem="KoO-Gy-UgS" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" id="aiq-8M-w5J"/>
-                <constraint firstItem="VXr-Tz-HHm" firstAttribute="bottom" secondItem="zEu-Tx-ivQ" secondAttribute="bottom" id="rmY-vD-4rY"/>
-                <constraint firstItem="zEu-Tx-ivQ" firstAttribute="trailing" secondItem="VXr-Tz-HHm" secondAttribute="trailing" id="vDd-OM-xR5"/>
             </constraints>
             <connections>
-                <outlet property="datePicker" destination="zEu-Tx-ivQ" id="Mym-DD-AWC"/>
+                <outlet property="backward" destination="IWT-rT-ccv" id="QkJ-ti-PhR"/>
+                <outlet property="forward" destination="VSa-Rk-jsH" id="Kt5-TF-6Rt"/>
                 <outlet property="headerLabel" destination="KoO-Gy-UgS" id="5ha-Bs-p9b"/>
             </connections>
             <point key="canvasLocation" x="138.93129770992365" y="141.5492957746479"/>
         </collectionReusableView>
     </objects>
+    <resources>
+        <image name="chevron.left" catalog="system" width="97" height="128"/>
+        <image name="chevron.right" catalog="system" width="97" height="128"/>
+    </resources>
 </document>

@@ -45,6 +45,7 @@ class DealsViewController: UIViewController {
 
         registerCell()
 
+        // here we are fetching the deals from the data store
         deals = DataStore.shared.getDeals()
         print(deals.count)
         collectionView.delegate = self
@@ -142,12 +143,16 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
 
         cell.configure(with: deal, isCompleted: isCompletedTab)
 
+        // on tap is a closure for performing the segue
+        
         cell.onTap = { [weak self] in
             self?.performSegue(withIdentifier: "info_page", sender: deal)
         }
 
         return cell
     }
+    
+    // prepare function for navigation and data passing
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let nav = segue.destination as? UINavigationController,
                let addVC = nav.viewControllers.first as? AddDealsViewController {
@@ -155,6 +160,7 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
             } else if let addVC = segue.destination as? AddDealsViewController {
                 addVC.delegate = self
             }
+        // this will send the data
         if segue.identifier == "info_page",
            let deal = sender as? Deal,
            let vc = segue.destination as? DealsInfo {
@@ -168,7 +174,8 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
             } else {
                 vc.dealIndex = -1
             }
-
+            
+            // this is for tag deals stuff
             if let ideaId = deal.selectedIdeaIndex {
                 let ideaResponse = IdeaResponse()
                 vc.selectedIdea = ideaResponse.ideas.first { $0.id == ideaId }
@@ -180,6 +187,7 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
 }
 
 
+// this is for if we perform complete operation inside the deals info
 extension DealsViewController: DealsInfoDelegate {
     func dealsInfo(_ controller: DealsInfo, didUpdateDeal deal: Deal, at index: Int) {
         guard index >= 0 && index < deals.count else { return }
@@ -187,6 +195,8 @@ extension DealsViewController: DealsInfoDelegate {
         collectionView.reloadData()
     }
 }
+
+//this is for if we add new deals using the modal
 extension DealsViewController: AddDealsDelegate {
     func addDealsViewController(_ controller: AddDealsViewController, didCreateDeal deal: Deal) {
         DispatchQueue.main.async {
