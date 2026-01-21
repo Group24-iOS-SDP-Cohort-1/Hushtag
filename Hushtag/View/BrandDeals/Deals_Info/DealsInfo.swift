@@ -27,11 +27,25 @@ extension DealsInfo {
         configureCollectionView()
         configureLayout()
     }
+    
+    private var sections: [Section] {
+        var result: [Section] = [.details, .deliverables]
+
+        if selectedIdea != nil {
+            result.append(.selectedIdea)
+        }
+
+        if deals.description.isEmpty == false {
+            result.append(.notes)
+        }
+
+        return result
+    }
 }
 
 extension DealsInfo {
 
-    enum Section: Int, CaseIterable {
+    enum Section {
         case details
         case deliverables
         case selectedIdea
@@ -64,7 +78,7 @@ extension DealsInfo {
         )
 
         collectionView.register(
-            NotesCell.self,
+            UINib(nibName: "NotesCell", bundle: nil),
             forCellWithReuseIdentifier: "NotesCell"
         )
 
@@ -78,6 +92,8 @@ extension DealsInfo {
 
 extension DealsInfo {
 
+    
+    //layout for the sections
     private func makeCardSection(estimatedItemHeight: CGFloat) -> NSCollectionLayoutSection {
 
         let itemSize = NSCollectionLayoutSize(
@@ -103,18 +119,19 @@ extension DealsInfo {
             elementKind: UICollectionView.elementKindSectionHeader,
             alignment: .top
         )
-        header.contentInsets = .init(top: 0, leading: 0, bottom: 8, trailing: 0)
+        header.contentInsets = .init(top: 0, leading: 0, bottom: 4, trailing: 0)
         section.boundarySupplementaryItems = [header]
 
         let background = NSCollectionLayoutDecorationItem.background(
             elementKind: cardBackgroundKind
         )
-        background.contentInsets = .init(top: 48, leading: 16, bottom: 16, trailing: 16)
+        background.contentInsets = .init(top: 38, leading: 16, bottom: 16, trailing: 16)
         section.decorationItems = [background]
 
         return section
     }
 
+    //layout for the note
     private func makePlainNotesSection() -> NSCollectionLayoutSection {
 
         let itemSize = NSCollectionLayoutSize(
@@ -141,12 +158,14 @@ extension DealsInfo {
 
         return section
     }
+    
 
+    // setting the height for each section
     private func configureLayout() {
 
         let layout = UICollectionViewCompositionalLayout { sectionIndex, _ in
 
-            let section = Section(rawValue: sectionIndex)!
+            let section = self.sections[sectionIndex]
 
             if section == .details {
                 return self.makeCardSection(estimatedItemHeight: 56)
@@ -175,13 +194,15 @@ extension DealsInfo {
 extension DealsInfo: UICollectionViewDataSource {
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        Section.allCases.count
+        sections.count
     }
 
+    
+    // no of items in the per section
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int) -> Int {
 
-        let type = Section(rawValue: section)!
+        let type = sections[section]
 
         switch type {
         case .details: return 3
@@ -190,11 +211,13 @@ extension DealsInfo: UICollectionViewDataSource {
         case .notes: return deals.description.isEmpty == false ? 1 : 0
         }
     }
-
+    
+    
+    // configuring the cell for particular index
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
-        let type = Section(rawValue: indexPath.section)!
+        let type = sections[indexPath.section]
 
         switch type {
 
@@ -243,6 +266,8 @@ extension DealsInfo: UICollectionViewDataSource {
         }
     }
 
+    
+    // setting the header for each section
     func collectionView(_ collectionView: UICollectionView,
                         viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
@@ -253,7 +278,7 @@ extension DealsInfo: UICollectionViewDataSource {
             for: indexPath
         ) as! HeaderView
 
-        let type = Section(rawValue: indexPath.section)!
+        let type = sections[indexPath.section]
 
         switch type {
         case .details: header.configureHeader(text: "Details")
@@ -268,15 +293,17 @@ extension DealsInfo: UICollectionViewDataSource {
 
 extension DealsInfo: UICollectionViewDelegate {
 
+    //all the cell are clickable but we are allowing only deliverable section to be clickable
     func collectionView(_ collectionView: UICollectionView,
                         shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        Section(rawValue: indexPath.section) == .deliverables
+        sections[indexPath.section] == .deliverables
     }
-
+    
+    // function for toggle the deliverables
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
 
-        guard Section(rawValue: indexPath.section) == .deliverables else { return }
+        guard sections[indexPath.section] == .deliverables else { return }
 
         deals.deliverable[indexPath.item].isCompleted.toggle()
         collectionView.reloadItems(at: [indexPath])
