@@ -37,9 +37,16 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
         tableView.separatorStyle = .none
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 56
-
         
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
     }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
     @IBAction func submitTapped(_ sender: UIButton) {
 
         var values: [String] = []

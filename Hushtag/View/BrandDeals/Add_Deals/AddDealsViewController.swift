@@ -39,7 +39,16 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 
         navigationItem.rightBarButtonItem?.target = self
         navigationItem.rightBarButtonItem?.action = #selector(doneTapped)
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+            tap.cancelsTouchesInView = false
+            view.addGestureRecognizer(tap)
     }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
 
     @objc private func closeTapped() { dismiss(animated: true) }
 
