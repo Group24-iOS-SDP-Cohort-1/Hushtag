@@ -78,7 +78,7 @@ extension DealsInfo {
         )
 
         collectionView.register(
-            NotesCell.self,
+            UINib(nibName: "NotesCell", bundle: nil),
             forCellWithReuseIdentifier: "NotesCell"
         )
 
