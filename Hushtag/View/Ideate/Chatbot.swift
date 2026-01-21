@@ -39,7 +39,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         "generate script": "Real beauty isn’t about perfection.It’s about embracing who you are—your skin, your smile, your story.Every freckle, every flaw, every feature makes you unique.",
         "idea": "You can make a beauty product review",
         "title": "Real Beauty, Real Confidence",
-        "default": "idk everything bro so find yourself"
+        "default": "Sorry, I don't understand. Could you rephrase that?"
     ]
 
     var markedMessages: [String: [Message]] = [
