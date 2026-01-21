@@ -20,7 +20,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OrR-Ip-dEp">
-                                    <rect key="frame" x="155" y="10" width="83" height="34.333333333333336"/>
+                                    <rect key="frame" x="120" y="12" width="153" height="34.333333333333336"/>
                                     <state key="normal" title="Button"/>
                                     <buttonConfiguration key="configuration" style="filled" title="Submit"/>
                                     <connections>
@@ -30,9 +30,9 @@
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
-                                <constraint firstAttribute="trailing" secondItem="OrR-Ip-dEp" secondAttribute="trailing" constant="155" id="GJ9-Tb-dTw"/>
-                                <constraint firstItem="OrR-Ip-dEp" firstAttribute="top" secondItem="JZS-Un-Bc8" secondAttribute="top" constant="10" id="cqT-Ob-JzL"/>
-                                <constraint firstItem="OrR-Ip-dEp" firstAttribute="leading" secondItem="JZS-Un-Bc8" secondAttribute="leading" constant="155" id="gGj-xo-1qN"/>
+                                <constraint firstAttribute="trailing" secondItem="OrR-Ip-dEp" secondAttribute="trailing" constant="120" id="GJ9-Tb-dTw"/>
+                                <constraint firstItem="OrR-Ip-dEp" firstAttribute="top" secondItem="JZS-Un-Bc8" secondAttribute="top" constant="12" id="cqT-Ob-JzL"/>
+                                <constraint firstItem="OrR-Ip-dEp" firstAttribute="leading" secondItem="JZS-Un-Bc8" secondAttribute="leading" constant="120" id="gGj-xo-1qN"/>
                             </constraints>
                         </view>
                         <prototypes>

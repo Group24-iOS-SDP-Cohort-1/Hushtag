@@ -57,6 +57,7 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
             }
         }
 
+        // logic for deliverable cell
        
         func addDeliverableField(placeholder: String) {
             
