@@ -1,12 +1,17 @@
 import UIKit
 
+
+//sending the create post to parent view controller
 protocol AddViewDelegate: AnyObject {
     func addViewController(_ controller: AddViewController, didCreatePost post: Post)
 }
 
 class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
 
-    weak var delegate: AddViewDelegate?
+    weak var delegate: AddViewDelegate?  // hold reference to parent view controller
+    var hasSelectedReminder = false
+    
+    
     enum Section: Int, CaseIterable {
         case mainFields
         case reminder
@@ -115,9 +120,9 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
             tasks: tasks.isEmpty ? nil : tasks,
             reminder: [reminderText]
         )
-
+        // storing the data
         DataStore.shared.savePost(post)
-
+        // calling the function didCreatePost 
         delegate?.addViewController(self, didCreatePost: post)
 
         dismiss(animated: true)
@@ -167,10 +172,27 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
                 for: indexPath
             ) as! MainFieldCell
 
-            cell.textField.text = reminderText
-            cell.textField.placeholder = "Reminder"
             cell.textField.isUserInteractionEnabled = false
-            cell.accessoryType = .disclosureIndicator
+
+            if hasSelectedReminder {
+                // User has selected a reminder
+                cell.textField.text = reminderText
+                cell.textField.textColor = .label
+                cell.textField.placeholder = nil
+            } else {
+                // Initial placeholder state
+                cell.textField.text = nil
+                cell.textField.placeholder = "Reminder"
+                cell.textField.textColor = .secondaryLabel
+            }
+
+            let chevron = UIImageView(image: UIImage(systemName: "chevron.down"))
+            chevron.tintColor = .secondaryLabel
+            chevron.contentMode = .scaleAspectFit
+            chevron.frame = CGRect(x: 0, y: 0, width: 16, height: 16)
+
+            cell.textField.rightView = chevron
+            cell.textField.rightViewMode = .always
             return cell
             
             
@@ -182,8 +204,6 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
             
             cell.delegate = self
             cell.configure(initialPlaceholders: taskPlaceholders)
-            
-            // 🔹 IMPORTANT: Change button title for Add Post
             cell.placeholderPrefix = "Task"
             cell.addButton.setTitle("+ Task", for: .normal)
             
@@ -247,6 +267,7 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
     }
     private func setReminder(hour: Int, minute: Int) {
         reminderOffset = TimeData(hour: hour, minute: minute)
+        hasSelectedReminder = true
 
         if hour > 0 && minute == 0 {
             reminderText = "\(hour) hour before"
