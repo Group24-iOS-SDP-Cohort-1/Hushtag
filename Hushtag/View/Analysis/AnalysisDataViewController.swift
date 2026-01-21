@@ -11,7 +11,7 @@ class AnalysisDataViewController: UIViewController {
 
     var analysisData: Analysis?
     var platform: String = ""
-
+    var dataStore: DataStore = DataStore.shared
     var fullAnalysis: [Analysis]?
     
     @IBOutlet weak var analysisCollectionView: UICollectionView!

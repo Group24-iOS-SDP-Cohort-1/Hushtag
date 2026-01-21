@@ -16,24 +16,25 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
-                        <segue destination="UCO-yZ-Wcy" kind="relationship" relationship="viewControllers" id="XKV-9r-mLe"/>
-                        <segue destination="O84-pg-5ez" kind="relationship" relationship="viewControllers" id="uAZ-x6-FTi"/>
-                        <segue destination="K29-nh-ARG" kind="relationship" relationship="viewControllers" id="Nxk-Sj-bRX"/>
+                        <segue destination="UCO-yZ-Wcy" kind="relationship" relationship="viewControllers" id="Kqf-tz-kMG"/>
+                        <segue destination="K29-nh-ARG" kind="relationship" relationship="viewControllers" id="A5k-8L-kFc"/>
+                        <segue destination="O84-pg-5ez" kind="relationship" relationship="viewControllers" id="sho-cz-ZtX"/>
+                        <segue destination="nrj-fI-A1x" kind="relationship" relationship="viewControllers" id="X9E-vC-xji"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dbM-z8-S3W" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1057" y="-504"/>
         </scene>
-        <!--Overview-->
+        <!--Schedule-->
         <scene sceneID="T8M-Ia-Bt4">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="OverviewVC" storyboardName="Overview" id="O84-pg-5ez" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardIdentifier="ScheduleVC" storyboardName="Schedule" id="O84-pg-5ez" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Item" id="i6G-WH-jam"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8hq-jX-MPv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1703" y="-96"/>
+            <point key="canvasLocation" x="-879" y="-68"/>
         </scene>
         <!--BrandDeals-->
         <scene sceneID="hEH-c2-3ne">
@@ -43,7 +44,17 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1sr-JS-qaP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-414" y="-75"/>
+            <point key="canvasLocation" x="-1220" y="-68"/>
+        </scene>
+        <!--AnalysisDataViewController-->
+        <scene sceneID="101-YM-E43">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="AnalysisVC" storyboardName="AnalysisDataViewController" id="nrj-fI-A1x" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="f30-Ib-Cxs"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="JMB-7b-QtE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-494" y="-68"/>
         </scene>
         <!--Ideate-->
         <scene sceneID="zCY-2w-l4j">
@@ -53,7 +64,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Vb-DR-t3h" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1057" y="-54"/>
+            <point key="canvasLocation" x="-1569" y="-68"/>
         </scene>
     </scenes>
 </document>
