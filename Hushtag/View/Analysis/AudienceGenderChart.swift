@@ -12,7 +12,7 @@ struct GenderMetric: Identifiable {
 
 // 2. The Chart View
 struct AudienceGenderChart: View {
-    var genderData: [String: String] // Dictionary from your API
+    var genderData: [String: String]
     
     // Convert API data to Chart data
     var chartData: [GenderMetric] {
@@ -57,23 +57,21 @@ struct AudienceGenderChart: View {
         
         .chartXAxis {
             AxisMarks(position: .bottom, values: [0]) { _ in
-                AxisGridLine() // This draws the vertical line at 0
+                AxisGridLine()
                     .foregroundStyle(Color.gray.opacity(0.3))
             }
         }
         .chartYAxis {
             AxisMarks(position: .leading) { _ in
                 AxisValueLabel()
-                    .font(.system(size: 14, weight: .bold)) // Match your design font
+                    .font(.system(size: 14, weight: .bold))
                     .foregroundStyle(.gray)
-                    .offset(x: -20) // Move label slightly left away from the line
-                    // TWEAK THIS: If labels are still too high, push them down manually
-                     .offset(y: 27)
-                
+                    .offset(x: -20)
+                    .offset(y: 27)
             }
         }
         .frame(height: 150)
-        .padding(.leading, 25,) // Little breathing room
+        .padding(.leading, 25,)
         .padding(.bottom, 10)
     }
 }

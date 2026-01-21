@@ -17,9 +17,7 @@ class AnalysisDataViewController: UIViewController {
     @IBOutlet weak var analysisCollectionView: UICollectionView!
     
     @IBOutlet weak var segmentedTimeOutlet: UISegmentedControl!
-    
-    
-    
+   
     override func viewDidLoad() {
         super.viewDidLoad()
         analysisCollectionView.register(
@@ -81,7 +79,6 @@ class AnalysisDataViewController: UIViewController {
         let layout = generateAnalysisLayout()
         analysisCollectionView.setCollectionViewLayout(layout, animated: true)
         
-        //print(fullAnalysis)
         loadDataFor(segmentIndex: 0)
     }
     
@@ -135,65 +132,6 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
             return 0
         }
     }
-    
-    
-    
-//    func collectionView(
-//        _ collectionView: UICollectionView,
-//        cellForItemAt indexPath: IndexPath
-//    ) -> UICollectionViewCell {
-//
-//        // SECTION 1 – Audience Demographics (Gender chart)
-//        if indexPath.section == 1 {
-//            let cell = collectionView.dequeueReusableCell(
-//                withReuseIdentifier: "gender_analysis_cell",
-//                for: indexPath
-//            ) as! AudienceChartCell
-//
-//            if let data = analysisData {
-//                cell.configure(with: data)
-//            }
-//            return cell
-//        }
-//
-//        // SECTION 2 – Optimal Upload Time
-//        if indexPath.section == 2 {
-//            let cell = collectionView.dequeueReusableCell(
-//                withReuseIdentifier: "optimal_time_cell",
-//                for: indexPath
-//            ) as! OptimalTimeChartCell
-//
-//            if let data = analysisData {
-//                cell.configure(with: data.optimalTime)
-//            }
-//            return cell
-//        }
-//
-//        // SECTION 0 – Audience Metrics Cards (4 cards)
-//        let cell = collectionView.dequeueReusableCell(
-//            withReuseIdentifier: "analysis_page_cell",
-//            for: indexPath
-//        ) as! AnalysisCell
-//
-//        guard let metric = analysisData?.audienceGrid[indexPath.row] else {
-//            return cell
-//        }
-//
-////        cell.configureCell(
-////            value: metric.value,
-////            type: metric.title
-////            // If you added change-based arrows later:
-////            // change: metric.change
-////        )
-//        cell.configureCell(
-//            value: metric.value,
-//            type: metric.title,
-//            change: metric.change
-//        )
-//
-//        return cell
-//    }
-//
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -352,11 +290,7 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
             alignment: .top
         )
         
-        
-        
-        // =========================================================
-        // SECTION 0 — Audience Metrics (2×2 grid)
-        // =========================================================
+    
         if section == 0 {
             
             let itemSize = NSCollectionLayoutSize(
@@ -483,10 +417,7 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
             
             return sectionLayout
         }
-        
-        // =========================================================
-        // SECTION 2 — Audience Demographic
-        // =========================================================
+     
         else if section == 4 {
             
             let itemSize = NSCollectionLayoutSize(
@@ -509,10 +440,7 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
             
             return section
         }
-        
-        // =========================================================
-        // SECTION 3 — Optimal Upload Times
-        // =========================================================
+   
         else {
 
             let itemSize = NSCollectionLayoutSize(
@@ -536,7 +464,6 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
             return section
         }
     }
-
     return layout
 }
 
