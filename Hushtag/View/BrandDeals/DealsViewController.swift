@@ -111,11 +111,11 @@ class DealsViewController: UIViewController {
             )
 
             let section = NSCollectionLayoutSection(group: group)
-            section.interGroupSpacing = 7.5
+            section.interGroupSpacing = 15
             section.contentInsets = NSDirectionalEdgeInsets(
-                top: 7.5,
+                top: 0,
                 leading: 0,
-                bottom: 7.5,
+                bottom: 0,
                 trailing: 0
             )
             return section

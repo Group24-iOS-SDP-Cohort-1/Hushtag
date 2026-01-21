@@ -14,32 +14,15 @@ class MainFieldCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         backgroundColor = .clear
         contentView.backgroundColor = .clear
         selectionStyle = .none
-        contentView.layer.cornerRadius = 20
+        contentView.layer.cornerRadius = 15
         contentView.clipsToBounds = true
         contentView.applyLiquidGlassEffect()
 
         textField.borderStyle = .none
         textField.backgroundColor = .clear
         
-        // Placeholder style
-        textField.attributedPlaceholder = NSAttributedString(
-            string: textField.placeholder ?? "",
-            attributes: [.foregroundColor: UIColor.secondaryLabel]
-        )
-        
-        // Text font
-        textField.font = UIFont.systemFont(ofSize: 16, weight: .regular)
-        textField.textColor = .label
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-
 }
