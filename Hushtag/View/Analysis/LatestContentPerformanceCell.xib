@@ -46,10 +46,10 @@
                         <rect key="frame" x="16" y="111.66666666666667" width="318" height="62.333333333333329"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="H6F-ii-GiG">
-                                <rect key="frame" x="0.0" y="0.0" width="94.333333333333329" height="38.666666666666664"/>
+                                <rect key="frame" x="0.0" y="0.0" width="55" height="38.666666666666664"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Ranking by view" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zZw-YQ-bgL">
-                                        <rect key="frame" x="0.0" y="0.0" width="91.333333333333329" height="14.333333333333334"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Ranking" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zZw-YQ-bgL">
+                                        <rect key="frame" x="0.0" y="0.0" width="45.333333333333336" height="14.333333333333334"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
@@ -63,7 +63,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="EiX-EF-TAg">
-                                <rect key="frame" x="144.33333333333334" y="0.0" width="42.666666666666657" height="38.666666666666664"/>
+                                <rect key="frame" x="104.99999999999999" y="0.0" width="50.333333333333329" height="38.666666666666664"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Views" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LnK-JQ-Bs2">
                                         <rect key="frame" x="0.0" y="0.0" width="33.333333333333336" height="14.333333333333334"/>
@@ -80,7 +80,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="Mhh-3g-A7d">
-                                <rect key="frame" x="237" y="0.0" width="81" height="38.666666666666664"/>
+                                <rect key="frame" x="205.33333333333334" y="0.0" width="112.66666666666666" height="38.666666666666664"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Avg. duration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d9D-16-22Q">
                                         <rect key="frame" x="0.0" y="0.0" width="75" height="14.333333333333334"/>

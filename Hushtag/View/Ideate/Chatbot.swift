@@ -393,22 +393,18 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     @objc func generateButtonTapped(_ sender: UIButton) {
         guard let title = sender.currentTitle else { return }
-        //to Send user message
         sendMessage(title)
         generateStack.isHidden = true
   }
 
     func didTapDraftScript(for idea: Idea) {
 
-        //to Send the message immediately when user typed "script"
         sendAutoMessage("script")
 
-        //to Mark it as script
         if let lastIndex = messages.indices.last {
             messages[lastIndex].markType = "script"
         }
 
-        // Show buttons (title, description, thumbnail)
         generateStack.isHidden = false
         showScriptSuggestions()
     }
