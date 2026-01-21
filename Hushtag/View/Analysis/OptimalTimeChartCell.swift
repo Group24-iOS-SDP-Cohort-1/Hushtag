@@ -18,7 +18,6 @@ class OptimalTimeChartCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
     
     func configure(with timeData: [AnalysisDateData]) {
@@ -58,10 +57,6 @@ class OptimalTimeChartCell: UICollectionViewCell {
         contentView.applyLiquidGlassEffect()
         layer.cornerRadius = 12
         layer.masksToBounds = false
-        //layer.shadowColor = UIColor.black.cgColor
-        //layer.shadowOpacity = 0.1
-        //layer.shadowOffset = CGSize(width: 0, height: 1)
-        //layer.shadowRadius = 8
         backgroundColor = .clear
         contentView.backgroundColor = .clear
         chartContainer.backgroundColor = .clear

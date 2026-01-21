@@ -81,7 +81,7 @@ class DataStore {
                 name: "Everyday Glam Makeup Reel",
                 deadline: DateData(
                     day: "Monday",
-                    date: "2025-11-18T00:00:00Z",
+                    date: "2026-1-18T00:00:00Z",
                     time: TimeData(hour: 10, minute: 0)
                 ),
                 isCompleted: false
@@ -91,7 +91,7 @@ class DataStore {
                 name: "Unboxing New Cosmetic Products",
                 deadline: DateData(
                     day: "Tuesday",
-                    date: "2025-11-19T00:00:00Z",
+                    date: "2026-1-19T00:00:00Z",
                     time: TimeData(hour: 11, minute: 0)
                 ),
                 isCompleted: true
@@ -121,7 +121,7 @@ class DataStore {
                 name: "Research Upcoming Beauty Trends",
                 deadline: DateData(
                     day: "Friday",
-                    date: "2025-11-22T00:00:00Z",
+                    date: "2026-1-22T00:00:00Z",
                     time: TimeData(hour: 10, minute: 0)
                 ),
                 isCompleted: false
@@ -136,7 +136,7 @@ class DataStore {
                         name: "IG Concept Draft",
                         deadline: DateData(
                             day: "Monday",
-                            date: "2025-11-18T00:00:00Z",
+                            date: "2026-1-1T00:00:00Z",
                             time: TimeData(hour: 10, minute: 30)
                         ),
                         isCompleted: true
@@ -145,7 +145,7 @@ class DataStore {
                         name: "Final IG Carousel",
                         deadline: DateData(
                             day: "Wednesday",
-                            date: "2025-11-20T00:00:00Z",
+                            date: "2026-1-20T00:00:00Z",
                             time: TimeData(hour: 16, minute: 0)
                         ),
                         isCompleted: false
@@ -166,7 +166,7 @@ class DataStore {
                         name: "Winter Reel Ideation",
                         deadline: DateData(
                             day: "Tuesday",
-                            date: "2025-11-19T00:00:00Z",
+                            date: "2026-11-19T00:00:00Z",
                             time: TimeData(hour: 9, minute: 0)
                         ),
                         isCompleted: true
@@ -175,7 +175,7 @@ class DataStore {
                         name: "Streetwear Reel Shoot",
                         deadline: DateData(
                             day: "Thursday",
-                            date: "2025-11-21T00:00:00Z",
+                            date: "2026-1-2T00:00:00Z",
                             time: TimeData(hour: 14, minute: 30)
                         ),
                         isCompleted: false
@@ -184,7 +184,7 @@ class DataStore {
                         name: "Final Reel Edit",
                         deadline: DateData(
                             day: "Saturday",
-                            date: "2025-11-23T00:00:00Z",
+                            date: "2026-1-23T00:00:00Z",
                             time: TimeData(hour: 18, minute: 0)
                         ),
                         isCompleted: false
@@ -226,7 +226,7 @@ class DataStore {
                         name: "Try-On Reel Shoot",
                         deadline: DateData(
                             day: "Thursday",
-                            date: "2025-11-21T00:00:00Z",
+                            date: "2026-1-22T00:00:00Z",
                             time: TimeData(hour: 13, minute: 30)
                         ),
                         isCompleted: true
@@ -235,7 +235,7 @@ class DataStore {
                         name: "Final Reel Upload",
                         deadline: DateData(
                             day: "Sunday",
-                            date: "2025-11-24T00:00:00Z",
+                            date: "2026-1-24T00:00:00Z",
                             time: TimeData(hour: 19, minute: 0)
                         ),
                         isCompleted: true
@@ -256,7 +256,7 @@ class DataStore {
                         name: "Product Teaser Shoot",
                         deadline: DateData(
                             day: "Monday",
-                            date: "2025-11-25T00:00:00Z",
+                            date: "2026-1-25T00:00:00Z",
                             time: TimeData(hour: 11, minute: 0)
                         ),
                         isCompleted: false
@@ -265,7 +265,7 @@ class DataStore {
                         name: "Brand Reel Editing",
                         deadline: DateData(
                             day: "Wednesday",
-                            date: "2025-11-27T00:00:00Z",
+                            date: "2026-1-27T00:00:00Z",
                             time: TimeData(hour: 15, minute: 45)
                         ),
                         isCompleted: false
@@ -274,7 +274,7 @@ class DataStore {
                         name: "Final Campaign Upload",
                         deadline: DateData(
                             day: "Friday",
-                            date: "2025-11-29T00:00:00Z",
+                            date: "2026-1-29T00:00:00Z",
                             time: TimeData(hour: 18, minute: 30)
                         ),
                         isCompleted: false

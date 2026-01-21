@@ -24,7 +24,6 @@ class AudienceChartCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
     
     func configure(with data: Analysis) {
@@ -74,11 +73,6 @@ class AudienceChartCell: UICollectionViewCell {
         contentView.layer.masksToBounds = true
         contentView.applyLiquidGlassEffect()
         layer.cornerRadius = 12
-        //layer.masksToBounds = false
-        //layer.shadowColor = UIColor.black.cgColor
-        //layer.shadowOpacity = 0.1
-        //layer.shadowOffset = CGSize(width: 0, height: 1)
-        //layer.shadowRadius = 8
         backgroundColor = .clear
         contentView.backgroundColor = .clear
         chartContainer.backgroundColor = .clear
@@ -119,14 +113,12 @@ class AudienceChartCell: UICollectionViewCell {
         let clean = value.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         
         if clean.hasSuffix("k") {
-            let number = clean.dropLast() // Remove 'k'
+            let number = clean.dropLast()
             return (Double(number) ?? 0) * 1_000
         } else if clean.hasSuffix("m") {
-            let number = clean.dropLast() // Remove 'm'
+            let number = clean.dropLast()
             return (Double(number) ?? 0) * 1_000_000
         }
-        
-        // Return normal number or 0 if failed
         return Double(clean) ?? 0
     }
     
