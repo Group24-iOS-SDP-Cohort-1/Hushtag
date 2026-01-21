@@ -186,7 +186,7 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedVideo = video[indexPath.item]
 
-        // Update chart with ONLY selected video
+        // Update chart with selected video
         updateEngagementChart(for: selectedVideo)
 
         guard let url = URL(string: selectedVideo.link) else { return }

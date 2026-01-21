@@ -114,7 +114,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
 
     func setupTapToDismiss() {
-            // Allows user to tap the table view (messages) to close the keyboard
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
             tableView.addGestureRecognizer(tapGesture)
         }
@@ -346,10 +345,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         // Remove previous buttons
         generateStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
-        // Get only the types which are NOT yet marked
+        // Get only the types which are not marked
         let unmarkedTypes = getUnmarkedTypes()
 
-        // If nothing left to generate, hide stack
         if unmarkedTypes.isEmpty {
             generateStack.isHidden = true
             return
