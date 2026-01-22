@@ -346,14 +346,14 @@
         "gender": { "M": "45.2", "F": "54.8" },
         "post": 5,
         "optimalTime": [
-          { "day": "Monday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 17, "minute": 0 }, "audienceEngagementRate": "6.1" },
-          { "day": "Tuesday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 14, "minute": 0 }, "audienceEngagementRate": "4.3" },
-          { "day": "Wednesday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 14, "minute": 0 }, "audienceEngagementRate": "1.7" },
-          { "day": "Thursday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 9, "minute": 0 }, "audienceEngagementRate": "5.4" },
-          { "day": "Friday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 14, "minute": 0 }, "audienceEngagementRate": "3.2" },
-          { "day": "Saturday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 10, "minute": 30 }, "audienceEngagementRate": "2.5" },
-          { "day": "Sunday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 14, "minute": 0 }, "audienceEngagementRate": "4.1" }
-        ],
+            { "date": "2025-11-19T17:00:00Z", "audienceEngagementRate": "6.1" },
+            { "date": "2025-11-19T14:00:00Z", "audienceEngagementRate": "4.3" },
+            { "date": "2025-11-19T14:00:00Z", "audienceEngagementRate": "1.7" },
+            { "date": "2025-11-19T09:00:00Z", "audienceEngagementRate": "5.4" },
+            { "date": "2025-11-19T14:00:00Z", "audienceEngagementRate": "3.2" },
+            { "date": "2025-11-19T10:30:00Z", "audienceEngagementRate": "2.5" },
+            { "date": "2025-11-19T14:00:00Z", "audienceEngagementRate": "4.1" }
+          ],
         "engagementRate": "6.1",
         "topContent": [
           { "id": "tc1", "title": "Affordable Makeup That Performs Like Luxury.", "thumbnail": "hqdefault-3", "views": "124K views", "publishedTime": "4 weeks ago" },
@@ -392,14 +392,14 @@
         "gender": { "M": "51", "F": "49" },
         "post": 4,
         "optimalTime": [
-          { "day": "Monday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 16, "minute": 0 }, "audienceEngagementRate": "1.0" },
-          { "day": "Tuesday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 17, "minute": 0 }, "audienceEngagementRate": "6.1" },
-          { "day": "Wednesday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 17, "minute": 0 }, "audienceEngagementRate": "6.1" },
-          { "day": "Thursday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 11, "minute": 0 }, "audienceEngagementRate": "1.0" },
-          { "day": "Friday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 17, "minute": 0 }, "audienceEngagementRate": "6.1" },
-          { "day": "Saturday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 17, "minute": 0 }, "audienceEngagementRate": "6.2" },
-          { "day": "Sunday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 17, "minute": 0 }, "audienceEngagementRate": "6.7" }
-        ],
+            { "date": "2025-11-19T17:00:00Z", "audienceEngagementRate": "6.1" },
+            { "date": "2025-11-19T14:00:00Z", "audienceEngagementRate": "4.3" },
+            { "date": "2025-11-19T14:00:00Z", "audienceEngagementRate": "1.7" },
+            { "date": "2025-11-19T09:00:00Z", "audienceEngagementRate": "5.4" },
+            { "date": "2025-11-19T14:00:00Z", "audienceEngagementRate": "3.2" },
+            { "date": "2025-11-19T10:30:00Z", "audienceEngagementRate": "2.5" },
+            { "date": "2025-11-19T14:00:00Z", "audienceEngagementRate": "4.1" }
+          ],
         "engagementRate": "",
         "topContent": [
           { "id": "tc1", "title": "Affordable Makeup That Performs Like Luxury.", "thumbnail": "hqdefault-2", "views": "124K views", "publishedTime": "4 weeks ago" },
@@ -438,14 +438,14 @@
         "gender": { "M": "40.4", "F": "59.6" },
         "post": 6,
         "optimalTime": [
-          { "day": "Monday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 17, "minute": 0 }, "audienceEngagementRate": "6.1" },
-          { "day": "Tuesday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 18, "minute": 0 }, "audienceEngagementRate": "7.6" },
-          { "day": "Wednesday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 17, "minute": 0 }, "audienceEngagementRate": "6.1" },
-          { "day": "Thursday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 17, "minute": 0 }, "audienceEngagementRate": "6.1" },
-          { "day": "Friday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 15, "minute": 0 }, "audienceEngagementRate": "1.0" },
-          { "day": "Saturday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 17, "minute": 0 }, "audienceEngagementRate": "6.1" },
-          { "day": "Sunday", "date": "2025-11-19T00:00:00Z", "time": { "hour": 17, "minute": 0 }, "audienceEngagementRate": "7.2" }
-        ],
+            { "date": "2025-11-19T17:00:00Z", "audienceEngagementRate": "6.1" },
+            { "date": "2025-11-19T14:00:00Z", "audienceEngagementRate": "4.3" },
+            { "date": "2025-11-19T14:00:00Z", "audienceEngagementRate": "1.7" },
+            { "date": "2025-11-19T09:00:00Z", "audienceEngagementRate": "5.4" },
+            { "date": "2025-11-19T14:00:00Z", "audienceEngagementRate": "3.2" },
+            { "date": "2025-11-19T10:30:00Z", "audienceEngagementRate": "2.5" },
+            { "date": "2025-11-19T14:00:00Z", "audienceEngagementRate": "4.1" }
+          ],
         "engagementRate": "-7.3",
         "topContent": [
           { "id": "tc1", "title": "Affordable Makeup That Performs Like Luxury.", "thumbnail": "hqdefault-2", "views": "124K views", "publishedTime": "4 weeks ago" },

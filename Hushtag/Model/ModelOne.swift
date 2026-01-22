@@ -7,58 +7,50 @@
 
 import Foundation
 
-struct TimeData: Codable{
-    let hour: Int?
-    let minute: Int?
-}
-
-struct DateData: Codable{
-    let day: String?
-    let date: String?
-    let time: TimeData?
-}
-
 struct LikedIds {
     static var likedIdeaIds: Set<String> = []
 }
-extension DateData {
 
-    func toDate() -> Date? {
-        guard
-            let dateString = date,
-            let timeData = time,
-            let hour = timeData.hour,
-            let minute = timeData.minute
-        else {
-            return nil
-        }
-
-        let isoFormatter = ISO8601DateFormatter()
-        isoFormatter.formatOptions = [.withInternetDateTime]
-
-        guard let baseDate = isoFormatter.date(from: dateString) else {
-            return nil
-        }
-
-        return Calendar.current.date(
-            bySettingHour: hour,
-            minute: minute,
-            second: 0,
-            of: baseDate
-        )
+extension Date {
+    
+    // Example: Thursday
+    func dayOnly() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE"
+        return formatter.string(from: self)
+    }
+    
+    // Example: 22 Jan
+    func dateAndMonth() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMM"
+        return formatter.string(from: self)
+    }
+    
+    // Example: Thursday, 22 Jan 2026
+    func dayDateYear() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE, dd MMM yyyy"
+        return formatter.string(from: self)
+    }
+    
+    func deadlineFormatted() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM dd"
+        formatter.locale = .current
+        return formatter.string(from: self)
     }
 }
 
-struct AnalysisDateData: Codable, Identifiable{
+struct AnalysisDateData: Codable, Identifiable {
     let id = UUID()
-    let day: String
-    let date: String
-    let time: TimeData
+    let date: Date
     let audienceEngagementRate: String
-    
-    enum CodingKeys: String, CodingKey {
-        case day, date, time, audienceEngagementRate
-    }
+}
+
+struct TimePayload: Codable {
+    let hour: Int
+    let minute: Int
 }
 
 struct Message {
@@ -74,7 +66,7 @@ enum PlatformType:String{
 struct IdeaResponse: Codable {
     var ideas: [Idea] = []
     //var videos: [Video] = []
-
+    
     init() {
         do {
             let response = try load()
@@ -84,7 +76,7 @@ struct IdeaResponse: Codable {
             print(error.localizedDescription)
         }
     }
-
+    
     func getRandomIdea() -> Idea? {
         return ideas.randomElement()
     }
@@ -102,7 +94,7 @@ struct Idea: Codable, Identifiable {
     let tag: String
     let thumbnail: String
     let engagementRate: Double
-
+    
     enum CodingKeys: String, CodingKey {
         case id, trending, title, description, script, hashtag, videos, liked, tag, thumbnail, engagementRate
     }
@@ -131,25 +123,25 @@ extension IdeaResponse {
                 userInfo: [NSLocalizedDescriptionKey: "DataSource.json not found"]
             )
         }
-
+        
         let data = try Data(contentsOf: url)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         return try decoder.decode(IdeaResponse.self, from: data)
     }
-
+    
     func decode(from data: Data) throws -> IdeaResponse {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         return try decoder.decode(IdeaResponse.self, from: data)
     }
-
-
+    
+    
 }
 
 struct Task: Codable {
     let name: String
-    let deadline: DateData
+    let deadline: Date
     var isCompleted : Bool
 }
 
@@ -159,17 +151,17 @@ struct Post: Codable, Identifiable {
     let platform: [String]
     var tasks: [Task]?
     let reminder: [String]
-
+    
     enum CodingKeys: String, CodingKey {
         case name, platform, tasks, reminder
     }
-
+    
     var platformType: [PlatformType] {
         platform.compactMap {
             PlatformType(rawValue: $0.lowercased())
         }
     }
-
+    
 }
 
 struct Deal: Codable, Identifiable {
@@ -182,7 +174,7 @@ struct Deal: Codable, Identifiable {
     let description: String
     let payment: Int
     let selectedIdeaIndex: String?
-
+    
     enum CodingKeys: String, CodingKey {
         case name,deliverable,platform,phone,email,description,payment, selectedIdeaIndex
     }
@@ -190,7 +182,7 @@ struct Deal: Codable, Identifiable {
 
 struct Deliverable: Codable {
     let name: String
-    let deadline: DateData
+    let deadline: Date
     var isCompleted : Bool
 }
 
@@ -225,7 +217,7 @@ struct Analysis: Codable, Identifiable {
     let watchTime: String
     let subscribers: String
     let estRevenue: String
-
+    
     // Change indicators (NEW)
     let viewsChange: String
     let watchTimeChange: String
@@ -242,18 +234,18 @@ struct Analysis: Codable, Identifiable {
     let topContent: [TopContentItem]
     let latestContent: LatestContentPerformance
     let revenueSource: [RevenueSource]
-
+    
     enum CodingKeys: String, CodingKey {
-            case id,
-                 views, watchTime, subscribers, estRevenue,
-                 viewsChange, watchTimeChange, subscribersChange, revenueChange,
-                 likes, incFollowers, followers,
-                 ageGroup, gender, post, optimalTime, engagementRate, topContent, latestContent, revenueSource
-        }
+        case id,
+             views, watchTime, subscribers, estRevenue,
+             viewsChange, watchTimeChange, subscribersChange, revenueChange,
+             likes, incFollowers, followers,
+             ageGroup, gender, post, optimalTime, engagementRate, topContent, latestContent, revenueSource
+    }
 }
 
 extension Analysis {
-
+    
     var audienceGrid: [(title: String, value: String, change: String)] {
         return [
             ("Views", views, viewsChange),
@@ -266,7 +258,7 @@ extension Analysis {
 
 struct AnalysisResponse: Codable {
     var analysis: [Analysis] = []
-
+    
     init() {
         do {
             let response = try load()
@@ -278,7 +270,7 @@ struct AnalysisResponse: Codable {
 }
 
 extension AnalysisResponse {
-
+    
     func load(from filename: String = "DataStorejson") throws -> AnalysisResponse {
         guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
             throw NSError(
@@ -287,13 +279,13 @@ extension AnalysisResponse {
                 userInfo: [NSLocalizedDescriptionKey: "DataStore.json not found"]
             )
         }
-
+        
         let data = try Data(contentsOf: url)
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         return try decoder.decode(AnalysisResponse.self, from: data)
     }
-
+    
     func decode(from data: Data) throws -> AnalysisResponse {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
@@ -397,16 +389,16 @@ extension Preferences {
 enum ScheduleItem {
     case deal(Deal)
     case post(Post)
-
+    
     func date() -> Date? {
         switch self {
         case .deal(let deal):
-            return deal.deliverable.first?.deadline.toDate()
+            return deal.deliverable.first?.deadline
         case .post(let post):
-            return post.tasks?.first?.deadline.toDate()
+            return post.tasks?.first?.deadline
         }
     }
-
+    
     var isCompleted: Bool {
         switch self {
         case .post(let post):

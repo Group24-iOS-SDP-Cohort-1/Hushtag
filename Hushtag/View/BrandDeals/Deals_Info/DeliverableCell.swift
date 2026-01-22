@@ -22,24 +22,16 @@ final class DeliverableCell: UICollectionViewCell {
 
         titleLabel.text = deliverable.name
 
-        if let day = deliverable.deadline.day,
-           let date = deliverable.deadline.date?.prefix(10) {
-            subtitleLabel.text = "Due \(day) \(date)"
-        }
-
-        let purple = UIColor(
-            red: 139/255,
-            green: 92/255,
-            blue: 246/255,
-            alpha: 1
-        )
+        let day = deliverable.deadline.dayOnly()
+                let date = deliverable.deadline.dateAndMonth()
+                subtitleLabel.text = "Due \(day), \(date)"
 
         let imageName = deliverable.isCompleted
             ? "circle.inset.filled"
             : "circle"
 
         statusImageView.image = UIImage(systemName: imageName)
-        statusImageView.tintColor = purple
+        statusImageView.tintColor = .accent
 
         separatorView.isHidden = isLast
     }

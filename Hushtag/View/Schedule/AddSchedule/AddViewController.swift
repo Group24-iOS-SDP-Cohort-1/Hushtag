@@ -28,7 +28,6 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
     var taskPlaceholders = ["Task 1"]
 
     var reminderText: String = "1 hour before"
-    var reminderOffset: TimeData = TimeData(hour: 1, minute: 0)
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,88 +50,64 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
 
         var values: [String] = []
 
-        for row in 0..<mainPlaceholders.count {
-            let indexPath = IndexPath(row: row, section: Section.mainFields.rawValue)
-            let cell = tableView.cellForRow(at: indexPath) as? MainFieldCell
-            values.append(cell?.textField.text ?? "")
-        }
-
-        let postName = values.first?
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .isEmpty == false
-            ? values.first!.trimmingCharacters(in: .whitespacesAndNewlines)
-            : "Untitled Post"
-
-        let platformRaw = values.count > 1 ? values[1] : ""
-        let platforms = platformRaw.isEmpty
-            ? []
-            : platformRaw
-                .split(separator: ",")
-                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-
-        let deliverableIndexPath = IndexPath(row: 0, section: Section.deliverables.rawValue)
-
-        guard let deliverableCell = tableView.cellForRow(at: deliverableIndexPath)
-                as? DeliverableCellAddDeal else {
-            dismiss(animated: true)
-            return
-        }
-
-        let taskTitles = deliverableCell.deliverablesText
-        let taskDates = deliverableCell.deliverablesDates
-
-        var tasks: [Task] = []
-
-        for (index, rawTitle) in taskTitles.enumerated() {
-
-            let title = rawTitle.trimmingCharacters(in: .whitespacesAndNewlines)
-            if title.isEmpty { continue }
-
-            let deadline: DateData
-
-            if let date = taskDates.safe(index) as? Date {
-
-                let isoFormatter = ISO8601DateFormatter()
-                isoFormatter.formatOptions = [.withInternetDateTime]
-
-                let dayFormatter = DateFormatter()
-                dayFormatter.dateFormat = "EEEE"
-
-                let components = Calendar.current.dateComponents([.hour, .minute], from: date)
-
-                deadline = DateData(
-                    day: dayFormatter.string(from: date),
-                    date: isoFormatter.string(from: date),
-                    time: TimeData(
-                        hour: components.hour,
-                        minute: components.minute
-                    )
-                )
-            } else {
-                deadline = DateData(day: nil, date: nil, time: nil)
+            for row in 0..<mainPlaceholders.count {
+                let indexPath = IndexPath(row: row, section: Section.mainFields.rawValue)
+                let cell = tableView.cellForRow(at: indexPath) as? MainFieldCell
+                values.append(cell?.textField.text ?? "")
             }
 
-            tasks.append(
-                Task(
-                    name: title,
-                    deadline: deadline,
-                    isCompleted: false
+            let postName = values.first?
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .isEmpty == false
+                ? values.first!.trimmingCharacters(in: .whitespacesAndNewlines)
+                : "Untitled Post"
+
+            let platformRaw = values.count > 1 ? values[1] : ""
+            let platforms = platformRaw.isEmpty
+                ? []
+                : platformRaw
+                    .split(separator: ",")
+                    .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+            let deliverableIndexPath = IndexPath(row: 0, section: Section.deliverables.rawValue)
+
+            guard let deliverableCell = tableView.cellForRow(at: deliverableIndexPath)
+                    as? DeliverableCellAddDeal else {
+                dismiss(animated: true)
+                return
+            }
+
+            let taskTitles = deliverableCell.deliverablesText
+            let taskDates = deliverableCell.deliverablesDates
+
+            var tasks: [Task] = []
+
+            for (index, rawTitle) in taskTitles.enumerated() {
+
+                let title = rawTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+                if title.isEmpty { continue }
+
+                guard let deadline = taskDates[safe: index] as? Date else { continue }
+
+                tasks.append(
+                    Task(
+                        name: title,
+                        deadline: deadline,
+                        isCompleted: false
+                    )
                 )
+            }
+
+            let post = Post(
+                name: postName,
+                platform: platforms,
+                tasks: tasks.isEmpty ? nil : tasks,
+                reminder: [reminderText]
             )
-        }
 
-        let post = Post(
-            name: postName,
-            platform: platforms,
-            tasks: tasks.isEmpty ? nil : tasks,
-            reminder: [reminderText]
-        )
-        // storing the data
-        DataStore.shared.savePost(post)
-        // calling the function didCreatePost
-        delegate?.addViewController(self, didCreatePost: post)
-
-        dismiss(animated: true)
+            DataStore.shared.savePost(post)
+            delegate?.addViewController(self, didCreatePost: post)
+            dismiss(animated: true)
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -272,8 +247,8 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(alert, animated: true)
     }
+    
     private func setReminder(hour: Int, minute: Int) {
-        reminderOffset = TimeData(hour: hour, minute: minute)
         hasSelectedReminder = true
 
         if hour > 0 && minute == 0 {
@@ -285,6 +260,7 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
         let ip = IndexPath(row: 0, section: Section.reminder.rawValue)
         tableView.reloadRows(at: [ip], with: .none)
     }
+
     func deliverableCellDidTapAdd(_ cell: DeliverableCellAddDeal) {
         let next = taskPlaceholders.count + 1
         let placeholder = "Task \(next)"

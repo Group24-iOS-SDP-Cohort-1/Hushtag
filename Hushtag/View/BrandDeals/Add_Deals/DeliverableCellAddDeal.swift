@@ -21,7 +21,7 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
     @IBOutlet weak var addButton: UIButton!
     
     private var deliverableTextViews: [UITextView] = []
-    private var deliverableDates: [Date?] = []
+    private var deliverableDates: [Date] = []
     override func awakeFromNib() {
         super.awakeFromNib()
         backgroundColor = .clear
@@ -97,7 +97,7 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
             stackView.insertArrangedSubview(row, at: index)
 
             deliverableTextViews.append(tv)
-            deliverableDates.append(nil)
+            deliverableDates.append(Date())
 
             let currentIndex = deliverableTextViews.count - 1
             dateBtn.tag = currentIndex
@@ -128,10 +128,10 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
             for sub in stackView.arrangedSubviews {
                 guard let row = sub as? UIStackView else { continue }
                 if row.arrangedSubviews.count >= 2 {
-                    if let dateBtn = row.arrangedSubviews.safe(1) as? UIButton {
+                    if let dateBtn = row.arrangedSubviews[safe: 1] as? UIButton {
                         dateBtn.tag = currentIndex
                     }
-                    if row.arrangedSubviews.count > 2, let delBtn = row.arrangedSubviews.safe(2) as? UIButton {
+                    if row.arrangedSubviews.count > 2, let delBtn = row.arrangedSubviews[safe: 2] as? UIButton {
                         delBtn.tag = currentIndex
                     }
                     currentIndex += 1
@@ -146,7 +146,7 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
 
         private func showDatePicker(for index: Int, senderButton: UIButton) {
             while deliverableDates.count < deliverableTextViews.count {
-                deliverableDates.append(nil)
+                deliverableDates.append(Date())
             }
 
             let datePicker = UIDatePicker()
@@ -155,8 +155,8 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
                 datePicker.preferredDatePickerStyle = .inline
             }
 
-            if index < deliverableDates.count, let existing = deliverableDates[index] {
-                datePicker.date = existing
+            if index < deliverableDates.count {
+                datePicker.date = deliverableDates[index]
             }
 
             let contentVC = UIViewController()
@@ -180,13 +180,13 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
 
             alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { [weak self] _ in
                 guard let self = self else { return }
-                let selected = datePicker.date
+        
                 // store single date for this index
                 if index < self.deliverableDates.count {
-                    self.deliverableDates[index] = selected
+                    self.deliverableDates[index] = datePicker.date
                 } else {
-                    while self.deliverableDates.count <= index { self.deliverableDates.append(nil) }
-                    self.deliverableDates[index] = selected
+                    while self.deliverableDates.count <= index { self.deliverableDates.append(Date()) }
+                    self.deliverableDates[index] = datePicker.date
                 }
                 senderButton.setTitle(nil, for: .normal)
                 senderButton.setImage(UIImage(systemName: "calendar"), for: .normal)
@@ -226,7 +226,7 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
             deliverableTextViews.map { $0.text ?? "" }
         }
 
-        var deliverablesDates: [Date?] {
+        var deliverablesDates: [Date] {
             deliverableDates
         }
 

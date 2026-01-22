@@ -8,7 +8,7 @@
 import UIKit
 
 class ScheduleCollectionViewCell: UICollectionViewCell {
-
+    
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var dayLabel: UILabel!
@@ -23,44 +23,46 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     
     func configure(with item: ScheduleItem) {
         self.item = item
-
+        
         timeLabel.text = "--:--"
         titleLabel.text = ""
         dayLabel.text = ""
-
+        
         switch item {
-
+            
         case .post(let post):
             guard let task = post.tasks?.first else { return }
-
-            if let hour = task.deadline.time?.hour,
-               let minute = task.deadline.time?.minute {
-                timeLabel.text = String(format: "%02d:%02d", hour, minute)
-            }
-
+            
+            timeLabel.text = task.deadline.formatted(
+                date: .omitted,
+                time: .shortened
+            )
+            
+            dayLabel.text = task.deadline.dayOnly()
             titleLabel.text = post.name
-            dayLabel.text = task.deadline.day
+            
             updateCompletedButton(isCompleted: post.isCompleted)
-
+            
         case .deal(let deal):
             guard let deliverable = deal.deliverable.first else { return }
-
-            if let hour = deliverable.deadline.time?.hour,
-               let minute = deliverable.deadline.time?.minute {
-                timeLabel.text = String(format: "%02d:%02d", hour, minute)
-            }
-
+            
+            timeLabel.text = deliverable.deadline.formatted(
+                date: .omitted,
+                time: .shortened
+            )
+            
+            dayLabel.text = deliverable.deadline.dayOnly()
             titleLabel.text = deal.name
-            dayLabel.text = deliverable.deadline.day
+            
             updateCompletedButton(isCompleted: deal.isCompleted)
         }
     }
-
+    
     private func updateCompletedButton(isCompleted: Bool) {
         let imageName = isCompleted ? "largecircle.fill.circle" : "circle"
         completedButton.setImage(UIImage(systemName: imageName), for: .normal)
     }
-
+    
     
     @IBAction func buttonTapped(_ sender: UIButton) {
         delegate?.didTapCompleted(item: item)

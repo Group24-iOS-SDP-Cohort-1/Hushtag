@@ -78,37 +78,16 @@ class DetailsCollectionViewCell: UICollectionViewCell {
     
     func configureMultiple(with task: Task) {
         subNameLabel.text = task.name
-        if let day = task.deadline.day {
-            deadlineLabel.text = abbreviatedDay(from: day)
-        } else {
-            deadlineLabel.text = "-:—"
-        }
+        deadlineLabel.text = task.deadline.dayOnly()   // <-- uses Date extension
         isCompleted = task.isCompleted
         updateCompletionState(isCompleted: isCompleted)
     }
 
     func configureMultiple(with deliverable: Deliverable) {
         subNameLabel.text = deliverable.name
-        if let day = deliverable.deadline.day {
-            deadlineLabel.text = abbreviatedDay(from: day)
-        } else {
-            deadlineLabel.text = "Deadline: —"
-        }
+        deadlineLabel.text = deliverable.deadline.dayOnly()
         isCompleted = deliverable.isCompleted
         updateCompletionState(isCompleted: isCompleted)
-    }
-    
-    private func abbreviatedDay(from day: String) -> String {
-        let map: [String: String] = [
-            "Monday": "Mon",
-            "Tuesday": "Tue",
-            "Wednesday": "Wed",
-            "Thursday": "Thu",
-            "Friday": "Fri",
-            "Saturday": "Sat",
-            "Sunday": "Sun"
-        ]
-        return map[day] ?? day.prefix(3).capitalized
     }
     
     private func updateCompletionState(isCompleted: Bool) {
