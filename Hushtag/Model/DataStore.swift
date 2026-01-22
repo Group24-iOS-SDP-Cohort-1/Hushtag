@@ -129,7 +129,97 @@ class DataStore {
                 description: "Blush launch campaign with carousel post.",
                 payment: 5000,
                 selectedIdeaIndex: "i1"
+            ),
+            Deal(
+                name: "H&M Lifestyle",
+                deliverable: [
+                    Deliverable(
+                        name: "Winter Reel Ideation",
+                        deadline: makeDate(year: 2026, month: 03, day: 19, hour: 12, minute: 00),
+                        isCompleted: true
+                    ),
+                    Deliverable(
+                        name: "Streetwear Reel Shoot",
+                        deadline: makeDate(year: 2026, month: 03, day: 21, hour: 14, minute: 30),
+                        isCompleted: true
+                    )
+                ],
+                platform: ["Instagram"],
+                phone: "9028388567",
+                email: "lifestyle@hm.com",
+                description: "Winter streetwear reel series.",
+                payment: 9000,
+                selectedIdeaIndex: "i2"
+            ),
+            Deal(
+                name: "Lakmé India",
+                deliverable: [
+                    Deliverable(
+                        name: "Product Teaser Shoot",
+                        deadline: makeDate(year: 2026, month: 06, day: 11, hour: 11, minute: 00),
+                        isCompleted: false
+                    ),
+                    Deliverable(
+                        name: "Brand Reel Editing",
+                        deadline: makeDate(year: 2026, month: 06, day: 13, hour: 11, minute: 30),
+                        isCompleted: false
+                    ),
+                    Deliverable(
+                        name: "Final Campaign Upload",
+                        deadline: makeDate(year: 2026, month: 06, day: 15, hour: 12, minute: 30),
+                        isCompleted: false
+                    )
+                ],
+                platform: ["YouTube"],
+                phone: "9123456701",
+                email: "brand@lakmeindia.com",
+                description: "Matte foundation launch campaign.",
+                payment: 9500,
+                selectedIdeaIndex: "i5"
+            ),
+            Deal(
+                name: "Nykaa Beauty",
+                deliverable: [
+                    Deliverable(
+                        name: "Lipstick Tutorial Video",
+                        deadline: makeDate(year: 2026, month: 04, day: 11, hour: 17, minute: 00),
+                        isCompleted: true
+                    ),
+                    Deliverable(
+                        name: "Everyday Lipstick Look Reel",
+                        deadline: makeDate(year: 2026, month: 04, day: 14, hour: 16, minute: 30),
+                        isCompleted: false
+                    )
+                ],
+                platform: ["YouTube"],
+                phone: "9011388567",
+                email: "collabs@nykaa.com",
+                description: "Tutorial featuring newly launched lipstick shades.",
+                payment: 4000,
+                selectedIdeaIndex: "i3"
+            ),
+            Deal(
+                name: "Myntra",
+                deliverable: [
+                    Deliverable(
+                        name: "Try-On Reel Shoot",
+                        deadline: makeDate(year: 2026, month: 02, day: 21, hour: 17, minute: 00),
+                        isCompleted: false
+                    ),
+                    Deliverable(
+                        name: "Final Reel Upload",
+                        deadline: makeDate(year: 2026, month: 02, day: 24, hour: 10, minute: 30),
+                        isCompleted: false
+                    )
+                ],
+                platform: ["YouTube"],
+                phone: "9123456701",
+                email: "campaign@myntra.com",
+                description: "Winter jacket try-on haul.",
+                payment: 6500,
+                selectedIdeaIndex: "i4"
             )
+            
         ]
 
         let samplePosts: [Post] = [

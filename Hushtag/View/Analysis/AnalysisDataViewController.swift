@@ -9,9 +9,11 @@ import UIKit
 
 class AnalysisDataViewController: UIViewController {
 
+    
+    var analysisResponse = AnalysisResponse()
     var analysisData: Analysis?
     var platform: String = ""
-    var dataStore: DataStore = DataStore.shared
+    //var dataStore: DataStore = DataStore.shared
     var fullAnalysis: [Analysis]?
     
     @IBOutlet weak var analysisCollectionView: UICollectionView!
@@ -20,6 +22,10 @@ class AnalysisDataViewController: UIViewController {
    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        fullAnalysis = analysisResponse.analysis
+        //print(fullAnalysis)
+        
         analysisCollectionView.register(
             UINib(nibName: "LatestContentPerformanceCell", bundle: nil),
             forCellWithReuseIdentifier: "latest_content_performance_cell"
