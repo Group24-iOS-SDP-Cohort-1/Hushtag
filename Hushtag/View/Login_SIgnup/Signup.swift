@@ -8,6 +8,10 @@
 import UIKit
 
 class Signup: UIViewController {
+    
+    var viewModel: SignInModel = SignInModel()
+    
+    var appUser: AppUser = AppUser(uid: "1234", email: "abc@gmail.com")
 
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -40,6 +44,24 @@ class Signup: UIViewController {
         textField.layer.borderColor = UIColor.white.cgColor
         textField.backgroundColor = .black
         textField.textColor = .white
+    }
+    
+    
+    @IBAction func signUpTapped(_ sender: Any) {
+        
+        _Concurrency.Task{
+            do{
+                
+                guard let password = passwordTextField.text, let email = emailTextField.text else {return}
+                
+                let appUser = try await viewModel.registerNewUserWithEmail(email: email, password: password)
+                self.appUser = appUser
+                print(appUser)
+            }catch{
+                print("Issue with Sign In")
+            }
+        }
+        
     }
     
 

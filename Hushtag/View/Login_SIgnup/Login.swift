@@ -8,6 +8,10 @@
 import UIKit
 
 class Login: UIViewController {
+    
+    var viewModel: SignInModel = SignInModel()
+    
+    var appUser: AppUser = AppUser(uid: "1234", email: "abc@gmail.com")
 
     @IBOutlet weak var googleButton: UIButton!
     
@@ -40,6 +44,22 @@ class Login: UIViewController {
         textField.backgroundColor = .black
         textField.textColor = .white
     }
+    
+    
+    @IBAction func logInTapped(_ sender: Any) {
+        _Concurrency.Task{
+            do{
+                
+                guard let password = passwordTextField.text, let email = emailTextField.text else {return}
+                
+                let appUser = try await viewModel.signInWithEmail(email: email, password: password)
+                self.appUser = appUser
+                print(appUser)
+            }catch{
+                print("Issue with Sign In")
+            }
+        }
+    }
     /*
     // MARK: - Navigation
 
@@ -50,4 +70,26 @@ class Login: UIViewController {
     }
     */
 
+}
+
+
+
+extension UIViewController{
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        self.present(alert, animated: true)
+    }
+    
+    
+    func navigateToHomeScreen() {
+        // ASSUMPTION: Your Home screen has the Storyboard ID "HomeVC"
+        // If you are using a TabBar, use the TabBar's ID instead.
+        if let homeVC = self.storyboard?.instantiateViewController(withIdentifier: "HomeVC") {
+            homeVC.modalPresentationStyle = .fullScreen
+            self.present(homeVC, animated: true)
+        } else {
+            print("Error: Could not find view controller with ID 'HomeVC'")
+        }
+    }
 }
