@@ -55,7 +55,7 @@
                                     <segue destination="OaU-jh-SsD" kind="show" id="NIY-qv-uoX"/>
                                 </connections>
                             </button>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="HUSHTAG 1" translatesAutoresizingMaskIntoConstraints="NO" id="aCh-ki-dwR">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="aCh-ki-dwR">
                                 <rect key="frame" x="136.66666666666666" y="277" width="119.99999999999997" height="120"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="120" id="G7b-tW-qEM"/>
@@ -150,6 +150,9 @@
                                     <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <color key="baseBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </buttonConfiguration>
+                                <connections>
+                                    <action selector="loginTapped:" destination="OaU-jh-SsD" eventType="touchUpInside" id="bve-IH-w4k"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Or" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kqz-5k-6JO">
                                 <rect key="frame" x="175" y="623" width="43" height="24"/>
@@ -303,6 +306,9 @@
                                     <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <color key="baseBackgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </buttonConfiguration>
+                                <connections>
+                                    <action selector="signupTapped:" destination="QaT-zs-A8B" eventType="touchUpInside" id="VmM-2W-eoP"/>
+                                </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" spacing="19" translatesAutoresizingMaskIntoConstraints="NO" id="BU5-Kq-Kfo">
                                 <rect key="frame" x="72.666666666666686" y="567" width="248" height="70"/>
@@ -410,10 +416,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="HUSHTAG 1" width="1206" height="1206"/>
         <image name="Image 1" width="83" height="83"/>
         <image name="Image 2" width="102" height="102"/>
         <image name="Image 3" width="83" height="83"/>
+        <image name="logo" width="800" height="800"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

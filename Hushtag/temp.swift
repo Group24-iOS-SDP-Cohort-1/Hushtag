@@ -23,15 +23,15 @@ class temp: UIViewController {
         func pingSupabase() async {
             do {
 
-                try await SupabaseConfig.client.database
-                    .from("test_ping")
-                    .insert(["message": "CONNECTED FROM IOS ✅"])
-                    .execute()
+                           try await SupabaseConfig.client.database
+                               .from("test_ping")
+                               .insert(["message": "CONNECTED FROM IOS ✅"])
+                               .execute()
 
-                print("✅ CONNECTED TO SUPABASE")
-            } catch {
-                print("❌ NOT CONNECTED:", error)
-            }
+                           print("✅ CONNECTED TO SUPABASE")
+                       } catch {
+                           print("❌ NOT CONNECTED:", error)
+                       }
         }
 
 }

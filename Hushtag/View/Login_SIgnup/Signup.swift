@@ -15,42 +15,70 @@ class Signup: UIViewController {
     @IBOutlet weak var appleButton: UIButton!
     @IBOutlet weak var facebookButton: UIButton!
     @IBOutlet weak var googleButton: UIButton!
+    private let authController = AuthController()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         styleSocialButton(googleButton)
-        styleSocialButton(facebookButton)
-        styleSocialButton(appleButton)
-        styleTextField(emailTextField)
-        styleTextField(passwordTextField)
-        styleTextField(confirmPasswordTextField)
-        // Do any additional setup after loading the view.
-    }
-    
-    func styleSocialButton(_ button: UIButton) {
-        button.backgroundColor = UIColor(white: 0.95, alpha: 1)
-        button.layer.cornerRadius = 14
-        button.clipsToBounds = true
-    }
-    
-    func styleTextField(_ textField: UITextField) {
-        textField.layer.cornerRadius = 12
-        textField.clipsToBounds = true
-        textField.layer.borderWidth = 0.2
-        textField.layer.borderColor = UIColor.white.cgColor
-        textField.backgroundColor = .black
-        textField.textColor = .white
-    }
-    
+                styleSocialButton(facebookButton)
+                styleSocialButton(appleButton)
+                styleTextField(emailTextField)
+                styleTextField(passwordTextField)
+                styleTextField(confirmPasswordTextField)
+            }
 
-    /*
-    // MARK: - Navigation
+            @IBAction func signupTapped(_ sender: UIButton) {
+                guard
+                    let email = emailTextField.text, !email.isEmpty,
+                    let password = passwordTextField.text, !password.isEmpty,
+                    let confirmPassword = confirmPasswordTextField.text, !confirmPassword.isEmpty
+                else {
+                    showAlert("All fields are required")
+                    return
+                }
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+                guard password == confirmPassword else {
+                    showAlert("Passwords do not match")
+                    return
+                }
 
-}
+                _Concurrency.Task {
+                    let success = await authController.signup(
+                        email: email,
+                        password: password
+                    )
+
+                    if success {
+                        showAlert("Account created successfully 🎉")
+                    } else {
+                        showAlert("Signup failed. Try again.")
+                    }
+                }
+            }
+
+            private func styleSocialButton(_ button: UIButton) {
+                button.backgroundColor = UIColor(white: 0.95, alpha: 1)
+                button.layer.cornerRadius = 14
+                button.clipsToBounds = true
+            }
+
+            private func styleTextField(_ textField: UITextField) {
+                textField.layer.cornerRadius = 12
+                textField.clipsToBounds = true
+                textField.layer.borderWidth = 0.2
+                textField.layer.borderColor = UIColor.white.cgColor
+                textField.backgroundColor = .black
+                textField.textColor = .white
+            }
+
+            private func showAlert(_ message: String) {
+                let alert = UIAlertController(
+                    title: "Signup",
+                    message: message,
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                present(alert, animated: true)
+            }
+        }
