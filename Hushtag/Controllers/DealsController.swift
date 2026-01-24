@@ -8,8 +8,8 @@ final class DealsController {
     func addDeal(_ deal: Deal) async throws -> Deal {
         let session = try await client.auth.session
 
-        let payload = DealInsertPayload(
-            user_id: session.user.id,
+        let payload = DealDB(
+            id: session.user.id,
             name: deal.name,
             payment: deal.payment,
             mobileNumber: deal.mobileNumber,
@@ -23,7 +23,6 @@ final class DealsController {
             .from("brand_deals")
             .insert(payload)
             .select()
-            .single()
             .execute()
             .value
 
@@ -57,6 +56,7 @@ final class DealsController {
         let deals: [DealDB] = try await client.database
             .from("brand_deals")
             .select()
+            .eq("user_id", value: session.user.id)
             .execute()
             .value
 
@@ -74,10 +74,6 @@ final class DealsController {
         }
     }
 
-
-
-
-    // MAPPER
     private func mapToDeal(
         _ deal: DealDB,
         _ deliverables: [DeliverableDB]
@@ -94,14 +90,12 @@ final class DealsController {
                 .map { String($0) },
             deliverables: deliverables.map {
                 Deliverable(
-                    id: $0.deal_id,
+                    id: $0.id,
                     name: $0.name,
                     deadline: $0.deadline,
                     isCompleted: $0.isCompleted
                 )
-            }
+            } 
         )
     }
-
-
 }

@@ -12,24 +12,13 @@ struct Deal: Identifiable, Sendable {
     var deliverables: [Deliverable]
 }
 struct Deliverable: Identifiable, Sendable {
-    let id: UUID?
+    let id: UUID
     let name: String
     let deadline: Date
     var isCompleted: Bool
 }
 
-nonisolated struct DealInsertPayload: Encodable, Sendable{
-    let user_id: UUID
-    let name: String
-    let payment: Double
-    let mobileNumber: Int64
-    let email: String
-    let description: String
-    let deadline: Date
-    let platform: String
-}
-
-nonisolated struct DealDB: Decodable, Sendable {
+nonisolated struct DealDB: Codable, Sendable {
     let id: UUID
     let name: String
     let payment: Double?   
@@ -42,22 +31,10 @@ nonisolated struct DealDB: Decodable, Sendable {
 
 nonisolated struct DeliverableDB: Codable, Sendable {
     let id: UUID    
-    let deal_id: UUID?
+    let deal_id: UUID
     let name: String
     let deadline: Date
     let isCompleted: Bool
-}
-
-
-nonisolated struct DealWithDeliverables: Decodable, Sendable {
-    let id: UUID
-    let name: String
-    let payment: Double
-    let mobileNumber: Int64?
-    let email: String?
-    let description: String?
-    let platform: String
-    let deliverables: [DeliverableDB]
 }
 
 
