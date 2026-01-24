@@ -11,7 +11,7 @@ final class DealsController {
         let payload = DealInsertPayload(
             user_id: session.user.id,
             name: deal.name,
-            payment: Double(deal.payment),
+            payment: deal.payment,
             mobileNumber: deal.mobileNumber,
             email: deal.email,
             description: deal.description,
@@ -29,6 +29,7 @@ final class DealsController {
 
         let deliverablesPayload = deal.deliverables.map {
             DeliverableDB(
+                id: UUID(),
                 deal_id: dealDB.id,
                 name: $0.name,
                 deadline: $0.deadline,
@@ -84,10 +85,10 @@ final class DealsController {
         Deal(
             id: deal.id,
             name: deal.name,
-            payment: deal.payment ?? 0.0,                     // ✅ FIX
-            mobileNumber: deal.mobileNumber ?? 0,           // ✅ FIX
-            email: deal.email ?? "",                         // ✅ FIX
-            description: deal.description ?? "",             // ✅ FIX
+            payment: deal.payment ?? 0.0,
+            mobileNumber: deal.mobileNumber ?? 0,
+            email: deal.email ?? "",
+            description: deal.description ?? "",             
             platform: deal.platform
                 .split(separator: ",")
                 .map { String($0) },

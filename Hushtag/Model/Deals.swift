@@ -41,6 +41,7 @@ nonisolated struct DealDB: Decodable, Sendable {
 }
 
 nonisolated struct DeliverableDB: Codable, Sendable {
+    let id: UUID    
     let deal_id: UUID?
     let name: String
     let deadline: Date
