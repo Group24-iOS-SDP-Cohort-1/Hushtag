@@ -44,8 +44,8 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
             updateCompletedButton(isCompleted: post.isCompleted)
             
         case .deal(let deal):
-            guard let deliverable = deal.deliverable.first else { return }
-            
+            guard let deliverable = deal.deliverables.first else { return }
+
             timeLabel.text = deliverable.deadline.formatted(
                 date: .omitted,
                 time: .shortened
@@ -78,8 +78,8 @@ extension Post {
 
 extension Deal {
     var isCompleted: Bool {
-        guard !deliverable.isEmpty else { return false }
-        return deliverable.allSatisfy { $0.isCompleted }
+        guard !deliverables.isEmpty else { return false }
+        return deliverables.allSatisfy { $0.isCompleted }
     }
 }
 

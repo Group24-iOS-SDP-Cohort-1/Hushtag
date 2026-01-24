@@ -39,7 +39,7 @@ class Login: UIViewController {
                    return
                }
 
-               _Concurrency.Task {
+               _Concurrency.Task { @MainActor in 
                    let success = await authController.login(
                        email: email,
                        password: password
@@ -80,7 +80,7 @@ class Login: UIViewController {
            }
 
         private func navigateToIdeate() {
-            let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let ideateRootVC = storyboard.instantiateInitialViewController()
 
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,

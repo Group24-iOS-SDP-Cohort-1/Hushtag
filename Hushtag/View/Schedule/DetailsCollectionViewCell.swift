@@ -60,8 +60,8 @@ class DetailsCollectionViewCell: UICollectionViewCell {
     
     func DealDetails(with deal: Deal) {
         
-        let completedCount = deal.deliverable.filter { $0.isCompleted }.count
-        let totalCount = deal.deliverable.count
+        let completedCount = deal.deliverables.filter { $0.isCompleted }.count
+        let totalCount = deal.deliverables.count
 
         paymentLabel.text = "\(deal.payment)"
         paymentLabel.isHidden = false

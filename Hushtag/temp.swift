@@ -15,7 +15,7 @@ class temp: UIViewController {
         }
 
         @IBAction func testConnection(_ sender: UIButton) {
-            _Concurrency.Task {
+            _Concurrency.Task { @MainActor in
                 await pingSupabase()
             }
         }

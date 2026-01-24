@@ -136,7 +136,7 @@ extension Details: UICollectionViewDataSource, UICollectionViewDelegateFlowLayou
             if section == 1 {
                 return 1
             }
-            return deal.deliverable.count
+            return deal.deliverables.count
 
         case .post(let post):
             return post.tasks?.count ?? 0
@@ -173,7 +173,7 @@ extension Details: UICollectionViewDataSource, UICollectionViewDelegateFlowLayou
                 for: indexPath
             ) as! DetailsCollectionViewCell
 
-            let deliverable = deal.deliverable[indexPath.row]
+            let deliverable = deal.deliverables[indexPath.row]
             cell.configureMultiple(with: deliverable)
             cell.applyLiquidGlassEffect()
             return cell

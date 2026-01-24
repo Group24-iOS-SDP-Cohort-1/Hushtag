@@ -207,18 +207,18 @@ class Schedule: UIViewController {
     }
     
     private func toggleDealCompletion(_ deal: Deal) {
-        guard !deal.deliverable.isEmpty else { return }
+        guard !deal.deliverables.isEmpty else { return }
 
         let shouldCompleteAll = !deal.isCompleted
 
-        let updatedDeliverables = deal.deliverable.map { d -> Deliverable in
+        let updatedDeliverables = deal.deliverables.map { d -> Deliverable in
             var deliverable = d
             deliverable.isCompleted = shouldCompleteAll
             return deliverable
         }
 
         var updatedDeal = deal
-        updatedDeal.deliverable = updatedDeliverables
+        updatedDeal.deliverables = updatedDeliverables
 
         DataStore.shared.updateDeal(updatedDeal)
     }

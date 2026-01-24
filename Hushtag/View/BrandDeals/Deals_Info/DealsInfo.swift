@@ -206,7 +206,7 @@ extension DealsInfo: UICollectionViewDataSource {
 
         switch type {
         case .details: return 3
-        case .deliverables: return deals.deliverable.count
+        case .deliverables: return deals.deliverables.count
         case .selectedIdea: return selectedIdea == nil ? 0 : 1
         case .notes: return deals.description.isEmpty == false ? 1 : 0
         }
@@ -244,8 +244,8 @@ extension DealsInfo: UICollectionViewDataSource {
                 for: indexPath
             ) as! DeliverableCell
 
-            let isLast = indexPath.item == deals.deliverable.count - 1
-            cell.configure(with: deals.deliverable[indexPath.item], isLast: isLast)
+            let isLast = indexPath.item == deals.deliverables.count - 1
+            cell.configure(with: deals.deliverables[indexPath.item], isLast: isLast)
             return cell
 
         case .selectedIdea:
@@ -305,7 +305,7 @@ extension DealsInfo: UICollectionViewDelegate {
 
         guard sections[indexPath.section] == .deliverables else { return }
 
-        deals.deliverable[indexPath.item].isCompleted.toggle()
+        deals.deliverables[indexPath.item].isCompleted.toggle()
         collectionView.reloadItems(at: [indexPath])
 
         if dealIndex >= 0 {

@@ -43,7 +43,7 @@ class Signup: UIViewController {
                     return
                 }
 
-                _Concurrency.Task {
+                _Concurrency.Task { @MainActor in
                     let success = await authController.signup(
                         email: email,
                         password: password

@@ -164,28 +164,28 @@ struct Post: Codable, Identifiable {
     
 }
 
-struct Deal: Codable, Identifiable {
-    let id = UUID()
-    let name: String
-    var deliverable: [Deliverable]
-    let platform: [String]
-    let phone: String
-    let email: String
-    let description: String
-    let payment: Int
-    let selectedIdeaIndex: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case name,deliverable,platform,phone,email,description,payment, selectedIdeaIndex
-    }
-}
-
-struct Deliverable: Codable {
-    let name: String
-    let deadline: Date
-    var isCompleted : Bool
-}
-
+//struct Deal: Codable, Identifiable {
+//    let id = UUID()
+//    let name: String
+//    var deliverable: [Deliverable]
+//    let platform: [String]
+//    let phone: String
+//    let email: String
+//    let description: String
+//    let payment: Int
+//    let selectedIdeaIndex: String?
+//    
+//    enum CodingKeys: String, CodingKey {
+//        case name,deliverable,platform,phone,email,description,payment, selectedIdeaIndex
+//    }
+//}
+//
+//struct Deliverable: Codable {
+//    let name: String
+//    let deadline: Date
+//    var isCompleted : Bool
+//}
+//
 struct TopContentItem: Codable, Identifiable {
     let id: String
     let title: String
@@ -393,7 +393,7 @@ enum ScheduleItem {
     func date() -> Date? {
         switch self {
         case .deal(let deal):
-            return deal.deliverable.first?.deadline
+            return deal.deliverables.first?.deadline
         case .post(let post):
             return post.tasks?.first?.deadline
         }
@@ -404,7 +404,7 @@ enum ScheduleItem {
         case .post(let post):
             return post.tasks?.allSatisfy { $0.isCompleted } ?? false
         case .deal(let deal):
-            return deal.deliverable.allSatisfy { $0.isCompleted }
+            return deal.deliverables.allSatisfy { $0.isCompleted }
         }
     }
 }

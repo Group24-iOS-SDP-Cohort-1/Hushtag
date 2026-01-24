@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import PostgREST
+internal import _Helpers
 
 class DealsViewController: UIViewController {
 
@@ -16,11 +18,12 @@ class DealsViewController: UIViewController {
     
     var selected_Deal : Deal?
     var deals: [Deal] = []
+    private let dealsController = DealsController()
 
     var completedDeals: [Deal] {
         deals.filter {
-            let total = $0.deliverable.count
-            let completed = $0.deliverable.filter { $0.isCompleted }.count
+            let total = $0.deliverables.count
+            let completed = $0.deliverables.filter { $0.isCompleted }.count
             return total > 0 && completed == total
         }
     }
@@ -28,8 +31,8 @@ class DealsViewController: UIViewController {
      
         var ongoingDeals: [Deal] {
             return deals.filter {
-                let total = $0.deliverable.count
-                let completed = $0.deliverable.filter { $0.isCompleted }.count
+                let total = $0.deliverables.count
+                let completed = $0.deliverables.filter { $0.isCompleted }.count
                 return completed != total
             }
         }
@@ -46,7 +49,8 @@ class DealsViewController: UIViewController {
         registerCell()
 
         // here we are fetching the deals from the data store
-        deals = DataStore.shared.getDeals()
+       
+
         print(deals.count)
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -68,7 +72,7 @@ class DealsViewController: UIViewController {
             .foregroundColor: purpleColor,
             .font: UIFont.systemFont(ofSize: 14, weight: .semibold)
         ], for: .selected)
-
+        fetchDeals()
     }
 
     @IBAction func segmentedAction(_ sender: UISegmentedControl) {
@@ -79,7 +83,27 @@ class DealsViewController: UIViewController {
             
             collectionView.reloadData()
     }
+
+    private func fetchDeals()  {
+        _Concurrency.Task {
+            do {
+                let fetchedDeals = try await dealsController.fetchDeals()
+
+                await MainActor.run {
+                    self.deals = fetchedDeals
+                    self.collectionView.reloadData()
+                }
+            } catch {
+                print("❌ Supabase insert failed:")
+                dump(error)
+            }
+
+            }
+
+        }
     
+
+
     func registerCell() {
         collectionView.register(
             UINib(nibName: "DealsCollectionViewCell", bundle: nil),
@@ -176,12 +200,12 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
             }
             
             // this is for tag deals stuff
-            if let ideaId = deal.selectedIdeaIndex {
-                let ideaResponse = IdeaResponse()
-                vc.selectedIdea = ideaResponse.ideas.first { $0.id == ideaId }
-            } else {
-                vc.selectedIdea = nil
-            }
+//            if let ideaId = deal.selectedIdeaIndex {
+//                let ideaResponse = IdeaResponse()
+//                vc.selectedIdea = ideaResponse.ideas.first { $0.id == ideaId }
+//            } else {
+//                vc.selectedIdea = nil
+//            }
         }
     }
 }
