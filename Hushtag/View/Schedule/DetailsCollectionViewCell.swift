@@ -66,7 +66,7 @@ class DetailsCollectionViewCell: UICollectionViewCell {
         paymentLabel.text = "\(deal.payment)"
         paymentLabel.isHidden = false
 
-        phoneLabel.text = deal.phone
+        phoneLabel.text = "\(deal.mobileNumber)"
         phoneLabel.isHidden = false
 
         emailLabel.text = deal.email

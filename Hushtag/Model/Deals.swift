@@ -1,27 +1,28 @@
 import Foundation
 
 
-nonisolated struct Deal: Identifiable, Sendable {
+struct Deal: Identifiable, Sendable {
     let id: UUID
     let name: String
-    var deliverables: [Deliverable]
-    let platform: [String]
-    let phone: String
+    let payment: Double
+    let mobileNumber: Int64
     let email: String
     let description: String
-    let payment: Int
+    let platform: [String]
+    var deliverables: [Deliverable]
 }
-
-nonisolated struct Deliverable: Sendable {
+struct Deliverable: Identifiable, Sendable {
+    let id: UUID?
     let name: String
     let deadline: Date
     var isCompleted: Bool
 }
 
 nonisolated struct DealInsertPayload: Encodable, Sendable{
+    let user_id: UUID
     let name: String
     let payment: Double
-    let mobileNumber: String
+    let mobileNumber: Int64
     let email: String
     let description: String
     let deadline: Date
@@ -31,8 +32,8 @@ nonisolated struct DealInsertPayload: Encodable, Sendable{
 nonisolated struct DealDB: Decodable, Sendable {
     let id: UUID
     let name: String
-    let payment: Double
-    let mobileNumber: String?
+    let payment: Double?   
+    let mobileNumber: Int64?
     let email: String?
     let description: String?
     let deadline: Date
@@ -51,7 +52,7 @@ nonisolated struct DealWithDeliverables: Decodable, Sendable {
     let id: UUID
     let name: String
     let payment: Double
-    let mobileNumber: String?
+    let mobileNumber: Int64?
     let email: String?
     let description: String?
     let platform: String

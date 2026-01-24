@@ -206,22 +206,22 @@ class Schedule: UIViewController {
         dataStore.updatePost(updatedPost)
     }
     
-    private func toggleDealCompletion(_ deal: Deal) {
-        guard !deal.deliverables.isEmpty else { return }
-
-        let shouldCompleteAll = !deal.isCompleted
-
-        let updatedDeliverables = deal.deliverables.map { d -> Deliverable in
-            var deliverable = d
-            deliverable.isCompleted = shouldCompleteAll
-            return deliverable
-        }
-
-        var updatedDeal = deal
-        updatedDeal.deliverables = updatedDeliverables
-
-        DataStore.shared.updateDeal(updatedDeal)
-    }
+//    private func toggleDealCompletion(_ deal: Deal) {
+//        guard !deal.deliverables.isEmpty else { return }
+//
+//        let shouldCompleteAll = !deal.isCompleted
+//
+//        let updatedDeliverables = deal.deliverables.map { d -> Deliverable in
+//            var deliverable = d
+//            deliverables.isCompleted = shouldCompleteAll
+//            return deliverable
+//        }
+//
+//        var updatedDeal = deal
+//        updatedDeal.deliverables = updatedDeliverables
+//
+//        DataStore.shared.updateDeal(updatedDeal)
+//    }
 }
 
 extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -361,13 +361,15 @@ extension Schedule: ScheduleCollectionViewCellDelegate {
         case .post(let post):
             togglePostCompletion(post)
 
-        case .deal(let deal):
-            toggleDealCompletion(deal)
-        }
+                    case .deal(let deal):
+                       // toggleDealCompletion(deal)
+            print("HI")
+                    }
 
-        // Refresh only the list section
-        filterItems(for: selectedDate)
-        scheduleView.reloadSections(IndexSet(integer: 1))
+            // Refresh only the list section
+            filterItems(for: selectedDate)
+            scheduleView.reloadSections(IndexSet(integer: 1))
+        }
     }
-}
+
 

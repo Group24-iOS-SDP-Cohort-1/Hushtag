@@ -7,8 +7,7 @@
 
 import UIKit
 import PostgREST
-internal import _Helpers
-
+import Supabase
 class DealsViewController: UIViewController {
 
     @IBOutlet weak var segmentControl: UISegmentedControl!
@@ -33,7 +32,7 @@ class DealsViewController: UIViewController {
             return deals.filter {
                 let total = $0.deliverables.count
                 let completed = $0.deliverables.filter { $0.isCompleted }.count
-                return completed != total
+                return total > 0 && completed != total
             }
         }
     private var selectedSegmentIndex = 0
@@ -49,7 +48,22 @@ class DealsViewController: UIViewController {
         registerCell()
 
         // here we are fetching the deals from the data store
+        _Concurrency.Task {
+                     do {
+                         let session = try await SupabaseConfig.client.auth.session
+                         print("✅ Logged in UID:", session.user.id)
+                         print("SESSION ACCESS TOKEN:", session.accessToken.prefix(20))
+
+                     } catch {
+                         print("❌ No auth session:", error)
+              }
+          }
+
        
+
+
+
+        fetchDeals()
 
         print(deals.count)
         collectionView.delegate = self
@@ -72,7 +86,8 @@ class DealsViewController: UIViewController {
             .foregroundColor: purpleColor,
             .font: UIFont.systemFont(ofSize: 14, weight: .semibold)
         ], for: .selected)
-        fetchDeals()
+
+
     }
 
     @IBAction func segmentedAction(_ sender: UISegmentedControl) {
@@ -91,8 +106,11 @@ class DealsViewController: UIViewController {
 
                 await MainActor.run {
                     self.deals = fetchedDeals
+                    self.selectedSegmentIndex = self.segmentControl.selectedSegmentIndex
+                    self.collectionView.collectionViewLayout.invalidateLayout()
                     self.collectionView.reloadData()
                 }
+
             } catch {
                 print("❌ Supabase insert failed:")
                 dump(error)
@@ -101,7 +119,7 @@ class DealsViewController: UIViewController {
             }
 
         }
-    
+
 
 
     func registerCell() {
@@ -223,9 +241,6 @@ extension DealsViewController: DealsInfoDelegate {
 //this is for if we add new deals using the modal
 extension DealsViewController: AddDealsDelegate {
     func addDealsViewController(_ controller: AddDealsViewController, didCreateDeal deal: Deal) {
-        DispatchQueue.main.async {
-            self.deals.append(deal)
-            self.collectionView.reloadData()
-        }
+        fetchDeals()
     }
 }

@@ -57,9 +57,9 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
     @objc private func closeTapped() { dismiss(animated: true) }
 
     @objc private func doneTapped() {
-        
+
         // 1. Read main fields
-           var fieldValues: [String] = []
+        var fieldValues: [String] = []
            for row in 0..<fieldPlaceholders.count {
                let ip = IndexPath(row: row, section: Section.mainFields.rawValue)
                let cell = tableView.cellForRow(at: ip) as? MainFieldCell
@@ -93,11 +93,13 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 
                deliverables.append(
                    Deliverable(
+                       id: UUID(),
                        name: title,
                        deadline: deadline,
                        isCompleted: false
                    )
                )
+
            }
 
            // 3. Parse platform & payment
@@ -105,23 +107,25 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
                ? []
                : platformRaw.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
 
-           let sanitizedPay = payRaw
-               .replacingOccurrences(of: ",", with: "")
-               .trimmingCharacters(in: .whitespaces)
+        let sanitizedPay = payRaw
+            .replacingOccurrences(of: ",", with: "")
+            .trimmingCharacters(in: .whitespaces)
 
-           let paymentValue = Int(sanitizedPay) ?? 0
+        let paymentValue = Double(sanitizedPay) ?? 0
+
 
        
-           let newDeal = Deal(
-               id: UUID(),
-               name: brandName.isEmpty ? "Untitled Brand" : brandName,
-               deliverables: deliverables,
-               platform: platforms,
-               phone: phone,
-               email: email,
-               description: description,
-               payment: paymentValue
-           )
+        let newDeal = Deal(
+            id: UUID(),
+            name: brandName.isEmpty ? "Untitled Brand" : brandName,
+            payment: paymentValue,
+            mobileNumber: Int64(phone) ?? 0,
+            email: email,
+            description: description,
+            platform: platforms,
+            deliverables: deliverables
+        )
+
 
 
         _Concurrency.Task {

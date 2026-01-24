@@ -234,7 +234,12 @@ extension DealsInfo: UICollectionViewDataSource {
             } else if indexPath.item == 1 {
                 cell.configure(iconName: "envelope", text: deals.email, isLast: isLast)
             } else {
-                cell.configure(iconName: "phone", text: deals.phone, isLast: isLast)
+                cell
+                    .configure(
+                        iconName: "phone",
+                        text: "\(deals.mobileNumber)",
+                        isLast: isLast
+                    )
             }
             return cell
 

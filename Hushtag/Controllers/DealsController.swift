@@ -6,94 +6,101 @@ final class DealsController {
     private let client = SupabaseConfig.client
 
     func addDeal(_ deal: Deal) async throws -> Deal {
+        let session = try await client.auth.session
 
-        let dealDeadline =
-            deal.deliverables.map { $0.deadline }.max() ?? Date()
-
-        let dealPayload = DealInsertPayload(
+        let payload = DealInsertPayload(
+            user_id: session.user.id,
             name: deal.name,
             payment: Double(deal.payment),
-            mobileNumber: deal.phone,
+            mobileNumber: deal.mobileNumber,
             email: deal.email,
             description: deal.description,
-            deadline: dealDeadline,
+            deadline: deal.deliverables.map(\.deadline).max() ?? Date(),
             platform: deal.platform.joined(separator: ",")
         )
 
-        let dealResponse: DealDB = try await client.database
+        let dealDB: DealDB = try await client.database
             .from("brand_deals")
-            .insert(dealPayload)
+            .insert(payload)
             .select()
             .single()
             .execute()
             .value
 
-        let dealId = dealResponse.id
-
-
         let deliverablesPayload = deal.deliverables.map {
             DeliverableDB(
-                deal_id: dealId,
+                deal_id: dealDB.id,
                 name: $0.name,
                 deadline: $0.deadline,
                 isCompleted: $0.isCompleted
             )
         }
 
-        try await client.database
+        let insertedDeliverables: [DeliverableDB] = try await client.database
             .from("deliverables")
             .insert(deliverablesPayload)
+            .select()
             .execute()
+            .value
 
-        return Deal(
-            id: dealId,
-            name: deal.name,
-            deliverables: deal.deliverables,
-            platform: deal.platform,
-            phone: deal.phone,
-            email: deal.email,
-            description: deal.description,
-            payment: deal.payment
-        )
+        return mapToDeal(dealDB, insertedDeliverables)
     }
 
 
     func fetchDeals() async throws -> [Deal] {
 
-        let dealsDB: [DealDB] = try await client.database
+
+        let session = try await client.auth.session
+        print("FETCH UID:", session.user.id)
+
+        let deals: [DealDB] = try await client.database
             .from("brand_deals")
             .select()
-            .order("created_at", ascending: false)
             .execute()
             .value
 
-        let deliverablesDB: [DeliverableDB] = try await client.database
+        let deliverables: [DeliverableDB] = try await client.database
             .from("deliverables")
             .select()
             .execute()
             .value
 
-        return dealsDB.map { deal in
-            Deal(
-                id: deal.id,
-                name: deal.name,
-                deliverables: deliverablesDB
-                    .filter { $0.deal_id == deal.id }
-                    .map {
-                        Deliverable(
-                            name: $0.name,
-                            deadline: $0.deadline,
-                            isCompleted: $0.isCompleted
-                        )
-                    },
-                platform: deal.platform
-                    .split(separator: ",")
-                    .map(String.init),
-                phone: deal.mobileNumber ?? "",
-                email: deal.email ?? "",
-                description: deal.description ?? "",
-                payment: Int(deal.payment)
+        return deals.map { deal in
+            mapToDeal(
+                deal,
+                deliverables.filter { $0.deal_id == deal.id }
             )
         }
     }
+
+
+
+
+    // MAPPER
+    private func mapToDeal(
+        _ deal: DealDB,
+        _ deliverables: [DeliverableDB]
+    ) -> Deal {
+        Deal(
+            id: deal.id,
+            name: deal.name,
+            payment: deal.payment ?? 0.0,                     // ✅ FIX
+            mobileNumber: deal.mobileNumber ?? 0,           // ✅ FIX
+            email: deal.email ?? "",                         // ✅ FIX
+            description: deal.description ?? "",             // ✅ FIX
+            platform: deal.platform
+                .split(separator: ",")
+                .map { String($0) },
+            deliverables: deliverables.map {
+                Deliverable(
+                    id: $0.deal_id,
+                    name: $0.name,
+                    deadline: $0.deadline,
+                    isCompleted: $0.isCompleted
+                )
+            }
+        )
+    }
+
+
 }
