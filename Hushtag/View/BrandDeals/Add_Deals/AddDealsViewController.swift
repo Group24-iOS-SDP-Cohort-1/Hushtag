@@ -25,7 +25,8 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         "Payment",
         "Phone number",
         "Email",
-        "Description"
+        "Deadline",
+
     ]
     
     var deliverablePlaceholders : [String] = []
@@ -38,11 +39,8 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 56
         
-        navigationItem.leftBarButtonItem?.target = self
-        navigationItem.leftBarButtonItem?.action = #selector(closeTapped)
-        
-        navigationItem.rightBarButtonItem?.target = self
-        navigationItem.rightBarButtonItem?.action = #selector(doneTapped)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeTapped))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .prominent, target: self, action: #selector(doneTapped))
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
@@ -57,6 +55,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
     @objc private func closeTapped() { dismiss(animated: true) }
 
     @objc private func doneTapped() {
+        print("Done button tapped")
 
         // 1. Read main fields
         var fieldValues: [String] = []
@@ -71,7 +70,8 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
            let payRaw      = fieldValues[safe: 2] ?? ""
            let phone       = fieldValues[safe: 3] ?? ""
            let email       = fieldValues[safe: 4] ?? ""
-           let description = fieldValues[safe: 5] ?? ""
+           let deadlineRaw = fieldValues[safe: 5] ?? ""
+
 
            // 2. Read deliverables
            let delIP = IndexPath(row: 0, section: Section.deliverables.rawValue)
@@ -102,6 +102,20 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 
            }
 
+            if deliverables.isEmpty {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateStyle = .medium
+                let deadline = dateFormatter.date(from: deadlineRaw) ?? Date()
+                deliverables.append(
+                    Deliverable(
+                        id: UUID(),
+                        name: "Main Deliverable",
+                        deadline: deadline,
+                        isCompleted: false
+                    )
+                )
+            }
+
            // 3. Parse platform & payment
            let platforms = platformRaw.isEmpty
                ? []
@@ -121,7 +135,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             payment: paymentValue,
             mobileNumber: Int64(phone) ?? 0,
             email: email,
-            description: description,
+
             platform: platforms,
             deliverables: deliverables
         )
@@ -140,10 +154,28 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
                        self.dismiss(animated: true)
                    }
                } catch {
-                   print("❌ Failed to add deal:", error)
+                     let alert = UIAlertController(title: "Error", message: "Failed to add deal", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default))
+                        self.present(alert, animated: true)
+
                }
            }
        }
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return Section.allCases.count
+    }
+
+    override func tableView(_ tableView: UITableView,
+                            numberOfRowsInSection section: Int) -> Int {
+        guard let sec = Section(rawValue: section) else { return 0 }
+
+        switch sec {
+        case .mainFields:
+            return fieldPlaceholders.count   // 6 rows
+        case .deliverables:
+            return 1                          // single dynamic cell
+        }
+    }
 
     override func tableView(_ tableView: UITableView,
                             cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -161,6 +193,26 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             
             let placeholder = fieldPlaceholders[indexPath.row]
             cell.textField.placeholder = placeholder
+            
+            switch placeholder {
+            case "Payment":
+                cell.textField.keyboardType = .decimalPad
+            case "Phone number":
+                cell.textField.keyboardType = .phonePad
+            case "Email":
+                cell.textField.keyboardType = .emailAddress
+            default:
+                cell.textField.keyboardType = .default
+            }
+            
+            if placeholder == "Deadline" {
+                cell.isDatePickerCell = true
+                cell.configureForDatePicker()
+            } else {
+                cell.isDatePickerCell = false
+                cell.configureForDatePicker()
+            }
+
             return cell
             
         case .deliverables:

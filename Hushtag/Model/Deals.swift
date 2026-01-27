@@ -7,7 +7,6 @@ struct Deal: Identifiable, Sendable {
     let payment: Double
     let mobileNumber: Int64
     let email: String
-    let description: String
     let platform: [String]
     var deliverables: [Deliverable]
 }
@@ -24,7 +23,6 @@ nonisolated struct DealInsertPayload: Encodable, Sendable{
     let payment: Double
     let mobileNumber: Int64
     let email: String
-    let description: String
     let deadline: Date
     let platform: String
 }
@@ -35,7 +33,6 @@ nonisolated struct DealDB: Decodable, Sendable {
     let payment: Double?   
     let mobileNumber: Int64?
     let email: String?
-    let description: String?
     let deadline: Date
     let platform: String
 }
@@ -55,7 +52,6 @@ nonisolated struct DealWithDeliverables: Decodable, Sendable {
     let payment: Double
     let mobileNumber: Int64?
     let email: String?
-    let description: String?
     let platform: String
     let deliverables: [DeliverableDB]
 }

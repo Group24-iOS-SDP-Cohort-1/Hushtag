@@ -242,7 +242,5 @@ extension DealsViewController: DealsInfoDelegate {
 extension DealsViewController: AddDealsDelegate {
     func addDealsViewController(_ controller: AddDealsViewController, didCreateDeal deal: Deal) {
         fetchDeals()
-        deals.insert(deal, at: 0)
-        collectionView.reloadData()
     }
 }

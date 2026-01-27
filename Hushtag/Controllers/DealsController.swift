@@ -14,7 +14,7 @@ final class DealsController {
             payment: deal.payment,
             mobileNumber: deal.mobileNumber,
             email: deal.email,
-            description: deal.description,
+
             deadline: deal.deliverables.map(\.deadline).max() ?? Date(),
             platform: deal.platform.joined(separator: ",")
         )
@@ -88,7 +88,7 @@ final class DealsController {
             payment: deal.payment ?? 0.0,
             mobileNumber: deal.mobileNumber ?? 0,
             email: deal.email ?? "",
-            description: deal.description ?? "",             
+             
             platform: deal.platform
                 .split(separator: ",")
                 .map { String($0) },

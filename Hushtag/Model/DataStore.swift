@@ -126,7 +126,6 @@ class DataStore {
 //                platform: ["instagram"],
 //                phone: "9028399567",
 //                email: "nars@collabs.com",
-//                description: "Blush launch campaign with carousel post.",
 //                payment: 5000,
 //                selectedIdeaIndex: "i1"
 //            ),
@@ -147,7 +146,7 @@ class DataStore {
 //                platform: ["Instagram"],
 //                phone: "9028388567",
 //                email: "lifestyle@hm.com",
-//                description: "Winter streetwear reel series.",
+
 //                payment: 9000,
 //                selectedIdeaIndex: "i2"
 //            ),
@@ -173,7 +172,7 @@ class DataStore {
 //                platform: ["YouTube"],
 //                phone: "9123456701",
 //                email: "brand@lakmeindia.com",
-//                description: "Matte foundation launch campaign.",
+
 //                payment: 9500,
 //                selectedIdeaIndex: "i5"
 //            ),
@@ -194,7 +193,7 @@ class DataStore {
 //                platform: ["YouTube"],
 //                phone: "9011388567",
 //                email: "collabs@nykaa.com",
-//                description: "Tutorial featuring newly launched lipstick shades.",
+
 //                payment: 4000,
 //                selectedIdeaIndex: "i3"
 //            ),
@@ -215,7 +214,7 @@ class DataStore {
 //                platform: ["YouTube"],
 //                phone: "9123456701",
 //                email: "campaign@myntra.com",
-//                description: "Winter jacket try-on haul.",
+
 //                payment: 6500,
 //                selectedIdeaIndex: "i4"
 //            )
