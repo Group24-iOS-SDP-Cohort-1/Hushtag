@@ -1,6 +1,5 @@
 import UIKit
 
-
 //sending the create post to parent view controller
 protocol AddViewDelegate: AnyObject {
     func addViewController(_ controller: AddViewController, didCreatePost post: Post)
@@ -24,6 +23,7 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
     let mainPlaceholders = [
         "Post Name",
         "Platform",
+        "Deadline"
     ]
     
     var taskPlaceholders = ["Task 1"]
@@ -116,11 +116,18 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
             reminder: reminders
         )
         
-        
-        
-        DataStore.shared.savePost(post)
-        delegate?.addViewController(self, didCreatePost: post)
-        dismiss(animated: true)
+        Task {
+            do {
+                let savedPost = try await postsController.addPost(post)
+                
+                await MainActor.run {
+                    self.delegate?.addViewController(self, didCreatePost: savedPost)
+                    self.dismiss(animated: true)
+                }
+            } catch {
+                print("❌ Failed to add post:", error)
+            }
+        }
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -141,10 +148,7 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
         }
     }
     
-    override func tableView(
-        _ tableView: UITableView,
-        cellForRowAt indexPath: IndexPath
-    ) -> UITableViewCell {
+    override func tableView( _ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         guard let sec = Section(rawValue: indexPath.section) else {
             return UITableViewCell()
@@ -157,8 +161,18 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
                 withIdentifier: "MainFieldCell",
                 for: indexPath
             ) as! MainFieldCell
+            let placeholder = mainPlaceholders[indexPath.row]
             
-            cell.textField.placeholder = mainPlaceholders[indexPath.row]
+            cell.textField.placeholder = placeholder
+            
+            if placeholder == "Deadline" {
+                cell.isDatePickerCell = true
+                cell.configureForDatePicker()
+            } else {
+                cell.isDatePickerCell = false
+                cell.configureForDatePicker()
+            }
+
             return cell
             
         case .reminder:
@@ -308,6 +322,7 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
         tableView.endUpdates()
     }
 }
+
 extension AddViewController: UIPickerViewDataSource, UIPickerViewDelegate {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {

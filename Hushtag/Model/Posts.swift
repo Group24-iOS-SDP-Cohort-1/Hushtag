@@ -7,11 +7,9 @@ struct Post: Identifiable, Sendable {
     var tasks: [Tasks]
     let reminder: [Date]
     var isCompleted: Bool {
-           
-            guard !tasks.isEmpty else { return false }
-
-            return tasks.allSatisfy { $0.isCompleted }
-        }
+        guard !tasks.isEmpty else { return false }
+        return tasks.allSatisfy { $0.isCompleted }
+    }
 }
 struct Tasks: Identifiable, Sendable {
     let id: UUID
@@ -48,7 +46,7 @@ nonisolated struct TaskDB: Codable, Sendable {
 enum ScheduleItem: Identifiable, Sendable {
     case deal(deal: Deal, deliverable: Deliverable)
     case post(post: Post, task: Tasks)
-
+    
     var id: UUID {
         switch self {
         case .deal(_, let deliverable):
@@ -57,7 +55,7 @@ enum ScheduleItem: Identifiable, Sendable {
             return task.id
         }
     }
-
+    
     var date: Date {
         switch self {
         case .deal(_, let deliverable):

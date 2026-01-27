@@ -21,6 +21,7 @@ final class PostsController {
             .from("posts")
             .insert(payload)
             .select()
+            .single()
             .execute()
             .value
 
@@ -35,7 +36,7 @@ final class PostsController {
         }
 
         let insertedTasks: [TaskDB] = try await client.database
-            .from("tasks")
+            .from("sub_tasks")
             .insert(taskPayload)
             .select()
             .execute()
@@ -83,7 +84,7 @@ final class PostsController {
                     isCompleted: $0.isCompleted
                 )
             },
-            reminder: []
+            reminder: post.reminder
         )
     }
 }
