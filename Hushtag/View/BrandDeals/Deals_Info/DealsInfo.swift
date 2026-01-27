@@ -35,9 +35,6 @@ extension DealsInfo {
             result.append(.selectedIdea)
         }
 
-        if deals.description.isEmpty == false {
-            result.append(.notes)
-        }
 
         return result
     }
@@ -49,7 +46,7 @@ extension DealsInfo {
         case details
         case deliverables
         case selectedIdea
-        case notes
+
     }
 }
 
@@ -77,10 +74,6 @@ extension DealsInfo {
             forCellWithReuseIdentifier: "selectedIdeaCell"
         )
 
-        collectionView.register(
-            UINib(nibName: "NotesCell", bundle: nil),
-            forCellWithReuseIdentifier: "NotesCell"
-        )
 
         collectionView.register(
             UINib(nibName: "HeaderView", bundle: nil),
@@ -131,33 +124,7 @@ extension DealsInfo {
         return section
     }
 
-    //layout for the note
-    private func makePlainNotesSection() -> NSCollectionLayoutSection {
 
-        let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(1),
-            heightDimension: .estimated(44)
-        )
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
-        let group = NSCollectionLayoutGroup.vertical(
-            layoutSize: itemSize,
-            subitems: [item]
-        )
-
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 12, trailing: 16)
-
-        let header = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(36)),
-            elementKind: UICollectionView.elementKindSectionHeader,
-            alignment: .top
-        )
-        header.contentInsets = .init(top: 0, leading: 0, bottom: 12, trailing: 0)
-        section.boundarySupplementaryItems = [header]
-
-        return section
-    }
     
 
     // setting the height for each section
@@ -173,11 +140,8 @@ extension DealsInfo {
             else if section == .deliverables {
                 return self.makeCardSection(estimatedItemHeight: 64)
             }
-            else if section == .selectedIdea {
-                return self.makeCardSection(estimatedItemHeight: 150)
-            }
             else {
-                return self.makePlainNotesSection()
+                return self.makeCardSection(estimatedItemHeight: 150)
             }
         }
 
@@ -208,7 +172,7 @@ extension DealsInfo: UICollectionViewDataSource {
         case .details: return 3
         case .deliverables: return deals.deliverables.count
         case .selectedIdea: return selectedIdea == nil ? 0 : 1
-        case .notes: return deals.description.isEmpty == false ? 1 : 0
+
         }
     }
     
@@ -261,13 +225,7 @@ extension DealsInfo: UICollectionViewDataSource {
             cell.configureCell(idea: selectedIdea!)
             return cell
 
-        case .notes:
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "NotesCell",
-                for: indexPath
-            ) as! NotesCell
-            cell.label.text = deals.description
-            return cell
+
         }
     }
 
@@ -289,7 +247,7 @@ extension DealsInfo: UICollectionViewDataSource {
         case .details: header.configureHeader(text: "Details")
         case .deliverables: header.configureHeader(text: "Deliverables")
         case .selectedIdea: header.configureHeader(text: "Selected Idea")
-        case .notes: header.configureHeader(text: "Notes")
+
         }
 
         return header

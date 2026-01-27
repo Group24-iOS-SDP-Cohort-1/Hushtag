@@ -22,6 +22,7 @@ final class DealsController {
             .from("brand_deals")
             .insert(payload)
             .select()
+            .single()
             .execute()
             .value
 
@@ -83,18 +84,18 @@ final class DealsController {
             payment: deal.payment ?? 0.0,
             mobileNumber: deal.mobileNumber ?? 0,
             email: deal.email ?? "",
-            description: deal.description ?? "",             
+             
             platform: deal.platform
                 .split(separator: ",")
                 .map { String($0) },
             deliverables: deliverables.map {
                 Deliverable(
-                    id: $0.id,
+                    id: $0.deal_id,
                     name: $0.name,
                     deadline: $0.deadline,
                     isCompleted: $0.isCompleted
                 )
-            } 
+            }
         )
     }
 }

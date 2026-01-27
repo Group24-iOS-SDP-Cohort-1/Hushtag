@@ -16,12 +16,7 @@ final class DetailsCell: UICollectionViewCell {
         contentView.backgroundColor = .clear
 
         // Icon tint
-        iconImageView.tintColor = UIColor(
-            red: 139/255,
-            green: 92/255,
-            blue: 246/255,
-            alpha: 1
-        )
+        iconImageView.tintColor = .accent
 
         // Separator color
         separatorView.backgroundColor = UIColor.white.withAlphaComponent(0.15)

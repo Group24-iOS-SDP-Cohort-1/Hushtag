@@ -11,7 +11,9 @@ class MainFieldCell: UITableViewCell {
 
     @IBOutlet weak var textField: UITextField!
 
-    
+    let datePicker = UIDatePicker()
+    var isDatePickerCell: Bool = false
+
     override func awakeFromNib() {
         super.awakeFromNib()
         backgroundColor = .clear
@@ -21,8 +23,27 @@ class MainFieldCell: UITableViewCell {
         contentView.clipsToBounds = true
         contentView.applyLiquidGlassEffect()
 
+
         textField.borderStyle = .none
         textField.backgroundColor = .clear
-        
+
+        // Date Picker Configuration
+        datePicker.datePickerMode = .date
+        datePicker.preferredDatePickerStyle = .inline
+        datePicker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
+    }
+
+    func configureForDatePicker() {
+        if isDatePickerCell {
+            textField.inputView = datePicker
+        } else {
+            textField.inputView = nil
+        }
+    }
+
+    @objc func dateChanged() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        textField.text = dateFormatter.string(from: datePicker.date)
     }
 }
