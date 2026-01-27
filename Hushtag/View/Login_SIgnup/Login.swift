@@ -11,7 +11,7 @@ class Login: UIViewController {
     
     var viewModel: SignInModel = SignInModel()
     
-    var appUser: AppUser = AppUser(uid: "1234", email: "abc@gmail.com")
+    var appUser: AppUser?
 
     @IBOutlet weak var googleButton: UIButton!
     
@@ -47,18 +47,41 @@ class Login: UIViewController {
     
     
     @IBAction func logInTapped(_ sender: Any) {
-        _Concurrency.Task{
-            do{
-                
-                guard let password = passwordTextField.text, let email = emailTextField.text else {return}
-                
-                let appUser = try await viewModel.signInWithEmail(email: email, password: password)
-                self.appUser = appUser
-                print(appUser)
-            }catch{
-                print("Issue with Sign In")
+//        _Concurrency.Task{
+//            do{
+//                
+//                guard let password = passwordTextField.text, let email = emailTextField.text else {return}
+//                
+//                let appUser = try await viewModel.signInWithEmail(email: email, password: password)
+//                self.appUser = appUser
+//                print(appUser)
+//            }catch{
+//                print("Issue with Sign In")
+//            }
+//        }
+        guard let email = emailTextField.text, !email.isEmpty,
+              let password = passwordTextField.text, !password.isEmpty else {
+                showAlert(title: "Error", message: AuthError.emptyFields.localizedDescription)
+                return
             }
-        }
+
+        _Concurrency.Task { @MainActor in
+                do {
+                    let user = try await viewModel.signInWithEmail(email: email, password: password)
+
+                        self.appUser = user
+                        self.navigateToHomeScreen()
+
+                } catch let error as LocalizedError {
+                    
+                        self.showAlert(title: "Login Failed", message: error.localizedDescription)
+                    
+                } catch {
+                    
+                        self.showAlert(title: "Login Failed", message: AuthError.unknown.localizedDescription)
+                    
+                }
+            }
     }
     /*
     // MARK: - Navigation
@@ -73,6 +96,7 @@ class Login: UIViewController {
 }
 
 
+// From here we are generating an alert with text ok
 
 extension UIViewController{
     func showAlert(title: String, message: String) {
@@ -83,13 +107,25 @@ extension UIViewController{
     
     
     func navigateToHomeScreen() {
-        // ASSUMPTION: Your Home screen has the Storyboard ID "HomeVC"
-        // If you are using a TabBar, use the TabBar's ID instead.
-        if let homeVC = self.storyboard?.instantiateViewController(withIdentifier: "HomeVC") {
-            homeVC.modalPresentationStyle = .fullScreen
-            self.present(homeVC, animated: true)
-        } else {
-            print("Error: Could not find view controller with ID 'HomeVC'")
-        }
+        guard let window = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first?.windows.first else {
+                return
+            }
+
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let mainTabBar = storyboard.instantiateViewController(
+            withIdentifier: "MainTabBarController"
+        )
+
+        window.rootViewController = mainTabBar
+        window.makeKeyAndVisible()
+
+        UIView.transition(
+            with: window,
+            duration: 0.25,
+            options: .transitionCrossDissolve,
+            animations: nil
+        )
     }
 }

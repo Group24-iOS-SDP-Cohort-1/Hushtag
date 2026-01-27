@@ -11,7 +11,7 @@ class Signup: UIViewController {
     
     var viewModel: SignInModel = SignInModel()
     
-    var appUser: AppUser = AppUser(uid: "1234", email: "abc@gmail.com")
+    var appUser: AppUser?
 
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -49,30 +49,42 @@ class Signup: UIViewController {
     
     @IBAction func signUpTapped(_ sender: Any) {
         
-        _Concurrency.Task{
-            do{
-                
-                guard let password = passwordTextField.text, let email = emailTextField.text else {return}
-                
-                let appUser = try await viewModel.registerNewUserWithEmail(email: email, password: password)
-                self.appUser = appUser
-                print(appUser)
-            }catch{
-                print("Issue with Sign In")
+//        _Concurrency.Task{
+//            do{
+//                
+//                guard let password = passwordTextField.text, let email = emailTextField.text else {return}
+//                
+//                let appUser = try await viewModel.registerNewUserWithEmail(email: email, password: password)
+//                self.appUser = appUser
+//                print(appUser)
+//            }catch{
+//                print("Issue with Sign In")
+//            }
+//        }
+        guard let email = emailTextField.text,
+                  let password = passwordTextField.text,
+                  let confirmPassword = confirmPasswordTextField.text else {
+                showAlert(title: "Error", message: AuthError.emptyFields.localizedDescription)
+                return
             }
-        }
+
+            guard password == confirmPassword else {
+                showAlert(title: "Error", message: AuthError.passwordsDoNotMatch.localizedDescription)
+                return
+            }
+
+        _Concurrency.Task { @MainActor in
+                do {
+                    let user = try await viewModel.registerNewUserWithEmail(email: email, password: password)
+
+                
+                        self.appUser = user
+                        self.navigateToHomeScreen()
+                } catch let error as LocalizedError {
+                        self.showAlert(title: "Signup Failed", message: error.localizedDescription)
+                }
+            }
         
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
