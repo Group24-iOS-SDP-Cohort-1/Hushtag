@@ -11,6 +11,7 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
     weak var delegate: AddViewDelegate?  // hold reference to parent view controller
     var hasSelectedReminder = false
     private let postsController = PostsController()
+    private var reminderOffset: DateComponents?
     
     enum Section: Int, CaseIterable {
         case mainFields
@@ -96,13 +97,25 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
             )
         }
         
+        let reminders: [Date]
+        
+        if let offset = reminderOffset {
+            let calendar = Calendar.current
+            reminders = tasks.compactMap { task in
+                calendar.date(byAdding: offset, to: task.deadline)
+            }
+        } else {
+            reminders = []
+        }
+        
         let post = Post(
             id: UUID(),
             name: postName,
             platform: platforms,
             tasks: tasks,
-            reminder: [reminderText]
+            reminder: reminders
         )
+        
         
         
         DataStore.shared.savePost(post)
@@ -251,6 +264,8 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
     private func setReminder(hour: Int, minute: Int) {
         hasSelectedReminder = true
         
+        reminderOffset = DateComponents(hour: -hour, minute: -minute)
+        
         if hour > 0 && minute == 0 {
             reminderText = "\(hour) hour before"
         } else {
@@ -260,6 +275,7 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
         let ip = IndexPath(row: 0, section: Section.reminder.rawValue)
         tableView.reloadRows(at: [ip], with: .none)
     }
+    
     
     private func parsePlatforms(from raw: String) -> [Platform] {
         raw

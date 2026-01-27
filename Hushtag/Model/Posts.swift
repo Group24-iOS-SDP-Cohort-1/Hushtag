@@ -5,7 +5,7 @@ struct Post: Identifiable, Sendable {
     let name: String
     let platform: [Platform]
     var tasks: [Tasks]
-    let reminder: [String]
+    let reminder: [Date]
     var isCompleted: Bool {
            
             guard !tasks.isEmpty else { return false }
@@ -25,7 +25,16 @@ nonisolated struct PostDB: Codable, Sendable {
     let name: String
     let deadline: Date
     let platform: [Platform]
+    let reminder: [Date]
     var isCompleted: Bool
+}
+
+nonisolated struct PostInsertPayload: Encodable, Sendable {
+    let user_id: UUID
+    let name: String
+    let deadline: Date
+    let platform: [Platform]
+    let reminder: [Date]
 }
 
 nonisolated struct TaskDB: Codable, Sendable {

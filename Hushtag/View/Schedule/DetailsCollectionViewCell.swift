@@ -18,7 +18,6 @@ class DetailsCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var subNameLabel: UILabel!
     @IBOutlet weak var deadlineLabel: UILabel!
     @IBOutlet weak var statusButton: UIButton!
-    private var currentTask: Tasks?
     var onToggleCompletion: ((Bool) -> Void)?
     private var isCompleted: Bool = false
 
@@ -37,7 +36,7 @@ class DetailsCollectionViewCell: UICollectionViewCell {
         }
         
         switch item {
-        case .post(let post, let task):
+        case .post(let post, _):
             
             mainName.text = post.name
             if !post.platform.isEmpty {
@@ -45,11 +44,18 @@ class DetailsCollectionViewCell: UICollectionViewCell {
                 platformLabel.isHidden = false
             }
             if !post.reminder.isEmpty {
-                remindersLabel.text = post.reminder.joined(separator: ", ")
+                remindersLabel.text = post.reminder
+                    .sorted()
+                    .map { $0.deadlineFormatted() }
+                    .joined(separator: ", ")
+
                 remindersLabel.isHidden = false
+            } else {
+                remindersLabel.isHidden = true
             }
+
            
-        case .deal(let deal, let deliverable):
+        case .deal(let deal, _):
             
             mainName.text = deal.name
 

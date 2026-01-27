@@ -8,16 +8,14 @@ final class DealsController {
     func addDeal(_ deal: Deal) async throws -> Deal {
         let session = try await client.auth.session
 
-        let payload = DealDB(
+        let payload = DealInsertPayload(
             user_id: session.user.id,
             name: deal.name,
             payment: deal.payment,
             mobileNumber: deal.mobileNumber,
             email: deal.email,
-            description: deal.description,
             deadline: deal.deliverables.map(\.deadline).max() ?? Date(),
-            platform: deal.platform.joined(separator: ","),
-            isCompleted: false
+            platform: deal.platform.joined(separator: ",")
         )
 
         let dealDB: DealDB = try await client.database

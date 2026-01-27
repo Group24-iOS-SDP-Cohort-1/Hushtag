@@ -9,13 +9,12 @@ final class PostsController {
 
         let session = try await client.auth.session
 
-        let payload = PostDB(
-            id: UUID(),
-            user_id: 
+        let payload = PostInsertPayload (
+            user_id: session.user.id,
             name: post.name,
             deadline: post.tasks.map(\.deadline).max() ?? Date(),
             platform: post.platform,
-            isCompleted: false
+            reminder: post.reminder
         )
 
         let postDB: PostDB = try await client.database

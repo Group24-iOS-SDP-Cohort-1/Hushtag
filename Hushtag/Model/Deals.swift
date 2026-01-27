@@ -9,6 +9,7 @@ struct Deal: Identifiable, Sendable {
     let description: String
     let platform: [String]
     var deliverables: [Deliverable]
+    //let reminder: [Date]
     var isCompleted: Bool {
         guard !deliverables.isEmpty else { return false }
         return deliverables.allSatisfy { $0.isCompleted }
@@ -42,4 +43,12 @@ nonisolated struct DeliverableDB: Codable, Sendable {
     let isCompleted: Bool
 }
 
-
+nonisolated struct DealInsertPayload: Encodable, Sendable{
+    let user_id: UUID
+    let name: String
+    let payment: Double
+    let mobileNumber: Int64
+    let email: String
+    let deadline: Date
+    let platform: String
+}
