@@ -107,7 +107,13 @@
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Ijh-h0-h44" secondAttribute="trailing" constant="20" id="rb2-zx-fA3"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Analysis" id="rdl-7Q-UK4"/>
+                    <navigationItem key="navigationItem" title="Analysis" id="rdl-7Q-UK4">
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="C54-gz-OIR">
+                            <connections>
+                                <action selector="signOutTap:" destination="Y6W-OH-hqX" id="bjZ-aP-GZt"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="analysisCollectionView" destination="7z1-FJ-eeu" id="U24-ot-FRi"/>
                         <outlet property="segmentedTimeOutlet" destination="Ijh-h0-h44" id="hPL-mh-DcE"/>

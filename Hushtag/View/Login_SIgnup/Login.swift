@@ -66,23 +66,48 @@ class Login: UIViewController {
             }
 
         _Concurrency.Task { @MainActor in
-                do {
-                    let user = try await viewModel.signInWithEmail(email: email, password: password)
-
-                        self.appUser = user
-                        self.navigateToHomeScreen()
-
-                } catch let error as LocalizedError {
-                    
-                        self.showAlert(title: "Login Failed", message: error.localizedDescription)
-                    
-                } catch {
-                    
-                        self.showAlert(title: "Login Failed", message: AuthError.unknown.localizedDescription)
-                    
-                }
+            do {
+                let user = try await viewModel.signInWithEmail(email: email, password: password)
+                
+                self.appUser = user
+                self.navigateToHomeScreen()
+                
+            } catch let error as LocalizedError {
+                
+                self.showAlert(title: "Login Failed", message: error.localizedDescription)
+                
+            } catch {
+                
+                self.showAlert(title: "Login Failed", message: AuthError.unknown.localizedDescription)
+                
             }
+        }
+        
+        
     }
+    
+    
+    @IBAction func googleLoginTapped(_ sender: Any) {
+        
+        _Concurrency.Task { @MainActor in
+            do {
+                let user = try await viewModel.signInWithGoogle()
+                
+                self.appUser = user
+                self.navigateToHomeScreen()
+                
+            } catch let error as LocalizedError {
+                
+                self.showAlert(title: "Login Failed", message: error.localizedDescription)
+                
+            } catch {
+                
+                self.showAlert(title: "Login Failed", message: AuthError.unknown.localizedDescription)
+                
+            }
+        }
+    }
+    
     /*
     // MARK: - Navigation
 
@@ -128,4 +153,33 @@ extension UIViewController{
             animations: nil
         )
     }
+    
+    
+    func navigateToLoginScreen() {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let window = windowScene.windows.first else {
+                return
+            }
+
+            // 1. Get the Login Screen from Storyboard
+            let storyboard = UIStoryboard(name: "login_signup", bundle: nil)
+            
+            // IMPORTANT: Make sure your Login View Controller has the Storyboard ID "LoginVC"
+            // If your Login screen is inside a Navigation Controller, use that ID instead.
+            let loginVC = storyboard.instantiateViewController(withIdentifier: "WelcomeController")
+        
+        guard let loginNav = storyboard.instantiateViewController(withIdentifier: "LoginNavigationController") as? UINavigationController else {
+                print("Error: Could not find LoginNavigationController in Storyboard")
+                return
+            }
+
+            // 2. Swap the root view controller with an animation
+            //window.rootViewController = loginVC
+            window.rootViewController = loginNav
+            
+            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+            
+            // 3. Make it visible
+            window.makeKeyAndVisible()
+        }
 }
