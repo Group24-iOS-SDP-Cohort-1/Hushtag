@@ -1,6 +1,5 @@
 import Foundation
 
-
 struct Deal: Identifiable, Sendable {
     let id: UUID
     let name: String

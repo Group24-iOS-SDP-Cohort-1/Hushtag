@@ -35,18 +35,7 @@ class Activities: UIViewController {
         case .all:
             return scheduleItems
         case .completed:
-            return scheduleItems.filter {
-                switch $0 {
-                case .post(let post):
-                    let total = post.tasks?.count ?? 0
-                    let completed = post.tasks?.filter { $0.isCompleted }.count ?? 0
-                    return total > 0 && completed == total
-                case .deal(let deal):
-                    let total = deal.deliverables.count
-                    let completed = deal.deliverables.filter { $0.isCompleted }.count
-                    return total > 0 && completed == total
-                }
-            }
+            return scheduleItems.filter { $0.isCompleted }
         }
     }
 }

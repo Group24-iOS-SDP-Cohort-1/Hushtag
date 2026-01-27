@@ -39,16 +39,16 @@ class DataStore {
         }
     }
 
-    func scheduleItems(on date: Date) -> [ScheduleItem] {
-        let calendar = Calendar.current
+//    func scheduleItems(on date: Date) -> [ScheduleItem] {
+//        let calendar = Calendar.current
 
-        let postItems = posts
-            .filter { post in
-                post.tasks?.contains {
-                    calendar.isDate($0.deadline, inSameDayAs: date)
-                } ?? false
-            }
-            .map { ScheduleItem.post($0) }
+//        let postItems = posts
+//            .filter { post in
+//                post.tasks?.contains {
+//                    calendar.isDate($0.deadline, inSameDayAs: date)
+//                } ?? false
+//            }
+//            .map { ScheduleItem.post($0) }
 
 //        let dealItems = deals
 //            .filter { deal in
@@ -58,13 +58,14 @@ class DataStore {
 //            }
 //            .map { ScheduleItem.deal($0) }
 
-        return (postItems)
-            .sorted { ($0.date() ?? .distantFuture) < ($1.date() ?? .distantFuture) }
-    }
+//        return (postItems)
+//            .sorted { ($0.date() ?? .distantFuture) < ($1.date() ?? .distantFuture) }
+//        return 1
+//    }
 
-    func completedScheduleItems(on date: Date) -> [ScheduleItem] {
-        scheduleItems(on: date).filter { $0.isCompleted }
-    }
+//    func completedScheduleItems(on date: Date) -> [ScheduleItem] {
+//        scheduleItems(on: date).filter { $0.isCompleted }
+//    }
 
     func loadSampleData() {
 
@@ -80,33 +81,33 @@ class DataStore {
             ))!
         }
 
-        let sampleTasks: [Task] = [
-            Task(
-                name: "Everyday Glam Makeup Reel",
-                deadline: makeDate(year: 2026, month: 1, day: 18, hour: 10, minute: 0),
-                isCompleted: false
-            ),
-            Task(
-                name: "Unboxing New Cosmetic Products",
-                deadline: makeDate(year: 2026, month: 1, day: 19, hour: 11, minute: 0),
-                isCompleted: true
-            ),
-            Task(
-                name: "Recreate Model Look",
-                deadline: makeDate(year: 2026, month: 1, day: 13, hour: 9, minute: 30),
-                isCompleted: false
-            ),
-            Task(
-                name: "Edit & Schedule Instagram Post",
-                deadline: makeDate(year: 2026, month: 1, day: 14, hour: 15, minute: 0),
-                isCompleted: true
-            ),
-            Task(
-                name: "Research Upcoming Beauty Trends",
-                deadline: makeDate(year: 2026, month: 1, day: 22, hour: 10, minute: 0),
-                isCompleted: false
-            )
-        ]
+//        let sampleTasks: [Task] = [
+//            Task(
+//                name: "Everyday Glam Makeup Reel",
+//                deadline: makeDate(year: 2026, month: 1, day: 18, hour: 10, minute: 0),
+//                isCompleted: false
+//            ),
+//            Task(
+//                name: "Unboxing New Cosmetic Products",
+//                deadline: makeDate(year: 2026, month: 1, day: 19, hour: 11, minute: 0),
+//                isCompleted: true
+//            ),
+//            Task(
+//                name: "Recreate Model Look",
+//                deadline: makeDate(year: 2026, month: 1, day: 13, hour: 9, minute: 30),
+//                isCompleted: false
+//            ),
+//            Task(
+//                name: "Edit & Schedule Instagram Post",
+//                deadline: makeDate(year: 2026, month: 1, day: 14, hour: 15, minute: 0),
+//                isCompleted: true
+//            ),
+//            Task(
+//                name: "Research Upcoming Beauty Trends",
+//                deadline: makeDate(year: 2026, month: 1, day: 22, hour: 10, minute: 0),
+//                isCompleted: false
+//            )
+//        ]
 
 //        let sampleDeals: [Deal] = [
 //            Deal(
@@ -222,16 +223,16 @@ class DataStore {
 //            
 //        ]
 
-        let samplePosts: [Post] = [
-            Post(
-                name: "IG Reel – Nighttime Skincare Reset",
-                platform: ["instagram"],
-                tasks: [sampleTasks[0], sampleTasks[3]],
-                reminder: ["1 hour before", "15 minutes before"]
-            )
-        ]
+//        let samplePosts: [Post] = [
+//            Post(
+//                name: "IG Reel – Nighttime Skincare Reset",
+//                platform: ["instagram"],
+//                tasks: [sampleTasks[0], sampleTasks[3]],
+//                reminder: ["1 hour before", "15 minutes before"]
+//            )
+//        ]
 
         //self.deals = sampleDeals
-        self.posts = samplePosts
+        //self.posts = samplePosts
     }
 }

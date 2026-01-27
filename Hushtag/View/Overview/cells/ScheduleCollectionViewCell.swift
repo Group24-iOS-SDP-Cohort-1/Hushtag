@@ -30,8 +30,8 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         
         switch item {
             
-        case .post(let post):
-            guard let task = post.tasks?.first else { return }
+        case .post(let post, let task):
+            guard let task = post.tasks.first else { return }
             
             timeLabel.text = task.deadline.formatted(
                 date: .omitted,
@@ -43,7 +43,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
             
             updateCompletedButton(isCompleted: post.isCompleted)
             
-        case .deal(let deal):
+        case .deal(let deal, let deliverable):
             guard let deliverable = deal.deliverables.first else { return }
 
             timeLabel.text = deliverable.deadline.formatted(
@@ -71,7 +71,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
 
 extension Post {
     var isCompleted: Bool {
-        guard let tasks = tasks, !tasks.isEmpty else { return false }
+        guard !tasks.isEmpty else { return false }
         return tasks.allSatisfy { $0.isCompleted }
     }
 }
