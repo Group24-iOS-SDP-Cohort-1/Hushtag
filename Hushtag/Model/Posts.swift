@@ -6,6 +6,12 @@ struct Post: Identifiable, Sendable {
     let platform: [Platform]
     var tasks: [Tasks]
     let reminder: [String]
+    var isCompleted: Bool {
+           
+            guard !tasks.isEmpty else { return false }
+
+            return tasks.allSatisfy { $0.isCompleted }
+        }
 }
 struct Tasks: Identifiable, Sendable {
     let id: UUID
@@ -19,6 +25,7 @@ nonisolated struct PostDB: Codable, Sendable {
     let name: String
     let deadline: Date
     let platform: [Platform]
+    var isCompleted: Bool
 }
 
 nonisolated struct TaskDB: Codable, Sendable {
@@ -26,7 +33,7 @@ nonisolated struct TaskDB: Codable, Sendable {
     let post_id: UUID
     let name: String
     let deadline: Date
-    let isCompleted: Bool
+    var isCompleted: Bool
 }
 
 enum ScheduleItem: Identifiable, Sendable {
@@ -48,15 +55,6 @@ enum ScheduleItem: Identifiable, Sendable {
             return deliverable.deadline
         case .post(_, let task):
             return task.deadline
-        }
-    }
-
-    var isCompleted: Bool {
-        switch self {
-        case .deal(_, let deliverable):
-            return deliverable.isCompleted
-        case .post(_, let task):
-            return task.isCompleted
         }
     }
 }

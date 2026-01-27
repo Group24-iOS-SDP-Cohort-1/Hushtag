@@ -34,8 +34,16 @@ class Activities: UIViewController {
         switch filter {
         case .all:
             return scheduleItems
+
         case .completed:
-            return scheduleItems.filter { $0.isCompleted }
+            return scheduleItems.filter { item in
+                switch item {
+                case .deal(_, let deliverable):
+                    return deliverable.isCompleted
+                case .post(_, let task):
+                    return task.isCompleted
+                }
+            }
         }
     }
 }

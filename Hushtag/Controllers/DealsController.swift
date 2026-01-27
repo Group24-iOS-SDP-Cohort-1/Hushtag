@@ -9,14 +9,15 @@ final class DealsController {
         let session = try await client.auth.session
 
         let payload = DealDB(
-            id: session.user.id,
+            user_id: session.user.id,
             name: deal.name,
             payment: deal.payment,
             mobileNumber: deal.mobileNumber,
             email: deal.email,
             description: deal.description,
             deadline: deal.deliverables.map(\.deadline).max() ?? Date(),
-            platform: deal.platform.joined(separator: ",")
+            platform: deal.platform.joined(separator: ","),
+            isCompleted: false
         )
 
         let dealDB: DealDB = try await client.database

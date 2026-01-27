@@ -36,6 +36,13 @@ final class ScheduleItemController {
     }
 
     func completedScheduleItems(on date: Date) -> [ScheduleItem] {
-        scheduleItems(on: date).filter { $0.isCompleted }
+        scheduleItems(on: date).filter { item in
+            switch item {
+            case .deal(_, let deliverable):
+                return deliverable.isCompleted
+            case .post(_, let task):
+                return task.isCompleted
+            }
+        }
     }
 }

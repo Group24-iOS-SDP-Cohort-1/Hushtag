@@ -69,19 +69,19 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     }
 }
 
-extension Post {
-    var isCompleted: Bool {
-        guard !tasks.isEmpty else { return false }
-        return tasks.allSatisfy { $0.isCompleted }
-    }
-}
-
-extension Deal {
-    var isCompleted: Bool {
-        guard !deliverables.isEmpty else { return false }
-        return deliverables.allSatisfy { $0.isCompleted }
-    }
-}
+//extension Post {
+//    var isCompleted: Bool {
+//        guard !tasks.isEmpty else { return false }
+//        return tasks.allSatisfy { $0.isCompleted }
+//    }
+//}
+//
+//extension Deal {
+//    var isCompleted: Bool {
+//        guard !deliverables.isEmpty else { return false }
+//        return deliverables.allSatisfy { $0.isCompleted }
+//    }
+//}
 
 protocol ScheduleCollectionViewCellDelegate: AnyObject {
     func didTapCompleted(item: ScheduleItem?)

@@ -32,15 +32,18 @@ class Schedule: UIViewController {
         scheduleView.reloadSections(IndexSet(integer: 1))
         
         Task {
-                do {
-                    try await scheduleController.load()
-                    filterItems(for: selectedDate)
+            do {
+                try await scheduleController.load()
 
-                    scheduleView.reloadSections(IndexSet(integer: 1))
-                } catch {
-                    print("Failed to load schedule items:", error)
+                await MainActor.run {
+                    self.filterItems(for: self.selectedDate)
+                    self.scheduleView.reloadSections(IndexSet(integer: 1))
                 }
+            } catch {
+                print("Failed to load schedule items:", error)
             }
+        }
+
         
         NotificationCenter.default.addObserver(
             self,

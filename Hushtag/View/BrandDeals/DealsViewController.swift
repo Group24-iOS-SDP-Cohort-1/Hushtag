@@ -13,8 +13,6 @@ class DealsViewController: UIViewController {
     @IBOutlet weak var segmentControl: UISegmentedControl!
     @IBOutlet weak var collectionView: UICollectionView!
 
-
-    
     var selected_Deal : Deal?
     var deals: [Deal] = []
     private let dealsController = DealsController()
