@@ -12,8 +12,9 @@ class Schedule: UIViewController {
     @IBOutlet weak var scheduleView: UICollectionView!
     
     var dataStore: DataStore = DataStore.shared
-    var scheduleItem: [ScheduleItem]?
+    private let scheduleController = ScheduleItemController()
     private var todayItems: [ScheduleItem] = []
+
     private var selectedDate: Date = Date()
     private var weekDates: [Date] = []
     private var selectedScheduleItem: ScheduleItem?
@@ -29,6 +30,17 @@ class Schedule: UIViewController {
         generateWeek(for: selectedDate)
         filterItems(for: selectedDate)
         scheduleView.reloadSections(IndexSet(integer: 1))
+        
+        Task {
+                do {
+                    try await scheduleController.load()
+                    filterItems(for: selectedDate)
+
+                    scheduleView.reloadSections(IndexSet(integer: 1))
+                } catch {
+                    print("Failed to load schedule items:", error)
+                }
+            }
         
         NotificationCenter.default.addObserver(
             self,
@@ -81,7 +93,7 @@ class Schedule: UIViewController {
     
     private func filterItems(for date: Date) {
         selectedDate = date
-        todayItems = dataStore.scheduleItems(on: date)
+        todayItems = scheduleController.scheduleItems(on: date)
     }
 
     func generateLayout() -> UICollectionViewLayout {
@@ -190,11 +202,11 @@ class Schedule: UIViewController {
     }
     
     private func togglePostCompletion(_ post: Post) {
-        guard let tasks = post.tasks, !tasks.isEmpty else { return }
+        guard !post.tasks.isEmpty else { return }
 
-        let shouldCompleteAll = !post.isCompleted
+        let shouldCompleteAll = !post.tasks.allSatisfy(\.isCompleted)
 
-        let updatedTasks = tasks.map { task in
+        let updatedTasks = post.tasks.map { task in
             var t = task
             t.isCompleted = shouldCompleteAll
             return t
@@ -203,8 +215,10 @@ class Schedule: UIViewController {
         var updatedPost = post
         updatedPost.tasks = updatedTasks
 
-        dataStore.updatePost(updatedPost)
+        // TEMP: replace this with Supabase update later
+        // scheduleController.updatePost(updatedPost)
     }
+
     
 //    private func toggleDealCompletion(_ deal: Deal) {
 //        guard !deal.deliverables.isEmpty else { return }
@@ -322,7 +336,7 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
         
         if indexPath.section == 0 {
             selectedDate = weekDates[indexPath.row]
-            todayItems = dataStore.scheduleItems(on: selectedDate)
+            todayItems = scheduleController.scheduleItems(on: selectedDate)
 
             collectionView.performBatchUpdates {
                 collectionView.reloadSections(IndexSet([0, 1]))
@@ -357,19 +371,16 @@ extension Schedule: ScheduleCollectionViewCellDelegate {
         guard let item else { return }
 
         switch item {
-
-        case .post(let post):
-            togglePostCompletion(post)
-
-                    case .deal(let deal):
-                       // toggleDealCompletion(deal)
-            print("HI")
-                    }
-
-            // Refresh only the list section
-            filterItems(for: selectedDate)
-            scheduleView.reloadSections(IndexSet(integer: 1))
+        case .post:
+            print("Post completion tapped – hook API here")
+        case .deal:
+            print("Deal completion tapped – hook API here")
         }
+
+        filterItems(for: selectedDate)
+        scheduleView.reloadSections(IndexSet(integer: 1))
+    }
+
     }
 
 

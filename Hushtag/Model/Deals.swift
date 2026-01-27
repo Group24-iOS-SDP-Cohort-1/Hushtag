@@ -1,6 +1,5 @@
 import Foundation
 
-
 struct Deal: Identifiable, Sendable {
     let id: UUID
     let name: String
@@ -11,7 +10,7 @@ struct Deal: Identifiable, Sendable {
     var deliverables: [Deliverable]
 }
 struct Deliverable: Identifiable, Sendable {
-    let id: UUID?
+    let id: UUID
     let name: String
     let deadline: Date
     var isCompleted: Bool
@@ -39,7 +38,7 @@ nonisolated struct DealDB: Decodable, Sendable {
 
 nonisolated struct DeliverableDB: Codable, Sendable {
     let id: UUID    
-    let deal_id: UUID?
+    let deal_id: UUID
     let name: String
     let deadline: Date
     let isCompleted: Bool
