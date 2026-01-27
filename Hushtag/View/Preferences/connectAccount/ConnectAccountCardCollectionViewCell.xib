@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24412" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24405"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="ConnectAccountCardCollectionViewCell" customModule="Hushtag" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="365" height="268"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="365" height="268"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FDL-qk-4rd">
+                        <rect key="frame" x="10" y="14.999999999999998" width="345" height="26.333333333333329"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lhW-JP-Z87">
+                        <rect key="frame" x="10" y="56.333333333333343" width="345" height="17"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="VRS-PD-16I">
+                        <rect key="frame" x="10" y="103.33333333333333" width="345" height="154.66666666666669"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="rfL-e4-e8m">
+                            <size key="itemSize" width="128" height="128"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                    </collectionView>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="VRS-PD-16I" firstAttribute="top" secondItem="lhW-JP-Z87" secondAttribute="bottom" constant="30" id="0Ai-YL-ePN"/>
+                <constraint firstAttribute="bottom" secondItem="VRS-PD-16I" secondAttribute="bottom" constant="10" id="AIX-G9-vXv"/>
+                <constraint firstItem="VRS-PD-16I" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="Mzq-EU-r2C"/>
+                <constraint firstItem="FDL-qk-4rd" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="XAE-qc-4Lb"/>
+                <constraint firstAttribute="trailing" secondItem="FDL-qk-4rd" secondAttribute="trailing" constant="10" id="ZzM-Uu-Ui8"/>
+                <constraint firstAttribute="trailing" secondItem="lhW-JP-Z87" secondAttribute="trailing" constant="10" id="bL2-eo-Ni2"/>
+                <constraint firstItem="lhW-JP-Z87" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="k1k-51-UHx"/>
+                <constraint firstItem="lhW-JP-Z87" firstAttribute="top" secondItem="FDL-qk-4rd" secondAttribute="bottom" constant="15" id="psI-OS-3mL"/>
+                <constraint firstAttribute="trailing" secondItem="VRS-PD-16I" secondAttribute="trailing" constant="10" id="ubh-lJ-eIA"/>
+                <constraint firstItem="FDL-qk-4rd" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="15" id="yjA-Sb-fAh"/>
+            </constraints>
+            <size key="customSize" width="365" height="268"/>
+            <connections>
+                <outlet property="headingLabel" destination="FDL-qk-4rd" id="HAi-LW-OT0"/>
+                <outlet property="innerCollectionView" destination="VRS-PD-16I" id="s2j-XS-o63"/>
+                <outlet property="subheadingLabel" destination="lhW-JP-Z87" id="wr9-5r-7Zd"/>
+            </connections>
+            <point key="canvasLocation" x="379.38931297709922" y="203.52112676056339"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

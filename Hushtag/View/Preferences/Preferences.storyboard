@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="17H-Aa-Rla">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="collection view cell content view" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Preferences-->
+        <scene sceneID="s0d-6b-0kx">
+            <objects>
+                <viewController storyboardIdentifier="PreferenceVC" id="Y6W-OH-hqX" customClass="PreferencesViewController" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Getting Started" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MVB-Ib-HDR">
+                                <rect key="frame" x="20" y="239" width="353" height="34"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="UMb-5F-avZ">
+                                <rect key="frame" x="20" y="288" width="353" height="4"/>
+                                <color key="progressTintColor" red="0.5450980392" green="0.36078431370000003" blue="0.96470588239999999" alpha="1" colorSpace="calibratedRGB"/>
+                            </progressView>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="20P-rr-ByY">
+                                <rect key="frame" x="20" y="322" width="353" height="465"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="465" id="BHb-e9-Z9N"/>
+                                </constraints>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="I1k-2r-XH7">
+                                    <size key="itemSize" width="255" height="239"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="preference_cell" id="Ayr-fS-pnU" customClass="PreferencesCollectionViewCell" customModule="Hushtag" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="113" width="255" height="239"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="q29-bE-iMq">
+                                            <rect key="frame" x="0.0" y="0.0" width="255" height="239"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                        <size key="customSize" width="255" height="239"/>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                            <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="3fb-IF-KPW">
+                                <rect key="frame" x="160" y="758" width="73" height="26"/>
+                                <color key="pageIndicatorTintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="currentPageIndicatorTintColor" red="0.5450980392" green="0.36078431370000003" blue="0.96470588239999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <action selector="pageSelectorAction:" destination="Y6W-OH-hqX" eventType="valueChanged" id="eKY-47-vkN"/>
+                                </connections>
+                            </pageControl>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="MVB-Ib-HDR" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="15" id="3b2-hh-dso"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="UMb-5F-avZ" secondAttribute="trailing" constant="20" id="5aZ-h7-e08"/>
+                            <constraint firstItem="UMb-5F-avZ" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="7bC-RE-7PF"/>
+                            <constraint firstItem="20P-rr-ByY" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="95Y-1X-Dor"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="20P-rr-ByY" secondAttribute="trailing" constant="20" id="Az5-NK-Gon"/>
+                            <constraint firstItem="3fb-IF-KPW" firstAttribute="bottom" secondItem="vDu-zF-Fre" secondAttribute="bottom" id="Yb2-5Q-Jab"/>
+                            <constraint firstItem="20P-rr-ByY" firstAttribute="top" secondItem="UMb-5F-avZ" secondAttribute="bottom" constant="30" id="ccV-Vy-kOn"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="MVB-Ib-HDR" secondAttribute="trailing" constant="20" id="efk-Bg-fJz"/>
+                            <constraint firstItem="MVB-Ib-HDR" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="qDI-nt-XuK"/>
+                            <constraint firstItem="3fb-IF-KPW" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="rKA-41-aBa"/>
+                            <constraint firstItem="UMb-5F-avZ" firstAttribute="top" secondItem="MVB-Ib-HDR" secondAttribute="bottom" constant="15" id="xIk-w2-RpD"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Preferences" id="kIm-vN-gim">
+                        <barButtonItem key="rightBarButtonItem" title="Skip" id="Nvp-EE-Kx8">
+                            <color key="tintColor" name="AccentColor"/>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="pageControlOutlet" destination="3fb-IF-KPW" id="vuH-LK-AB7"/>
+                        <outlet property="preferencesCollectionView" destination="20P-rr-ByY" id="r9w-gc-JSf"/>
+                        <outlet property="progessBarOutlet" destination="UMb-5F-avZ" id="Js4-Pr-nh4"/>
+                        <outlet property="skipSubmitButton" destination="Nvp-EE-Kx8" id="j5k-8b-6JK"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1064.885496183206" y="130.98591549295776"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="iML-d0-ih3">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="17H-Aa-Rla" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="ah4-sb-Yxu">
+                        <rect key="frame" x="0.0" y="118" width="393" height="106"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Y6W-OH-hqX" kind="relationship" relationship="rootViewController" id="1v6-TL-9hq"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="g3X-Yl-bli" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="138.1679389312977" y="130.98591549295776"/>
+        </scene>
+    </scenes>
+    <resources>
+        <namedColor name="AccentColor">
+            <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

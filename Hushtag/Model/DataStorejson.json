@@ -490,34 +490,49 @@
       "pickYourNiche": {
         "title": "Pick your niche",
         "subheading": "Choose topics you want to create content about",
-        "options": [
-          "Lifestyle",
-          "Skincare",
-          "Game",
-          "Food",
-          "Wellness",
-          "Finance",
-          "Music",
-          "Education",
-          "Other"
+        "sections": [
+          {
+            "title": "",
+            "hasTextInput": false,
+            "options": [
+              "Lifestyle",
+              "Skincare",
+              "Game",
+              "Food",
+              "Wellness",
+              "Finance",
+              "Music",
+              "Education",
+              "Other"
+            ]
+          }
         ]
       },
+
       "setYourContentGoals": {
         "title": "Set your content goals",
         "subheading": "Select your main content goals",
-        "options": [
-          "Grow Audience",
-          "Create more consistently",
-          "Experiment with Trends",
-          "Find my niche voice"
+        "sections": [
+          {
+            "title": "",
+            "hasTextInput": false,
+            "options": [
+              "Grow Audience",
+              "Create more consistently",
+              "Experiment with Trends",
+              "Find my niche voice"
+            ]
+          }
         ]
       },
+
       "contentPreferences": {
         "title": "Content Preferences",
         "subheading": "Tone and format preferences",
         "sections": [
           {
             "title": "What best describes your vibe?",
+            "hasTextInput": false,
             "options": [
               "Funny",
               "Relatable",
@@ -530,6 +545,7 @@
           },
           {
             "title": "What kind of content do you prefer making?",
+            "hasTextInput": false,
             "options": [
               "Short-Form",
               "Mid-Length",
@@ -537,6 +553,22 @@
             ]
           }
         ]
+      },
+      
+      "connectAccount": {
+          "title": "Add your YouTube account",
+          "subheading": "Link your YouTube account to get personalized insights on current trends, detailed analysis of your videos and account insights.",
+          "sections": [
+              {
+                  "title": "",
+                  "hasTextInput": false,
+                  "options": [
+                      "Connect YouTube",
+                      "Connect Instagram",
+                      "Connect Facebook"
+                  ]
+              }
+          ]
       }
     }
 }
