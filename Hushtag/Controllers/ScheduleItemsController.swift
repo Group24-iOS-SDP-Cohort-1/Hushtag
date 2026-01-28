@@ -8,6 +8,20 @@ final class ScheduleItemController {
     private var deals: [Deal] = []
     private var posts: [Post] = []
 
+    private(set) var scheduleItems: [ScheduleItem] = []
+
+    func replacePost(_ updatedPost: Post) {
+        scheduleItems = scheduleItems.map {
+            guard case .post(let post, let task) = $0,
+                  post.id == updatedPost.id else {
+                return $0
+            }
+
+            let updatedTask = updatedPost.tasks.first { $0.id == task.id } ?? task
+            return .post(post: updatedPost, task: updatedTask)
+        }
+    }
+    
     func load() async throws {
         async let dealsTask = dealsController.fetchDeals()
         async let postsTask = postsController.fetchPosts()

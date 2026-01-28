@@ -43,6 +43,22 @@ nonisolated struct TaskDB: Codable, Sendable {
     var isCompleted: Bool
 }
 
+nonisolated struct PostUpdatePayload: Codable, Sendable {
+    let name: String
+    let deadline: Date
+    let platform: [Platform]
+    let reminder: [Date]
+    let isCompleted: Bool
+}
+
+nonisolated struct TaskUpdatePayload: Codable, Sendable {
+    let id: UUID
+    let post_id: UUID
+    let name: String
+    let deadline: Date
+    let isCompleted: Bool
+}
+
 enum ScheduleItem: Identifiable, Sendable {
     case deal(deal: Deal, deliverable: Deliverable)
     case post(post: Post, task: Tasks)
