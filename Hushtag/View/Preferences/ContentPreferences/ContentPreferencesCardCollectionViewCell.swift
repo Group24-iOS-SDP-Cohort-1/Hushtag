@@ -106,9 +106,10 @@ class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
             .compactMap { lengthSection?.options[$0.item] } ?? []
 
         // merge them
-        let combined = firstSelections + secondSelections
+        //let combined = firstSelections + secondSelections
 
-        delegate?.preferenceCard(at: cardIndex, didUpdateSelection: combined)
+        delegate?.preferenceCard(at: "Content Tone", didUpdateSelection: firstSelections)
+        delegate?.preferenceCard(at: "Content Length", didUpdateSelection: secondSelections)
     }
     
     

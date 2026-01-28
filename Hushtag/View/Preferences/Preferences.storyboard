@@ -80,6 +80,9 @@
                     <navigationItem key="navigationItem" title="Preferences" id="kIm-vN-gim">
                         <barButtonItem key="rightBarButtonItem" title="Skip" id="Nvp-EE-Kx8">
                             <color key="tintColor" name="AccentColor"/>
+                            <connections>
+                                <action selector="submitButton:" destination="Y6W-OH-hqX" id="Nha-5M-6tz"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>

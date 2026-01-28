@@ -14,7 +14,7 @@ import SafariServices
         /// index: which top-level card (0..n-1). isCompleted: whether the card is considered completed now.
         func preferenceCard(at index: Int, didChangeCompletion isCompleted: Bool)
         func preferenceCard(
-            at index: Int,
+            at key: String,
             didUpdateSelection selections: [String]
         )
         
@@ -43,7 +43,13 @@ class PreferencesViewController: UIViewController {
     private var completedStates: [Bool] = []
     
     
-    private var selectedOptions: [[String]] = []
+    private var selectedOptions: [String: [String]] = [
+        "Niche": [],
+        "Content Goals": [],
+        "Content Tone": [],
+        "Content Length": []
+    ]
+    
     
     
 //    var firstItem: PreferenceGroup = PreferenceGroup()
@@ -64,7 +70,7 @@ class PreferencesViewController: UIViewController {
         //NEW
         completedStates = Array(repeating: false, count: preferenceItems.count)
         
-        selectedOptions = Array(repeating: [], count: preferenceItems.count)
+        //selectedOptions = Array(repeating: [], count: preferenceItems.count)
         
         
         registerCells()
@@ -103,6 +109,26 @@ class PreferencesViewController: UIViewController {
 
         updateProgressFromCompletedStates(animated: false)
         
+    }
+    
+    
+    
+    @IBAction func submitButton(_ sender: Any) {
+        _Concurrency.Task { @MainActor in
+                do {
+                    // This updates the metadata flag to TRUE
+                    try await AuthManager.shared.completeOnboarding()
+                    
+                    
+                    // Now they are officially an "Existing User" -> Go Home
+                    self.navigateToHomeScreen()
+                    
+                } catch {
+                    print("Failed to update onboarding status: \(error)")
+                    // You might want to let them in anyway, or show an alert
+                    self.navigateToHomeScreen()
+                }
+            }
     }
     
     
@@ -336,9 +362,10 @@ extension PreferencesViewController: PreferenceCardSelectionDelegate {
         }
     }
     
-    func preferenceCard(at index: Int, didUpdateSelection selections: [String]) {
-        selectedOptions[index] = selections
-        print(selectedOptions[index])
+    func preferenceCard(at key: String, didUpdateSelection selections: [String]) {
+        selectedOptions[key] = selections
+        //print(selectedOptions[key])
+        print("\n\n\(selectedOptions)")
     }
     
     func openURL(_ url: URL) {

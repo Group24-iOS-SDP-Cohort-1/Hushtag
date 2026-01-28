@@ -79,7 +79,8 @@ class Signup: UIViewController {
 
                 
                         self.appUser = user
-                        self.navigateToHomeScreen()
+                        //self.navigateToHomeScreen()
+                    self.navigateToPreferencesScreen()
                 } catch let error as LocalizedError {
                         self.showAlert(title: "Signup Failed", message: error.localizedDescription)
                 }

@@ -70,7 +70,8 @@ class Login: UIViewController {
                 let user = try await viewModel.signInWithEmail(email: email, password: password)
                 
                 self.appUser = user
-                self.navigateToHomeScreen()
+                //self.navigateToHomeScreen()
+                self.navigateBasedOnOnboardingStatus()
                 
             } catch let error as LocalizedError {
                 
@@ -94,7 +95,8 @@ class Login: UIViewController {
                 let user = try await viewModel.signInWithGoogle()
                 
                 self.appUser = user
-                self.navigateToHomeScreen()
+                //self.navigateToHomeScreen()
+                self.navigateBasedOnOnboardingStatus()
                 
             } catch let error as LocalizedError {
                 
@@ -122,6 +124,8 @@ class Login: UIViewController {
 
 
 // From here we are generating an alert with text ok
+
+// MARK: - EXTENSIONS
 
 extension UIViewController{
     func showAlert(title: String, message: String) {
@@ -182,4 +186,46 @@ extension UIViewController{
             // 3. Make it visible
             window.makeKeyAndVisible()
         }
+    
+    
+    
+    func navigateToPreferencesScreen() {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let window = windowScene.windows.first else {
+                return
+            }
+
+            // 1. Load the specific Storyboard
+            let storyboard = UIStoryboard(name: "Preferences", bundle: nil)
+            
+            // 2. Instantiate the Initial View Controller
+            // Ensure your Preferences VC is marked as "Is Initial View Controller" in that storyboard
+            guard let preferencesVC = storyboard.instantiateInitialViewController() else {
+                print("Error: Could not find Initial View Controller in Preferences.storyboard")
+                return
+            }
+
+            // 3. Swap the root
+            window.rootViewController = preferencesVC
+            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+            window.makeKeyAndVisible()
+        }
+    
+    
+    
+    
+    func navigateBasedOnOnboardingStatus() {
+        _Concurrency.Task { @MainActor in
+            let isComplete = await AuthManager.shared.hasCompletedOnboarding()
+            
+            // UI updates must happen on Main Thread
+            
+                if isComplete {
+                    self.navigateToHomeScreen()
+                } else {
+                    self.navigateToPreferencesScreen()
+                }
+            
+        }
+    }
 }

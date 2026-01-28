@@ -64,7 +64,7 @@ class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
             .sorted { $0.item < $1.item }
             .map { sections[$0.section].options[$0.item] } ?? []
 
-        delegate?.preferenceCard(at: cardIndex, didUpdateSelection: selected)
+        delegate?.preferenceCard(at: "Content Goals", didUpdateSelection: selected)
     }
     
     func setupCardDesign() {
