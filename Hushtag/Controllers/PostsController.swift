@@ -75,7 +75,6 @@ final class PostsController {
 
             let session = try await client.auth.session
 
-            // 1️⃣ Update post
             let postPayload = PostUpdatePayload(
                 name: post.name,
                 deadline: post.tasks.map(\.deadline).max() ?? Date(),

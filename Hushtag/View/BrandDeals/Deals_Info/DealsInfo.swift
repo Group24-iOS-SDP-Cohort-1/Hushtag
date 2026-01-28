@@ -13,10 +13,8 @@ final class DealsInfo: UIViewController {
     var selectedIdea: Idea?
     weak var delegate: DealsInfoDelegate?
 
-    private let cardBackgroundKind = "card-background"
-}
 
-extension DealsInfo {
+    private let cardBackgroundKind = "card-background"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +25,35 @@ extension DealsInfo {
         configureCollectionView()
         configureLayout()
     }
+
+    @IBAction func editModal(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "BrandDeals", bundle: nil)
+
+           let vc = storyboard.instantiateViewController(
+               withIdentifier: "AddDealsViewController"
+           ) as! AddDealsViewController
+
+
+           vc.editingDeal = deals
+           vc.editingIndex = dealIndex
+
+           vc.title = deals.name
+
+           let nav = UINavigationController(rootViewController: vc)
+           nav.modalPresentationStyle = .pageSheet
+
+//           if let sheet = nav.sheetPresentationController {
+//               sheet.detents = [.medium(), .large()]
+//               sheet.prefersGrabberVisible = true
+//           }
+
+           present(nav, animated: true)
+    }
+    
+}
+
+extension DealsInfo {
+
     
     private var sections: [Section] {
         var result: [Section] = [.details, .deliverables]
@@ -85,8 +112,6 @@ extension DealsInfo {
 
 extension DealsInfo {
 
-    
-    //layout for the sections
     private func makeCardSection(estimatedItemHeight: CGFloat) -> NSCollectionLayoutSection {
 
         let itemSize = NSCollectionLayoutSize(
