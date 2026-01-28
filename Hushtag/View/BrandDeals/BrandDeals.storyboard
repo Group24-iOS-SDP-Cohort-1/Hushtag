@@ -240,8 +240,20 @@
                         <barButtonItem key="leftBarButtonItem" title="Item" image="xmark" catalog="system" id="3mc-rF-Foc"/>
                         <barButtonItem key="rightBarButtonItem" title="Item" image="checkmark" catalog="system" id="zsa-kU-QJa"/>
                     </navigationItem>
+                    <connections>
+                        <outlet property="deadlinePicker" destination="d8e-c6-h3E" id="ABC-DE-FGH"/>
+                        <outlet property="reminderPicker" destination="A4g-5d-g3g" id="IJK-LM-NOP"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ovj-Fq-r9i" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="wheels" id="d8e-c6-h3E">
+                    <rect key="frame" x="0.0" y="0.0" width="393" height="216"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                </datePicker>
+                <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" style="wheels" id="A4g-5d-g3g">
+                    <rect key="frame" x="0.0" y="0.0" width="393" height="216"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                </datePicker>
             </objects>
             <point key="canvasLocation" x="2950.3816793893129" y="-188.02816901408451"/>
         </scene>

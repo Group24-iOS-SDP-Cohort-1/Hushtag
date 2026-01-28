@@ -8,11 +8,16 @@ protocol AddDealsDelegate: AnyObject {
 class AddDealsViewController: UITableViewController, DeliverableCellAddDealDelegate {
     
     weak var delegate: AddDealsDelegate?
-   // var InputDeal : Deal?
     private var deals: [Deal] = []
 
     private let dealsController = DealsController()
 
+    @IBOutlet weak var deadlinePicker: UIDatePicker!
+    @IBOutlet weak var reminderPicker: UIDatePicker!
+
+    private var deadlineDate: Date?
+    private var reminderDate: Date?
+    private let dateFormatter = DateFormatter()
 
     enum Section: Int, CaseIterable {
         case mainFields
@@ -25,8 +30,8 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         "Payment",
         "Phone number",
         "Email",
-        "Deadline"
-
+        "Deadline",
+        "Reminder"
     ]
     
     var deliverablePlaceholders : [String] = []
@@ -45,6 +50,29 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
+
+        dateFormatter.dateStyle = .medium
+        
+        deadlinePicker.addTarget(self, action: #selector(deadlineDateChanged), for: .valueChanged)
+        reminderPicker.addTarget(self, action: #selector(reminderDateChanged), for: .valueChanged)
+    }
+
+    @objc func deadlineDateChanged() {
+        deadlineDate = deadlinePicker.date
+        let indexPath = IndexPath(row: fieldPlaceholders.firstIndex(of: "Deadline")!, section: 0)
+        if let cell = tableView.cellForRow(at: indexPath) as? MainFieldCell {
+            cell.textField.text = dateFormatter.string(from: deadlinePicker.date)
+        }
+    }
+
+    @objc func reminderDateChanged() {
+        reminderDate = reminderPicker.date
+        let indexPath = IndexPath(row: fieldPlaceholders.firstIndex(of: "Reminder")!, section: 0)
+        if let cell = tableView.cellForRow(at: indexPath) as? MainFieldCell {
+            dateFormatter.timeStyle = .short
+            cell.textField.text = dateFormatter.string(from: reminderPicker.date)
+            dateFormatter.timeStyle = .none
+        }
     }
     
     @objc private func dismissKeyboard() {
@@ -56,6 +84,13 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 
     @objc private func doneTapped() {
         print("Done button tapped")
+
+        if let reminderDate = reminderDate, let deadlineDate = deadlineDate, reminderDate >= deadlineDate {
+            let alert = UIAlertController(title: "Invalid Reminder", message: "Reminder date must be before the deadline.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(alert, animated: true)
+            return
+        }
 
         // 1. Read main fields
         var fieldValues: [String] = []
@@ -135,9 +170,9 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             payment: paymentValue,
             mobileNumber: Int64(phone) ?? 0,
             email: email,
-
             platform: platforms,
-            deliverables: deliverables
+            deliverables: deliverables,
+            reminder: reminderDate != nil ? [reminderDate!] : nil
         )
 
 
@@ -154,7 +189,8 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
                        self.dismiss(animated: true)
                    }
                } catch {
-                     let alert = UIAlertController(title: "Error", message: "Failed to add deal", preferredStyle: .alert)
+                    print("Failed to add deal. Supabase error: \(error)")
+                     let alert = UIAlertController(title: "Error", message: "Failed to add deal: \(error.localizedDescription)", preferredStyle: .alert)
                         alert.addAction(UIAlertAction(title: "OK", style: .default))
                         self.present(alert, animated: true)
 
@@ -171,7 +207,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 
         switch sec {
         case .mainFields:
-            return fieldPlaceholders.count   // 6 rows
+            return fieldPlaceholders.count
         case .deliverables:
             return 1                          // single dynamic cell
         }
@@ -194,6 +230,11 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             let placeholder = fieldPlaceholders[indexPath.row]
             cell.textField.placeholder = placeholder
             
+            let toolbar = UIToolbar()
+            toolbar.sizeToFit()
+            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissPicker))
+            toolbar.setItems([doneButton], animated: true)
+
             switch placeholder {
             case "Payment":
                 cell.textField.keyboardType = .decimalPad
@@ -201,16 +242,14 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
                 cell.textField.keyboardType = .phonePad
             case "Email":
                 cell.textField.keyboardType = .emailAddress
+            case "Deadline":
+                cell.textField.inputView = deadlinePicker
+                cell.textField.inputAccessoryView = toolbar
+            case "Reminder":
+                cell.textField.inputView = reminderPicker
+                cell.textField.inputAccessoryView = toolbar
             default:
                 cell.textField.keyboardType = .default
-            }
-            
-            if placeholder == "Deadline" {
-                cell.isDatePickerCell = true
-                cell.configureForDatePicker()
-            } else {
-                cell.isDatePickerCell = false
-                cell.configureForDatePicker()
             }
 
             return cell
@@ -226,6 +265,10 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             cell.addButton.setTitle("+ Deliverables", for: .normal)
             return cell
         }
+    }
+
+    @objc func dismissPicker() {
+        view.endEditing(true)
     }
     
     

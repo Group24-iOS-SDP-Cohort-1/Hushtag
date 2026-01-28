@@ -15,6 +15,7 @@ final class DealsController {
             mobileNumber: deal.mobileNumber,
             email: deal.email,
             deadline: deal.deliverables.map(\.deadline).max() ?? Date(),
+            reminder: deal.reminder,
             platform: deal.platform.joined(separator: ",")
         )
 
@@ -95,7 +96,8 @@ final class DealsController {
                     deadline: $0.deadline,
                     isCompleted: $0.isCompleted
                 )
-            }
+            },
+            reminder: deal.reminder ?? []
         )
     }
 }
