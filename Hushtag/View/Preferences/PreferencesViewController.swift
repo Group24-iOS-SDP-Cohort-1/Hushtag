@@ -42,7 +42,7 @@ class PreferencesViewController: UIViewController {
     //NEW
     private var completedStates: [Bool] = []
     
-    
+    //Dictionary of all the preferences
     private var selectedOptions: [String: [String]] = [
         "Niche": [],
         "Content Goals": [],
