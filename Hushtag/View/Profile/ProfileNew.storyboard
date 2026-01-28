@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="LC7-tb-UIQ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="xbO-71-BHZ">
     <device id="retina6_12" orientation="portrait" appearance="dark"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
@@ -10,7 +10,7 @@
         <!--Account Settings-->
         <scene sceneID="Dks-3Y-OL5">
             <objects>
-                <tableViewController id="xbO-71-BHZ" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ProfileVC" id="xbO-71-BHZ" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="insetGrouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" id="Eo7-gK-p1y">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -186,29 +186,11 @@
                             <outlet property="delegate" destination="xbO-71-BHZ" id="Twy-2A-h4T"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Account Settings" id="G92-ex-57M"/>
+                    <navigationItem key="navigationItem" title="Account Settings" largeTitleDisplayMode="never" id="G92-ex-57M"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WNQ-6E-3n7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1469.4656488549617" y="-72.535211267605632"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="CGo-pp-zhu">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LC7-tb-UIQ" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="MsO-mY-RB4">
-                        <rect key="frame" x="0.0" y="118" width="393" height="54"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="xbO-71-BHZ" kind="relationship" relationship="rootViewController" id="Gba-iZ-KrS"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="M8i-Ew-MwF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="542.74809160305347" y="-72.535211267605632"/>
+            <point key="canvasLocation" x="2396.1832061068703" y="-72.535211267605632"/>
         </scene>
     </scenes>
     <resources>

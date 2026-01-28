@@ -107,13 +107,21 @@
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Ijh-h0-h44" secondAttribute="trailing" constant="20" id="rb2-zx-fA3"/>
                         </constraints>
                     </view>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" title="Analysis" id="rdl-7Q-UK4">
-                        <barButtonItem key="rightBarButtonItem" title="Item" id="C54-gz-OIR">
-                            <connections>
-                                <action selector="signOutTap:" destination="Y6W-OH-hqX" id="bjZ-aP-GZt"/>
-                            </connections>
+                        <barButtonItem key="leftBarButtonItem" id="UAW-Gn-9nf">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="zt1-xA-vae">
+                                <rect key="frame" x="20" y="4.6666666666666687" width="49.666666666666657" height="34.666666666666664"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="person.2.circle" catalog="system"/>
+                                <connections>
+                                    <segue destination="vrc-xS-rQ3" kind="show" id="PWn-ZX-00h"/>
+                                </connections>
+                            </button>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="analysisCollectionView" destination="7z1-FJ-eeu" id="U24-ot-FRi"/>
                         <outlet property="segmentedTimeOutlet" destination="Ijh-h0-h44" id="hPL-mh-DcE"/>
@@ -122,6 +130,16 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3846.5648854961833" y="91.549295774647888"/>
+        </scene>
+        <!--ProfileNew-->
+        <scene sceneID="aHa-3f-sja">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="ProfileVC" storyboardName="ProfileNew" id="vrc-xS-rQ3" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="7hq-18-ddd"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SV5-xj-UIz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4450" y="-32"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Fr1-GA-KxQ">
@@ -143,6 +161,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="person.2.circle" catalog="system" width="128" height="123"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

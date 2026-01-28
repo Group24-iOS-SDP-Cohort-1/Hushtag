@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8uj-c8-FdZ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Oxb-su-tr3">
     <device id="retina6_12" orientation="portrait" appearance="dark"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
@@ -10,7 +10,7 @@
         <!--Profile-->
         <scene sceneID="j0c-3G-BUH">
             <objects>
-                <tableViewController title="Profile" id="Oxb-su-tr3" customClass="ProfileTableViewController" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ProfileVC" title="Profile" id="Oxb-su-tr3" customClass="ProfileTableViewController" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="insetGrouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" id="g9l-pj-S0Y">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -205,14 +205,14 @@
                             <tableViewSection id="SHh-nq-5Kp">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="4Ck-Dk-nPt" style="IBUITableViewCellStyleDefault" id="Dzm-cR-lrb">
-                                        <rect key="frame" x="20" y="824.66666666666663" width="353" height="51"/>
+                                        <rect key="frame" x="20" y="825" width="353" height="51"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Dzm-cR-lrb" id="bKw-xW-lTG">
-                                            <rect key="frame" x="0.0" y="0.0" width="322.66666666666669" height="51"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="334.66666666666669" height="51"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" ambiguous="YES" insetsLayoutMarginsFromSafeArea="NO" text="SIgn Out" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="4Ck-Dk-nPt">
-                                                    <rect key="frame" x="16" y="0.0" width="298.66666666666669" height="51"/>
+                                                    <rect key="frame" x="8" y="0.0" width="318.66666666666669" height="51"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -229,7 +229,7 @@
                             <outlet property="delegate" destination="Oxb-su-tr3" id="Hhj-Lt-fpQ"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Account Settings" largeTitleDisplayMode="never" id="iCm-G8-xeO"/>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="iCm-G8-xeO"/>
                     <connections>
                         <outlet property="profileImageView" destination="F08-rQ-vyU" id="3Pb-QQ-aV8"/>
                     </connections>
@@ -237,24 +237,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7ZM-FO-von" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1881.679389312977" y="92.957746478873247"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="wdc-dH-HCX">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="8uj-c8-FdZ" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Yg0-TW-yLz">
-                        <rect key="frame" x="0.0" y="118" width="393" height="54"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="Oxb-su-tr3" kind="relationship" relationship="rootViewController" id="OHz-nO-2cs"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Yc0-B9-ca2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="954.96183206106866" y="92.957746478873247"/>
         </scene>
     </scenes>
     <resources>
