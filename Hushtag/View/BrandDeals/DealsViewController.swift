@@ -14,9 +14,13 @@ class DealsViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
     
+    @IBOutlet weak var searchBar: UISearchBar!
     
     var selected_Deal : Deal?
     var deals: [Deal] = []
+    private var isSearching = false
+    private var searchText = ""
+
     private let dealsController = DealsController()
     
     var completedDeals: [Deal] {
@@ -36,11 +40,23 @@ class DealsViewController: UIViewController {
         }
     }
     private var selectedSegmentIndex = 0
-    
-    // deals for current tab in segmented control
+
     var displayedDeals: [Deal] {
-        return selectedSegmentIndex == 0 ? ongoingDeals : completedDeals
+        let baseDeals = selectedSegmentIndex == 0 ? ongoingDeals : completedDeals
+
+        guard isSearching, !searchText.isEmpty else {
+            return baseDeals
+        }
+
+        let query = searchText.lowercased()
+
+        return baseDeals.filter {
+            $0.name.lowercased().contains(query) ||
+            $0.email.lowercased().contains(query) ||
+            $0.platform.joined(separator: " ").lowercased().contains(query)
+        }
     }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -269,5 +285,22 @@ extension DealsViewController: AddDealsDelegate {
     }
 }
 
+extension DealsViewController: UISearchBarDelegate {
 
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        self.searchText = searchText
+        isSearching = !searchText.isEmpty
+        collectionView.reloadData()
+    }
 
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        isSearching = false
+        collectionView.reloadData()
+    }
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+}

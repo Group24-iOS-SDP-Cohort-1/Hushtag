@@ -92,6 +92,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="gHj-oi-jVG" id="aAm-1T-fk0"/>
+                        <outlet property="searchBar" destination="Iwt-he-qHS" id="dNS-pp-rFd"/>
                         <outlet property="segmentControl" destination="W9K-Sj-GFK" id="l8f-JI-Fr4"/>
                         <segue destination="bZL-Eh-1SZ" kind="show" identifier="info_page" id="uw8-FQ-9Zb"/>
                     </connections>
