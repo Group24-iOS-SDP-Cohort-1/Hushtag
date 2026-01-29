@@ -31,6 +31,8 @@ class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
     
     var lengthSection: PreferenceSection?
     
+    let otherOptionKey = "Other"
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -60,7 +62,28 @@ class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
         
         secondInnerCollectionView.alwaysBounceVertical = false
         secondInnerCollectionView.bounces = false
+        
+        setupTextField()
     }
+    
+    func setupTextField() {
+            textFieldOutlet.layer.cornerRadius = 12
+            textFieldOutlet.layer.masksToBounds = true
+            textFieldOutlet.layer.borderWidth = 1
+            textFieldOutlet.layer.borderColor = UIColor.lightGray.cgColor
+            
+            // Initial State: Disabled and Dimmed
+            textFieldOutlet.isEnabled = false
+            textFieldOutlet.alpha = 0.5
+            textFieldOutlet.placeholder = "Enter your niche"
+            
+            // Listen for typing events
+            textFieldOutlet.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        }
+    
+    @objc func textFieldDidChange(_ textField: UITextField) {
+            updateSelection()
+        }
 
     
     func configureCell(with item: PreferenceItem){
@@ -76,10 +99,17 @@ class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
         
         secondInnerCollectionView.collectionViewLayout = generateContentPreferencesLayout()
         
-        textFieldOutlet.layer.cornerRadius = 12    // adjust to your design
-        textFieldOutlet.layer.masksToBounds = true // IMPORTANT
-        textFieldOutlet.layer.borderWidth = 1
-        textFieldOutlet.layer.borderColor = UIColor.lightGray.cgColor
+        firstInnerCollectionView.reloadData()
+        secondInnerCollectionView.reloadData()
+        
+        textFieldOutlet.text = ""
+                textFieldOutlet.isEnabled = false
+                textFieldOutlet.alpha = 0.5
+        
+//        textFieldOutlet.layer.cornerRadius = 12    // adjust to your design
+//        textFieldOutlet.layer.masksToBounds = true // IMPORTANT
+//        textFieldOutlet.layer.borderWidth = 1
+//        textFieldOutlet.layer.borderColor = UIColor.lightGray.cgColor
     }
     
     
@@ -93,11 +123,42 @@ class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
     
     
     private func updateSelection() {
+        
+        guard let selectedIndexPaths = firstInnerCollectionView.indexPathsForSelectedItems else { return }
+        
+        // Sort to keep order consistent
+        let sortedPaths = selectedIndexPaths.sorted { $0.item < $1.item }
+        
+        var firstSelections: [String] = []
+        
+        for indexPath in sortedPaths {
+            let optionText = sections[indexPath.section].options[indexPath.item]
+            
+            if optionText == otherOptionKey {
+                // If "Other" is selected, use the text field value
+                let customText = textFieldOutlet.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                
+                if !customText.isEmpty {
+                    firstSelections.append(customText)
+                } else {
+                    // Decide: Do you want to send "Other" if the box is empty?
+                    // Currently, I'm sending "Other" as a placeholder so the user knows it's selected.
+                    firstSelections.append(otherOptionKey)
+                }
+            } else {
+                // Normal option (e.g., "Lifestyle", "Game")
+                firstSelections.append(optionText)
+            }
+        }
+        
+        
+        
+        
         // selections from first (vibe)
-        let firstSelections =
-            firstInnerCollectionView.indexPathsForSelectedItems?
-            .sorted { $0.item < $1.item }
-            .compactMap { vibeSection?.options[$0.item] } ?? []
+//        let firstSelections =
+//            firstInnerCollectionView.indexPathsForSelectedItems?
+//            .sorted { $0.item < $1.item }
+//            .compactMap { vibeSection?.options[$0.item] } ?? []
 
         // selections from second (length)
         let secondSelections =
@@ -111,6 +172,23 @@ class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
         delegate?.preferenceCard(at: "Content Tone", didUpdateSelection: firstSelections)
         delegate?.preferenceCard(at: "Content Length", didUpdateSelection: secondSelections)
     }
+    
+    func toggleTextField(active: Bool) {
+            textFieldOutlet.isEnabled = active
+            
+            UIView.animate(withDuration: 0.3) {
+                self.textFieldOutlet.alpha = active ? 1.0 : 0.5
+            }
+            
+            if active {
+                // Automatically popup keyboard
+                textFieldOutlet.becomeFirstResponder()
+            } else {
+                // Hide keyboard and clear text
+                textFieldOutlet.resignFirstResponder()
+                textFieldOutlet.text = ""
+            }
+        }
     
     
     
@@ -241,10 +319,24 @@ func generateContentPreferencesLayout() -> UICollectionViewLayout{
 //NEW
 extension ContentPreferencesCardCollectionViewCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedOption = sections[indexPath.section].options[indexPath.item]
+        
+        // If user tapped "Other", enable the text field
+        if selectedOption == otherOptionKey {
+            toggleTextField(active: true)
+        }
+        
         updateSelection()
         notifyCompletionIfNeeded()
     }
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        let deselectedOption = sections[indexPath.section].options[indexPath.item]
+        
+        // If user tapped "Other" to deselect it, disable the text field
+        if deselectedOption == otherOptionKey {
+            toggleTextField(active: false)
+        }
+        
         updateSelection()
         notifyCompletionIfNeeded()
     }

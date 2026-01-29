@@ -50,6 +50,8 @@ class PreferencesViewController: UIViewController {
         "Content Length": []
     ]
     
+    let controller = PreferencesController()
+    
     
     
 //    var firstItem: PreferenceGroup = PreferenceGroup()
@@ -119,6 +121,12 @@ class PreferencesViewController: UIViewController {
                     // This updates the metadata flag to TRUE
                     try await AuthManager.shared.completeOnboarding()
                     
+                    let isYoutubeConnected = true
+                    
+                    try await controller.savePreferences(
+                                        dict: selectedOptions,
+                                        isYoutubeConnected: isYoutubeConnected
+                                    )
                     
                     // Now they are officially an "Existing User" -> Go Home
                     self.navigateToHomeScreen()

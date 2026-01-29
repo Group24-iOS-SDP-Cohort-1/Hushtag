@@ -25,6 +25,8 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
     
     var preferenceID: Int = 0
     
+    let otherOptionKey = "Other"
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -43,7 +45,28 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
         
         innerCollectionView.alwaysBounceVertical = false
         innerCollectionView.bounces = false
+        
+        setupTextField()
     }
+    
+    func setupTextField() {
+            textFieldOutlet.layer.cornerRadius = 12
+            textFieldOutlet.layer.masksToBounds = true
+            textFieldOutlet.layer.borderWidth = 1
+            textFieldOutlet.layer.borderColor = UIColor.lightGray.cgColor
+            
+            // Initial State: Disabled and Dimmed
+            textFieldOutlet.isEnabled = false
+            textFieldOutlet.alpha = 0.5
+            textFieldOutlet.placeholder = "Enter your niche"
+            
+            // Listen for typing events
+            textFieldOutlet.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
+        }
+    
+    @objc func textFieldDidChange(_ textField: UITextField) {
+            updateSelection()
+        }
     
     
     //NEW
@@ -55,28 +78,51 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
         }
     
     private func updateSelection() {
-        let selected = innerCollectionView.indexPathsForSelectedItems?
-            .sorted { $0.item < $1.item }
-            .map { sections[$0.section].options[$0.item] } ?? []
+            guard let selectedIndexPaths = innerCollectionView.indexPathsForSelectedItems else { return }
+            
+            // Sort to keep order consistent
+            let sortedPaths = selectedIndexPaths.sorted { $0.item < $1.item }
+            
+            var selectedValues: [String] = []
+            
+            for indexPath in sortedPaths {
+                let optionText = sections[indexPath.section].options[indexPath.item]
+                
+                if optionText == otherOptionKey {
+                    // If "Other" is selected, use the text field value
+                    let customText = textFieldOutlet.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                    
+                    if !customText.isEmpty {
+                        selectedValues.append(customText)
+                    } else {
+                        // Decide: Do you want to send "Other" if the box is empty?
+                        // Currently, I'm sending "Other" as a placeholder so the user knows it's selected.
+                        selectedValues.append(otherOptionKey)
+                    }
+                } else {
+                    // Normal option (e.g., "Lifestyle", "Game")
+                    selectedValues.append(optionText)
+                }
+            }
 
-        delegate?.preferenceCard(at: "Niche", didUpdateSelection: selected)
-    }
+            delegate?.preferenceCard(at: "Niche", didUpdateSelection: selectedValues)
+        }
     
     
     func setupCardDesign() {
             // Corner Radius
 //            self.layer.cornerRadius = 15
 //            self.layer.cornerCurve = .continuous // iOS Modern "smooth" corners
-//            
+//
 //            // Background Color (Ensure it's white, or the shadow won't look right)
 //            self.backgroundColor = .white
-//            
+//
 //            // Drop Shadow
 //            self.layer.shadowColor = UIColor.black.cgColor
 //            self.layer.shadowOpacity = 0.15  // 0.0 to 1.0 (0.15 is subtle and nice)
 //            self.layer.shadowOffset = CGSize(width: 0, height: 0) // Vertical shift
 //            self.layer.shadowRadius = 6 // How blurry the shadow is
-//            
+//
 //            // CRITICAL: This must be false for shadows to appear outside the bounds
 //            self.layer.masksToBounds = false
         
@@ -95,13 +141,18 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
         sections = item.sections
         
         innerCollectionView.collectionViewLayout = generateNicheLayout()
+        innerCollectionView.reloadData()
+        
+        textFieldOutlet.text = ""
+                textFieldOutlet.isEnabled = false
+                textFieldOutlet.alpha = 0.5
         
         
         
-        textFieldOutlet.layer.cornerRadius = 12    // adjust to your design
-        textFieldOutlet.layer.masksToBounds = true // IMPORTANT
-        textFieldOutlet.layer.borderWidth = 1
-        textFieldOutlet.layer.borderColor = UIColor.lightGray.cgColor
+//        textFieldOutlet.layer.cornerRadius = 12    // adjust to your design
+//        textFieldOutlet.layer.masksToBounds = true // IMPORTANT
+//        textFieldOutlet.layer.borderWidth = 1
+//        textFieldOutlet.layer.borderColor = UIColor.lightGray.cgColor
     }
     
     
@@ -138,6 +189,24 @@ extension NicheCollectionCardViewCell: UICollectionViewDataSource{
         return cell
     }
     
+    
+    func toggleTextField(active: Bool) {
+            textFieldOutlet.isEnabled = active
+            
+            UIView.animate(withDuration: 0.3) {
+                self.textFieldOutlet.alpha = active ? 1.0 : 0.5
+            }
+            
+            if active {
+                // Automatically popup keyboard
+                textFieldOutlet.becomeFirstResponder()
+            } else {
+                // Hide keyboard and clear text
+                textFieldOutlet.resignFirstResponder()
+                textFieldOutlet.text = ""
+            }
+        }
+    
 }
 
 
@@ -167,11 +236,25 @@ func generateNicheLayout() -> UICollectionViewLayout{
 //NEW
 extension NicheCollectionCardViewCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        updateSelection()
-        notifyCompletionIfNeeded()
-    }
+            let selectedOption = sections[indexPath.section].options[indexPath.item]
+            
+            // If user tapped "Other", enable the text field
+            if selectedOption == otherOptionKey {
+                toggleTextField(active: true)
+            }
+            
+            updateSelection()
+            notifyCompletionIfNeeded()
+        }
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        updateSelection()
-        notifyCompletionIfNeeded()
-    }
+            let deselectedOption = sections[indexPath.section].options[indexPath.item]
+            
+            // If user tapped "Other" to deselect it, disable the text field
+            if deselectedOption == otherOptionKey {
+                toggleTextField(active: false)
+            }
+            
+            updateSelection()
+            notifyCompletionIfNeeded()
+        }
 }
