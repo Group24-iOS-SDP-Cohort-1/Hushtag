@@ -309,24 +309,18 @@ struct PreferenceResponse: Codable {
 struct Preferences: Codable {
     var pickYourNiche: PreferenceGroup = PreferenceGroup()
     var setYourContentGoals: PreferenceGroup = PreferenceGroup()
-    var contentPreferences: ContentPreferenceGroup = ContentPreferenceGroup()
+    var contentPreferences: PreferenceGroup = PreferenceGroup()
+    var connectAccount: PreferenceGroup = PreferenceGroup()
 }
 
 struct PreferenceItem {
     let id: Int
     let title: String
     let subheading: String
-    let options: [String]?
-    let sections: [PreferenceSection]?
+    let sections: [PreferenceSection]
 }
 
 struct PreferenceGroup: Codable {
-    var title: String = ""
-    var subheading: String = ""
-    var options: [String] = []
-}
-
-struct ContentPreferenceGroup: Codable {
     var title: String = ""
     var subheading: String = ""
     var sections: [PreferenceSection] = []
@@ -334,6 +328,7 @@ struct ContentPreferenceGroup: Codable {
 
 struct PreferenceSection: Codable {
     var title: String = ""
+    var hasTextInput: Bool = false
     var options: [String] = []
 }
 
@@ -365,22 +360,29 @@ extension Preferences {
                 id: 1,
                 title: pickYourNiche.title,
                 subheading: pickYourNiche.subheading,
-                options: pickYourNiche.options,
-                sections: nil
+                //options: pickYourNiche.options,
+                sections: pickYourNiche.sections
             ),
             PreferenceItem(
                 id: 2,
                 title: setYourContentGoals.title,
                 subheading: setYourContentGoals.subheading,
-                options: setYourContentGoals.options,
-                sections: nil
+                //options: setYourContentGoals.options,
+                sections: setYourContentGoals.sections
             ),
             PreferenceItem(
                 id: 3,
                 title: contentPreferences.title,
                 subheading: contentPreferences.subheading,
-                options: nil,
+                //options: nil,
                 sections: contentPreferences.sections
+            ),
+            PreferenceItem(
+                id: 4,
+                title: connectAccount.title,
+                subheading: connectAccount.subheading,
+                //options: nil,
+                sections: connectAccount.sections
             )
         ]
     }

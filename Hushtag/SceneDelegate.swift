@@ -6,19 +6,95 @@
 //
 
 import UIKit
+import GoogleSignIn
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
-        window?.overrideUserInterfaceStyle = .dark
-    }
+
+            guard let windowScene = (scene as? UIWindowScene) else { return }
+
+            // 1. Assign the window scene (Standard boilerplate)
+            // If you don't assign this, the screen might be black if you deleted the storyboard reference.
+            // If you rely on storyboard, 'window' is already created, but we safeguard it here.
+
+            // 2. CHECK FOR EXISTING USER
+        _Concurrency.Task {
+                do {
+                    // This checks if Supabase has a saved session on the device
+                    let _ = try await AuthManager.shared.getCurrentSession()
+
+                    // If we get here, the user is logged in!
+                    print("Auto-Login Successful")
+
+                    // 3. Swap to Home Screen immediately
+                    DispatchQueue.main.async {
+                        //self.navigateToPreferencesScreen()
+
+                        _Concurrency.Task {
+                                        let isComplete = await AuthManager.shared.hasCompletedOnboarding()
+                                        DispatchQueue.main.async {
+                                            if isComplete {
+                                                self.navigateToHomeScreen()
+                                            } else {
+                                                self.navigateToPreferencesScreen()
+                                            }
+                                        }
+                                    }
+                    }
+
+                } catch {
+                    // Session expired or doesn't exist.
+                    // Do nothing. The app will just show the default Initial View Controller (Login).
+                    print("No active session, staying on Login screen.")
+                }
+            }
+        }
+
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+            guard let url = URLContexts.first?.url else { return }
+
+            // "Hey Google SDK, this URL is for you. Did you handle it?"
+            let handled = GIDSignIn.sharedInstance.handle(url)
+
+            if handled {
+                return
+            }
+
+            // If Google didn't want it, you can check other URLs here later
+        }
+
+    func navigateToHomeScreen() {
+            // Ensure we are working with the Main Storyboard
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+
+            // Make sure this ID matches your TabBarController in Storyboard!
+            guard let homeVC = storyboard.instantiateViewController(withIdentifier: "MainTabBarController") as? UITabBarController else {
+                print("Error: Could not find MainTabBarController in Storyboard")
+                return
+            }
+
+            // Swap the root controller
+            // We use 'window' directly because we are inside SceneDelegate
+            if let window = self.window {
+                window.rootViewController = homeVC
+                window.makeKeyAndVisible()
+
+                // Optional: Add a smooth cross-dissolve animation
+                UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+            }
+        }
+
+
+//    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+//        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
+//        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
+//        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+//        guard let _ = (scene as? UIWindowScene) else { return }
+//        window?.overrideUserInterfaceStyle = .dark
+//    }
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
@@ -47,6 +123,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
+
+
+
+
+    func navigateToPreferencesScreen() {
+            guard let window = self.window else { return }
+
+            // 1. Load the Preferences Storyboard
+            let storyboard = UIStoryboard(name: "Preferences", bundle: nil)
+
+            // 2. Get the Initial View Controller
+            guard let preferencesVC = storyboard.instantiateInitialViewController() else {
+                print("Error: Could not find Initial View Controller in Preferences.storyboard")
+                return
+            }
+
+            // 3. Swap the root view controller
+            window.rootViewController = preferencesVC
+            window.makeKeyAndVisible()
+
+            // 4. Animation
+            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+        }
 
 
 }

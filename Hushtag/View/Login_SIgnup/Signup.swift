@@ -8,6 +8,10 @@
 import UIKit
 
 class Signup: UIViewController {
+    
+    var viewModel: SignInModel = SignInModel()
+    
+    var appUser: AppUser?
 
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -21,64 +25,69 @@ class Signup: UIViewController {
         super.viewDidLoad()
 
         styleSocialButton(googleButton)
-                styleSocialButton(facebookButton)
-                styleSocialButton(appleButton)
-                styleTextField(emailTextField)
-                styleTextField(passwordTextField)
-                styleTextField(confirmPasswordTextField)
+        styleSocialButton(facebookButton)
+        styleSocialButton(appleButton)
+        styleTextField(emailTextField)
+        styleTextField(passwordTextField)
+        styleTextField(confirmPasswordTextField)
+        // Do any additional setup after loading the view.
+    }
+    
+    func styleSocialButton(_ button: UIButton) {
+        button.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        button.layer.cornerRadius = 14
+        button.clipsToBounds = true
+    }
+    
+    func styleTextField(_ textField: UITextField) {
+        textField.layer.cornerRadius = 12
+        textField.clipsToBounds = true
+        textField.layer.borderWidth = 0.2
+        textField.layer.borderColor = UIColor.white.cgColor
+        textField.backgroundColor = .black
+        textField.textColor = .white
+    }
+    
+    
+    @IBAction func signUpTapped(_ sender: Any) {
+        
+//        _Concurrency.Task{
+//            do{
+//                
+//                guard let password = passwordTextField.text, let email = emailTextField.text else {return}
+//                
+//                let appUser = try await viewModel.registerNewUserWithEmail(email: email, password: password)
+//                self.appUser = appUser
+//                print(appUser)
+//            }catch{
+//                print("Issue with Sign In")
+//            }
+//        }
+        guard let email = emailTextField.text,
+                  let password = passwordTextField.text,
+                  let confirmPassword = confirmPasswordTextField.text else {
+                showAlert(title: "Error", message: AuthError.emptyFields.localizedDescription)
+                return
             }
 
-            @IBAction func signupTapped(_ sender: UIButton) {
-                guard
-                    let email = emailTextField.text, !email.isEmpty,
-                    let password = passwordTextField.text, !password.isEmpty,
-                    let confirmPassword = confirmPasswordTextField.text, !confirmPassword.isEmpty
-                else {
-                    showAlert("All fields are required")
-                    return
+            guard password == confirmPassword else {
+                showAlert(title: "Error", message: AuthError.passwordsDoNotMatch.localizedDescription)
+                return
+            }
+
+        _Concurrency.Task { @MainActor in
+                do {
+                    let user = try await viewModel.registerNewUserWithEmail(email: email, password: password)
+
+                
+                        self.appUser = user
+                        //self.navigateToHomeScreen()
+                    self.navigateToPreferencesScreen()
+                } catch let error as LocalizedError {
+                        self.showAlert(title: "Signup Failed", message: error.localizedDescription)
                 }
-
-                guard password == confirmPassword else {
-                    showAlert("Passwords do not match")
-                    return
-                }
-
-                _Concurrency.Task { @MainActor in
-                    let success = await authController.signup(
-                        email: email,
-                        password: password
-                    )
-
-                    if success {
-                        showAlert("Account created successfully 🎉")
-                    } else {
-                        showAlert("Signup failed. Try again.")
-                    }
-                }
             }
-
-            private func styleSocialButton(_ button: UIButton) {
-                button.backgroundColor = UIColor(white: 0.95, alpha: 1)
-                button.layer.cornerRadius = 14
-                button.clipsToBounds = true
-            }
-
-            private func styleTextField(_ textField: UITextField) {
-                textField.layer.cornerRadius = 12
-                textField.clipsToBounds = true
-                textField.layer.borderWidth = 0.2
-                textField.layer.borderColor = UIColor.white.cgColor
-                textField.backgroundColor = .black
-                textField.textColor = .white
-            }
-
-            private func showAlert(_ message: String) {
-                let alert = UIAlertController(
-                    title: "Signup",
-                    message: message,
-                    preferredStyle: .alert
-                )
-                alert.addAction(UIAlertAction(title: "OK", style: .default))
-                present(alert, animated: true)
-            }
-        }
+        
+    }
+    
+}

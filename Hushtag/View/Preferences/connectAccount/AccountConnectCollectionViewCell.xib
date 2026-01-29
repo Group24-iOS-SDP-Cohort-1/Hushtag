@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="AccountConnectCollectionViewCell" customModule="Hushtag" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="651" height="339"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="651" height="339"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yEi-aB-J3q">
+                        <rect key="frame" x="10" y="14.999999999999998" width="631" height="26.333333333333329"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Et-MX-EQo">
+                        <rect key="frame" x="10" y="56.333333333333336" width="631" height="15.666666666666664"/>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="lwo-re-7je">
+                        <rect key="frame" x="15" y="102" width="621" height="34.333333333333343"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FTN-ry-Pfo">
+                                <rect key="frame" x="0.0" y="0.0" width="621" height="34.333333333333336"/>
+                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Connect YouTube">
+                                    <color key="baseBackgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="youtubeAction:" destination="gTV-IL-0wX" eventType="touchUpInside" id="V6H-Cp-Fxf"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                    </stackView>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="yEi-aB-J3q" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="15" id="H9C-ec-Gvy"/>
+                <constraint firstItem="lwo-re-7je" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="15" id="OEq-uc-SQ6"/>
+                <constraint firstItem="5Et-MX-EQo" firstAttribute="top" secondItem="yEi-aB-J3q" secondAttribute="bottom" constant="15" id="RL1-BJ-bvV"/>
+                <constraint firstItem="5Et-MX-EQo" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="Wvd-hJ-DTY"/>
+                <constraint firstItem="lwo-re-7je" firstAttribute="top" secondItem="5Et-MX-EQo" secondAttribute="bottom" constant="30" id="adI-Ku-V3F"/>
+                <constraint firstAttribute="trailing" secondItem="5Et-MX-EQo" secondAttribute="trailing" constant="10" id="qih-Wf-rl4"/>
+                <constraint firstAttribute="trailing" secondItem="lwo-re-7je" secondAttribute="trailing" constant="15" id="qwE-Vl-ovi"/>
+                <constraint firstItem="yEi-aB-J3q" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="r6s-gB-OgL"/>
+                <constraint firstAttribute="trailing" secondItem="yEi-aB-J3q" secondAttribute="trailing" constant="10" id="vq9-je-1V2"/>
+            </constraints>
+            <size key="customSize" width="651" height="339"/>
+            <connections>
+                <outlet property="headingLabel" destination="yEi-aB-J3q" id="0ss-31-L5t"/>
+                <outlet property="subheadingLabel" destination="5Et-MX-EQo" id="ed1-6M-7Vp"/>
+                <outlet property="youtubeOutlet" destination="FTN-ry-Pfo" id="FDg-9y-2I1"/>
+            </connections>
+            <point key="canvasLocation" x="539.69465648854964" y="255.28169014084509"/>
+        </collectionViewCell>
+    </objects>
+</document>
