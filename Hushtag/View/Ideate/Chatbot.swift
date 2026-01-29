@@ -25,6 +25,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     @IBOutlet weak var inputViewBottomConstraint: NSLayoutConstraint!
 
+
+    @IBOutlet weak var scriptedChats: UIBarButtonItem!
+
     var messages: [Message] = []
     var autoSendMessage: String?
 
@@ -110,6 +113,17 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             tableView.reloadData()
             scrollToBottom()
         }
+    }
+
+
+    @IBAction func scriptView(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
+        guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
+        guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
+        destinationVC.pageTitle = "Your Scripts"
+        self.navigationController?.pushViewController(destinationVC, animated: true)
+
+        
     }
 
 

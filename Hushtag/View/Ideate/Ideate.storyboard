@@ -72,25 +72,16 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="Z17-7z-gvD">
-                        <rightBarButtonItems>
-                            <barButtonItem title="Item" image="heart" catalog="system" id="QpP-54-ASd">
-                                <color key="tintColor" name="AccentColor"/>
-                                <connections>
-                                    <action selector="viewLikedTap:" destination="Y6W-OH-hqX" id="7hx-Fr-qfZ"/>
-                                </connections>
-                            </barButtonItem>
-                            <barButtonItem title="Item" image="pencil.and.scribble" catalog="system" id="Emg-PX-vHj">
-                                <color key="tintColor" name="AccentColor"/>
-                                <connections>
-                                    <action selector="viewScriptTap:" destination="Y6W-OH-hqX" id="bef-NC-L67"/>
-                                </connections>
-                            </barButtonItem>
-                        </rightBarButtonItems>
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="heart" catalog="system" id="QpP-54-ASd">
+                            <color key="tintColor" name="AccentColor"/>
+                            <connections>
+                                <action selector="viewLikedTap:" destination="Y6W-OH-hqX" id="7hx-Fr-qfZ"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="Mxq-Iu-w0r" id="YeI-Ho-aaB"/>
                         <outlet property="scriptButton" destination="oGG-eh-lG7" id="9QI-78-BeC"/>
-                        <outlet property="scriptView" destination="Emg-PX-vHj" id="KwB-Fi-XyU"/>
                         <segue destination="Yb8-13-5gt" kind="show" identifier="goToScript" animates="NO" id="rsD-Te-pVV"/>
                     </connections>
                 </viewController>
@@ -266,7 +257,6 @@
     </scenes>
     <resources>
         <image name="heart" catalog="system" width="128" height="107"/>
-        <image name="pencil.and.scribble" catalog="system" width="128" height="86"/>
         <namedColor name="AccentColor">
             <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

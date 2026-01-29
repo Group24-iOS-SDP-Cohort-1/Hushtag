@@ -24,6 +24,9 @@ class ScriptedIdeas: UIViewController {
     @IBOutlet weak var scriptStack: UIStackView!
     @IBOutlet weak var popupButton: UIButton!
 
+
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
         deals = dataStore.getDeals()

@@ -160,11 +160,19 @@
                             <constraint firstItem="c7U-vD-YmN" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leadingMargin" id="ucu-8c-3x9"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Scripting" largeTitleDisplayMode="never" id="iNc-XK-pMm"/>
+                    <navigationItem key="navigationItem" title="Scripting" largeTitleDisplayMode="never" id="iNc-XK-pMm">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="pencil.and.scribble" catalog="system" id="cl6-nn-yxF">
+                            <color key="tintColor" name="AccentColor"/>
+                            <connections>
+                                <action selector="scriptView:" destination="Y6W-OH-hqX" id="0Pq-zK-dub"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="Enterbutton" destination="nYb-18-tvh" id="PNi-ge-sor"/>
                         <outlet property="GenerateStack" destination="ThS-3f-STF" id="iOB-LH-WI8"/>
                         <outlet property="inputViewBottomConstraint" destination="k1n-mV-YhR" id="u5s-51-n64"/>
+                        <outlet property="scriptedChats" destination="cl6-nn-yxF" id="KVu-bm-2EF"/>
                         <outlet property="tableView" destination="SNm-vA-oEx" id="6TJ-DM-Idy"/>
                         <outlet property="textFieldView" destination="juk-cQ-ZRr" id="Wzg-iX-ikx"/>
                         <outlet property="textStack" destination="ygC-V6-BK5" id="C3v-DR-7Cj"/>
@@ -197,6 +205,7 @@
     </scenes>
     <resources>
         <image name="arrow.up.circle.fill" catalog="system" width="128" height="123"/>
+        <image name="pencil.and.scribble" catalog="system" width="128" height="86"/>
         <image name="star.fill" catalog="system" width="128" height="116"/>
         <namedColor name="AccentColor">
             <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -208,7 +217,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray5Color">
-            <color red="0.8980392157" green="0.8980392157" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

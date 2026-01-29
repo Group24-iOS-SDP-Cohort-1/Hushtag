@@ -16,7 +16,7 @@ class Ideate1: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var scriptButton: UIButton!
-    @IBOutlet weak var scriptView: UIBarButtonItem!
+ 
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,13 +59,7 @@ class Ideate1: UIViewController {
             navigationController?.pushViewController(vc, animated: true)
     }
 
-    @IBAction func viewScriptTap(_ sender: UIButton) {
-        let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
-        guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
-        guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
-        destinationVC.pageTitle = "Your Scripts"
-        self.navigationController?.pushViewController(destinationVC, animated: true)
-    }
+
 
     @IBAction func viewLikedTap(_ sender: UIBarButtonItem) {
         let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
