@@ -3,14 +3,18 @@ import UIKit
 protocol AddDealsDelegate: AnyObject {
     // Call when new deal is created
     func addDealsViewController(_ controller: AddDealsViewController, didCreateDeal deal: Deal)
+    func addDealsViewController(_ controller: AddDealsViewController,didUpdateDeal deal: Deal,at index: Int)
+
 }
 
 class AddDealsViewController: UITableViewController, DeliverableCellAddDealDelegate {
     
     weak var delegate: AddDealsDelegate?
     private var deals: [Deal] = []
-
+    var editingDeal: Deal?
+    var editingIndex: Int?
     private let dealsController = DealsController()
+    private var editingDeliverables: [Deliverable] = []
 
     @IBOutlet weak var deadlinePicker: UIDatePicker!
     @IBOutlet weak var reminderPicker: UIDatePicker!
@@ -55,7 +59,53 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         
         deadlinePicker.addTarget(self, action: #selector(deadlineDateChanged), for: .valueChanged)
         reminderPicker.addTarget(self, action: #selector(reminderDateChanged), for: .valueChanged)
+
+        if let deal = editingDeal {
+                    editingDeliverables = deal.deliverables
+
+        }
+
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        tableView.layoutIfNeeded()
+        prefillIfNeeded()
+
+
+    }
+
+    private func prefillIfNeeded() {
+        guard let deal = editingDeal else { return }
+
+        setText("Brand Name", value: deal.name)
+        setText("Platform", value: deal.platform.joined(separator: ", "))
+        setText("Payment", value: "\(deal.payment)")
+        setText("Phone number", value: "\(deal.mobileNumber)")
+        setText("Email", value: deal.email)
+
+        if let deadline = deal.deliverables.first?.deadline {
+            deadlineDate = deadline
+            setText("Deadline", value: dateFormatter.string(from: deadline))
+        }
+
+        if let reminder = deal.reminder?.first {
+            reminderDate = reminder
+            dateFormatter.timeStyle = .short
+            setText("Reminder", value: dateFormatter.string(from: reminder))
+            dateFormatter.timeStyle = .none
+        }
+
+    }
+    private func setText(_ placeholder: String, value: String) {
+        guard let row = fieldPlaceholders.firstIndex(of: placeholder) else { return }
+        let ip = IndexPath(row: row, section: Section.mainFields.rawValue)
+        (tableView.cellForRow(at: ip) as? MainFieldCell)?
+            .textField.text = value
+    }
+
+
 
     @objc func deadlineDateChanged() {
         deadlineDate = deadlinePicker.date
@@ -84,6 +134,8 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 
     @objc private func doneTapped() {
         print("Done button tapped")
+
+        let finalDeadline = deadlineDate ?? Date()
 
         if let reminderDate = reminderDate, let deadlineDate = deadlineDate, reminderDate >= deadlineDate {
             let alert = UIAlertController(title: "Invalid Reminder", message: "Reminder date must be before the deadline.", preferredStyle: .alert)
@@ -116,7 +168,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 
            let texts = delCell.deliverablesText
            let dates = delCell.deliverablesDates
-
+           let deal_id = editingDeal?.id ?? UUID()
            var deliverables: [Deliverable] = []
 
            for (i, text) in texts.enumerated() {
@@ -126,12 +178,16 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 
                let deadline = dates[safe: i] ?? Date()
 
+               let old = editingDeal?.deliverables[safe: i]
+
+
                deliverables.append(
                    Deliverable(
                        id: UUID(),
+                       deal_id: old?.id ?? UUID(),
                        name: title,
                        deadline: deadline,
-                       isCompleted: false
+                       isCompleted: old?.isCompleted ?? false
                    )
                )
 
@@ -144,6 +200,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
                 deliverables.append(
                     Deliverable(
                         id: UUID(),
+                        deal_id: deal_id,
                         name: "Main Deliverable",
                         deadline: deadline,
                         isCompleted: false
@@ -165,7 +222,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 
        
         let newDeal = Deal(
-            id: UUID(),
+            id: deal_id,
             name: brandName.isEmpty ? "Untitled Brand" : brandName,
             payment: paymentValue,
             mobileNumber: Int64(phone) ?? 0,
@@ -177,25 +234,47 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 
 
 
+
         _Concurrency.Task {
-               do {
-                   let savedDeal = try await dealsController.addDeal(newDeal)
+            do {
+               
+                if let index = editingIndex {
+                    let updatedDeal = try await dealsController.updateDeal(newDeal)
 
-                   await MainActor.run {
-                       self.delegate?.addDealsViewController(
-                           self,
-                           didCreateDeal: savedDeal
-                       )
-                       self.dismiss(animated: true)
-                   }
-               } catch {
-                    print("Failed to add deal. Supabase error: \(error)")
-                     let alert = UIAlertController(title: "Error", message: "Failed to add deal: \(error.localizedDescription)", preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: .default))
-                        self.present(alert, animated: true)
+                    await MainActor.run {
+                        self.delegate?.addDealsViewController(
+                            self,
+                            didUpdateDeal: updatedDeal,
+                            at: index
+                        )
+                        self.dismiss(animated: true)
+                    }
+                }
 
-               }
-           }
+                else {
+                    let savedDeal = try await dealsController.addDeal(newDeal)
+
+                    await MainActor.run {
+                        self.delegate?.addDealsViewController(
+                            self,
+                            didCreateDeal: savedDeal
+                        )
+                        self.dismiss(animated: true)
+                    }
+                }
+
+            } catch {
+                print("Failed to save deal:", error)
+                let alert = UIAlertController(
+                    title: "Error",
+                    message: error.localizedDescription,
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                self.present(alert, animated: true)
+            }
+        }
+
        }
     override func numberOfSections(in tableView: UITableView) -> Int {
         return Section.allCases.count
@@ -209,7 +288,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         case .mainFields:
             return fieldPlaceholders.count
         case .deliverables:
-            return 1                          // single dynamic cell
+            return 1                        
         }
     }
 
@@ -259,11 +338,22 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
                 withIdentifier: "DeliverableCell",
                 for: indexPath
             ) as! DeliverableCellAddDeal
-            
+
             cell.delegate = self
             cell.placeholderPrefix = "Deliverable"
             cell.addButton.setTitle("+ Deliverables", for: .normal)
-            return cell
+
+            if !editingDeliverables.isEmpty {
+                    for d in editingDeliverables {
+                        cell.addDeliverableField(
+                            placeholder: d.name,
+                        )
+                    }
+                    editingDeliverables.removeAll()
+                }
+
+                return cell
+
         }
     }
 

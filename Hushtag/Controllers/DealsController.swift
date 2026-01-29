@@ -58,6 +58,7 @@ final class DealsController {
             .from("brand_deals")
             .select()
             .eq("user_id", value: session.user.id)
+            .order("deadline", ascending: true)
             .execute()
             .value
 
@@ -75,6 +76,61 @@ final class DealsController {
         }
     }
 
+    func updateDeal(_ deal: Deal) async throws -> Deal {
+
+        let iso = ISO8601DateFormatter()
+
+
+        let updatedDeal: DealDB = try await client.database
+            .from("brand_deals")
+            .update([
+                "name": deal.name,
+                "payment": String(deal.payment),
+                "mobileNumber": String(deal.mobileNumber),
+                "email": deal.email,
+                "platform": deal.platform.joined(separator: ","),
+                "deadline": iso.string(
+                    from: deal.deliverables.map(\.deadline).max() ?? Date()
+                ),
+                "reminder": deal.reminder != nil
+                               ? "{\(iso.string(from: deal.reminder!.first!))}"
+                               : nil
+            ])
+            .eq("id", value: deal.id)  
+            .select()
+            .single()
+            .execute()
+            .value
+
+
+        try await client.database
+            .from("deliverables")
+            .delete()
+            .eq("deal_id", value: deal.id)
+            .execute()
+
+
+        let deliverablesPayload = deal.deliverables.map {
+            DeliverableDB(
+                id:UUID(),
+                deal_id: deal.id,
+                name: $0.name,
+                deadline: $0.deadline,
+                isCompleted: $0.isCompleted
+            )
+        }
+
+        let insertedDeliverables: [DeliverableDB] = try await client.database
+            .from("deliverables")
+            .insert(deliverablesPayload)
+            .select()
+            .execute()
+            .value
+
+        return mapToDeal(updatedDeal, insertedDeliverables)
+    }
+
+
     private func mapToDeal(
         _ deal: DealDB,
         _ deliverables: [DeliverableDB]
@@ -91,7 +147,8 @@ final class DealsController {
                 .map { String($0) },
             deliverables: deliverables.map {
                 Deliverable(
-                    id: $0.deal_id,
+                    id: $0.id,
+                    deal_id: $0.deal_id,
                     name: $0.name,
                     deadline: $0.deadline,
                     isCompleted: $0.isCompleted

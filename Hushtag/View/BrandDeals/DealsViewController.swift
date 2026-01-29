@@ -89,7 +89,8 @@ class DealsViewController: UIViewController {
         
         
     }
-    
+
+
     @IBAction func segmentedAction(_ sender: UISegmentedControl) {
         selectedSegmentIndex = sender.selectedSegmentIndex
         
@@ -232,15 +233,41 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
 // this is for if we perform complete operation inside the deals info
 extension DealsViewController: DealsInfoDelegate {
     func dealsInfo(_ controller: DealsInfo, didUpdateDeal deal: Deal, at index: Int) {
-        guard index >= 0 && index < deals.count else { return }
-        deals[index] = deal
-        collectionView.reloadData()
+        if let idx = deals.firstIndex(where: { $0.id == deal.id }) {
+            deals[idx] = deal
+            collectionView.reloadData()
+        }
     }
+
 }
 
-//this is for if we add new deals using the modal
+
 extension DealsViewController: AddDealsDelegate {
-    func addDealsViewController(_ controller: AddDealsViewController, didCreateDeal deal: Deal) {
+
+    func addDealsViewController(
+        _ controller: AddDealsViewController,
+        didUpdateDeal deal: Deal,
+        at index: Int
+    ) {
+
+        if let realIndex = deals.firstIndex(where: { $0.id == deal.id }) {
+            deals[realIndex] = deal
+        }
+
+
+        selectedSegmentIndex = segmentControl.selectedSegmentIndex
+
+        collectionView.collectionViewLayout.invalidateLayout()
+        collectionView.reloadData()
+    }
+
+    func addDealsViewController(
+        _ controller: AddDealsViewController,
+        didCreateDeal deal: Deal
+    ) {
         fetchDeals()
     }
 }
+
+
+
