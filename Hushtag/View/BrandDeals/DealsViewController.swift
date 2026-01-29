@@ -89,7 +89,13 @@ class DealsViewController: UIViewController {
         
         
     }
-    
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchDeals()
+    }
+
+
     @IBAction func segmentedAction(_ sender: UISegmentedControl) {
         selectedSegmentIndex = sender.selectedSegmentIndex
         
@@ -238,7 +244,7 @@ extension DealsViewController: DealsInfoDelegate {
     }
 }
 
-//this is for if we add new deals using the modal
+
 extension DealsViewController: AddDealsDelegate {
 
     func addDealsViewController(
@@ -246,14 +252,14 @@ extension DealsViewController: AddDealsDelegate {
         didUpdateDeal deal: Deal,
         at index: Int
     ) {
-        guard index >= 0 && index < deals.count else { return }
 
-
-        deals[index] = deal
-
+        if let realIndex = deals.firstIndex(where: { $0.id == deal.id }) {
+            deals[realIndex] = deal
+        } else {
+            deals.append(deal)
+        }
 
         selectedSegmentIndex = segmentControl.selectedSegmentIndex
-
 
         collectionView.collectionViewLayout.invalidateLayout()
         collectionView.reloadData()
@@ -263,7 +269,6 @@ extension DealsViewController: AddDealsDelegate {
         _ controller: AddDealsViewController,
         didCreateDeal deal: Deal
     ) {
-        // safest for insert
         fetchDeals()
     }
 }

@@ -39,6 +39,7 @@ final class DealsInfo: UIViewController {
 
            vc.title = deals.name
 
+           vc.delegate = self
            let nav = UINavigationController(rootViewController: vc)
            nav.modalPresentationStyle = .pageSheet
 
@@ -300,4 +301,30 @@ extension DealsInfo: UICollectionViewDelegate {
             delegate?.dealsInfo(self, didUpdateDeal: deals, at: dealIndex)
         }
     }
+}
+
+extension DealsInfo: AddDealsDelegate {
+
+    func addDealsViewController(
+        _ controller: AddDealsViewController,
+        didUpdateDeal deal: Deal,
+        at index: Int
+    ) {
+      
+        self.deals = deal
+        self.title = deal.name
+        self.collectionView.reloadData()
+
+     
+        if dealIndex >= 0 {
+            delegate?.dealsInfo(self, didUpdateDeal: deal, at: dealIndex)
+        }
+
+        dismiss(animated: true)
+    }
+
+    func addDealsViewController(
+        _ controller: AddDealsViewController,
+        didCreateDeal deal: Deal
+    ) {}
 }

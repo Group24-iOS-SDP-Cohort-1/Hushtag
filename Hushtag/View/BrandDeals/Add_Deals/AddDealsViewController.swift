@@ -184,7 +184,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
                deliverables.append(
                    Deliverable(
                        id: UUID(),
-                       deal_id: deal_id,
+                       deal_id: old?.id ?? UUID(),
                        name: title,
                        deadline: deadline,
                        isCompleted: old?.isCompleted ?? false
