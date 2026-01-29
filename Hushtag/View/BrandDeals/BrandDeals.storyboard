@@ -141,15 +141,24 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="info" largeTitleDisplayMode="never" id="fXh-dh-Pe0">
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="y1M-JD-Qu8">
-                            <color key="tintColor" name="AccentColor"/>
-                            <connections>
-                                <action selector="editModal:" destination="bZL-Eh-1SZ" id="zBm-Bc-eDt"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem title="Item" image="trash" catalog="system" id="juk-aF-zn5">
+                                <color key="tintColor" name="AccentColor"/>
+                                <connections>
+                                    <action selector="deleteDeal:" destination="bZL-Eh-1SZ" id="5TS-8U-lE7"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="pencil.and.list.clipboard" catalog="system" id="y1M-JD-Qu8">
+                                <color key="tintColor" name="AccentColor"/>
+                                <connections>
+                                    <action selector="editModal:" destination="bZL-Eh-1SZ" id="zBm-Bc-eDt"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="XY6-99-hcX" id="2Qq-cM-L6e"/>
+                        <outlet property="delete" destination="juk-aF-zn5" id="nat-FS-LGk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wBf-on-JRI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -305,7 +314,9 @@
     </scenes>
     <resources>
         <image name="checkmark" catalog="system" width="128" height="114"/>
+        <image name="pencil.and.list.clipboard" catalog="system" width="114" height="128"/>
         <image name="plus" catalog="system" width="128" height="113"/>
+        <image name="trash" catalog="system" width="117" height="128"/>
         <image name="xmark" catalog="system" width="128" height="113"/>
         <namedColor name="AccentColor">
             <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

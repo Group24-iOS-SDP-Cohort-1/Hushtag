@@ -2,11 +2,15 @@ import UIKit
 
 protocol DealsInfoDelegate: AnyObject {
     func dealsInfo(_ controller: DealsInfo, didUpdateDeal deal: Deal, at index: Int)
+    func dealsInfo(_ controller: DealsInfo, didDeleteDeal dealId: UUID)
+
 }
 
 final class DealsInfo: UIViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
+
+    @IBOutlet weak var delete: UIBarButtonItem!
 
     var deals: Deal!
     var dealIndex: Int = -1
@@ -50,8 +54,49 @@ final class DealsInfo: UIViewController {
 
            present(nav, animated: true)
     }
-    
+
+
+    @IBAction func deleteDeal(_ sender: UIButton) {
+        let alert = UIAlertController(
+                title: "Delete Deal",
+                message: "This deal will be permanently deleted.",
+                preferredStyle: .alert
+            )
+
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+            alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+                self.deleteDeal()
+            })
+
+            present(alert, animated: true)
+    }
+
+    private func deleteDeal() {
+        let dealId = deals.id
+
+        _Concurrency.Task {
+            do {
+                try await DealsController().deleteDeal(dealId)
+
+                await MainActor.run {
+                    // notify list screen
+                    self.delegate?.dealsInfo(self, didDeleteDeal: dealId)
+
+                    // go back to list
+                    self.navigationController?.popViewController(animated: true)
+                }
+
+            } catch {
+                print("❌ Delete failed:", error)
+            }
+        }
+    }
+
+
 }
+
+
 
 extension DealsInfo {
 

@@ -130,6 +130,25 @@ final class DealsController {
         return mapToDeal(updatedDeal, insertedDeliverables)
     }
 
+    func deleteDeal(_ dealId: UUID) async throws {
+
+        let session = try await client.auth.session
+
+        try await client.database
+            .from("deliverables")
+            .delete()
+            .eq("deal_id", value: dealId)
+            .execute()
+
+        try await client.database
+            .from("brand_deals")
+            .delete()
+            .eq("id", value: dealId)
+            .eq("user_id", value: session.user.id)
+            .execute()
+    }
+
+
 
     private func mapToDeal(
         _ deal: DealDB,

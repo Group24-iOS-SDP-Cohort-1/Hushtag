@@ -255,6 +255,17 @@ extension DealsViewController: DealsInfoDelegate {
         }
     }
 
+    func dealsInfo(_ controller: DealsInfo, didDeleteDeal dealId: UUID) {
+
+        if let index = deals.firstIndex(where: { $0.id == dealId }) {
+            deals.remove(at: index)
+        }
+
+        collectionView.collectionViewLayout.invalidateLayout()
+        collectionView.reloadData()
+    }
+
+
 }
 
 
