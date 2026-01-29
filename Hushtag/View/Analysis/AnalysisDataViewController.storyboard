@@ -120,6 +120,11 @@
                                 </connections>
                             </button>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="eSV-Wn-jOL">
+                            <connections>
+                                <action selector="signOutTap:" destination="Y6W-OH-hqX" id="FqG-gg-jxn"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
