@@ -139,53 +139,53 @@ extension IdeaResponse {
     
 }
 
-struct Task: Codable {
-    let name: String
-    let deadline: Date
-    var isCompleted : Bool
-}
+//struct Task: Codable {
+//    let name: String
+//    let deadline: Date
+//    var isCompleted : Bool
+//}
+//
+//struct Post: Codable, Identifiable {
+//    let id = UUID()
+//    let name: String
+//    let platform: [String]
+//    var tasks: [Task]?
+//    let reminder: [String]
+//    
+//    enum CodingKeys: String, CodingKey {
+//        case name, platform, tasks, reminder
+//    }
+//    
+//    var platformType: [PlatformType] {
+//        platform.compactMap {
+//            PlatformType(rawValue: $0.lowercased())
+//        }
+//    }
+//    
+//}
 
-struct Post: Codable, Identifiable {
-    let id = UUID()
-    let name: String
-    let platform: [String]
-    var tasks: [Task]?
-    let reminder: [String]
-    
-    enum CodingKeys: String, CodingKey {
-        case name, platform, tasks, reminder
-    }
-    
-    var platformType: [PlatformType] {
-        platform.compactMap {
-            PlatformType(rawValue: $0.lowercased())
-        }
-    }
-    
-}
-
-struct Deal: Codable, Identifiable {
-    let id = UUID()
-    let name: String
-    var deliverable: [Deliverable]
-    let platform: [String]
-    let phone: String
-    let email: String
-    let description: String
-    let payment: Int
-    let selectedIdeaIndex: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case name,deliverable,platform,phone,email,description,payment, selectedIdeaIndex
-    }
-}
-
-struct Deliverable: Codable {
-    let name: String
-    let deadline: Date
-    var isCompleted : Bool
-}
-
+//struct Deal: Codable, Identifiable {
+//    let id = UUID()
+//    let name: String
+//    var deliverable: [Deliverable]
+//    let platform: [String]
+//    let phone: String
+//    let email: String
+//    let description: String
+//    let payment: Int
+//    let selectedIdeaIndex: String?
+//    
+//    enum CodingKeys: String, CodingKey {
+//        case name,deliverable,platform,phone,email,description,payment, selectedIdeaIndex
+//    }
+//}
+//
+//struct Deliverable: Codable {
+//    let name: String
+//    let deadline: Date
+//    var isCompleted : Bool
+//}
+//
 struct TopContentItem: Codable, Identifiable {
     let id: String
     let title: String
@@ -388,25 +388,25 @@ extension Preferences {
     }
 }
 
-enum ScheduleItem {
-    case deal(Deal)
-    case post(Post)
-    
-    func date() -> Date? {
-        switch self {
-        case .deal(let deal):
-            return deal.deliverable.first?.deadline
-        case .post(let post):
-            return post.tasks?.first?.deadline
-        }
-    }
-    
-    var isCompleted: Bool {
-        switch self {
-        case .post(let post):
-            return post.tasks?.allSatisfy { $0.isCompleted } ?? false
-        case .deal(let deal):
-            return deal.deliverable.allSatisfy { $0.isCompleted }
-        }
-    }
-}
+//enum ScheduleItem {
+//    case deal(Deal)
+//    case post(Post)
+//    
+//    func date() -> Date? {
+//        switch self {
+//        case .deal(let deal):
+//            return deal.deliverables.first?.deadline
+//        case .post(let post):
+//            return post.tasks?.first?.deadline
+//        }
+//    }
+//    
+//    var isCompleted: Bool {
+//        switch self {
+//        case .post(let post):
+//            return post.tasks?.allSatisfy { $0.isCompleted } ?? false
+//        case .deal(let deal):
+//            return deal.deliverables.allSatisfy { $0.isCompleted }
+//        }
+//    }
+//}

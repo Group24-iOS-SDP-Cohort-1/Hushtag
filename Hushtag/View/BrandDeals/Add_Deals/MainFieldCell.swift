@@ -11,7 +11,6 @@ class MainFieldCell: UITableViewCell {
 
     @IBOutlet weak var textField: UITextField!
 
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         backgroundColor = .clear
@@ -21,8 +20,8 @@ class MainFieldCell: UITableViewCell {
         contentView.clipsToBounds = true
         contentView.applyLiquidGlassEffect()
 
+
         textField.borderStyle = .none
         textField.backgroundColor = .clear
-        
     }
 }

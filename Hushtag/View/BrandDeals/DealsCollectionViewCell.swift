@@ -43,9 +43,9 @@ class DealsCollectionViewCell: UICollectionViewCell{
         titleLabel.text = deal.name
         paymentValueLabel.text = "\(deal.payment)"
         
-        let total = deal.deliverable.count
-        let completed = deal.deliverable.filter { $0.isCompleted }.count
-        
+        let total = deal.deliverables.count
+        let completed = deal.deliverables.filter { $0.isCompleted }.count
+
         if isCompleted {
             deadlineIconImageView.image = UIImage(systemName: "play.circle")
             bottomStackView.isHidden = true
@@ -70,7 +70,7 @@ class DealsCollectionViewCell: UICollectionViewCell{
     }
     
     private func updateNextDeadline(_ deal: Deal) {
-        let pending = deal.deliverable.filter { !$0.isCompleted }
+        let pending = deal.deliverables.filter { !$0.isCompleted }
         
         guard let deliverable = pending.min(by: { $0.deadline < $1.deadline }) else {
             nextDeliverableLabel.text = "-"

@@ -66,7 +66,7 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
             tv.textColor = .secondaryLabel
             tv.font = UIFont.systemFont(ofSize: 16)
             tv.backgroundColor = .clear
-            tv.accessibilityLabel = placeholder 
+            tv.accessibilityLabel = placeholder
             tv.heightAnchor.constraint(greaterThanOrEqualToConstant: 44).isActive = true
             tv.textContainerInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
             tv.delegate = self

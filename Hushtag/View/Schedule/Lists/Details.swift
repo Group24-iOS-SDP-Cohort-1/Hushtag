@@ -11,10 +11,8 @@ class Details: UIViewController {
 
     @IBOutlet weak var detailsView: UICollectionView!
     var schedule: ScheduleItem?
-    var dataStore: DataStore = DataStore.shared
     override func viewDidLoad() {
         super.viewDidLoad()
-        detailsView.delegate = self
         detailsView.dataSource = self
         detailsView.setCollectionViewLayout(generateLayout(), animated: false)
     }
@@ -100,21 +98,17 @@ class Details: UIViewController {
     }
     
     private func updateTaskCompletion(taskIndex: Int, isCompleted: Bool) {
-        guard case .post(var post) = schedule,
-              var tasks = post.tasks,
-              taskIndex < tasks.count else { return }
+        guard case .post(var post, _) = schedule,
+              taskIndex < post.tasks.count else { return }
 
-        tasks[taskIndex].isCompleted = isCompleted
-        post.tasks = tasks
-        schedule = .post(post)
-
-        dataStore.updatePost(post)
+        post.tasks[taskIndex].isCompleted = isCompleted
+        schedule = .post(post: post, task: post.tasks[taskIndex])
 
         detailsView.reloadItems(at: [IndexPath(row: taskIndex, section: 1)])
     }
 }
 
-extension Details: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension Details: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         switch schedule {
         case .deal:
@@ -127,78 +121,80 @@ extension Details: UICollectionViewDataSource, UICollectionViewDelegateFlowLayou
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let schedule else { return 0 }
-
+        
         if section == 0 {
             return 1
         }
         switch schedule {
-        case .deal(let deal):
+        case .deal(let deal, _):
             if section == 1 {
                 return 1
             }
-            return deal.deliverable.count
-
-        case .post(let post):
-            return post.tasks?.count ?? 0
+            return deal.deliverables.count
+            
+        case .post(let post, _):
+            return post.tasks.count
         }
     }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
-    guard let schedule else { return UICollectionViewCell() }
-
-        switch schedule {
-        case .deal(let deal):
-            if indexPath.section == 0 {
-                let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: "common_details",
-                    for: indexPath
-                ) as! DetailsCollectionViewCell
-                cell.configureCommon(with: schedule)
-                return cell
+        
+        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+            
+            guard let schedule = schedule else {
+                return UICollectionViewCell()
             }
             
-            if indexPath.section == 1 {
+            switch schedule {
+            case .deal(let deal, _):
+                if indexPath.section == 0 {
+                    let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: "common_details",
+                        for: indexPath
+                    ) as! DetailsCollectionViewCell
+                    cell.configureCommon(with: schedule)
+                    return cell
+                }
+                
+                if indexPath.section == 1 {
+                    let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: "deal_details",
+                        for: indexPath
+                    ) as! DetailsCollectionViewCell
+                    cell.DealDetails(with: deal)
+                    return cell
+                }
+                
                 let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: "deal_details",
+                    withReuseIdentifier: "multiple_details",
                     for: indexPath
                 ) as! DetailsCollectionViewCell
-                cell.DealDetails(with: deal)
+                
+                let deliverable = deal.deliverables[indexPath.row]
+                cell.configureMultiple(with: deliverable)
+                cell.applyLiquidGlassEffect()
                 return cell
-            }
-            
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "multiple_details",
-                for: indexPath
-            ) as! DetailsCollectionViewCell
-
-            let deliverable = deal.deliverable[indexPath.row]
-            cell.configureMultiple(with: deliverable)
-            cell.applyLiquidGlassEffect()
-            return cell
-            
-            case .post(let post):
-            if indexPath.section == 0 {
+                
+            case .post(let post, _):
+                
+                if indexPath.section == 0 {
+                    let cell = collectionView.dequeueReusableCell(
+                        withReuseIdentifier: "common_details",
+                        for: indexPath
+                    ) as! DetailsCollectionViewCell
+                    cell.configureCommon(with: schedule)
+                    return cell
+                }
+                
                 let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: "common_details",
+                    withReuseIdentifier: "multiple_details",
                     for: indexPath
                 ) as! DetailsCollectionViewCell
-                cell.configureCommon(with: schedule)
-                return cell
-            }
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "multiple_details",
-                for: indexPath
-            ) as! DetailsCollectionViewCell
-
-            if let tasks = post.tasks, indexPath.row < tasks.count {
-                let task = tasks[indexPath.row]
+                
+                let task = post.tasks[indexPath.row]
                 cell.configureMultiple(with: task)
                 cell.applyLiquidGlassEffect()
+                
+                return cell
+                
             }
-
-            return cell
         }
     }
-}

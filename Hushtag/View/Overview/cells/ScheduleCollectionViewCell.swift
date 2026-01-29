@@ -14,6 +14,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var completedButton: UIButton!
     weak var delegate: ScheduleCollectionViewCellDelegate?
+    
     private var item: ScheduleItem?
     
     override func awakeFromNib() {
@@ -30,8 +31,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         
         switch item {
             
-        case .post(let post):
-            guard let task = post.tasks?.first else { return }
+        case .post(let post, let task):
             
             timeLabel.text = task.deadline.formatted(
                 date: .omitted,
@@ -41,10 +41,10 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
             dayLabel.text = task.deadline.dayOnly()
             titleLabel.text = post.name
             
+            // Supabase-driven state
             updateCompletedButton(isCompleted: post.isCompleted)
             
-        case .deal(let deal):
-            guard let deliverable = deal.deliverable.first else { return }
+        case .deal(let deal, let deliverable):
             
             timeLabel.text = deliverable.deadline.formatted(
                 date: .omitted,
@@ -54,9 +54,11 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
             dayLabel.text = deliverable.deadline.dayOnly()
             titleLabel.text = deal.name
             
+            // Supabase-driven state
             updateCompletedButton(isCompleted: deal.isCompleted)
         }
     }
+    
     
     private func updateCompletedButton(isCompleted: Bool) {
         let imageName = isCompleted ? "largecircle.fill.circle" : "circle"
@@ -66,20 +68,6 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     
     @IBAction func buttonTapped(_ sender: UIButton) {
         delegate?.didTapCompleted(item: item)
-    }
-}
-
-extension Post {
-    var isCompleted: Bool {
-        guard let tasks = tasks, !tasks.isEmpty else { return false }
-        return tasks.allSatisfy { $0.isCompleted }
-    }
-}
-
-extension Deal {
-    var isCompleted: Bool {
-        guard !deliverable.isEmpty else { return false }
-        return deliverable.allSatisfy { $0.isCompleted }
     }
 }
 

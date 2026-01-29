@@ -83,17 +83,6 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Brand Deals" id="fpR-OI-OUV">
-                        <barButtonItem key="leftBarButtonItem" id="MSd-xM-v2S">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="k76-gQ-1Ft">
-                                <rect key="frame" x="20" y="4.6666666666666687" width="52.333333333333343" height="34.666666666666664"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="person.2.circle" catalog="system"/>
-                                <connections>
-                                    <segue destination="rys-A0-rHk" kind="show" id="O9b-mJ-lSY"/>
-                                </connections>
-                            </button>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="plus" catalog="system" id="gI6-zs-Mmo">
                             <connections>
                                 <segue destination="u03-JL-NsK" kind="presentation" id="mIm-EB-cwQ"/>
@@ -109,16 +98,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1236" y="141"/>
-        </scene>
-        <!--ProfileNew-->
-        <scene sceneID="JMk-PW-CZK">
-            <objects>
-                <viewControllerPlaceholder storyboardIdentifier="ProfileVC" storyboardName="ProfileNew" id="rys-A0-rHk" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="BL3-Dw-2cx"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="C4f-h4-GdI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1236" y="585"/>
         </scene>
         <!--info-->
         <scene sceneID="ZCT-su-JqW">
@@ -261,8 +240,20 @@
                         <barButtonItem key="leftBarButtonItem" title="Item" image="xmark" catalog="system" id="3mc-rF-Foc"/>
                         <barButtonItem key="rightBarButtonItem" title="Item" image="checkmark" catalog="system" id="zsa-kU-QJa"/>
                     </navigationItem>
+                    <connections>
+                        <outlet property="deadlinePicker" destination="d8e-c6-h3E" id="ABC-DE-FGH"/>
+                        <outlet property="reminderPicker" destination="A4g-5d-g3g" id="IJK-LM-NOP"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ovj-Fq-r9i" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="wheels" id="d8e-c6-h3E">
+                    <rect key="frame" x="0.0" y="0.0" width="393" height="216"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                </datePicker>
+                <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" style="wheels" id="A4g-5d-g3g">
+                    <rect key="frame" x="0.0" y="0.0" width="393" height="216"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                </datePicker>
             </objects>
             <point key="canvasLocation" x="2950.3816793893129" y="-188.02816901408451"/>
         </scene>
@@ -305,7 +296,6 @@
     </scenes>
     <resources>
         <image name="checkmark" catalog="system" width="128" height="114"/>
-        <image name="person.2.circle" catalog="system" width="128" height="123"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="xmark" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">

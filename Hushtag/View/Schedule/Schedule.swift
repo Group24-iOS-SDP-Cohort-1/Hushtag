@@ -8,16 +8,19 @@
 import UIKit
 
 class Schedule: UIViewController {
-
+    
     @IBOutlet weak var scheduleView: UICollectionView!
     
     var dataStore: DataStore = DataStore.shared
-    var scheduleItem: [ScheduleItem]?
+    private let scheduleController = ScheduleItemController()
+    private let postsController = PostsController()
+
     private var todayItems: [ScheduleItem] = []
+    
     private var selectedDate: Date = Date()
     private var weekDates: [Date] = []
     private var selectedScheduleItem: ScheduleItem?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
@@ -30,13 +33,27 @@ class Schedule: UIViewController {
         filterItems(for: selectedDate)
         scheduleView.reloadSections(IndexSet(integer: 1))
         
+        Task {
+            do {
+                try await scheduleController.load()
+                
+                await MainActor.run {
+                    self.filterItems(for: self.selectedDate)
+                    self.scheduleView.reloadSections(IndexSet(integer: 1))
+                }
+            } catch {
+                print("Failed to load schedule items:", error)
+            }
+        }
+        
+        
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleCalendarLeft),
             name: .calendarSwipeLeft,
             object: nil
         )
-
+        
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleCalendarRight),
@@ -81,9 +98,9 @@ class Schedule: UIViewController {
     
     private func filterItems(for date: Date) {
         selectedDate = date
-        todayItems = dataStore.scheduleItems(on: date)
+        todayItems = scheduleController.scheduleItems(on: date)
     }
-
+    
     func generateLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout {
             section, env in
@@ -94,25 +111,25 @@ class Schedule: UIViewController {
             let headerButton = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "headerButton", alignment: .top)
             
             if section == 0 {
-
+                
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0 / 7.0), heightDimension: .fractionalHeight(1.0))
-
+                
                 // create the item
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
-
+                
                 // create the group
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(70))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 7)
-
+                
                 //create the section
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
                 section.boundarySupplementaryItems = [headerButton]
-
+                
                 return section
-        }
-
+            }
+            
             
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
             
@@ -128,20 +145,20 @@ class Schedule: UIViewController {
             let section = NSCollectionLayoutSection(group: group)
             section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
             section.boundarySupplementaryItems = [headerItem]
-
+            
             return section
         }
         return layout
     }
     private func generateWeek(for date: Date) {
         let calendar = Calendar.current
-
+        
         let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: date)!.start
-
+        
         weekDates = (0..<7).compactMap {
             calendar.date(byAdding: .day, value: $0, to: startOfWeek)
         }
-
+        
         scheduleView.reloadSections(IndexSet(integer: 0))
     }
     
@@ -154,18 +171,18 @@ class Schedule: UIViewController {
     private var currentMonthText: String {
         monthFormatter.string(from: selectedDate)
     }
-
+    
     private func changeWeek(by value: Int) {
         let calendar = Calendar.current
-
+        
         guard let newDate = calendar.date(byAdding: .weekOfYear, value: value, to: selectedDate) else {
             return
         }
-
+        
         selectedDate = newDate
         generateWeek(for: selectedDate)
         filterItems(for: selectedDate)
-
+        
         scheduleView.performBatchUpdates {
             scheduleView.reloadSections(IndexSet([0, 1]))
         }
@@ -175,7 +192,7 @@ class Schedule: UIViewController {
         selectedDate = date
         generateWeek(for: selectedDate)
         filterItems(for: selectedDate)
-
+        
         scheduleView.performBatchUpdates {
             scheduleView.reloadSections(IndexSet([0, 1]))
         }
@@ -184,44 +201,52 @@ class Schedule: UIViewController {
     @objc private func handleCalendarLeft() {
         changeWeek(by: 1)
     }
-
+    
     @objc private func handleCalendarRight() {
         changeWeek(by: -1)
     }
-    
-    private func togglePostCompletion(_ post: Post) {
-        guard let tasks = post.tasks, !tasks.isEmpty else { return }
+   
+    private func togglePostCompletion(_ post: Post) async {
 
-        let shouldCompleteAll = !post.isCompleted
+        let shouldComplete = !post.isCompleted
 
-        let updatedTasks = tasks.map { task in
-            var t = task
-            t.isCompleted = shouldCompleteAll
+        var updatedPost = post
+        updatedPost.tasks = post.tasks.map {
+            var t = $0
+            t.isCompleted = shouldComplete
             return t
         }
 
-        var updatedPost = post
-        updatedPost.tasks = updatedTasks
+        // Optimistic UI
+        scheduleController.replacePost(updatedPost)
+        filterItems(for: selectedDate)
+        scheduleView.reloadSections(IndexSet(integer: 1))
 
-        dataStore.updatePost(updatedPost)
-    }
-    
-    private func toggleDealCompletion(_ deal: Deal) {
-        guard !deal.deliverable.isEmpty else { return }
+        do {
+            let savedPost = try await postsController.updatePost(updatedPost)
+            scheduleController.replacePost(savedPost)
+            filterItems(for: selectedDate)
+            scheduleView.reloadSections(IndexSet(integer: 1))
+        } catch {
+            // Rollback
+            scheduleController.replacePost(post)
+            filterItems(for: selectedDate)
+            scheduleView.reloadSections(IndexSet(integer: 1))
 
-        let shouldCompleteAll = !deal.isCompleted
-
-        let updatedDeliverables = deal.deliverable.map { d -> Deliverable in
-            var deliverable = d
-            deliverable.isCompleted = shouldCompleteAll
-            return deliverable
+            print("❌ Failed to update post:", error)
         }
-
-        var updatedDeal = deal
-        updatedDeal.deliverable = updatedDeliverables
-
-        DataStore.shared.updateDeal(updatedDeal)
     }
+ 
+    private func handleCompletionToggle(_ item: ScheduleItem) async {
+        switch item {
+        case .post(let post, _):
+            await togglePostCompletion(post)
+        case .deal:
+            break // later
+        }
+    }
+
+
 }
 
 extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -275,7 +300,7 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
             )
             return cell
         }
-     
+        
         let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "upcoming_schedule",
             for: indexPath
@@ -322,17 +347,17 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
         
         if indexPath.section == 0 {
             selectedDate = weekDates[indexPath.row]
-            todayItems = dataStore.scheduleItems(on: selectedDate)
-
+            todayItems = scheduleController.scheduleItems(on: selectedDate)
+            
             collectionView.performBatchUpdates {
                 collectionView.reloadSections(IndexSet([0, 1]))
             }
             return
         }
-
+        
         guard indexPath.section == 1,
               !todayItems.isEmpty else { return }
-
+        
         selectedScheduleItem = todayItems[indexPath.row]
         performSegue(withIdentifier: "goToDetails", sender: self)
     }
@@ -352,22 +377,14 @@ extension Notification.Name {
 }
 
 extension Schedule: ScheduleCollectionViewCellDelegate {
-
+    
     func didTapCompleted(item: ScheduleItem?) {
         guard let item else { return }
-
-        switch item {
-
-        case .post(let post):
-            togglePostCompletion(post)
-
-        case .deal(let deal):
-            toggleDealCompletion(deal)
+        
+        Task {
+            await handleCompletionToggle(item)
         }
-
-        // Refresh only the list section
-        filterItems(for: selectedDate)
-        scheduleView.reloadSections(IndexSet(integer: 1))
     }
 }
+
 

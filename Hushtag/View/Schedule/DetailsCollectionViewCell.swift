@@ -18,7 +18,6 @@ class DetailsCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var subNameLabel: UILabel!
     @IBOutlet weak var deadlineLabel: UILabel!
     @IBOutlet weak var statusButton: UIButton!
-    private var currentTask: Task?
     var onToggleCompletion: ((Bool) -> Void)?
     private var isCompleted: Bool = false
 
@@ -37,19 +36,26 @@ class DetailsCollectionViewCell: UICollectionViewCell {
         }
         
         switch item {
-        case .post(let post):
+        case .post(let post, _):
             
             mainName.text = post.name
             if !post.platform.isEmpty {
-                platformLabel.text = "Platform: " + post.platform.joined(separator: ", ")
+                platformLabel.text = "Platform: " + post.platform.map(\.rawValue).joined(separator: ", ")
                 platformLabel.isHidden = false
             }
             if !post.reminder.isEmpty {
-                remindersLabel.text = post.reminder.joined(separator: ", ")
+                remindersLabel.text = post.reminder
+                    .sorted()
+                    .map { $0.deadlineFormatted() }
+                    .joined(separator: ", ")
+
                 remindersLabel.isHidden = false
+            } else {
+                remindersLabel.isHidden = true
             }
+
            
-        case .deal(let deal):
+        case .deal(let deal, _):
             
             mainName.text = deal.name
 
@@ -60,13 +66,13 @@ class DetailsCollectionViewCell: UICollectionViewCell {
     
     func DealDetails(with deal: Deal) {
         
-        let completedCount = deal.deliverable.filter { $0.isCompleted }.count
-        let totalCount = deal.deliverable.count
+        let completedCount = deal.deliverables.filter { $0.isCompleted }.count
+        let totalCount = deal.deliverables.count
 
         paymentLabel.text = "\(deal.payment)"
         paymentLabel.isHidden = false
 
-        phoneLabel.text = deal.phone
+        phoneLabel.text = "\(deal.mobileNumber)"
         phoneLabel.isHidden = false
 
         emailLabel.text = deal.email
@@ -76,7 +82,7 @@ class DetailsCollectionViewCell: UICollectionViewCell {
         deliverableLabel.isHidden = false
     }
     
-    func configureMultiple(with task: Task) {
+    func configureMultiple(with task: Tasks) {
         subNameLabel.text = task.name
         deadlineLabel.text = task.deadline.dayOnly()   // <-- uses Date extension
         isCompleted = task.isCompleted
