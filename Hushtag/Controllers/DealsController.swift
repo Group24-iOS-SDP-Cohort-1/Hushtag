@@ -58,6 +58,7 @@ final class DealsController {
             .from("brand_deals")
             .select()
             .eq("user_id", value: session.user.id)
+            .order("deadline", ascending: true)
             .execute()
             .value
 
@@ -79,7 +80,7 @@ final class DealsController {
 
         let iso = ISO8601DateFormatter()
 
-        // 1️⃣ Update brand_deals
+
         let updatedDeal: DealDB = try await client.database
             .from("brand_deals")
             .update([
@@ -101,14 +102,14 @@ final class DealsController {
             .execute()
             .value
 
-        // 2️⃣ Delete old deliverables
+
         try await client.database
             .from("deliverables")
             .delete()
             .eq("deal_id", value: deal.id)
             .execute()
 
-        // 3️⃣ Insert new deliverables
+
         let deliverablesPayload = deal.deliverables.map {
             DeliverableDB(
                 id:UUID(),

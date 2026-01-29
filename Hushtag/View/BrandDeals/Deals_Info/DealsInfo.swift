@@ -317,7 +317,8 @@ extension DealsInfo: AddDealsDelegate {
 
      
         if dealIndex >= 0 {
-            delegate?.dealsInfo(self, didUpdateDeal: deal, at: dealIndex)
+            delegate?.dealsInfo(self, didUpdateDeal: deal, at: -1)
+
         }
 
         dismiss(animated: true)
