@@ -19,6 +19,8 @@ class Signup: UIViewController {
     @IBOutlet weak var appleButton: UIButton!
     @IBOutlet weak var facebookButton: UIButton!
     @IBOutlet weak var googleButton: UIButton!
+    private let authController = AuthController()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

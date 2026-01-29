@@ -16,7 +16,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="HUSHTAG 1" translatesAutoresizingMaskIntoConstraints="NO" id="Gi9-7e-dAu">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="Gi9-7e-dAu">
                                 <rect key="frame" x="0.0" y="268" width="393" height="297"/>
                             </imageView>
                         </subviews>
@@ -37,7 +37,7 @@
     </scenes>
     <color key="tintColor" name="AccentColor"/>
     <resources>
-        <image name="HUSHTAG 1" width="1206" height="1206"/>
+        <image name="logo" width="800" height="800"/>
         <namedColor name="AccentColor">
             <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

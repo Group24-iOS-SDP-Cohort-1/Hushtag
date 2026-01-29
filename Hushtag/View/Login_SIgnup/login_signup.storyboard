@@ -55,7 +55,7 @@
                                     <segue destination="OaU-jh-SsD" kind="show" id="NIY-qv-uoX"/>
                                 </connections>
                             </button>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="HUSHTAG 1" translatesAutoresizingMaskIntoConstraints="NO" id="aCh-ki-dwR">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="aCh-ki-dwR">
                                 <rect key="frame" x="136.66666666666666" y="277" width="119.99999999999997" height="120"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="120" id="G7b-tW-qEM"/>
@@ -419,10 +419,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="HUSHTAG 1" width="1206" height="1206"/>
         <image name="Image 1" width="83" height="83"/>
         <image name="Image 2" width="102" height="102"/>
         <image name="Image 3" width="83" height="83"/>
+        <image name="logo" width="800" height="800"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
