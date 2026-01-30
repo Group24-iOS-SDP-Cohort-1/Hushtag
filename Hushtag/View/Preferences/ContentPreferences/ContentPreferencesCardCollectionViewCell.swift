@@ -136,10 +136,18 @@ class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
             
             if optionText == otherOptionKey {
                 // If "Other" is selected, use the text field value
-                let customText = textFieldOutlet.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                let rawText = textFieldOutlet.text ?? ""
                 
-                if !customText.isEmpty {
-                    firstSelections.append(customText)
+                // 1. Split by comma
+                // 2. Trim whitespace from each resulting item
+                // 3. Filter out any empty strings (e.g., "Tech, , School")
+                let customItems = rawText.components(separatedBy: ",")
+                    .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                    .filter { !$0.isEmpty }
+                
+                if !customItems.isEmpty {
+                    // Append all valid items individually
+                    firstSelections.append(contentsOf: customItems)
                 } else {
                     // Decide: Do you want to send "Other" if the box is empty?
                     // Currently, I'm sending "Other" as a placeholder so the user knows it's selected.
