@@ -10,7 +10,7 @@
         <!--Account Settings-->
         <scene sceneID="Dks-3Y-OL5">
             <objects>
-                <tableViewController storyboardIdentifier="ProfileVC" id="xbO-71-BHZ" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ProfileVC" id="xbO-71-BHZ" customClass="ProfileTableViewController" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="insetGrouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" id="Eo7-gK-p1y">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -187,6 +187,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Account Settings" largeTitleDisplayMode="never" id="G92-ex-57M"/>
+                    <connections>
+                        <outlet property="emailLabel" destination="hfl-w5-CN9" id="XNO-cd-Ryi"/>
+                        <outlet property="nameLabel" destination="BgQ-3R-Wpr" id="Tke-Pr-vig"/>
+                        <outlet property="profileImageView" destination="QZR-4R-1Ra" id="KqF-UY-774"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WNQ-6E-3n7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
