@@ -43,22 +43,6 @@ nonisolated struct TaskDB: Codable, Sendable {
     let deadline: Date
     var isCompleted: Bool
 }
-//
-//nonisolated struct PostUpdatePayload: Codable, Sendable {
-//    let name: String
-//    let deadline: Date
-//    let platform: [Platform]
-//    let reminder: [Date]
-//    let isCompleted: Bool
-//}
-//
-//nonisolated struct TaskUpdatePayload: Codable, Sendable {
-//    let id: UUID
-//    let post_id: UUID
-//    let name: String
-//    let deadline: Date
-//    let isCompleted: Bool
-//}
 
 enum ScheduleItem: Identifiable, Sendable {
     case deal(deal: Deal, deliverable: Deliverable)
@@ -75,10 +59,10 @@ enum ScheduleItem: Identifiable, Sendable {
     
     var effectiveDeadline: Date {
         switch self {
-        case .post(let post, let task):
+        case .post(_, let task):
             return task.deadline //?? post.deadline
             
-        case .deal(let deal, let deliverable):
+        case .deal(_, let deliverable):
             return deliverable.deadline //?? deal.deadline
         }
     }

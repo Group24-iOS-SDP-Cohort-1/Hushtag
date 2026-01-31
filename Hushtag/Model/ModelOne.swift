@@ -48,8 +48,6 @@ extension Date {
         return formatter
     }()
     
-    // MARK: - Public Helpers
-    
     func dayOnly() -> String {
         Self.dayOnlyFormatter.string(from: self)
     }

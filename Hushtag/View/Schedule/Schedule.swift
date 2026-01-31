@@ -234,7 +234,7 @@ class Schedule: UIViewController {
 
         do {
             //  UPDATE ONLY THIS TASK
-            let savedPost = try await postsController.updateTaskCompletion(
+            try await postsController.updateTaskCompletion(
                 taskId: task.id,
                 isCompleted: newValue
             )

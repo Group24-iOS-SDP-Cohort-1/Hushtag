@@ -132,6 +132,17 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Schedule" id="2kR-Fi-Rbt">
+                        <barButtonItem key="leftBarButtonItem" id="Iu4-it-BXJ">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="nFG-MX-haa">
+                                <rect key="frame" x="20" y="4.6666666666666687" width="49.666666666666657" height="34.666666666666664"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="" image="person.2.circle" catalog="system"/>
+                                <connections>
+                                    <segue destination="GrU-Fc-vhZ" kind="show" id="bvp-Od-eRA"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="29a-Y8-Dwg">
                             <connections>
                                 <segue destination="JVo-VW-pJQ" kind="presentation" id="2WD-ii-giS"/>
@@ -164,7 +175,7 @@
                 <viewControllerPlaceholder storyboardIdentifier="AddVC" storyboardName="Activities" referencedIdentifier="AddViewController" id="JVo-VW-pJQ" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wif-wD-mjb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3661.8320610687019" y="71.83098591549296"/>
+            <point key="canvasLocation" x="3650" y="92"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="G29-7p-k3z">
@@ -184,9 +195,20 @@
             </objects>
             <point key="canvasLocation" x="1993.1297709923663" y="91.549295774647888"/>
         </scene>
+        <!--ProfileNew-->
+        <scene sceneID="bKC-vq-gMv">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="ProfileVC" storyboardName="ProfileNew" id="GrU-Fc-vhZ" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="ZmF-tv-uGX"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VIl-yV-C1I" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3550" y="32"/>
+        </scene>
     </scenes>
     <resources>
         <image name="calendar" catalog="system" width="128" height="107"/>
+        <image name="person.2.circle" catalog="system" width="128" height="123"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -135,8 +135,6 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
     @objc private func doneTapped() {
         print("Done button tapped")
 
-        let finalDeadline = deadlineDate ?? Date()
-
         if let reminderDate = reminderDate, let deadlineDate = deadlineDate, reminderDate >= deadlineDate {
             let alert = UIAlertController(title: "Invalid Reminder", message: "Reminder date must be before the deadline.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default))

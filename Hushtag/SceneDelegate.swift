@@ -14,8 +14,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
-            guard let windowScene = (scene as? UIWindowScene) else { return }
-
             // 1. Assign the window scene (Standard boilerplate)
             // If you don't assign this, the screen might be black if you deleted the storyboard reference.
             // If you rely on storyboard, 'window' is already created, but we safeguard it here.

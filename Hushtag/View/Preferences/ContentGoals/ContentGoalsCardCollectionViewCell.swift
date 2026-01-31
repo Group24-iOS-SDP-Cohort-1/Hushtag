@@ -111,7 +111,6 @@ extension ContentGoalsCardCollectionViewCell: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let s = sections[indexPath.section]
-        let optionCount = s.options.count
         
         let optionText: String = s.options[indexPath.item]
         

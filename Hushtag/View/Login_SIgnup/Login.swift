@@ -170,7 +170,6 @@ extension UIViewController{
             
             // IMPORTANT: Make sure your Login View Controller has the Storyboard ID "LoginVC"
             // If your Login screen is inside a Navigation Controller, use that ID instead.
-            let loginVC = storyboard.instantiateViewController(withIdentifier: "WelcomeController")
         
         guard let loginNav = storyboard.instantiateViewController(withIdentifier: "LoginNavigationController") as? UINavigationController else {
                 print("Error: Could not find LoginNavigationController in Storyboard")

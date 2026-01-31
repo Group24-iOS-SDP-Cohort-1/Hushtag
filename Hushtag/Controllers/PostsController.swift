@@ -72,9 +72,25 @@ final class PostsController {
         }
     }
     
+    func deletePost(_ taskId: UUID) async throws {
+
+        let session = try await client.auth.session
+
+        try await client.database
+            .from("sub_tasks")
+            .delete()
+            .eq("post_id", value: taskId)
+            .execute()
+
+        try await client.database
+            .from("posts")
+            .delete()
+            .eq("id", value: taskId)
+            .eq("user_id", value: session.user.id)
+            .execute()
+    }
+    
     func updatePost(_ post: Post) async throws -> Post {
-        
-        let iso = ISO8601DateFormatter()
         
         let session = try await client.auth.session
         

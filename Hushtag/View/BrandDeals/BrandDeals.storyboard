@@ -84,6 +84,17 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Brand Deals" id="fpR-OI-OUV">
+                        <barButtonItem key="leftBarButtonItem" id="DeI-ph-lDh">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="PyZ-sL-gAf">
+                                <rect key="frame" x="20" y="4.6666666666666687" width="49.666666666666657" height="34.666666666666664"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="person.2.circle" catalog="system"/>
+                                <connections>
+                                    <segue destination="Du4-CN-ga1" kind="show" id="X5d-Km-wG8"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" image="plus" catalog="system" id="gI6-zs-Mmo">
                             <connections>
                                 <segue destination="u03-JL-NsK" kind="presentation" id="mIm-EB-cwQ"/>
@@ -311,10 +322,21 @@
             </objects>
             <point key="canvasLocation" x="2023.6641221374045" y="-188.02816901408451"/>
         </scene>
+        <!--ProfileNew-->
+        <scene sceneID="wXn-xE-euW">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="ProfileVC" storyboardName="ProfileNew" id="Du4-CN-ga1" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="ssx-YA-C3l"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1mc-3o-qKV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1205" y="611"/>
+        </scene>
     </scenes>
     <resources>
         <image name="checkmark" catalog="system" width="128" height="114"/>
         <image name="pencil.and.list.clipboard" catalog="system" width="114" height="128"/>
+        <image name="person.2.circle" catalog="system" width="128" height="123"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="trash" catalog="system" width="117" height="128"/>
         <image name="xmark" catalog="system" width="128" height="113"/>

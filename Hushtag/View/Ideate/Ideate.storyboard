@@ -72,6 +72,17 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="Z17-7z-gvD">
+                        <barButtonItem key="leftBarButtonItem" id="w3V-OA-a1P">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="gFr-h8-u3O">
+                                <rect key="frame" x="20" y="9" width="36" height="26"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="person.2.circle" catalog="system"/>
+                                <connections>
+                                    <segue destination="ePC-98-eZG" kind="show" id="EVA-gX-Zk9"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Item" image="heart" catalog="system" id="QpP-54-ASd">
                             <color key="tintColor" name="AccentColor"/>
                             <connections>
@@ -254,9 +265,20 @@
             </objects>
             <point key="canvasLocation" x="2273" y="410"/>
         </scene>
+        <!--ProfileNew-->
+        <scene sceneID="Z8y-Hi-2oo">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="ProfileVC" storyboardName="ProfileNew" id="ePC-98-eZG" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="pGG-Fd-Xk6"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2Bv-n8-kuT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3210" y="861"/>
+        </scene>
     </scenes>
     <resources>
         <image name="heart" catalog="system" width="128" height="107"/>
+        <image name="person.2.circle" catalog="system" width="128" height="123"/>
         <namedColor name="AccentColor">
             <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
