@@ -1,575 +1,575 @@
 {
-  "ideas": [
-    {
-      "id" : "i1",
-      "trending": "fashion",
-      "title": "Unlock Your Style: Must-Known Fashion Hacks!",
-      "description": "Looking to level up your wardrobe without breaking the bank? In this video, we’re sharing 10 game-changing fashion style tips.",
-      "script": "script01.html",
-      "hashtag": [
+    "ideas": [
+        {
+            "id" : "i1",
+            "trending": "fashion",
+            "title": "Unlock Your Style: Must-Known Fashion Hacks!",
+            "description": "Looking to level up your wardrobe without breaking the bank? In this video, we’re sharing 10 game-changing fashion style tips.",
+            "script": "script01.html",
+            "hashtag": [
+                "beauty",
+                "style"
+            ],
+            "engagementRate": 20,
+            "videos": [
+                {
+                    "id": "v1",
+                    "url": "hqdefault-2",
+                    "videoTitle": "GRWM & LET’S CHAT !! | Makeup routine, skincare, hair care, life updates, relationships, traveling",
+                    "views": "399K",
+                    "link": "https://youtu.be/OJNj-jRfDis?si=D3tHiRsOHCK1tPcp",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 3.8 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 4.1 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 4.3 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 4.6 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 4.4 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 4.8 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 5.0 }
+                    ]
+                },
+                {
+                    "id": "v2",
+                    "url": "hqdefault",
+                    "videoTitle": "get ready with me for a DATE...",
+                    "views": "617K",
+                    "link": "https://youtu.be/suny-SfWufU?si=cyuBZHjiN-hy08tk",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 4.5 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 4.9 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 5.2 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 5.6 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 5.4 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 5.9 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 6.2 }
+                    ]
+                },
+                {
+                    "id": "v3",
+                    "url": "hqdefault-3",
+                    "videoTitle": "simple everyday makeup tutorial 🫧 (step by step + skincare routine)",
+                    "views": "222K",
+                    "link": "https://youtu.be/Sued4KBSSaw?si=hEj1gFPXYlnwRjr7",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 3.1 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 3.3 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 3.6 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 3.9 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 4.0 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 4.2 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 4.4 }
+                    ]
+                }
+            ],
+            "liked": false,
+            "tag": "",
+            "thumbnail": "Flat geometric beauty youtube thumbnail | Free Vector"
+        },
+        {
+            "id" : "i2",
+            "trending": "fashion",
+            "title": "Morning Routine, Coffee Run, Studying | Vlog",
+            "description": "Make a video showing your productive morning routine",
+            "script": "",
+            "hashtag": [
+                "tips",
+                "coffee"
+            ],
+            "engagementRate": 10,
+            "videos": [
+                {
+                    "id": "v1",
+                    "url": "hqdefault-2",
+                    "videoTitle": "GRWM & LET’S CHAT !! | Makeup routine, skincare, hair care, life updates, relationships, traveling",
+                    "views": "399K",
+                    "link": "https://youtu.be/OJNj-jRfDis?si=D3tHiRsOHCK1tPcp",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 3.8 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 4.1 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 4.3 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 4.6 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 4.4 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 4.8 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 5.0 }
+                    ]
+                },
+                {
+                    "id": "v2",
+                    "url": "hqdefault",
+                    "videoTitle": "get ready with me for a DATE...",
+                    "views": "617K",
+                    "link": "https://youtu.be/suny-SfWufU?si=cyuBZHjiN-hy08tk",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 4.5 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 4.9 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 5.2 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 5.6 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 5.4 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 5.9 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 6.2 }
+                    ]
+                },
+                {
+                    "id": "v3",
+                    "url": "hqdefault-3",
+                    "videoTitle": "simple everyday makeup tutorial 🫧 (step by step + skincare routine)",
+                    "views": "222K",
+                    "link": "https://youtu.be/Sued4KBSSaw?si=hEj1gFPXYlnwRjr7",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 3.1 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 3.3 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 3.6 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 3.9 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 4.0 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 4.2 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 4.4 }
+                    ]
+                }
+            ],
+            "liked": false,
+            "tag": "",
+            "thumbnail": ""
+        },
+        {
+            "id": "i3",
+            "trending": "beauty",
+            "title": "Everyday Glam: Simple Makeup for a Natural Glow",
+            "description": "Learn how to achieve a soft, glowing makeup look perfect for daily wear using products you already own.",
+            "script": "",
+            "hashtag": [
+                "makeup",
+                "beauty"
+            ],
+            "engagementRate": 10,
+            "videos": [
+                {
+                    "id": "v1",
+                    "url": "hqdefault-4",
+                    "videoTitle": "How to Make Your Outfits Better (Avoid These Styling Mistakes!)",
+                    "views": "6.6M",
+                    "link": "https://youtu.be/klKVm1FALhs?si=zzjvt8Lw7p5AaHrv",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 3.1 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 3.3 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 3.6 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 3.9 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 4.0 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 4.2 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 4.4 }
+                    ]
+                },
+                {
+                    "id": "v2",
+                    "url": "hqdefault-2",
+                    "videoTitle": "5-Min Everyday Makeup Routine",
+                    "views": "1.1M",
+                    "link": "https://youtu.be/VxKdc14Z0H8?si=ZYGpWiqPNuT-4t5N",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 4.5 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 4.9 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 5.2 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 5.6 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 5.4 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 5.9 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 6.2 }
+                    ]
+                },
+                {
+                    "id": "v3",
+                    "url": "hqdefault-3",
+                    "videoTitle": "Dewy Skin Look: Step-by-Step Tutorial",
+                    "views": "287K",
+                    "link": "https://youtu.be/3-H7IhFz1ck?si=dMLl78I6cUQ0FjZS",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 3.8 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 4.1 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 4.3 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 4.6 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 4.4 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 4.8 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 5.0 }
+                    ]
+                    
+                }
+            ],
+            "liked": false,
+            "tag": "",
+            "thumbnail": ""
+        },
+        {
+            "id": "i4",
+            "trending": "fashion",
+            "title": "10 Wardrobe Essentials Every Girl Needs",
+            "description": "Build the perfect capsule wardrobe with these timeless essentials that instantly elevate your everyday style.",
+            "script": "",
+            "hashtag": [
+                "fashion",
+                "style"
+            ],
+            "engagementRate": 20,
+            "videos": [
+                {
+                    "id": "v1",
+                    "url": "hqdefault-5",
+                    "videoTitle": "10 Wardrobe Essentials EVERY Woman in Her Late 20s NEEDS!",
+                    "views": "87K",
+                    "link": "https://www.youtube.com/watch?v=KZeuJ6b_2C8",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 3.8 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 4.1 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 4.3 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 4.6 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 4.4 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 4.8 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 5.0 }
+                    ]
+                },
+                {
+                    "id": "v2",
+                    "url": "hqdefault-2",
+                    "videoTitle": "How to Build a Minimalist Wardrobe",
+                    "views": "678K",
+                    "link": "https://youtu.be/2t5DdDhcE7k?si=39OQXDXje1fW28Tj",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 4.5 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 4.9 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 5.2 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 5.6 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 5.4 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 5.9 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 6.2 }
+                    ]
+                },
+                {
+                    "id": "v3",
+                    "url": "hqdefault-3",
+                    "videoTitle": "5 Outfits With Only 5 Basics",
+                    "views": "421K",
+                    "link": "https://youtu.be/Z0mWLw6dCk8?si=Bp-DAx34trdhX3Ll",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 3.1 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 3.3 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 3.6 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 3.9 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 4.0 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 4.2 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 4.4 }
+                    ]
+                }
+            ],
+            "liked": false,
+            "tag": "",
+            "thumbnail": ""
+        },
+        
+        {
+            "id": "i5",
+            "trending": "fashion",
+            "title": "Affordable Fashion Hacks to Look Expensive",
+            "description": "Upgrade your style instantly with these simple, budget-friendly fashion hacks that make any outfit look high-end.",
+            "script": "",
+            "hashtag": [
+                "fashion",
+                "beauty"
+            ],
+            "engagementRate": 5,
+            "videos": [
+                {
+                    "id": "v1",
+                    "url": "hqdefault-4",
+                    "videoTitle": "How to Make Your Outfits Better (Avoid These Styling Mistakes!)",
+                    "views": "6.6M",
+                    "link": "https://youtu.be/klKVm1FALhs?si=zzjvt8Lw7p5AaHrv",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 4.5 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 4.9 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 5.2 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 5.6 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 5.4 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 5.9 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 6.2 }
+                    ]
+                },
+                {
+                    "id": "v2",
+                    "url": "hqdefault-3",
+                    "videoTitle": "10 Dos & Don’ts of Dressing Stylish",
+                    "views": "788K",
+                    "link": "https://youtu.be/CkgCbtDFn94?si=g4wW5tYJXoDqWUpv",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 3.1 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 3.3 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 3.6 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 3.9 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 4.0 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 4.2 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 4.4 }
+                    ]
+                },
+                {
+                    "id": "v3",
+                    "url": "hqdefault-5",
+                    "videoTitle": "10 Wardrobe Essentials EVERY Woman in Her Late 20s NEEDS!",
+                    "views": "87K",
+                    "link": "https://www.youtube.com/watch?v=KZeuJ6b_2C8",
+                    "engagementRate": [
+                        { "date": "2026-01-01T00:00:00Z", "rate": 3.8 },
+                        { "date": "2026-01-02T00:00:00Z", "rate": 4.1 },
+                        { "date": "2026-01-03T00:00:00Z", "rate": 4.3 },
+                        { "date": "2026-01-04T00:00:00Z", "rate": 4.6 },
+                        { "date": "2026-01-05T00:00:00Z", "rate": 4.4 },
+                        { "date": "2026-01-06T00:00:00Z", "rate": 4.8 },
+                        { "date": "2026-01-07T00:00:00Z", "rate": 5.0 }
+                    ]
+                }
+            ],
+            "liked": false,
+            "tag": "",
+            "thumbnail": ""
+        }
+    ],
+    "analysis" : [
+        {
+            "id": "1",
+            "views": "248.5k",
+            "watchTime": "12.4k",
+            "subscribers": "1.2k",
+            "estRevenue": "$3,420.50",
+            "viewsChange": "+12%",
+            "watchTimeChange": "+8%",
+            "subscribersChange": "-2%",
+            "revenueChange": "+15%",
+            "likes": "3.1k",
+            "incFollowers": "-8k",
+            "followers": "40k",
+            "ageGroup": ["18", "34"],
+            "gender": { "M": "45.2", "F": "54.8" },
+            "post": 5,
+            "optimalTime": [
+                { "date": "2025-11-20T17:00:00Z", "audienceEngagementRate": "6.1" },
+                { "date": "2025-11-21T14:00:00Z", "audienceEngagementRate": "4.3" },
+                { "date": "2025-11-22T14:00:00Z", "audienceEngagementRate": "1.7" },
+                { "date": "2025-11-23T09:00:00Z", "audienceEngagementRate": "5.4" },
+                { "date": "2025-11-24T14:00:00Z", "audienceEngagementRate": "3.2" },
+                { "date": "2025-11-25T10:30:00Z", "audienceEngagementRate": "2.5" },
+                { "date": "2025-11-26T14:00:00Z", "audienceEngagementRate": "4.1" }
+            ],
+            "engagementRate": "6.1",
+            "topContent": [
+                { "id": "tc1", "title": "Affordable Makeup That Performs Like Luxury.", "thumbnail": "hqdefault-3", "views": "124k views", "publishedTime": "4 weeks ago" },
+                { "id": "tc2", "title": "Soft Glam vs Bold Glam: One Face, Two Makeup Looks", "thumbnail": "hqdefault-2", "views": "89k views", "publishedTime": "2 weeks ago" },
+                { "id": "tc3", "title": "This One Technique Changed How My Makeup Looks Forever", "thumbnail": "hqdefault-5", "views": "65k views", "publishedTime": "6 days ago" }
+            ],
+            "latestContent": {
+                "title": "5 Makeup Mistakes That Are Ruining Your Look (And How to Fix Them)",
+                "thumbnail": "hqdefault-2",
+                "publishedText": "Published 2 days ago",
+                "ranking": "2 of 10",
+                "views": "42.1k",
+                "avgDuration": "5:24"
+            },
+            "revenueSource": [
+                { "sf": "play.rectangle.fill", "name": "Estimated Ad Revenue", "amount": "2300" },
+                { "sf": "cart.fill", "name": "From Paid Content", "amount": "3520" },
+                { "sf": "person.2.fill", "name": "Creator's Share from YPP", "amount": "2500" },
+                { "sf": "briefcase.fill", "name": "Collaboration Revenue", "amount": "4200" }
+            ]
+        },
+        {
+            "id": "2",
+            "views": "180.2k",
+            "watchTime": "9.1k",
+            "subscribers": "3.0k",
+            "estRevenue": "$1,820.75",
+            "viewsChange": "+6%",
+            "watchTimeChange": "+10%",
+            "subscribersChange": "+5%",
+            "revenueChange": "+9%",
+            "likes": "2.5k",
+            "incFollowers": "3k",
+            "followers": "28k",
+            "ageGroup": ["20", "29"],
+            "gender": { "M": "51", "F": "49" },
+            "post": 4,
+            "optimalTime": [
+                { "date": "2025-12-01T17:00:00Z", "audienceEngagementRate": "3.7" },
+                { "date": "2025-12-02T14:00:00Z", "audienceEngagementRate": "7.3" },
+                { "date": "2025-12-03T14:00:00Z", "audienceEngagementRate": "1.7" },
+                { "date": "2025-12-04T09:00:00Z", "audienceEngagementRate": "2.9" },
+                { "date": "2025-12-05T14:00:00Z", "audienceEngagementRate": "2.5" },
+                { "date": "2025-12-06T10:30:00Z", "audienceEngagementRate": "6.3" },
+                { "date": "2025-12-07T14:00:00Z", "audienceEngagementRate": "4.1" }
+            ],
+            "engagementRate": "",
+            "topContent": [
+                { "id": "tc1", "title": "Affordable Makeup That Performs Like Luxury.", "thumbnail": "hqdefault-2", "views": "124k views", "publishedTime": "4 weeks ago" },
+                { "id": "tc2", "title": "Soft Glam vs Bold Glam: One Face, Two Makeup Looks", "thumbnail": "hqdefault-3", "views": "89k views", "publishedTime": "2 weeks ago" },
+                { "id": "tc3", "title": "This One Technique Changed How My Makeup Looks Forever", "thumbnail": "hqdefault-4", "views": "65k views", "publishedTime": "6 days ago" }
+            ],
+            "latestContent": {
+                "title": "5 Makeup Mistakes That Are Ruining Your Look (And How to Fix Them)",
+                "thumbnail": "hqdefault-5",
+                "publishedText": "Published 2 days ago",
+                "ranking": "2 of 10",
+                "views": "42.1k",
+                "avgDuration": "5:24"
+            },
+            "revenueSource": [
+                { "sf": "play.rectangle.fill", "name": "Estimated Ad Revenue", "amount": "6800" },
+                { "sf": "cart.fill", "name": "From Paid Content", "amount": "9450" },
+                { "sf": "person.2.fill", "name": "Creator's Share from YPP", "amount": "7200" },
+                { "sf": "briefcase.fill", "name": "Collaboration Revenue", "amount": "12600" }
+            ]
+        },
+        {
+            "id": "3",
+            "views": "320.9k",
+            "watchTime": "18.7k",
+            "subscribers": "12k",
+            "estRevenue": "$5,890.00",
+            "viewsChange": "+18%",
+            "watchTimeChange": "+22%",
+            "subscribersChange": "+11%",
+            "revenueChange": "+20%",
+            "likes": "5.6k",
+            "incFollowers": "12k",
+            "followers": "55k",
+            "ageGroup": ["25", "40"],
+            "gender": { "M": "40.4", "F": "59.6" },
+            "post": 6,
+            "optimalTime": [
+                { "date": "2026-01-07T17:00:00Z", "audienceEngagementRate": "4.7" },
+                { "date": "2026-01-08T14:00:00Z", "audienceEngagementRate": "6.1" },
+                { "date": "2026-01-09T14:00:00Z", "audienceEngagementRate": "5.4" },
+                { "date": "2026-01-10T09:00:00Z", "audienceEngagementRate": "4.3" },
+                { "date": "2026-01-11T14:00:00Z", "audienceEngagementRate": "3.2" },
+                { "date": "2026-01-12T10:30:00Z", "audienceEngagementRate": "6.5" },
+                { "date": "2026-01-13T14:00:00Z", "audienceEngagementRate": "2.5" }
+            ],
+            "engagementRate": "-7.3",
+            "topContent": [
+                { "id": "tc1", "title": "Affordable Makeup That Performs Like Luxury.", "thumbnail": "hqdefault-2", "views": "124k views", "publishedTime": "4 weeks ago" },
+                { "id": "tc2", "title": "Soft Glam vs Bold Glam: One Face, Two Makeup Looks", "thumbnail": "hqdefault-3", "views": "89k views", "publishedTime": "2 weeks ago" },
+                { "id": "tc3", "title": "This One Technique Changed How My Makeup Looks Forever", "thumbnail": "hqdefault-4", "views": "65k views", "publishedTime": "6 days ago" }
+            ],
+            "latestContent": {
+                "title": "5 Makeup Mistakes That Are Ruining Your Look (And How to Fix Them)",
+                "thumbnail": "hqdefault-5",
+                "publishedText": "Published 2 days ago",
+                "ranking": "2 of 10",
+                "views": "42.1k",
+                "avgDuration": "5:24"
+            },
+            "revenueSource": [
+                { "sf": "play.rectangle.fill", "name": "Estimated Ad Revenue", "amount": "850" },
+                { "sf": "cart.fill", "name": "From Paid Content", "amount": "1200" },
+                { "sf": "person.2.fill", "name": "Creator's Share from YPP", "amount": "980" },
+                { "sf": "briefcase.fill", "name": "Collaboration Revenue", "amount": "1750" }
+            ]
+        }
+    ],
+    
+    "niche": [
         "beauty",
-        "style"
-      ],
-      "engagementRate": 20,
-      "videos": [
-          {
-              "id": "v1",
-              "url": "hqdefault-2",
-              "videoTitle": "GRWM & LET’S CHAT !! | Makeup routine, skincare, hair care, life updates, relationships, traveling",
-              "views": "399K",
-              "link": "https://youtu.be/OJNj-jRfDis?si=D3tHiRsOHCK1tPcp",
-              "engagementRate": [
-                  { "date": "2026-01-01T00:00:00Z", "rate": 3.8 },
-                  { "date": "2026-01-02T00:00:00Z", "rate": 4.1 },
-                  { "date": "2026-01-03T00:00:00Z", "rate": 4.3 },
-                  { "date": "2026-01-04T00:00:00Z", "rate": 4.6 },
-                  { "date": "2026-01-05T00:00:00Z", "rate": 4.4 },
-                  { "date": "2026-01-06T00:00:00Z", "rate": 4.8 },
-                  { "date": "2026-01-07T00:00:00Z", "rate": 5.0 }
-                ]
-          },
-          {
-              "id": "v2",
-              "url": "hqdefault",
-              "videoTitle": "get ready with me for a DATE...",
-              "views": "617K",
-              "link": "https://youtu.be/suny-SfWufU?si=cyuBZHjiN-hy08tk",
-              "engagementRate": [
-                  { "date": "2026-01-01T00:00:00Z", "rate": 4.5 },
-                  { "date": "2026-01-02T00:00:00Z", "rate": 4.9 },
-                  { "date": "2026-01-03T00:00:00Z", "rate": 5.2 },
-                  { "date": "2026-01-04T00:00:00Z", "rate": 5.6 },
-                  { "date": "2026-01-05T00:00:00Z", "rate": 5.4 },
-                  { "date": "2026-01-06T00:00:00Z", "rate": 5.9 },
-                  { "date": "2026-01-07T00:00:00Z", "rate": 6.2 }
-                ]
-          },
-          {
-              "id": "v3",
-              "url": "hqdefault-3",
-              "videoTitle": "simple everyday makeup tutorial 🫧 (step by step + skincare routine)",
-              "views": "222K",
-              "link": "https://youtu.be/Sued4KBSSaw?si=hEj1gFPXYlnwRjr7",
-              "engagementRate": [
-                  { "date": "2026-01-01T00:00:00Z", "rate": 3.1 },
-                  { "date": "2026-01-02T00:00:00Z", "rate": 3.3 },
-                  { "date": "2026-01-03T00:00:00Z", "rate": 3.6 },
-                  { "date": "2026-01-04T00:00:00Z", "rate": 3.9 },
-                  { "date": "2026-01-05T00:00:00Z", "rate": 4.0 },
-                  { "date": "2026-01-06T00:00:00Z", "rate": 4.2 },
-                  { "date": "2026-01-07T00:00:00Z", "rate": 4.4 }
-                ]
-          }
-      ],
-      "liked": false,
-      "tag": "",
-      "thumbnail": "Flat geometric beauty youtube thumbnail | Free Vector"
+        "fashion",
+        "lifestyle",
+        "sports",
+        "travel",
+        "food",
+        "tech",
+        "books",
+        "movies",
+        "music"
+    ],
+    "enagagement" : {
+        "youtube": 3.5,
+        "instagram": 5,
+        "facebook": 4.5
     },
-    {
-      "id" : "i2",
-      "trending": "fashion",
-      "title": "Morning Routine, Coffee Run, Studying | Vlog",
-      "description": "Make a video showing your productive morning routine",
-      "script": "",
-      "hashtag": [
-        "tips",
-        "coffee"
-      ],
-      "engagementRate": 10,
-      "videos": [
-          {
-              "id": "v1",
-              "url": "hqdefault-2",
-              "videoTitle": "GRWM & LET’S CHAT !! | Makeup routine, skincare, hair care, life updates, relationships, traveling",
-              "views": "399K",
-              "link": "https://youtu.be/OJNj-jRfDis?si=D3tHiRsOHCK1tPcp",
-              "engagementRate": [
-                  { "date": "2026-01-01T00:00:00Z", "rate": 3.8 },
-                  { "date": "2026-01-02T00:00:00Z", "rate": 4.1 },
-                  { "date": "2026-01-03T00:00:00Z", "rate": 4.3 },
-                  { "date": "2026-01-04T00:00:00Z", "rate": 4.6 },
-                  { "date": "2026-01-05T00:00:00Z", "rate": 4.4 },
-                  { "date": "2026-01-06T00:00:00Z", "rate": 4.8 },
-                  { "date": "2026-01-07T00:00:00Z", "rate": 5.0 }
-                ]
-          },
-          {
-              "id": "v2",
-              "url": "hqdefault",
-              "videoTitle": "get ready with me for a DATE...",
-              "views": "617K",
-              "link": "https://youtu.be/suny-SfWufU?si=cyuBZHjiN-hy08tk",
-              "engagementRate": [
-                  { "date": "2026-01-01T00:00:00Z", "rate": 4.5 },
-                  { "date": "2026-01-02T00:00:00Z", "rate": 4.9 },
-                  { "date": "2026-01-03T00:00:00Z", "rate": 5.2 },
-                  { "date": "2026-01-04T00:00:00Z", "rate": 5.6 },
-                  { "date": "2026-01-05T00:00:00Z", "rate": 5.4 },
-                  { "date": "2026-01-06T00:00:00Z", "rate": 5.9 },
-                  { "date": "2026-01-07T00:00:00Z", "rate": 6.2 }
-                ]
-          },
-          {
-              "id": "v3",
-              "url": "hqdefault-3",
-              "videoTitle": "simple everyday makeup tutorial 🫧 (step by step + skincare routine)",
-              "views": "222K",
-              "link": "https://youtu.be/Sued4KBSSaw?si=hEj1gFPXYlnwRjr7",
-              "engagementRate": [
-                  { "date": "2026-01-01T00:00:00Z", "rate": 3.1 },
-                  { "date": "2026-01-02T00:00:00Z", "rate": 3.3 },
-                  { "date": "2026-01-03T00:00:00Z", "rate": 3.6 },
-                  { "date": "2026-01-04T00:00:00Z", "rate": 3.9 },
-                  { "date": "2026-01-05T00:00:00Z", "rate": 4.0 },
-                  { "date": "2026-01-06T00:00:00Z", "rate": 4.2 },
-                  { "date": "2026-01-07T00:00:00Z", "rate": 4.4 }
-                ]
-          }
-      ],
-      "liked": false,
-      "tag": "",
-      "thumbnail": ""
-    },
-    {
-        "id": "i3",
-        "trending": "beauty",
-        "title": "Everyday Glam: Simple Makeup for a Natural Glow",
-        "description": "Learn how to achieve a soft, glowing makeup look perfect for daily wear using products you already own.",
-        "script": "",
-        "hashtag": [
-            "makeup",
-            "beauty"
-        ],
-        "engagementRate": 10,
-        "videos": [
-            {
-                "id": "v1",
-                "url": "hqdefault-4",
-                "videoTitle": "How to Make Your Outfits Better (Avoid These Styling Mistakes!)",
-                "views": "6.6M",
-                "link": "https://youtu.be/klKVm1FALhs?si=zzjvt8Lw7p5AaHrv",
-                "engagementRate": [
-                    { "date": "2026-01-01T00:00:00Z", "rate": 3.1 },
-                    { "date": "2026-01-02T00:00:00Z", "rate": 3.3 },
-                    { "date": "2026-01-03T00:00:00Z", "rate": 3.6 },
-                    { "date": "2026-01-04T00:00:00Z", "rate": 3.9 },
-                    { "date": "2026-01-05T00:00:00Z", "rate": 4.0 },
-                    { "date": "2026-01-06T00:00:00Z", "rate": 4.2 },
-                    { "date": "2026-01-07T00:00:00Z", "rate": 4.4 }
-                  ]
-            },
-            {
-                "id": "v2",
-                "url": "hqdefault-2",
-                "videoTitle": "5-Min Everyday Makeup Routine",
-                "views": "1.1M",
-                "link": "https://youtu.be/VxKdc14Z0H8?si=ZYGpWiqPNuT-4t5N",
-                "engagementRate": [
-                    { "date": "2026-01-01T00:00:00Z", "rate": 4.5 },
-                    { "date": "2026-01-02T00:00:00Z", "rate": 4.9 },
-                    { "date": "2026-01-03T00:00:00Z", "rate": 5.2 },
-                    { "date": "2026-01-04T00:00:00Z", "rate": 5.6 },
-                    { "date": "2026-01-05T00:00:00Z", "rate": 5.4 },
-                    { "date": "2026-01-06T00:00:00Z", "rate": 5.9 },
-                    { "date": "2026-01-07T00:00:00Z", "rate": 6.2 }
-                  ]
-            },
-            {
-                "id": "v3",
-                "url": "hqdefault-3",
-                "videoTitle": "Dewy Skin Look: Step-by-Step Tutorial",
-                "views": "287K",
-                "link": "https://youtu.be/3-H7IhFz1ck?si=dMLl78I6cUQ0FjZS",
-                "engagementRate": [
-                    { "date": "2026-01-01T00:00:00Z", "rate": 3.8 },
-                    { "date": "2026-01-02T00:00:00Z", "rate": 4.1 },
-                    { "date": "2026-01-03T00:00:00Z", "rate": 4.3 },
-                    { "date": "2026-01-04T00:00:00Z", "rate": 4.6 },
-                    { "date": "2026-01-05T00:00:00Z", "rate": 4.4 },
-                    { "date": "2026-01-06T00:00:00Z", "rate": 4.8 },
-                    { "date": "2026-01-07T00:00:00Z", "rate": 5.0 }
-                  ]
-                
-            }
-        ],
-    "liked": false,
-    "tag": "",
-    "thumbnail": ""
-  },
-      {
-        "id": "i4",
-        "trending": "fashion",
-        "title": "10 Wardrobe Essentials Every Girl Needs",
-        "description": "Build the perfect capsule wardrobe with these timeless essentials that instantly elevate your everyday style.",
-        "script": "",
-        "hashtag": [
-          "fashion",
-          "style"
-        ],
-        "engagementRate": 20,
-        "videos": [
-            {
-              "id": "v1",
-              "url": "hqdefault-5",
-              "videoTitle": "10 Wardrobe Essentials EVERY Woman in Her Late 20s NEEDS!",
-              "views": "87K",
-              "link": "https://www.youtube.com/watch?v=KZeuJ6b_2C8",
-              "engagementRate": [
-                  { "date": "2026-01-01T00:00:00Z", "rate": 3.8 },
-                  { "date": "2026-01-02T00:00:00Z", "rate": 4.1 },
-                  { "date": "2026-01-03T00:00:00Z", "rate": 4.3 },
-                  { "date": "2026-01-04T00:00:00Z", "rate": 4.6 },
-                  { "date": "2026-01-05T00:00:00Z", "rate": 4.4 },
-                  { "date": "2026-01-06T00:00:00Z", "rate": 4.8 },
-                  { "date": "2026-01-07T00:00:00Z", "rate": 5.0 }
-                ]
-            },
-          {
-            "id": "v2",
-            "url": "hqdefault-2",
-            "videoTitle": "How to Build a Minimalist Wardrobe",
-            "views": "678K",
-            "link": "https://youtu.be/2t5DdDhcE7k?si=39OQXDXje1fW28Tj",
-            "engagementRate": [
-                { "date": "2026-01-01T00:00:00Z", "rate": 4.5 },
-                { "date": "2026-01-02T00:00:00Z", "rate": 4.9 },
-                { "date": "2026-01-03T00:00:00Z", "rate": 5.2 },
-                { "date": "2026-01-04T00:00:00Z", "rate": 5.6 },
-                { "date": "2026-01-05T00:00:00Z", "rate": 5.4 },
-                { "date": "2026-01-06T00:00:00Z", "rate": 5.9 },
-                { "date": "2026-01-07T00:00:00Z", "rate": 6.2 }
-              ]
-          },
-          {
-            "id": "v3",
-            "url": "hqdefault-3",
-            "videoTitle": "5 Outfits With Only 5 Basics",
-            "views": "421K",
-            "link": "https://youtu.be/Z0mWLw6dCk8?si=Bp-DAx34trdhX3Ll",
-            "engagementRate": [
-                { "date": "2026-01-01T00:00:00Z", "rate": 3.1 },
-                { "date": "2026-01-02T00:00:00Z", "rate": 3.3 },
-                { "date": "2026-01-03T00:00:00Z", "rate": 3.6 },
-                { "date": "2026-01-04T00:00:00Z", "rate": 3.9 },
-                { "date": "2026-01-05T00:00:00Z", "rate": 4.0 },
-                { "date": "2026-01-06T00:00:00Z", "rate": 4.2 },
-                { "date": "2026-01-07T00:00:00Z", "rate": 4.4 }
-              ]
-          }
-        ],
-        "liked": false,
-        "tag": "",
-        "thumbnail": ""
-      },
-
-  {
-    "id": "i5",
-    "trending": "fashion",
-    "title": "Affordable Fashion Hacks to Look Expensive",
-    "description": "Upgrade your style instantly with these simple, budget-friendly fashion hacks that make any outfit look high-end.",
-    "script": "",
-    "hashtag": [
-      "fashion",
-      "beauty"
-    ],
-    "engagementRate": 5,
-    "videos": [
-      {
-        "id": "v1",
-        "url": "hqdefault-4",
-        "videoTitle": "How to Make Your Outfits Better (Avoid These Styling Mistakes!)",
-        "views": "6.6M",
-        "link": "https://youtu.be/klKVm1FALhs?si=zzjvt8Lw7p5AaHrv",
-        "engagementRate": [
-            { "date": "2026-01-01T00:00:00Z", "rate": 4.5 },
-            { "date": "2026-01-02T00:00:00Z", "rate": 4.9 },
-            { "date": "2026-01-03T00:00:00Z", "rate": 5.2 },
-            { "date": "2026-01-04T00:00:00Z", "rate": 5.6 },
-            { "date": "2026-01-05T00:00:00Z", "rate": 5.4 },
-            { "date": "2026-01-06T00:00:00Z", "rate": 5.9 },
-            { "date": "2026-01-07T00:00:00Z", "rate": 6.2 }
-          ]
-      },
-      {
-        "id": "v2",
-        "url": "hqdefault-3",
-        "videoTitle": "10 Dos & Don’ts of Dressing Stylish",
-        "views": "788K",
-        "link": "https://youtu.be/CkgCbtDFn94?si=g4wW5tYJXoDqWUpv",
-        "engagementRate": [
-            { "date": "2026-01-01T00:00:00Z", "rate": 3.1 },
-            { "date": "2026-01-02T00:00:00Z", "rate": 3.3 },
-            { "date": "2026-01-03T00:00:00Z", "rate": 3.6 },
-            { "date": "2026-01-04T00:00:00Z", "rate": 3.9 },
-            { "date": "2026-01-05T00:00:00Z", "rate": 4.0 },
-            { "date": "2026-01-06T00:00:00Z", "rate": 4.2 },
-            { "date": "2026-01-07T00:00:00Z", "rate": 4.4 }
-          ]
-      },
-      {
-        "id": "v3",
-        "url": "hqdefault-5",
-        "videoTitle": "10 Wardrobe Essentials EVERY Woman in Her Late 20s NEEDS!",
-        "views": "87K",
-        "link": "https://www.youtube.com/watch?v=KZeuJ6b_2C8",
-        "engagementRate": [
-            { "date": "2026-01-01T00:00:00Z", "rate": 3.8 },
-            { "date": "2026-01-02T00:00:00Z", "rate": 4.1 },
-            { "date": "2026-01-03T00:00:00Z", "rate": 4.3 },
-            { "date": "2026-01-04T00:00:00Z", "rate": 4.6 },
-            { "date": "2026-01-05T00:00:00Z", "rate": 4.4 },
-            { "date": "2026-01-06T00:00:00Z", "rate": 4.8 },
-            { "date": "2026-01-07T00:00:00Z", "rate": 5.0 }
-          ]
-      }
-    ],
-    "liked": false,
-    "tag": "",
-    "thumbnail": ""
-  }
-  ],
-  "analysis" : [
-      {
-        "id": "1",
-        "views": "248.5k",
-        "watchTime": "12.4k",
-        "subscribers": "1.2k",
-        "estRevenue": "$3,420.50",
-        "viewsChange": "+12%",
-        "watchTimeChange": "+8%",
-        "subscribersChange": "-2%",
-        "revenueChange": "+15%",
-        "likes": "3.1k",
-        "incFollowers": "-8k",
-        "followers": "40k",
-        "ageGroup": ["18", "34"],
-        "gender": { "M": "45.2", "F": "54.8" },
-        "post": 5,
-        "optimalTime": [
-            { "date": "2025-11-20T17:00:00Z", "audienceEngagementRate": "6.1" },
-            { "date": "2025-11-21T14:00:00Z", "audienceEngagementRate": "4.3" },
-            { "date": "2025-11-22T14:00:00Z", "audienceEngagementRate": "1.7" },
-            { "date": "2025-11-23T09:00:00Z", "audienceEngagementRate": "5.4" },
-            { "date": "2025-11-24T14:00:00Z", "audienceEngagementRate": "3.2" },
-            { "date": "2025-11-25T10:30:00Z", "audienceEngagementRate": "2.5" },
-            { "date": "2025-11-26T14:00:00Z", "audienceEngagementRate": "4.1" }
-          ],
-        "engagementRate": "6.1",
-        "topContent": [
-          { "id": "tc1", "title": "Affordable Makeup That Performs Like Luxury.", "thumbnail": "hqdefault-3", "views": "124k views", "publishedTime": "4 weeks ago" },
-          { "id": "tc2", "title": "Soft Glam vs Bold Glam: One Face, Two Makeup Looks", "thumbnail": "hqdefault-2", "views": "89k views", "publishedTime": "2 weeks ago" },
-          { "id": "tc3", "title": "This One Technique Changed How My Makeup Looks Forever", "thumbnail": "hqdefault-5", "views": "65k views", "publishedTime": "6 days ago" }
-        ],
-        "latestContent": {
-          "title": "5 Makeup Mistakes That Are Ruining Your Look (And How to Fix Them)",
-          "thumbnail": "hqdefault-2",
-          "publishedText": "Published 2 days ago",
-          "ranking": "2 of 10",
-          "views": "42.1k",
-          "avgDuration": "5:24"
+    "preferences": {
+        "pickYourNiche": {
+            "title": "Pick your niche",
+            "subheading": "Choose topics you want to create content about",
+            "sections": [
+                {
+                    "title": "",
+                    "hasTextInput": false,
+                    "options": [
+                        "Lifestyle",
+                        "Skincare",
+                        "Game",
+                        "Food",
+                        "Wellness",
+                        "Finance",
+                        "Music",
+                        "Education",
+                        "Other"
+                    ]
+                }
+            ]
         },
-        "revenueSource": [
-          { "sf": "play.rectangle.fill", "name": "Estimated Ad Revenue", "amount": "2300" },
-          { "sf": "cart.fill", "name": "From Paid Content", "amount": "3520" },
-          { "sf": "person.2.fill", "name": "Creator's Share from YPP", "amount": "2500" },
-          { "sf": "briefcase.fill", "name": "Collaboration Revenue", "amount": "4200" }
-        ]
-      },
-      {
-        "id": "2",
-        "views": "180.2k",
-        "watchTime": "9.1k",
-        "subscribers": "3.0k",
-        "estRevenue": "$1,820.75",
-        "viewsChange": "+6%",
-        "watchTimeChange": "+10%",
-        "subscribersChange": "+5%",
-        "revenueChange": "+9%",
-        "likes": "2.5k",
-        "incFollowers": "3k",
-        "followers": "28k",
-        "ageGroup": ["20", "29"],
-        "gender": { "M": "51", "F": "49" },
-        "post": 4,
-        "optimalTime": [
-            { "date": "2025-12-01T17:00:00Z", "audienceEngagementRate": "3.7" },
-            { "date": "2025-12-02T14:00:00Z", "audienceEngagementRate": "7.3" },
-            { "date": "2025-12-03T14:00:00Z", "audienceEngagementRate": "1.7" },
-            { "date": "2025-12-04T09:00:00Z", "audienceEngagementRate": "2.9" },
-            { "date": "2025-12-05T14:00:00Z", "audienceEngagementRate": "2.5" },
-            { "date": "2025-12-06T10:30:00Z", "audienceEngagementRate": "6.3" },
-            { "date": "2025-12-07T14:00:00Z", "audienceEngagementRate": "4.1" }
-          ],
-        "engagementRate": "",
-        "topContent": [
-          { "id": "tc1", "title": "Affordable Makeup That Performs Like Luxury.", "thumbnail": "hqdefault-2", "views": "124k views", "publishedTime": "4 weeks ago" },
-          { "id": "tc2", "title": "Soft Glam vs Bold Glam: One Face, Two Makeup Looks", "thumbnail": "hqdefault-3", "views": "89k views", "publishedTime": "2 weeks ago" },
-          { "id": "tc3", "title": "This One Technique Changed How My Makeup Looks Forever", "thumbnail": "hqdefault-4", "views": "65k views", "publishedTime": "6 days ago" }
-        ],
-        "latestContent": {
-          "title": "5 Makeup Mistakes That Are Ruining Your Look (And How to Fix Them)",
-          "thumbnail": "hqdefault-5",
-          "publishedText": "Published 2 days ago",
-          "ranking": "2 of 10",
-          "views": "42.1k",
-          "avgDuration": "5:24"
+        
+        "setYourContentGoals": {
+            "title": "Set your content goals",
+            "subheading": "Select your main content goals",
+            "sections": [
+                {
+                    "title": "",
+                    "hasTextInput": false,
+                    "options": [
+                        "Grow Audience",
+                        "Create more consistently",
+                        "Experiment with Trends",
+                        "Find my niche voice"
+                    ]
+                }
+            ]
         },
-        "revenueSource": [
-          { "sf": "play.rectangle.fill", "name": "Estimated Ad Revenue", "amount": "6800" },
-          { "sf": "cart.fill", "name": "From Paid Content", "amount": "9450" },
-          { "sf": "person.2.fill", "name": "Creator's Share from YPP", "amount": "7200" },
-          { "sf": "briefcase.fill", "name": "Collaboration Revenue", "amount": "12600" }
-        ]
-      },
-      {
-        "id": "3",
-        "views": "320.9k",
-        "watchTime": "18.7k",
-        "subscribers": "12k",
-        "estRevenue": "$5,890.00",
-        "viewsChange": "+18%",
-        "watchTimeChange": "+22%",
-        "subscribersChange": "+11%",
-        "revenueChange": "+20%",
-        "likes": "5.6k",
-        "incFollowers": "12k",
-        "followers": "55k",
-        "ageGroup": ["25", "40"],
-        "gender": { "M": "40.4", "F": "59.6" },
-        "post": 6,
-        "optimalTime": [
-            { "date": "2026-01-07T17:00:00Z", "audienceEngagementRate": "4.7" },
-            { "date": "2026-01-08T14:00:00Z", "audienceEngagementRate": "6.1" },
-            { "date": "2026-01-09T14:00:00Z", "audienceEngagementRate": "5.4" },
-            { "date": "2026-01-10T09:00:00Z", "audienceEngagementRate": "4.3" },
-            { "date": "2026-01-11T14:00:00Z", "audienceEngagementRate": "3.2" },
-            { "date": "2026-01-12T10:30:00Z", "audienceEngagementRate": "6.5" },
-            { "date": "2026-01-13T14:00:00Z", "audienceEngagementRate": "2.5" }
-          ],
-        "engagementRate": "-7.3",
-        "topContent": [
-          { "id": "tc1", "title": "Affordable Makeup That Performs Like Luxury.", "thumbnail": "hqdefault-2", "views": "124k views", "publishedTime": "4 weeks ago" },
-          { "id": "tc2", "title": "Soft Glam vs Bold Glam: One Face, Two Makeup Looks", "thumbnail": "hqdefault-3", "views": "89k views", "publishedTime": "2 weeks ago" },
-          { "id": "tc3", "title": "This One Technique Changed How My Makeup Looks Forever", "thumbnail": "hqdefault-4", "views": "65k views", "publishedTime": "6 days ago" }
-        ],
-        "latestContent": {
-          "title": "5 Makeup Mistakes That Are Ruining Your Look (And How to Fix Them)",
-          "thumbnail": "hqdefault-5",
-          "publishedText": "Published 2 days ago",
-          "ranking": "2 of 10",
-          "views": "42.1k",
-          "avgDuration": "5:24"
+        
+        "contentPreferences": {
+            "title": "Content Preferences",
+            "subheading": "Tone and format preferences",
+            "sections": [
+                {
+                    "title": "What best describes your vibe?",
+                    "hasTextInput": false,
+                    "options": [
+                        "Funny",
+                        "Relatable",
+                        "Casual",
+                        "Motivational",
+                        "Aesthetic",
+                        "Trendy",
+                        "Other"
+                    ]
+                },
+                {
+                    "title": "What kind of content do you prefer making?",
+                    "hasTextInput": false,
+                    "options": [
+                        "Short-Form",
+                        "Mid-Length",
+                        "Long-Form"
+                    ]
+                }
+            ]
         },
-        "revenueSource": [
-          { "sf": "play.rectangle.fill", "name": "Estimated Ad Revenue", "amount": "850" },
-          { "sf": "cart.fill", "name": "From Paid Content", "amount": "1200" },
-          { "sf": "person.2.fill", "name": "Creator's Share from YPP", "amount": "980" },
-          { "sf": "briefcase.fill", "name": "Collaboration Revenue", "amount": "1750" }
-        ]
-      }
-    ],
-
-  "niche": [
-    "beauty",
-    "fashion",
-    "lifestyle",
-    "sports",
-    "travel",
-    "food",
-    "tech",
-    "books",
-    "movies",
-    "music"
-  ],
-  "enagagement" : {
-      "youtube": 3.5,
-      "instagram": 5,
-      "facebook": 4.5
-  },
-  "preferences": {
-      "pickYourNiche": {
-        "title": "Pick your niche",
-        "subheading": "Choose topics you want to create content about",
-        "sections": [
-          {
-            "title": "",
-            "hasTextInput": false,
-            "options": [
-              "Lifestyle",
-              "Skincare",
-              "Game",
-              "Food",
-              "Wellness",
-              "Finance",
-              "Music",
-              "Education",
-              "Other"
+        
+        "connectAccount": {
+            "title": "Add your YouTube account",
+            "subheading": "Link your YouTube account to get personalized insights on current trends, detailed analysis of your videos and account insights.",
+            "sections": [
+                {
+                    "title": "",
+                    "hasTextInput": false,
+                    "options": [
+                        "Connect YouTube",
+                        "Connect Instagram",
+                        "Connect Facebook"
+                    ]
+                }
             ]
-          }
-        ]
-      },
-
-      "setYourContentGoals": {
-        "title": "Set your content goals",
-        "subheading": "Select your main content goals",
-        "sections": [
-          {
-            "title": "",
-            "hasTextInput": false,
-            "options": [
-              "Grow Audience",
-              "Create more consistently",
-              "Experiment with Trends",
-              "Find my niche voice"
-            ]
-          }
-        ]
-      },
-
-      "contentPreferences": {
-        "title": "Content Preferences",
-        "subheading": "Tone and format preferences",
-        "sections": [
-          {
-            "title": "What best describes your vibe?",
-            "hasTextInput": false,
-            "options": [
-              "Funny",
-              "Relatable",
-              "Casual",
-              "Motivational",
-              "Aesthetic",
-              "Trendy",
-              "Other"
-            ]
-          },
-          {
-            "title": "What kind of content do you prefer making?",
-            "hasTextInput": false,
-            "options": [
-              "Short-Form",
-              "Mid-Length",
-              "Long-Form"
-            ]
-          }
-        ]
-      },
-      
-      "connectAccount": {
-          "title": "Add your YouTube account",
-          "subheading": "Link your YouTube account to get personalized insights on current trends, detailed analysis of your videos and account insights.",
-          "sections": [
-              {
-                  "title": "",
-                  "hasTextInput": false,
-                  "options": [
-                      "Connect YouTube",
-                      "Connect Instagram",
-                      "Connect Facebook"
-                  ]
-              }
-          ]
-      }
+        }
     }
 }
 
