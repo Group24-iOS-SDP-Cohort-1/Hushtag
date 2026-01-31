@@ -120,7 +120,8 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
             name: name,
             platform: platforms,
             tasks: tasks,
-            reminder: reminderDate != nil ? [reminderDate!] : []
+            reminder: reminderDate != nil ? [reminderDate!] : [],
+            deadline: deadline
         )
     }
     

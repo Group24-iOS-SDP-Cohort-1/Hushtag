@@ -6,6 +6,7 @@ struct Post: Identifiable, Sendable {
     let platform: [Platform]
     var tasks: [Tasks]
     let reminder: [Date]?
+    let deadline: Date
     var isCompleted: Bool {
         guard !tasks.isEmpty else { return false }
         return tasks.allSatisfy { $0.isCompleted }
@@ -59,10 +60,10 @@ enum ScheduleItem: Identifiable, Sendable {
     
     var effectiveDeadline: Date {
         switch self {
-        case .post(_, let task):
-            return task.deadline //?? post.deadline
+        case .post(let post, let task):
+            return task.deadline ?? post.deadline
             
-        case .deal(_, let deliverable):
+        case .deal(let deal, let deliverable):
             return deliverable.deadline //?? deal.deadline
         }
     }
