@@ -164,21 +164,28 @@
                             </tableViewSection>
                             <tableViewSection id="vKn-dH-mUA">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" textLabel="Gmm-oI-Rxk" style="IBUITableViewCellStyleDefault" id="BvL-UC-msZ">
-                                        <rect key="frame" x="20" y="667.33333015441895" width="353" height="51"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="BvL-UC-msZ">
+                                        <rect key="frame" x="20" y="667.33333015441895" width="353" height="35.333332061767578"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="BvL-UC-msZ" id="dgq-Oy-Dsi">
-                                            <rect key="frame" x="0.0" y="0.0" width="322.66666666666669" height="51"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="353" height="35.333332061767578"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Sign Out" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Gmm-oI-Rxk">
-                                                    <rect key="frame" x="16" y="0.0" width="298.66666666666669" height="51"/>
-                                                    <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Ux-qF-kAK">
+                                                    <rect key="frame" x="100" y="0.0" width="153" height="35.333333333333336"/>
+                                                    <state key="normal" title="Button"/>
+                                                    <buttonConfiguration key="configuration" style="tinted" title="Sign Out"/>
+                                                    <connections>
+                                                        <action selector="signOutTapped:" destination="xbO-71-BHZ" eventType="touchUpInside" id="mt2-j5-G68"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="7Ux-qF-kAK" firstAttribute="leading" secondItem="dgq-Oy-Dsi" secondAttribute="leading" constant="100" id="Ogt-8c-tfB"/>
+                                                <constraint firstAttribute="bottom" secondItem="7Ux-qF-kAK" secondAttribute="bottom" id="Teq-ka-EAw"/>
+                                                <constraint firstAttribute="trailing" secondItem="7Ux-qF-kAK" secondAttribute="trailing" constant="100" id="cTO-Dx-Qrs"/>
+                                                <constraint firstItem="7Ux-qF-kAK" firstAttribute="top" secondItem="dgq-Oy-Dsi" secondAttribute="top" id="fUu-VT-IBK"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </cells>

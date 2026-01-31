@@ -110,36 +110,7 @@ class AnalysisDataViewController: UIViewController {
     @IBAction func segmentChanged(_ sender: UISegmentedControl) {
         loadDataFor(segmentIndex: sender.selectedSegmentIndex)
     }
-    
-    @IBAction func signOutTap(_ sender: Any) {
-        let alert = UIAlertController(title: "Sign Out", message: "Are you sure you want to sign out?", preferredStyle: .actionSheet)
-                
-                alert.addAction(UIAlertAction(title: "Sign Out", style: .destructive, handler: { _ in
-                    self.performSignOut()
-                }))
-                
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-                
-                self.present(alert, animated: true)
-    }
-    
-    func performSignOut() {
-        _Concurrency.Task { @MainActor in
-                do {
-                    // 1. Tell Supabase to kill the session
-                    try await AuthManager.shared.signOut()
-                    print("User signed out successfully")
-                    
-                    // 2. Navigate back to Login Screen
-                    self.navigateToLoginScreen()
-                    
-                } catch {
-                    print("Error signing out: \(error)")
-                    self.showAlert(title: "Error", message: "Could not sign out. Please try again.")
-                }
-            }
-        }
-    
+        
 }
 
 extension AnalysisDataViewController: UICollectionViewDataSource {
