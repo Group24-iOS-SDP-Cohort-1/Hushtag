@@ -110,8 +110,8 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Analysis" id="rdl-7Q-UK4">
                         <barButtonItem key="leftBarButtonItem" id="UAW-Gn-9nf">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="zt1-xA-vae">
-                                <rect key="frame" x="20" y="4.6666666666666687" width="49.666666666666657" height="34.666666666666664"/>
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="zt1-xA-vae">
+                                <rect key="frame" x="20" y="9" width="36" height="26"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="person.2.circle" catalog="system"/>
@@ -119,11 +119,6 @@
                                     <segue destination="vrc-xS-rQ3" kind="show" id="PWn-ZX-00h"/>
                                 </connections>
                             </button>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Item" id="eSV-Wn-jOL">
-                            <connections>
-                                <action selector="signOutTap:" destination="Y6W-OH-hqX" id="FqG-gg-jxn"/>
-                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>

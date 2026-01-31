@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Auth
+import Supabase
 
 class ProfileTableViewController: UITableViewController {
     
@@ -23,9 +25,56 @@ class ProfileTableViewController: UITableViewController {
         super.viewDidLoad()
         
         setupUI()
+        showInstantProfile()
         fetchProfile()
         
     }
+    
+    private func showInstantProfile() {
+        Task {
+            do {
+                let session = try await SupabaseConfig.client.auth.session
+                let email = session.user.email ?? ""
+
+                nameLabel.text = email
+                emailLabel.text = email
+                setInitialAvatar(from: email)
+            } catch {
+                // User not logged in yet — do nothing
+            }
+        }
+    }
+    
+    
+    @IBAction func signOutTapped(_ sender: UIButton) {
+        let alert = UIAlertController(title: "Sign Out", message: "Are you sure you want to sign out?", preferredStyle: .actionSheet)
+                
+                alert.addAction(UIAlertAction(title: "Sign Out", style: .destructive, handler: { _ in
+                    self.performSignOut()
+                }))
+                
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                
+                self.present(alert, animated: true)
+    }
+    
+    
+    func performSignOut() {
+        _Concurrency.Task {
+                do {
+                    // 1. Tell Supabase to kill the session
+                    try await AuthManager.shared.signOut()
+                    print("User signed out successfully")
+                    
+                    // 2. Navigate back to Login Screen
+                    self.navigateToLoginScreen()
+                    
+                } catch {
+                    print("Error signing out: \(error)")
+                    self.showAlert(title: "Error", message: "Could not sign out. Please try again.")
+                }
+            }
+        }
     
     
     
