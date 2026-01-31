@@ -39,10 +39,10 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
             )
             
             dayLabel.text = task.deadline.dayOnly()
-            titleLabel.text = post.name
+            titleLabel.text = task.name.isEmpty ? post.name : task.name
             
             // Supabase-driven state
-            updateCompletedButton(isCompleted: post.isCompleted)
+            updateCompletedButton(isCompleted: task.isCompleted)
             
         case .deal(let deal, let deliverable):
             
@@ -52,10 +52,10 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
             )
             
             dayLabel.text = deliverable.deadline.dayOnly()
-            titleLabel.text = deal.name
+            titleLabel.text = deliverable.name.isEmpty ? deal.name : deliverable.name
             
             // Supabase-driven state
-            updateCompletedButton(isCompleted: deal.isCompleted)
+            updateCompletedButton(isCompleted: deliverable.isCompleted)
         }
     }
     
@@ -68,6 +68,16 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     
     @IBAction func buttonTapped(_ sender: UIButton) {
         delegate?.didTapCompleted(item: item)
+        guard let item = item else { return }
+        let newValue: Bool
+        switch item {
+        case .post(_, let task):
+            newValue = task.isCompleted
+            
+        case .deal(_, let deliverable):
+            newValue = deliverable.isCompleted
+        }
+        updateCompletedButton(isCompleted: newValue)
     }
 }
 

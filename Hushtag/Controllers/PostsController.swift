@@ -2,21 +2,21 @@ import Foundation
 import Supabase
 
 final class PostsController {
-
+    
     private let client = SupabaseConfig.client
     
     func addPost(_ post: Post) async throws -> Post {
-
+        
         let session = try await client.auth.session
-
+        
         let payload = PostInsertPayload (
             user_id: session.user.id,
             name: post.name,
             deadline: post.tasks.map(\.deadline).max() ?? Date(),
-            platform: post.platform,
-            reminder: post.reminder
+            platform: post.platform.map(\.rawValue),
+            reminder: post.reminder ?? []
         )
-
+        
         let postDB: PostDB = try await client.database
             .from("posts")
             .insert(payload)
@@ -24,7 +24,7 @@ final class PostsController {
             .single()
             .execute()
             .value
-
+        
         let taskPayload = post.tasks.map {
             TaskDB(
                 id: UUID(),
@@ -34,35 +34,36 @@ final class PostsController {
                 isCompleted: $0.isCompleted
             )
         }
-
+        
         let insertedTasks: [TaskDB] = try await client.database
             .from("sub_tasks")
             .insert(taskPayload)
             .select()
             .execute()
             .value
-
+        
         return mapToPost(postDB, insertedTasks)
     }
-
-
+    
     func fetchPosts() async throws -> [Post] {
-
+        
         let session = try await client.auth.session
-
+        print("FETCH UID:", session.user.id)
+        
         let posts: [PostDB] = try await client.database
             .from("posts")
             .select()
             .eq("user_id", value: session.user.id)
+            .order("deadline", ascending: true)
             .execute()
             .value
-
+        
         let tasks: [TaskDB] = try await client.database
             .from("sub_tasks")
             .select()
             .execute()
             .value
-
+        
         return posts.map { post in
             mapToPost(
                 post,
@@ -72,48 +73,68 @@ final class PostsController {
     }
     
     func updatePost(_ post: Post) async throws -> Post {
-
-            let session = try await client.auth.session
-
-            let postPayload = PostUpdatePayload(
-                name: post.name,
-                deadline: post.tasks.map(\.deadline).max() ?? Date(),
-                platform: post.platform,
-                reminder: post.reminder,
-                isCompleted: post.isCompleted
+        
+        let iso = ISO8601DateFormatter()
+        
+        let session = try await client.auth.session
+        
+        let payload = PostInsertPayload (
+            user_id: session.user.id,
+            name: post.name,
+            deadline: post.tasks.map(\.deadline).max() ?? Date(),
+            platform: post.platform.map(\.rawValue),
+            reminder: post.reminder ?? []
+        )
+        
+        let updatedPost: PostDB = try await client.database
+            .from("posts")
+            .update(payload)
+            .eq("id", value: post.id ?? UUID())
+            .select()
+            .single()
+            .execute()
+            .value
+        
+        
+        try await client.database
+            .from("sub_tasks")
+            .delete()
+            .eq("post_id", value: post.id ?? UUID())
+            .execute()
+        
+        
+        let taskPayloads = post.tasks.map {
+            TaskDB(
+                id: UUID(),
+                post_id: post.id ?? UUID(),
+                name: $0.name,
+                deadline: $0.deadline,
+                isCompleted: $0.isCompleted
             )
-
-            let updatedPost: PostDB = try await client.database
-                .from("posts")
-                .update(postPayload)
-                .eq("id", value: post.id)
-                .eq("user_id", value: session.user.id)
-                .select()
-                .single()
-                .execute()
-                .value
-
-            // 2️⃣ Upsert tasks (insert + update in one go)
-            let taskPayloads = post.tasks.map {
-                TaskUpdatePayload(
-                    id: $0.id,
-                    post_id: post.id,
-                    name: $0.name,
-                    deadline: $0.deadline,
-                    isCompleted: $0.isCompleted
-                )
-            }
-
-            let updatedTasks: [TaskDB] = try await client.database
-                .from("sub_tasks")
-                .upsert(taskPayloads, onConflict: "id")
-                .select()
-                .execute()
-                .value
-
-            return mapToPost(updatedPost, updatedTasks)
         }
-
+        
+        let updatedTasks: [TaskDB] = try await client.database
+            .from("sub_tasks")
+            .insert(taskPayloads)
+            .select()
+            .execute()
+            .value
+        
+        return mapToPost(updatedPost, updatedTasks)
+    }
+    
+    func updateTaskCompletion(
+        taskId: UUID,
+        isCompleted: Bool
+    ) async throws {
+        
+        try await client.database
+            .from("sub_tasks")
+            .update(["isCompleted": isCompleted])
+            .eq("id", value: taskId)
+            .execute()
+    }
+    
     private func mapToPost(_ post: PostDB, _ tasks: [TaskDB]) -> Post {
         Post(
             id: post.id,

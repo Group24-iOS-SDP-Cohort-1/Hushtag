@@ -9,8 +9,6 @@ import UIKit
 
 
 class ViewController: UIViewController {
-    
-    var dataStore: DataStore = DataStore.shared
 
     override func viewDidLoad() {
         super.viewDidLoad()
