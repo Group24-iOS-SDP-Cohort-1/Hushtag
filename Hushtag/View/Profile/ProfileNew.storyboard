@@ -10,7 +10,7 @@
         <!--Account Settings-->
         <scene sceneID="Dks-3Y-OL5">
             <objects>
-                <tableViewController storyboardIdentifier="ProfileVC" id="xbO-71-BHZ" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="ProfileVC" id="xbO-71-BHZ" customClass="ProfileTableViewController" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="insetGrouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" id="Eo7-gK-p1y">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -19,15 +19,18 @@
                             <rect key="frame" x="0.0" y="0.0" width="393" height="246"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Image 4" translatesAutoresizingMaskIntoConstraints="NO" id="QZR-4R-1Ra">
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QZR-4R-1Ra">
                                     <rect key="frame" x="121.66666666666669" y="20" width="150" height="150"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="150" id="GuG-HJ-O4J"/>
                                         <constraint firstAttribute="height" constant="150" id="bel-nK-rck"/>
                                     </constraints>
                                 </imageView>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Alicia Perry" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BgQ-3R-Wpr">
-                                    <rect key="frame" x="115.33333333333333" y="185" width="162.66666666666669" height="40.666666666666657"/>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BgQ-3R-Wpr">
+                                    <rect key="frame" x="153.33333333333334" y="185" width="86.666666666666657" height="47"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="47" id="iew-JX-dVS"/>
+                                    </constraints>
                                     <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
@@ -187,6 +190,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Account Settings" largeTitleDisplayMode="never" id="G92-ex-57M"/>
+                    <connections>
+                        <outlet property="emailLabel" destination="hfl-w5-CN9" id="XNO-cd-Ryi"/>
+                        <outlet property="nameLabel" destination="BgQ-3R-Wpr" id="Tke-Pr-vig"/>
+                        <outlet property="profileImageView" destination="QZR-4R-1Ra" id="KqF-UY-774"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WNQ-6E-3n7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -194,7 +202,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Image 4" width="280" height="280"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
