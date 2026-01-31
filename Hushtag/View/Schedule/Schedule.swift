@@ -11,9 +11,9 @@ class Schedule: UIViewController {
     
     @IBOutlet weak var scheduleView: UICollectionView!
     
-    var dataStore: DataStore = DataStore.shared
     private let scheduleController = ScheduleItemController()
     private let postsController = PostsController()
+    private let dealsController = DealsController()
 
     private var todayItems: [ScheduleItem] = []
     
@@ -94,6 +94,15 @@ class Schedule: UIViewController {
             ),
             forSupplementaryViewOfKind: "headerButton",
             withReuseIdentifier: "header_button")
+        
+        // listen for successful insertion of post
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handlePostsDidChange),
+            name: .postsDidChange,
+            object: nil
+        )
+
     }
     
     private func filterItems(for date: Date) {
@@ -162,14 +171,10 @@ class Schedule: UIViewController {
         scheduleView.reloadSections(IndexSet(integer: 0))
     }
     
-    private lazy var monthFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
-        return formatter
-    }()
+    
     
     private var currentMonthText: String {
-        monthFormatter.string(from: selectedDate)
+        selectedDate.monthAndYear()
     }
     
     private func changeWeek(by value: Int) {
@@ -206,47 +211,115 @@ class Schedule: UIViewController {
         changeWeek(by: -1)
     }
    
-    private func togglePostCompletion(_ post: Post) async {
+    private func toggleTaskCompletion(
+        post: Post,
+        task: Tasks
+    ) async {
 
-        let shouldComplete = !post.isCompleted
+        let newValue = !task.isCompleted
 
-        var updatedPost = post
-        updatedPost.tasks = post.tasks.map {
+        // 🔄 Optimistic UI
+        var optimisticPost = post
+        optimisticPost.tasks = post.tasks.map {
             var t = $0
-            t.isCompleted = shouldComplete
+            if t.id == task.id {
+                t.isCompleted = newValue
+            }
             return t
         }
 
-        // Optimistic UI
-        scheduleController.replacePost(updatedPost)
+        scheduleController.replacePost(optimisticPost)
         filterItems(for: selectedDate)
         scheduleView.reloadSections(IndexSet(integer: 1))
 
         do {
-            let savedPost = try await postsController.updatePost(updatedPost)
-            scheduleController.replacePost(savedPost)
-            filterItems(for: selectedDate)
+            //  UPDATE ONLY THIS TASK
+            let savedPost = try await postsController.updateTaskCompletion(
+                taskId: task.id,
+                isCompleted: newValue
+            )
             scheduleView.reloadSections(IndexSet(integer: 1))
+
         } catch {
-            // Rollback
+            //  rollback
             scheduleController.replacePost(post)
             filterItems(for: selectedDate)
             scheduleView.reloadSections(IndexSet(integer: 1))
 
-            print("❌ Failed to update post:", error)
+            print("❌ Failed to update task:", error)
         }
     }
+
+
+    private func toggleDeliverableCompletion(
+        deal: Deal,
+        deliverable: Deliverable
+    ) async {
+
+        let newValue = !deliverable.isCompleted
+
+        var updatedDeal = deal
+        updatedDeal.deliverables = deal.deliverables.map { d in
+            var copy = d
+            if d.id == deliverable.id {
+                copy.isCompleted = newValue
+            }
+            return copy
+        }
+
+        // optimistic UI
+        scheduleController.replaceDeal(updatedDeal)
+        filterItems(for: selectedDate)
+        scheduleView.reloadSections(IndexSet(integer: 1))
+
+        do {
+            let savedDeal = try await dealsController.updateDeal(updatedDeal)
+            scheduleController.replaceDeal(savedDeal)
+            filterItems(for: selectedDate)
+            scheduleView.reloadSections(IndexSet(integer: 1))
+        } catch {
+            scheduleController.replaceDeal(deal)
+            filterItems(for: selectedDate)
+            scheduleView.reloadSections(IndexSet(integer: 1))
+            print("❌ Failed to update deliverable:", error)
+        }
+    }
+
+
  
     private func handleCompletionToggle(_ item: ScheduleItem) async {
         switch item {
-        case .post(let post, _):
-            await togglePostCompletion(post)
-        case .deal:
-            break // later
+
+        case .post(let post, let task):
+            await toggleTaskCompletion(
+                post: post,
+                task: task
+            )
+
+        case .deal(let deal, let deliverable):
+            await toggleDeliverableCompletion(
+                deal: deal,
+                deliverable: deliverable
+            )
+            break
         }
     }
 
+    
+    @objc private func handlePostsDidChange() {
+        Task {
+            do {
+                try await scheduleController.load()
 
+                await MainActor.run {
+                    self.filterItems(for: self.selectedDate)
+                    self.scheduleView.reloadSections(IndexSet(integer: 1))
+                }
+            } catch {
+                print("❌ Failed to reload posts:", error)
+            }
+        }
+    }
 }
 
 extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -374,17 +447,23 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
 extension Notification.Name {
     static let calendarSwipeLeft = Notification.Name("calendarSwipeLeft")
     static let calendarSwipeRight = Notification.Name("calendarSwipeRight")
+    static let postsDidChange = Notification.Name("postsDidChange")
 }
 
 extension Schedule: ScheduleCollectionViewCellDelegate {
-    
+
     func didTapCompleted(item: ScheduleItem?) {
         guard let item else { return }
-        
+
         Task {
-            await handleCompletionToggle(item)
+            switch item {
+            case .post(let post, let task):
+                await toggleTaskCompletion(post: post, task: task)
+
+            case .deal:
+                break // handle later
+            }
         }
     }
 }
-
 

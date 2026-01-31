@@ -7,7 +7,6 @@
 
 import UIKit
 class MainTabBarController: UITabBarController {
-    var dataStore: DataStore = DataStore.shared
     override func viewDidLoad() {
         super.viewDidLoad()
         if let viewControllers = self.viewControllers {

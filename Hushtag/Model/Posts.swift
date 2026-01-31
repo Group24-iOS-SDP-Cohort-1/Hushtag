@@ -1,11 +1,11 @@
 import Foundation
 
 struct Post: Identifiable, Sendable {
-    let id: UUID
+    let id: UUID?
     let name: String
     let platform: [Platform]
     var tasks: [Tasks]
-    let reminder: [Date]
+    let reminder: [Date]?
     var isCompleted: Bool {
         guard !tasks.isEmpty else { return false }
         return tasks.allSatisfy { $0.isCompleted }
@@ -20,18 +20,19 @@ struct Tasks: Identifiable, Sendable {
 
 nonisolated struct PostDB: Codable, Sendable {
     let id: UUID
-    let name: String
-    let deadline: Date
-    let platform: [Platform]
-    let reminder: [Date]
-    var isCompleted: Bool
-}
-
-nonisolated struct PostInsertPayload: Encodable, Sendable {
     let user_id: UUID
     let name: String
     let deadline: Date
     let platform: [Platform]
+    let reminder: [Date]?
+    var isCompleted: Bool
+}
+
+nonisolated struct PostInsertPayload: Codable, Sendable {
+    let user_id: UUID
+    let name: String
+    let deadline: Date
+    let platform: [String]
     let reminder: [Date]
 }
 
@@ -42,22 +43,22 @@ nonisolated struct TaskDB: Codable, Sendable {
     let deadline: Date
     var isCompleted: Bool
 }
-
-nonisolated struct PostUpdatePayload: Codable, Sendable {
-    let name: String
-    let deadline: Date
-    let platform: [Platform]
-    let reminder: [Date]
-    let isCompleted: Bool
-}
-
-nonisolated struct TaskUpdatePayload: Codable, Sendable {
-    let id: UUID
-    let post_id: UUID
-    let name: String
-    let deadline: Date
-    let isCompleted: Bool
-}
+//
+//nonisolated struct PostUpdatePayload: Codable, Sendable {
+//    let name: String
+//    let deadline: Date
+//    let platform: [Platform]
+//    let reminder: [Date]
+//    let isCompleted: Bool
+//}
+//
+//nonisolated struct TaskUpdatePayload: Codable, Sendable {
+//    let id: UUID
+//    let post_id: UUID
+//    let name: String
+//    let deadline: Date
+//    let isCompleted: Bool
+//}
 
 enum ScheduleItem: Identifiable, Sendable {
     case deal(deal: Deal, deliverable: Deliverable)
@@ -69,6 +70,16 @@ enum ScheduleItem: Identifiable, Sendable {
             return deliverable.id
         case .post(_, let task):
             return task.id
+        }
+    }
+    
+    var effectiveDeadline: Date {
+        switch self {
+        case .post(let post, let task):
+            return task.deadline //?? post.deadline
+            
+        case .deal(let deal, let deliverable):
+            return deliverable.deadline //?? deal.deadline
         }
     }
     

@@ -43,8 +43,8 @@ class DetailsCollectionViewCell: UICollectionViewCell {
                 platformLabel.text = "Platform: " + post.platform.map(\.rawValue).joined(separator: ", ")
                 platformLabel.isHidden = false
             }
-            if !post.reminder.isEmpty {
-                remindersLabel.text = post.reminder
+            if let reminders = post.reminder, !reminders.isEmpty {
+                remindersLabel.text = reminders
                     .sorted()
                     .map { $0.deadlineFormatted() }
                     .joined(separator: ", ")

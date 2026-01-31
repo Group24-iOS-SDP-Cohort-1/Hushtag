@@ -13,34 +13,64 @@ struct LikedIds {
 
 extension Date {
     
-    // Example: Thursday
-    func dayOnly() -> String {
+    private static let dayOnlyFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE"
-        return formatter.string(from: self)
-    }
+        formatter.locale = .current
+        return formatter
+    }()
     
-    // Example: 22 Jan
-    func dateAndMonth() -> String {
+    private static let dateAndMonthFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM"
-        return formatter.string(from: self)
-    }
+        formatter.locale = .current
+        return formatter
+    }()
     
-    // Example: Thursday, 22 Jan 2026
-    func dayDateYear() -> String {
+    private static let dayDateYearFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, dd MMM yyyy"
-        return formatter.string(from: self)
-    }
+        formatter.locale = .current
+        return formatter
+    }()
     
-    func deadlineFormatted() -> String {
+    private static let deadlineFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM dd"
         formatter.locale = .current
-        return formatter.string(from: self)
+        return formatter
+    }()
+    
+    private static let monthYearFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        formatter.locale = .current
+        return formatter
+    }()
+    
+    // MARK: - Public Helpers
+    
+    func dayOnly() -> String {
+        Self.dayOnlyFormatter.string(from: self)
+    }
+    
+    func dateAndMonth() -> String {
+        Self.dateAndMonthFormatter.string(from: self)
+    }
+    
+    func dayDateYear() -> String {
+        Self.dayDateYearFormatter.string(from: self)
+    }
+    
+    func deadlineFormatted() -> String {
+        Self.deadlineFormatter.string(from: self)
+    }
+    
+    func monthAndYear() -> String {
+        Self.monthYearFormatter.string(from: self)
     }
 }
+
 
 struct AnalysisDateData: Codable, Identifiable {
     let id = UUID()

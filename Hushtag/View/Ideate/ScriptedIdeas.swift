@@ -12,8 +12,6 @@ class ScriptedIdeas: UIViewController {
     @IBOutlet weak var script: UITextView!
 
     var idea: Idea?
-    let dataStore = DataStore.shared
-    var deals: [Deal] = []
 
     @IBOutlet weak var descriptionTitle: UILabel!
     @IBOutlet weak var Description: UILabel!
@@ -29,7 +27,7 @@ class ScriptedIdeas: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        deals = dataStore.getDeals()
+
         scriptStack.isHidden = true
         descriptionStack.isHidden = true
         guard let idea = idea else {
@@ -63,7 +61,7 @@ class ScriptedIdeas: UIViewController {
             imageStack.isHidden = false
             imageView.image = UIImage(named: idea.thumbnail)
         }
-        setupBrandMenu()
+
         // Script
         loadHTMLFile(for: idea)
     }
@@ -131,22 +129,5 @@ class ScriptedIdeas: UIViewController {
         present(modalVC, animated: true)
 
 
-    }
-
-    func setupBrandMenu() {
-        popupButton.setTitle("Tag Idea", for: .normal)
-        let deals = self.deals
-        guard !deals.isEmpty else {
-            popupButton.menu = UIMenu(title: "No Deals Available", children: [])
-            popupButton.showsMenuAsPrimaryAction = true
-            return
-        }
-        let actions = deals.map { deal in
-            UIAction(title: deal.name) { _ in
-                self.popupButton.setTitle(deal.name, for: .normal)
-            }
-        }
-        popupButton.menu = UIMenu(title: "Select Brand", children: actions)
-        popupButton.showsMenuAsPrimaryAction = true
     }
 }
