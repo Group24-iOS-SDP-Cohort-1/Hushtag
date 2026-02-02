@@ -28,6 +28,9 @@ class Login: UIViewController {
         styleSocialButton(appleButton)
         styleTextField(emailTextField)
         styleTextField(passwordTextField)
+        
+        enableKeyboardDismissOnTap()
+        
     }
     
     func styleSocialButton(_ button: UIButton) {

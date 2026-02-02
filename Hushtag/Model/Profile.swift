@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: - UI Model
 struct Profile: Identifiable, Sendable {
     let id: UUID
     var fullName: String
@@ -8,7 +7,6 @@ struct Profile: Identifiable, Sendable {
     var avatarURL: String?
 }
 
-// MARK: - DB Model (MUST BE NON-ACTOR)
 nonisolated struct ProfileDB: Codable, Sendable {
     let id: UUID
     let full_name: String
@@ -16,13 +14,12 @@ nonisolated struct ProfileDB: Codable, Sendable {
     let avatar_url: String?
 }
 
-// MARK: - Update Payload
+
 nonisolated struct ProfileUpdatePayload: Encodable, Sendable {
     let full_name: String
     let avatar_url: String?
 }
 
-// MARK: - Insert Payload
 nonisolated struct ProfileInsertPayload: Encodable, Sendable {
     let id: UUID
     let full_name: String
