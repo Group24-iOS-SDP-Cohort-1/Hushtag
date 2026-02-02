@@ -1,10 +1,3 @@
-//
-//  Profile.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 31/01/26.
-//
-
 import Foundation
 
 // MARK: - UI Model
@@ -15,18 +8,8 @@ struct Profile: Identifiable, Sendable {
     var avatarURL: String?
 }
 
-// MARK: - DB Model
+// MARK: - DB Model (MUST BE NON-ACTOR)
 nonisolated struct ProfileDB: Codable, Sendable {
-    let id: UUID
-    let full_name: String
-    let email: String
-    let avatar_url: String?
-    let created_at: Date
-    let updated_at: Date
-}
-
-// MARK: - Insert Payload (rarely used because of trigger)
-nonisolated struct ProfileInsertPayload: Encodable, Sendable {
     let id: UUID
     let full_name: String
     let email: String
@@ -36,5 +19,13 @@ nonisolated struct ProfileInsertPayload: Encodable, Sendable {
 // MARK: - Update Payload
 nonisolated struct ProfileUpdatePayload: Encodable, Sendable {
     let full_name: String
+    let avatar_url: String?
+}
+
+// MARK: - Insert Payload
+nonisolated struct ProfileInsertPayload: Encodable, Sendable {
+    let id: UUID
+    let full_name: String
+    let email: String
     let avatar_url: String?
 }

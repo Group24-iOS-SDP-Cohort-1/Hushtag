@@ -26,11 +26,8 @@
                                         <constraint firstAttribute="height" constant="150" id="bel-nK-rck"/>
                                     </constraints>
                                 </imageView>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BgQ-3R-Wpr">
-                                    <rect key="frame" x="153.33333333333334" y="185" width="86.666666666666657" height="47"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="47" id="iew-JX-dVS"/>
-                                    </constraints>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BgQ-3R-Wpr">
+                                    <rect key="frame" x="15" y="185" width="363" height="40.666666666666657"/>
                                     <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
@@ -38,9 +35,11 @@
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
+                                <constraint firstAttribute="trailing" secondItem="BgQ-3R-Wpr" secondAttribute="trailing" constant="15" id="2NM-qb-EbO"/>
                                 <constraint firstItem="BgQ-3R-Wpr" firstAttribute="centerX" secondItem="YtJ-th-kTl" secondAttribute="centerX" id="cbA-Cs-SrC"/>
                                 <constraint firstItem="QZR-4R-1Ra" firstAttribute="top" secondItem="YtJ-th-kTl" secondAttribute="top" constant="20" id="qne-we-ESn"/>
                                 <constraint firstItem="BgQ-3R-Wpr" firstAttribute="top" secondItem="QZR-4R-1Ra" secondAttribute="bottom" constant="15" id="wAv-9M-txx"/>
+                                <constraint firstItem="BgQ-3R-Wpr" firstAttribute="leading" secondItem="YtJ-th-kTl" secondAttribute="leading" constant="15" id="wi5-Ok-l5l"/>
                                 <constraint firstItem="QZR-4R-1Ra" firstAttribute="centerX" secondItem="YtJ-th-kTl" secondAttribute="centerX" id="wlv-cZ-pyX"/>
                             </constraints>
                         </view>

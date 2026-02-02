@@ -7,7 +7,6 @@ final class ProfileController {
 
     // MARK: - Fetch Profile
     func fetchProfile() async throws -> Profile {
-
         let session = try await client.auth.session
 
         let profileDB: ProfileDB = try await client.database
@@ -21,7 +20,7 @@ final class ProfileController {
         return mapToProfile(profileDB)
     }
 
-    // MARK: - Update Profile
+    // MARK: - Update Profile (FIXED)
     func updateProfile(
         fullName: String,
         avatarURL: String?
@@ -34,19 +33,22 @@ final class ProfileController {
             avatar_url: avatarURL
         )
 
-        let updatedProfile: ProfileDB = try await client.database
+        let updated: [ProfileDB] = try await client.database
             .from("profiles")
             .update(payload)
             .eq("id", value: session.user.id)
             .select()
-            .single()
             .execute()
             .value
 
-        return mapToProfile(updatedProfile)
+        guard let profile = updated.first else {
+            throw NSError(domain: "ProfileUpdate", code: 0)
+        }
+
+        return mapToProfile(profile)
     }
 
-    // MARK: - Mapper (Deals-style)
+    // MARK: - Mapper
     private func mapToProfile(_ db: ProfileDB) -> Profile {
         Profile(
             id: db.id,
