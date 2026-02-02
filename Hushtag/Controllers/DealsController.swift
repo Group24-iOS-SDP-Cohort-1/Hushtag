@@ -40,6 +40,7 @@ final class DealsController {
                 )
             }
 
+
             insertedDeliverables = try await client.database
                 .from("deliverables")
                 .insert(deliverablesPayload)
