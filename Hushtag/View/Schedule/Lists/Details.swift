@@ -11,12 +11,25 @@ class Details: UIViewController {
     
     @IBOutlet weak var detailsView: UICollectionView!
     var schedule: ScheduleItem?
+    var onToggleTask: ((Post, Tasks) -> Void)?
+    var onToggleDeliverable: ((Deal, Deliverable) -> Void)?
     private let postsController = PostsController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         detailsView.dataSource = self
         detailsView.setCollectionViewLayout(generateLayout(), animated: false)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handlePostsDidChange),
+            name: .postsDidChange,
+            object: nil
+        )
+        
+    }
+    
+    @objc private func handlePostsDidChange() {
+        detailsView.reloadData()
     }
     
     func generateLayout() -> UICollectionViewLayout {
@@ -120,10 +133,6 @@ class Details: UIViewController {
                     object: nil
                 )
                 
-                // Go back
-                await MainActor.run {
-                    self.navigationController?.popViewController(animated: true)
-                }
                 
             } catch {
                 await MainActor.run {
@@ -133,37 +142,18 @@ class Details: UIViewController {
                         preferredStyle: .alert
                     )
                     alert.addAction(UIAlertAction(title: "OK", style: .default))
-                    self.present(alert, animated: true)
+                    //self.present(alert, animated: true)
+                    self.dismiss(animated: true)
                 }
             }
         }
     }
+    private func handleTaskToggle(post: Post, task: Tasks) async {
+        onToggleTask?(post, task)
+    }
     
-    
-    @IBAction func deleteButton(_ sender: UIButton) {
-        guard case .post(let post, _) = schedule,
-              let postId = post.id else {
-            return
-        }
-        
-        let alert = UIAlertController(
-            title: "Delete Post?",
-            message: "This will permanently delete the post and all its tasks.",
-            preferredStyle: .alert
-        )
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-            guard let self else { return }
-            
-            
-            self.navigationController?.popViewController(animated: true)
-            
-            self.performDelete(postId: postId)
-        })
-        
-        present(alert, animated: true)
+    private func handleDeliverableToggle(deal: Deal, deliverable: Deliverable) async {
+        onToggleDeliverable?(deal, deliverable)
     }
     
 }
@@ -211,6 +201,27 @@ extension Details: UICollectionViewDataSource {
                     for: indexPath
                 ) as! DetailsCollectionViewCell
                 cell.configureCommon(with: schedule)
+                cell.onDeleteTapped = { [weak self] in
+                    guard let self else { return }
+                    
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(
+                            title: "Delete Post?",
+                            message: "This will permanently delete the post and all its tasks.",
+                            preferredStyle: .alert
+                        )
+                        
+                        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+                            guard case .post(let post, _) = self.schedule,
+                                  let postId = post.id else { return }
+                            self.performDelete(postId: postId)
+                        })
+                        
+                        self.topMostViewController.present(alert, animated: true)
+                    }
+                }
+                
                 return cell
             }
             
@@ -220,6 +231,7 @@ extension Details: UICollectionViewDataSource {
                     for: indexPath
                 ) as! DetailsCollectionViewCell
                 cell.DealDetails(with: deal)
+                
                 return cell
             }
             
@@ -230,6 +242,21 @@ extension Details: UICollectionViewDataSource {
             
             let deliverable = deal.deliverables[indexPath.row]
             cell.configureMultiple(with: deliverable)
+            cell.onToggleCompletion = { [weak self] indexPath in
+                guard let self else { return }
+                guard case .deal(let deal, _) = self.schedule else { return }
+                
+                let deliverable = deal.deliverables[indexPath.row]
+                
+                Task {
+                    await self.handleDeliverableToggle(
+                        deal: deal,
+                        deliverable: deliverable
+                    )
+                }
+            }
+            
+            
             cell.applyLiquidGlassEffect()
             return cell
             
@@ -241,6 +268,7 @@ extension Details: UICollectionViewDataSource {
                     for: indexPath
                 ) as! DetailsCollectionViewCell
                 cell.configureCommon(with: schedule)
+                
                 return cell
             }
             
@@ -250,11 +278,41 @@ extension Details: UICollectionViewDataSource {
             ) as! DetailsCollectionViewCell
             
             let task = post.tasks[indexPath.row]
+            cell.indexPath = indexPath
             cell.configureMultiple(with: task)
+            cell.onToggleCompletion = { [weak self] indexPath in
+                guard let self else { return }
+                guard case .post(let post, _) = self.schedule else { return }
+                
+                let task = post.tasks[indexPath.row]
+                
+                Task {
+                    await self.handleTaskToggle(post: post, task: task)
+                }
+            }
+            
+            
             cell.applyLiquidGlassEffect()
             
             return cell
             
         }
+    }
+    
+}
+
+extension UIViewController {
+    
+    var topMostViewController: UIViewController {
+        if let presented = presentedViewController {
+            return presented.topMostViewController
+        }
+        if let nav = self as? UINavigationController {
+            return nav.visibleViewController?.topMostViewController ?? nav
+        }
+        if let tab = self as? UITabBarController {
+            return tab.selectedViewController?.topMostViewController ?? tab
+        }
+        return self
     }
 }

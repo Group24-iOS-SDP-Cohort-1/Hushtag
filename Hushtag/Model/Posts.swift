@@ -60,10 +60,12 @@ enum ScheduleItem: Identifiable, Sendable {
     
     var effectiveDeadline: Date {
         switch self {
-        case .post(let post, let task):
-            return task.deadline ?? post.deadline
+        case .post(_, let task):
+            //            if post.deadline == nil { return task.deadline }
+            //            else if task.deadline == nil { return post.deadline }
+            return task.deadline //?? post.deadline
             
-        case .deal(let deal, let deliverable):
+        case .deal(_, let deliverable):
             return deliverable.deadline //?? deal.deadline
         }
     }
@@ -75,6 +77,15 @@ enum ScheduleItem: Identifiable, Sendable {
         case .post(_, let task):
             return task.deadline
         }
+    }
+    func matches(post: Post, task: Tasks) -> Bool {
+        guard case .post(let p, let t) = self else { return false }
+        return p.id == post.id && t.id == task.id
+    }
+    
+    func matches(deal: Deal, deliverable: Deliverable) -> Bool {
+        guard case .deal(let d, let del) = self else { return false }
+        return d.id == deal.id && del.id == deliverable.id
     }
 }
 
