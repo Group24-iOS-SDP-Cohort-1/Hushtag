@@ -27,22 +27,26 @@ final class DealsController {
             .execute()
             .value
 
-        let deliverablesPayload = deal.deliverables.map {
-            DeliverableDB(
-                id: UUID(),
-                deal_id: dealDB.id,
-                name: $0.name,
-                deadline: $0.deadline,
-                isCompleted: $0.isCompleted
-            )
-        }
+        var insertedDeliverables: [DeliverableDB] = []
 
-        let insertedDeliverables: [DeliverableDB] = try await client.database
-            .from("deliverables")
-            .insert(deliverablesPayload)
-            .select()
-            .execute()
-            .value
+        if !deal.deliverables.isEmpty {
+            let deliverablesPayload = deal.deliverables.map {
+                DeliverableDB(
+                    id: UUID(),
+                    deal_id: dealDB.id,
+                    name: $0.name,
+                    deadline: $0.deadline,
+                    isCompleted: $0.isCompleted
+                )
+            }
+
+            insertedDeliverables = try await client.database
+                .from("deliverables")
+                .insert(deliverablesPayload)
+                .select()
+                .execute()
+                .value
+        }
 
         return mapToDeal(dealDB, insertedDeliverables)
     }
