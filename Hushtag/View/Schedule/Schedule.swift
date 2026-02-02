@@ -10,7 +10,6 @@ import UIKit
 class Schedule: UIViewController {
     
     @IBOutlet weak var scheduleView: UICollectionView!
-    
     private let scheduleController = ScheduleItemController()
     private let postsController = PostsController()
     private let dealsController = DealsController()
@@ -210,101 +209,108 @@ class Schedule: UIViewController {
     @objc private func handleCalendarRight() {
         changeWeek(by: -1)
     }
-   
-    private func toggleTaskCompletion(
+    
+    private func handleTaskToggle(
         post: Post,
         task: Tasks
     ) async {
 
-        let newValue = !task.isCompleted
-
         // 🔄 Optimistic UI
-        var optimisticPost = post
-        optimisticPost.tasks = post.tasks.map {
-            var t = $0
-            if t.id == task.id {
-                t.isCompleted = newValue
+        let optimisticPost: Post = {
+            var copy = post
+            copy.tasks = post.tasks.map {
+                var t = $0
+                if t.id == task.id {
+                    t.isCompleted.toggle()
+                }
+                return t
             }
-            return t
-        }
+            return copy
+        }()
 
         scheduleController.replacePost(optimisticPost)
         filterItems(for: selectedDate)
-        scheduleView.reloadSections(IndexSet(integer: 1))
+
+        await MainActor.run {
+            scheduleView.reloadSections(IndexSet(integer: 1))
+        }
 
         do {
-            //  UPDATE ONLY THIS TASK
-            try await postsController.updateTaskCompletion(
-                taskId: task.id,
-                isCompleted: newValue
+            let savedPost = try await ToggleService.toggleTask(
+                post: post,
+                task: task,
+                postsController: postsController
             )
-            scheduleView.reloadSections(IndexSet(integer: 1))
+
+            scheduleController.replacePost(savedPost)
+            filterItems(for: selectedDate)
+
+            await MainActor.run {
+                scheduleView.reloadSections(IndexSet(integer: 1))
+            }
 
         } catch {
-            //  rollback
+            // 🔙 rollback
             scheduleController.replacePost(post)
             filterItems(for: selectedDate)
-            scheduleView.reloadSections(IndexSet(integer: 1))
 
-            print("❌ Failed to update task:", error)
+            await MainActor.run {
+                scheduleView.reloadSections(IndexSet(integer: 1))
+            }
+
+            print("❌ Failed to toggle task:", error)
         }
     }
-
-
-    private func toggleDeliverableCompletion(
+    
+    private func handleDeliverableToggle(
         deal: Deal,
         deliverable: Deliverable
     ) async {
 
-        let newValue = !deliverable.isCompleted
-
-        var updatedDeal = deal
-        updatedDeal.deliverables = deal.deliverables.map { d in
-            var copy = d
-            if d.id == deliverable.id {
-                copy.isCompleted = newValue
+        let optimisticDeal: Deal = {
+            var copy = deal
+            copy.deliverables = deal.deliverables.map {
+                var d = $0
+                if d.id == deliverable.id {
+                    d.isCompleted.toggle()
+                }
+                return d
             }
             return copy
+        }()
+
+        scheduleController.replaceDeal(optimisticDeal)
+        filterItems(for: selectedDate)
+
+        await MainActor.run {
+            scheduleView.reloadSections(IndexSet(integer: 1))
         }
 
-        // optimistic UI
-        scheduleController.replaceDeal(updatedDeal)
-        filterItems(for: selectedDate)
-        scheduleView.reloadSections(IndexSet(integer: 1))
-
         do {
-            let savedDeal = try await dealsController.updateDeal(updatedDeal)
+            let savedDeal = try await ToggleService.toggleDeliverable(
+                deal: deal,
+                deliverable: deliverable,
+                dealsController: dealsController
+            )
+
             scheduleController.replaceDeal(savedDeal)
             filterItems(for: selectedDate)
-            scheduleView.reloadSections(IndexSet(integer: 1))
+
+            await MainActor.run {
+                scheduleView.reloadSections(IndexSet(integer: 1))
+            }
+
         } catch {
             scheduleController.replaceDeal(deal)
             filterItems(for: selectedDate)
-            scheduleView.reloadSections(IndexSet(integer: 1))
-            print("❌ Failed to update deliverable:", error)
+
+            await MainActor.run {
+                scheduleView.reloadSections(IndexSet(integer: 1))
+            }
+
+            print("❌ Failed to toggle deliverable:", error)
         }
     }
-
-
- 
-    private func handleCompletionToggle(_ item: ScheduleItem) async {
-        switch item {
-
-        case .post(let post, let task):
-            await toggleTaskCompletion(
-                post: post,
-                task: task
-            )
-
-        case .deal(let deal, let deliverable):
-            await toggleDeliverableCompletion(
-                deal: deal,
-                deliverable: deliverable
-            )
-            break
-        }
-    }
-
     
     @objc private func handlePostsDidChange() {
         Task {
@@ -381,6 +387,7 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
         
         let item = todayItems[indexPath.row]
         cell.delegate = self
+        cell.indexPath = indexPath
         cell.configure(with: item)
         return cell
     }
@@ -439,6 +446,21 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
         if segue.identifier == "goToDetails" {
             let vc = segue.destination as! Details
             vc.schedule = selectedScheduleItem
+            vc.onToggleTask = { [weak self, weak vc] post, task in
+                Task {
+                    await self?.handleTaskToggle(post: post, task: task)
+
+                    if let updated = self?.scheduleController
+                        .scheduleItems(on: self!.selectedDate)
+                        .first(where: { $0.matches(post: post, task: task) }) {
+
+                        await MainActor.run {
+                            vc?.schedule = updated
+                            vc?.detailsView.reloadData()
+                        }
+                    }
+                }
+            }
         }
     }
     
@@ -452,18 +474,19 @@ extension Notification.Name {
 
 extension Schedule: ScheduleCollectionViewCellDelegate {
 
-    func didTapCompleted(item: ScheduleItem?) {
-        guard let item else { return }
+    func didTapCompleted(item: ScheduleItem, indexPath: IndexPath) {
 
         Task {
             switch item {
-            case .post(let post, let task):
-                await toggleTaskCompletion(post: post, task: task)
 
-            case .deal:
-                break // handle later
+            case .post(let post, let task):
+                await handleTaskToggle(post: post, task: task)
+
+            case .deal(let deal, let deliverable):
+                await handleDeliverableToggle(deal: deal, deliverable: deliverable)
             }
         }
     }
+
 }
 

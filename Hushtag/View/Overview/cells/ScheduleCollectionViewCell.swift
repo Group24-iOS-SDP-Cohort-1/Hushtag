@@ -14,6 +14,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var completedButton: UIButton!
     weak var delegate: ScheduleCollectionViewCellDelegate?
+    var indexPath: IndexPath?
     
     private var item: ScheduleItem?
     
@@ -54,7 +55,6 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
             dayLabel.text = deliverable.deadline.dayOnly()
             titleLabel.text = deliverable.name.isEmpty ? deal.name : deliverable.name
             
-            // Supabase-driven state
             updateCompletedButton(isCompleted: deliverable.isCompleted)
         }
     }
@@ -67,20 +67,15 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     
     
     @IBAction func buttonTapped(_ sender: UIButton) {
-        delegate?.didTapCompleted(item: item)
-        guard let item = item else { return }
-        let newValue: Bool
-        switch item {
-        case .post(_, let task):
-            newValue = task.isCompleted
-            
-        case .deal(_, let deliverable):
-            newValue = deliverable.isCompleted
+        guard let item = item,
+              let indexPath = indexPath else {
+            return
         }
-        updateCompletedButton(isCompleted: newValue)
+        
+        delegate?.didTapCompleted(item: item, indexPath: indexPath)
     }
 }
 
 protocol ScheduleCollectionViewCellDelegate: AnyObject {
-    func didTapCompleted(item: ScheduleItem?)
+    func didTapCompleted(item: ScheduleItem, indexPath: IndexPath)
 }

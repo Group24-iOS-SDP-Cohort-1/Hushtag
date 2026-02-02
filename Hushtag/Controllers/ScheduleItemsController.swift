@@ -8,34 +8,18 @@ final class ScheduleItemController {
     private var deals: [Deal] = []
     private var posts: [Post] = []
     
-    private(set) var scheduleItems: [ScheduleItem] = []
-    
     func replacePost(_ updatedPost: Post) {
-        scheduleItems = scheduleItems.map {
-            guard case .post(let post, let task) = $0,
-                  post.id == updatedPost.id else {
-                return $0
-            }
-            
-            let updatedTask = updatedPost.tasks.first { $0.id == task.id } ?? task
-            return .post(post: updatedPost, task: updatedTask)
+        posts = posts.map {
+            $0.id == updatedPost.id ? updatedPost : $0
         }
     }
     
     func replaceDeal(_ updatedDeal: Deal) {
-        scheduleItems = scheduleItems.map {
-            guard case .deal(let deal, let deliverable) = $0,
-                  deal.id == updatedDeal.id else {
-                return $0
-            }
-            
-            let updatedDeliverable =
-            updatedDeal.deliverables.first { $0.id == deliverable.id }
-            ?? deliverable
-            
-            return .deal(deal: updatedDeal, deliverable: updatedDeliverable)
+        deals = deals.map {
+            $0.id == updatedDeal.id ? updatedDeal : $0
         }
     }
+
     
     func load() async throws {
         async let dealsTask = dealsController.fetchDeals()
