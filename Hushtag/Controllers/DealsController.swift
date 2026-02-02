@@ -130,6 +130,21 @@ final class DealsController {
         return mapToDeal(updatedDeal, insertedDeliverables)
     }
 
+    func updateDeliverableStatus(
+        deliverableId: UUID,
+        isCompleted: Bool
+    ) async throws {
+
+        try await client.database
+            .from("deliverables")
+            .update([
+                "isCompleted": isCompleted
+            ])
+            .eq("id", value: deliverableId)
+            .execute()
+    }
+
+
     func deleteDeal(_ dealId: UUID) async throws {
 
         let session = try await client.auth.session

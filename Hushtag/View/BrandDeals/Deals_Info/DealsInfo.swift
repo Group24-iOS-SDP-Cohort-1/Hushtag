@@ -285,8 +285,43 @@ extension DealsInfo: UICollectionViewDataSource {
             ) as! DeliverableCell
 
             let isLast = indexPath.item == deals.deliverables.count - 1
-            cell.configure(with: deals.deliverables[indexPath.item], isLast: isLast)
+            let deliverable = deals.deliverables[indexPath.item]
+
+            cell.configure(with: deliverable, isLast: isLast)
+
+            cell.onToggleStatus = { [weak self] in
+                guard let self = self else { return }
+
+                // 1. Toggle locally
+                self.deals.deliverables[indexPath.item].isCompleted.toggle()
+
+                let deliverable = self.deals.deliverables[indexPath.item]
+
+
+                cell.updateStatus(isCompleted: deliverable.isCompleted)
+
+
+                _Concurrency.Task {
+                    do {
+                        try await DealsController().updateDeliverableStatus(
+                            deliverableId: deliverable.id,
+                            isCompleted: deliverable.isCompleted
+                        )
+
+                        // notify parent
+                        if self.dealIndex >= 0 {
+                            self.delegate?.dealsInfo(self, didUpdateDeal: self.deals, at: self.dealIndex)
+                        }
+
+                    } catch {
+                        print("❌ Deliverable update failed:", error)
+                    }
+                }
+            }
+
+
             return cell
+
 
         case .selectedIdea:
             let cell = collectionView.dequeueReusableCell(
@@ -345,6 +380,7 @@ extension DealsInfo: UICollectionViewDelegate {
         if dealIndex >= 0 {
             delegate?.dealsInfo(self, didUpdateDeal: deals, at: dealIndex)
         }
+
     }
 }
 

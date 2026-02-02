@@ -190,21 +190,21 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
                )
 
            }
-
-            if deliverables.isEmpty {
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateStyle = .medium
-                let deadline = dateFormatter.date(from: deadlineRaw) ?? Date()
-                deliverables.append(
-                    Deliverable(
-                        id: UUID(),
-                        deal_id: deal_id,
-                        name: "Main Deliverable",
-                        deadline: deadline,
-                        isCompleted: false
-                    )
-                )
-            }
+//        if deliverables.isEmpty {
+//            let dateFormatter = DateFormatter()
+//            dateFormatter.dateStyle = .medium
+//            let deadline = dateFormatter.date(from: deadlineRaw) ?? Date()
+//
+//            deliverables.append(
+//                Deliverable(
+//                    id: UUID(),
+//                    deal_id: deal_id,
+//                    name: "Main Deliverable",
+//                    deadline: deadline,
+//                    isCompleted: false
+//                )
+//            )
+//        }
 
            // 3. Parse platform & payment
            let platforms = platformRaw.isEmpty
@@ -275,19 +275,17 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 
        }
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return Section.allCases.count
+        return 2
     }
+
 
     override func tableView(_ tableView: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
-        guard let sec = Section(rawValue: section) else { return 0 }
 
-        switch sec {
-        case .mainFields:
-            return fieldPlaceholders.count
-        case .deliverables:
-            return 1                        
-        }
+        return section == Section.mainFields.rawValue
+                ? fieldPlaceholders.count
+                : 1
+
     }
 
     override func tableView(_ tableView: UITableView,
@@ -341,16 +339,15 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             cell.placeholderPrefix = "Deliverable"
             cell.addButton.setTitle("+ Deliverables", for: .normal)
 
+            // Prefill only when editing
             if !editingDeliverables.isEmpty {
-                    for d in editingDeliverables {
-                        cell.addDeliverableField(
-                            placeholder: d.name,
-                        )
-                    }
-                    editingDeliverables.removeAll()
+                for d in editingDeliverables {
+                    cell.addDeliverableField(placeholder: d.name)
                 }
+                editingDeliverables.removeAll()
+            }
 
-                return cell
+            return cell
 
         }
     }
