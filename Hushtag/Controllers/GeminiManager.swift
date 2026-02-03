@@ -46,6 +46,7 @@ class GeminiManager {
             return
         }
         
+        
         print("🚀 Sending request to \(functionURL)...")
         
         // 4. SEND REQUEST
