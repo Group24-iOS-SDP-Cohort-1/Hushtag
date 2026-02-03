@@ -76,27 +76,27 @@ class AuthManager{
     
     
     // MARK: - Onboarding Logic
-
+    
     func hasCompletedOnboarding() async -> Bool {
-            // 1. Get Session
-            guard let session = try? await client.auth.session else { return false }
-            
-            // 2. Get Metadata
-            let metadata = session.user.userMetadata
-            
-            // 3. Check if key exists
-            guard let jsonValue = metadata["onboarding_completed"] else {
-                return false
-            }
-            
-            // 4. THE FIX: Direct comparison using '=='
-            // This avoids the 'let binding' error entirely.
-            if jsonValue == .bool(true) {
-                return true
-            }
-            
+        // 1. Get Session
+        guard let session = try? await client.auth.session else { return false }
+        
+        // 2. Get Metadata
+        let metadata = session.user.userMetadata
+        
+        // 3. Check if key exists
+        guard let jsonValue = metadata["onboarding_completed"] else {
             return false
         }
+        
+        // 4. THE FIX: Direct comparison using '=='
+        // This avoids the 'let binding' error entirely.
+        if jsonValue == .bool(true) {
+            return true
+        }
+        
+        return false
+    }
     
     
     func completeOnboarding() async throws {
