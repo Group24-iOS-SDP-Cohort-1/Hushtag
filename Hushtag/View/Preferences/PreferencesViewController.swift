@@ -129,12 +129,12 @@ class PreferencesViewController: UIViewController {
                                     )
                     
                     // Now they are officially an "Existing User" -> Go Home
-                    self.navigateToHomeScreen()
-                    
+                 //   self.navigateToHomeScreen()
+
                 } catch {
                     print("Failed to update onboarding status: \(error)")
                     // You might want to let them in anyway, or show an alert
-                    self.navigateToHomeScreen()
+                  //  self.navigateToHomeScreen()
                 }
             }
     }

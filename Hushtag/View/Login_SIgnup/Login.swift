@@ -135,28 +135,28 @@ extension UIViewController{
     }
     
     
-    func navigateToHomeScreen() {
-        guard let window = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .first?.windows.first else {
-                return
-            }
-
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let mainTabBar = storyboard.instantiateViewController(
-            withIdentifier: "MainTabBarController"
-        )
-
-        window.rootViewController = mainTabBar
-        window.makeKeyAndVisible()
-
-        UIView.transition(
-            with: window,
-            duration: 0.25,
-            options: .transitionCrossDissolve,
-            animations: nil
-        )
-    }
+//    func navigateToHomeScreen() {
+//        guard let window = UIApplication.shared.connectedScenes
+//            .compactMap({ $0 as? UIWindowScene })
+//            .first?.windows.first else {
+//                return
+//            }
+//
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        let mainTabBar = storyboard.instantiateViewController(
+//            withIdentifier: "MainTabBarController"
+//        )
+//
+//        window.rootViewController = mainTabBar
+//        window.makeKeyAndVisible()
+//
+//        UIView.transition(
+//            with: window,
+//            duration: 0.25,
+//            options: .transitionCrossDissolve,
+//            animations: nil
+//        )
+//    }
     
     
     func navigateToLoginScreen() {
@@ -220,7 +220,7 @@ extension UIViewController{
             // UI updates must happen on Main Thread
             
                 if isComplete {
-                    self.navigateToHomeScreen()
+                   // self.navigateToHomeScreen()
                 } else {
                     self.navigateToPreferencesScreen()
                 }

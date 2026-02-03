@@ -1,13 +1,23 @@
-//
-//  model.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 22/01/26.
-//
-
 import Foundation
+import Combine
 
-struct TestPing: Codable, Identifiable, Sendable {
-    let id: UUID?
-    let message: String
+@MainActor
+final class VideoViewModel: ObservableObject {
+
+    @Published var videos: [VideoDTO] = []
+
+    func load() {
+        Task {
+            do {
+                let result = try await YouTubeService()
+                    .search(query: "startup")
+
+                self.videos = result
+                print("Fetched videos:", result) // 👈 SEE RESULT HERE
+
+            } catch {
+                print("Error:", error)
+            }
+        }
+    }
 }

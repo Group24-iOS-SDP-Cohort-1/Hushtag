@@ -15,23 +15,23 @@ class temp: UIViewController {
         }
 
         @IBAction func testConnection(_ sender: UIButton) {
-            _Concurrency.Task { @MainActor in
-                await pingSupabase()
+            Task { @MainActor in
+                       await test()
+                   }
+        }
+
+    func test() async {
+        do {
+            let videos = try await YouTubeService()
+                .search(query: "night skincare routine")
+
+            print("✅ VIDEOS COUNT:", videos.count)
+            videos.forEach {
+                print("• \($0.title)")
             }
+
+        } catch {
+            print("❌ ERROR:", error)
         }
-
-        func pingSupabase() async {
-            do {
-
-                           try await SupabaseConfig.client.database
-                               .from("test_ping")
-                               .insert(["message": "CONNECTED FROM IOS ✅"])
-                               .execute()
-
-                           print("✅ CONNECTED TO SUPABASE")
-                       } catch {
-                           print("❌ NOT CONNECTED:", error)
-                       }
-        }
-
+    }
 }

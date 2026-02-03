@@ -152,6 +152,7 @@
                                 </buttonConfiguration>
                                 <connections>
                                     <action selector="logInTapped:" destination="OaU-jh-SsD" eventType="touchUpInside" id="Yq3-xO-lIU"/>
+                                    <segue destination="SVe-Bk-iSf" kind="show" id="X5n-yz-9Zt"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Or" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kqz-5k-6JO">
@@ -248,6 +249,33 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W7I-kf-JID" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1513.7404580152672" y="-435.21126760563385"/>
+        </scene>
+        <!--Temp-->
+        <scene sceneID="dg6-Ty-Gr9">
+            <objects>
+                <viewController id="SVe-Bk-iSf" customClass="temp" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="F0l-EE-dGz">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JQt-P0-gHQ">
+                                <rect key="frame" x="168" y="392" width="75" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                <connections>
+                                    <action selector="testConnection:" destination="SVe-Bk-iSf" eventType="touchUpInside" id="zeg-HP-Efq"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="DLz-BI-IQn"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="C4L-SF-qbp"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fNF-RP-3z3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2367" y="-427"/>
         </scene>
         <!--Signup-->
         <scene sceneID="sog-yM-vMh">
