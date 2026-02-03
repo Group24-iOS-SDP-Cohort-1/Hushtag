@@ -28,8 +28,10 @@ class Signup: UIViewController {
         styleTextField(emailTextField)
         styleTextField(passwordTextField)
         styleTextField(confirmPasswordTextField)
-        // Do any additional setup after loading the view.
+        
+        enableKeyboardDismissOnTap()
     }
+    
     
     func styleSocialButton(_ button: UIButton) {
         button.backgroundColor = UIColor(white: 0.95, alpha: 1)

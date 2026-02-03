@@ -26,11 +26,8 @@
                                         <constraint firstAttribute="height" constant="150" id="bel-nK-rck"/>
                                     </constraints>
                                 </imageView>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BgQ-3R-Wpr">
-                                    <rect key="frame" x="153.33333333333334" y="185" width="86.666666666666657" height="47"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="47" id="iew-JX-dVS"/>
-                                    </constraints>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BgQ-3R-Wpr">
+                                    <rect key="frame" x="15" y="185" width="363" height="40.666666666666657"/>
                                     <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
@@ -38,9 +35,11 @@
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
+                                <constraint firstAttribute="trailing" secondItem="BgQ-3R-Wpr" secondAttribute="trailing" constant="15" id="2NM-qb-EbO"/>
                                 <constraint firstItem="BgQ-3R-Wpr" firstAttribute="centerX" secondItem="YtJ-th-kTl" secondAttribute="centerX" id="cbA-Cs-SrC"/>
                                 <constraint firstItem="QZR-4R-1Ra" firstAttribute="top" secondItem="YtJ-th-kTl" secondAttribute="top" constant="20" id="qne-we-ESn"/>
                                 <constraint firstItem="BgQ-3R-Wpr" firstAttribute="top" secondItem="QZR-4R-1Ra" secondAttribute="bottom" constant="15" id="wAv-9M-txx"/>
+                                <constraint firstItem="BgQ-3R-Wpr" firstAttribute="leading" secondItem="YtJ-th-kTl" secondAttribute="leading" constant="15" id="wi5-Ok-l5l"/>
                                 <constraint firstItem="QZR-4R-1Ra" firstAttribute="centerX" secondItem="YtJ-th-kTl" secondAttribute="centerX" id="wlv-cZ-pyX"/>
                             </constraints>
                         </view>
@@ -164,28 +163,21 @@
                             </tableViewSection>
                             <tableViewSection id="vKn-dH-mUA">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="BvL-UC-msZ">
-                                        <rect key="frame" x="20" y="667.33333015441895" width="353" height="35.333332061767578"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" textLabel="bMD-4g-UXs" style="IBUITableViewCellStyleDefault" id="BvL-UC-msZ">
+                                        <rect key="frame" x="20" y="667.33333015441895" width="353" height="51"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="BvL-UC-msZ" id="dgq-Oy-Dsi">
-                                            <rect key="frame" x="0.0" y="0.0" width="353" height="35.333332061767578"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="353" height="51"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Ux-qF-kAK">
-                                                    <rect key="frame" x="100" y="0.0" width="153" height="35.333333333333336"/>
-                                                    <state key="normal" title="Button"/>
-                                                    <buttonConfiguration key="configuration" style="tinted" title="Sign Out"/>
-                                                    <connections>
-                                                        <action selector="signOutTapped:" destination="xbO-71-BHZ" eventType="touchUpInside" id="mt2-j5-G68"/>
-                                                    </connections>
-                                                </button>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Sign Out" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bMD-4g-UXs">
+                                                    <rect key="frame" x="16" y="0.0" width="321" height="51"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <color key="textColor" systemColor="systemRedColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
-                                            <constraints>
-                                                <constraint firstItem="7Ux-qF-kAK" firstAttribute="leading" secondItem="dgq-Oy-Dsi" secondAttribute="leading" constant="100" id="Ogt-8c-tfB"/>
-                                                <constraint firstAttribute="bottom" secondItem="7Ux-qF-kAK" secondAttribute="bottom" id="Teq-ka-EAw"/>
-                                                <constraint firstAttribute="trailing" secondItem="7Ux-qF-kAK" secondAttribute="trailing" constant="100" id="cTO-Dx-Qrs"/>
-                                                <constraint firstItem="7Ux-qF-kAK" firstAttribute="top" secondItem="dgq-Oy-Dsi" secondAttribute="top" id="fUu-VT-IBK"/>
-                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </cells>
@@ -214,6 +206,9 @@
         </systemColor>
         <systemColor name="systemGreenColor">
             <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

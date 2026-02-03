@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Y6W-OH-hqX">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Edit Profile View Controller-->
+        <scene sceneID="s0d-6b-0kx">
+            <objects>
+                <viewController storyboardIdentifier="EditProfileViewController" id="Y6W-OH-hqX" customClass="EditProfileViewController" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fXf-4c-0oG">
+                                <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                                <items>
+                                    <navigationItem title="Edit Profile" id="g6w-u9-b8f">
+                                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="hG3-g8-x6j">
+                                            <connections>
+                                                <action selector="cancelButtonTapped:" destination="Y6W-OH-hqX" id="9xM-yV-3h3"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" title="Save" id="B1A-hT-aN3">
+                                            <connections>
+                                                <action selector="saveButtonTapped:" destination="Y6W-OH-hqX" id="A3A-7H-Sg9"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sH4-uP-g7d">
+                                <rect key="frame" x="121.66666666666669" y="128" width="150" height="150"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="150" id="3aA-3P-O3k"/>
+                                    <constraint firstAttribute="width" constant="150" id="Y6e-f2-z4Q"/>
+                                </constraints>
+                            </imageView>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Full Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3g9-mF-X9A">
+                                <rect key="frame" x="20" y="298" width="353" height="34"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="fXf-4c-0oG" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="1Yt-a9-1eW"/>
+                            <constraint firstItem="3g9-mF-X9A" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="9dE-t3-4eb"/>
+                            <constraint firstItem="fXf-4c-0oG" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="H4A-Uj-G5G"/>
+                            <constraint firstItem="sH4-uP-g7d" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="LkF-e1-2b0"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="3g9-mF-X9A" secondAttribute="trailing" constant="20" id="N5d-sN-z9b"/>
+                            <constraint firstItem="sH4-uP-g7d" firstAttribute="top" secondItem="fXf-4c-0oG" secondAttribute="bottom" constant="25" id="hDd-aV-XPL"/>
+                            <constraint firstItem="fXf-4c-0oG" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="uA4-9k-eC2"/>
+                            <constraint firstItem="3g9-mF-X9A" firstAttribute="top" secondItem="sH4-uP-g7d" secondAttribute="bottom" constant="20" id="vYm-2b-5o2"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="nameTextField" destination="3g9-mF-X9A" id="e9r-hC-cE4"/>
+                        <outlet property="profileImageView" destination="sH4-uP-g7d" id="yXW-9d-47x"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="138" y="4"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
