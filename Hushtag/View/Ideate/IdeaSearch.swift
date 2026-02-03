@@ -61,6 +61,7 @@ class IdeaSearch: UICollectionReusableView {
         textLabel.resignFirstResponder()
         delegate?.didTapSearch(with: "")
     }
+    
 }
     
     

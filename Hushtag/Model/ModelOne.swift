@@ -112,17 +112,17 @@ struct IdeaResponse: Codable {
 
 struct Idea: Codable, Identifiable {
     let id: String
-    let trending: String
+    let trending: String? 
     let title: String
     let description: String
-    let script: String
+    let script: String?
     let hashtag: [String]
-    let videos: [Video]
-    var liked: Bool
-    let tag: String
-    let thumbnail: String
-    let engagementRate: Double
-    
+    let videos: [Video]?
+    var liked: Bool?
+    let tag: String?
+    let thumbnail: String?
+        let engagementRate: Double
+
     enum CodingKeys: String, CodingKey {
         case id, trending, title, description, script, hashtag, videos, liked, tag, thumbnail, engagementRate
     }

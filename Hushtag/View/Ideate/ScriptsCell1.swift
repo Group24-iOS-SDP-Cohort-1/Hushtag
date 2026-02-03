@@ -44,11 +44,11 @@ class ScriptsCell1: UICollectionViewCell {
             filledCriteria += 1
         }
             
-        if !idea.script.isEmpty {
+        if ((idea.script?.isEmpty) == nil) {
             filledCriteria += 1
         }
             
-        if !idea.thumbnail.isEmpty {
+        if ((idea.thumbnail?.isEmpty) == nil) {
             filledCriteria += 1
         }
             

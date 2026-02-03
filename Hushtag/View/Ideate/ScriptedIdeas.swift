@@ -55,11 +55,11 @@ class ScriptedIdeas: UIViewController {
             Description.numberOfLines = 10
         }
         // Image
-        if idea.thumbnail.isEmpty || UIImage(named: idea.thumbnail) == nil {
+        if ((idea.thumbnail?.isEmpty) != nil) || UIImage(named: idea.thumbnail ?? "") == nil {
             imageStack.isHidden = true
         } else {
             imageStack.isHidden = false
-            imageView.image = UIImage(named: idea.thumbnail)
+            imageView.image = UIImage(named: idea.thumbnail ?? "")
         }
 
         // Script
@@ -68,12 +68,14 @@ class ScriptedIdeas: UIViewController {
     private func loadHTMLFile(for idea: Idea) {
         scriptStack.isHidden = true
         // Checking if idea.script exists
-        let scriptName = idea.script.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !scriptName.isEmpty else {
+        let scriptName = idea.script?.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+        guard ((scriptName?.isEmpty) == nil) else {
             return
         }
 
-        let fileName = scriptName.replacingOccurrences(of: ".html", with: "")
+        let fileName = scriptName?.replacingOccurrences(of: ".html", with: "")
         guard let url = Bundle.main.url(forResource: fileName, withExtension: "html") else {
             return
         }
