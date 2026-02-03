@@ -24,6 +24,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     @IBOutlet weak var generateStack: UIStackView!
 
     @IBOutlet weak var inputViewBottomConstraint: NSLayoutConstraint!
+    
+    
+    let dbController = ScriptedIdeasController() // Initialize your controller
+    var currentActiveScript: ScriptedIdea?
 
 
     @IBOutlet weak var scriptedChats: UIBarButtonItem!
@@ -232,26 +236,42 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 }
     }
 
-    func generateBotReply(for userText: String) {
-        let input = userText
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .lowercased()
-
-        let output: String
-        if let response = botDatabase[input] {
-            output = response
-        } else if let responseDefault = botDatabase["default"] {
-            output = responseDefault
-        } else {
-            output = "Sorry"
+        func generateBotReply(for userText: String) {
+            
+            // 1. UI: Add temporary "Thinking..." message
+            let loadingMessage = Message(text: "Thinking...", isUser: false)
+            messages.append(loadingMessage)
+            tableView.reloadData()
+            scrollToBottom()
+            
+            // 2. Logic: Customize prompt based on user intention
+            var prompt = userText
+            let lower = userText.lowercased()
+            
+            if lower.contains("generate title") {
+                 // We need to send context if we want a title for a specific script.
+                 // For now, let's assume the user just pasted the script or is asking generally.
+                 // Ideally, you'd append the previous bot message here.
+                 prompt = "Generate a catchy title for a script about: \(userText)"
+            }
+            
+            // 3. Call your Edge Function via the Manager
+            GeminiManager.shared.generateContent(prompt: prompt) { [weak self] responseText in
+                guard let self = self else { return }
+                
+                // Remove "Thinking..."
+                if !self.messages.isEmpty {
+                    self.messages.removeLast()
+                }
+                
+                // Add actual response
+                let finalText = responseText ?? "Sorry, I couldn't connect to the server."
+                self.messages.append(Message(text: finalText, isUser: false))
+                
+                self.tableView.reloadData()
+                self.scrollToBottom()
+            }
         }
-
-        messages.append(Message(text: output, isUser: false))
-        tableView.reloadData()
-
-        let indexPath = IndexPath(row: messages.count - 1, section: 0)
-        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-    }
 
 
     @IBAction func sendButton(_ sender: Any) {
@@ -270,82 +290,124 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         let row = cellView.tag
         //message object corresponsding to that row
         var message = messages[row]
-
+        
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-
-           // Helper to add mark/unmark option
-           func addMarkAction(type: String) {
-               let isMarked = message.markType == type
-               if !isMarked && isTypeAlreadyMarked(type) {
-                       return
-                   }
-
-               let title = isMarked ? "Unmark \(type.capitalized)" : "Mark as \(type.capitalized)"
-               
-               alert.addAction(UIAlertAction(title: title, style: .default) { _ in
-                   if isMarked {
-                       message.markType = nil
-                       self.markedMessages[type]?.removeAll {
-                                               $0.text == message.text
-                                }
-                       self.didShowFinalReadyMessage = false
-                       self.showScriptSuggestions()
-
-                   } else {
-                       if let oldType = message.markType {
-                                      self.markedMessages[oldType]?.removeAll { $0.text == message.text }
-                                  }
-
-                       self.generateStack.isHidden = false
-                       message.markType = type
-                       self.markedMessages[type]?.append(message)
-
-                       if self.isAllContentMarked() && !self.didShowFinalReadyMessage {
-
-                           self.didShowFinalReadyMessage = true
-
-                           let finalMessage = Message(
-                               text: "less goo your post is ready",
-                               isUser: false
-                           )
-
-                           self.messages.append(finalMessage)
-
-                           let indexPath = IndexPath(
-                               row: self.messages.count - 1,
-                               section: 0
-                           )
-
-                           self.tableView.insertRows(at: [indexPath], with: .fade)
-                           self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-                       }
-
-
-                       switch type {
-                               case "script":
-                                   self.showScriptSuggestions()
-                               case "title":
-                                   self.showScriptSuggestions()
-                               case "description":
-                                   self.showScriptSuggestions()
-                               case "thumbnail":
-                                   self.showScriptSuggestions()
-
-                               default:
-                                   self.showScriptSuggestions()
-                               }
-                   }
-                   self.messages[row] = message
-                   self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
-               })
-           }
-
-           ["script", "title", "description", "thumbnail"].forEach { addMarkAction(type: $0) }
-
-           alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-           self.present(alert, animated: true)
-
+        
+        // Helper to add mark/unmark option
+        func addMarkAction(type: String) {
+            let isMarked = message.markType == type
+            if !isMarked && isTypeAlreadyMarked(type) {
+                return
+            }
+            
+            let title = isMarked ? "Unmark \(type.capitalized)" : "Mark as \(type.capitalized)"
+            
+            alert.addAction(UIAlertAction(title: title, style: .default) { _ in
+                if isMarked {
+                    message.markType = nil
+                    self.markedMessages[type]?.removeAll {
+                        $0.text == message.text
+                    }
+                    self.didShowFinalReadyMessage = false
+                    self.showScriptSuggestions()
+                    
+                } else {
+                    if let oldType = message.markType {
+                        self.markedMessages[oldType]?.removeAll { $0.text == message.text }
+                    }
+                    
+                    self.generateStack.isHidden = false
+                    message.markType = type
+                    self.markedMessages[type]?.append(message)
+                    
+                    self.syncToDatabase(type: type, text: message.text)
+                    
+                    if self.isAllContentMarked() && !self.didShowFinalReadyMessage {
+                        
+                        self.didShowFinalReadyMessage = true
+                        
+                        let finalMessage = Message(
+                            text: "less goo your post is ready",
+                            isUser: false
+                        )
+                        
+                        self.messages.append(finalMessage)
+                        
+                        let indexPath = IndexPath(
+                            row: self.messages.count - 1,
+                            section: 0
+                        )
+                        
+                        self.tableView.insertRows(at: [indexPath], with: .fade)
+                        self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+                    }
+                    
+                    
+                    switch type {
+                    case "script":
+                        self.showScriptSuggestions()
+                    case "title":
+                        self.showScriptSuggestions()
+                    case "description":
+                        self.showScriptSuggestions()
+                    case "thumbnail":
+                        self.showScriptSuggestions()
+                        
+                    default:
+                        self.showScriptSuggestions()
+                    }
+                }
+                self.messages[row] = message
+                self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
+            })
+        }
+        
+        ["script", "title", "description", "thumbnail"].forEach { addMarkAction(type: $0) }
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        self.present(alert, animated: true)
+        
     }
+    
+    
+    // Add this function to Chatbot class
+        func syncToDatabase(type: String, text: String) {
+            Task {
+                do {
+                    if type == "script" && currentActiveScript == nil {
+                        // SCENARIO 1: First time saving (Create the row)
+                        print("🆕 Creating new script in Supabase...")
+                        let newScript = try await dbController.addScript(scriptContent: text)
+                        self.currentActiveScript = newScript
+                        print("✅ Created Script ID: \(newScript.id)")
+                        
+                    } else if var scriptToUpdate = currentActiveScript {
+                        // SCENARIO 2: Updating an existing row
+                        print("🔄 Updating existing script...")
+                        
+                        // Update the local object based on what was marked
+                        switch type {
+                        case "script": scriptToUpdate.script = text
+                        case "title": scriptToUpdate.title = text
+                        case "description": scriptToUpdate.description = text
+                        case "thumbnail": scriptToUpdate.thumbnailURL = text // Assuming text is URL string
+                        default: break
+                        }
+                        
+                        // Send to Supabase
+                        let updated = try await dbController.updateScript(scriptToUpdate)
+                        self.currentActiveScript = updated
+                        print("✅ Update Successful")
+                    } else {
+                        // Edge Case: Trying to save Title before Script exists.
+                        // Ideally, force them to mark Script first, or create a dummy script entry.
+                        print("⚠️ Warning: Please mark the Script content first to create the entry.")
+                    }
+                } catch {
+                    print("❌ Database Error: \(error)")
+                }
+            }
+        }
 
 
     func getUnmarkedTypes() -> [String] {
