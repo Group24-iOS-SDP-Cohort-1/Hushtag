@@ -308,6 +308,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     self.markedMessages[type]?.removeAll {
                         $0.text == message.text
                     }
+                    
+                    self.syncToDatabase(type: type, text: nil)
+                    
+                    
                     self.didShowFinalReadyMessage = false
                     self.showScriptSuggestions()
                     
@@ -371,37 +375,40 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     
     
     // Add this function to Chatbot class
-        func syncToDatabase(type: String, text: String) {
+    // MARK: - Database Logic
+        func syncToDatabase(type: String, text: String?) {
             Task {
                 do {
-                    if type == "script" && currentActiveScript == nil {
-                        // SCENARIO 1: First time saving (Create the row)
+                    // SCENARIO 1: Creating a new script (Must have text, can't be nil)
+                    if type == "script", let validText = text, currentActiveScript == nil {
                         print("🆕 Creating new script in Supabase...")
-                        let newScript = try await dbController.addScript(scriptContent: text)
+                        let newScript = try await dbController.addScript(scriptContent: validText)
                         self.currentActiveScript = newScript
                         print("✅ Created Script ID: \(newScript.id)")
                         
-                    } else if var scriptToUpdate = currentActiveScript {
-                        // SCENARIO 2: Updating an existing row
+                    }
+                    // SCENARIO 2: Updating (or Unmarking) an existing script
+                    else if var scriptToUpdate = currentActiveScript {
                         print("🔄 Updating existing script...")
                         
-                        // Update the local object based on what was marked
+                        // If text is nil (Unmark), the property becomes nil
                         switch type {
                         case "script": scriptToUpdate.script = text
                         case "title": scriptToUpdate.title = text
                         case "description": scriptToUpdate.description = text
-                        case "thumbnail": scriptToUpdate.thumbnailURL = text // Assuming text is URL string
+                        case "thumbnail": scriptToUpdate.thumbnailURL = text
                         default: break
                         }
                         
-                        // Send to Supabase
+                        // Send update to Supabase
                         let updated = try await dbController.updateScript(scriptToUpdate)
                         self.currentActiveScript = updated
-                        print("✅ Update Successful")
-                    } else {
-                        // Edge Case: Trying to save Title before Script exists.
-                        // Ideally, force them to mark Script first, or create a dummy script entry.
-                        print("⚠️ Warning: Please mark the Script content first to create the entry.")
+                        
+                        if text == nil {
+                            print("🗑 Unmarked (Set to NULL): \(type)")
+                        } else {
+                            print("✅ Update Successful: \(type)")
+                        }
                     }
                 } catch {
                     print("❌ Database Error: \(error)")

@@ -92,4 +92,42 @@ class GeminiManager {
         }
         task.resume()
     }
+    
+//    func generateContent(prompt: String, completion: @escaping (String?) -> Void) {
+//            
+//            // 1. Simulate a short network delay (makes it feel real)
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+//                
+//                let lowerPrompt = prompt.lowercased()
+//                var mockResponse = ""
+//                
+//                // 2. Determine response based on input
+//                if lowerPrompt.contains("generate title") {
+//                    mockResponse = "Mock Title: The Future of AI Coding"
+//                }
+//                else if lowerPrompt.contains("generate description") {
+//                    mockResponse = "Mock Description: In this video, we explore how to build apps faster using Supabase and Gemini."
+//                }
+//                else if lowerPrompt.contains("generate thumbnail") {
+//                    mockResponse = "https://via.placeholder.com/300?text=Mock+Thumbnail" // Returns a dummy image URL
+//                }
+//                else {
+//                    // Default assumes it's a script request
+//                    mockResponse = """
+//                    Mock Script:
+//                    [Intro]
+//                    Host: Welcome back to the channel!
+//                    
+//                    [Body]
+//                    Host: Today we are testing the database integration.
+//                    
+//                    [Outro]
+//                    Host: Like and Subscribe!
+//                    """
+//                }
+//                
+//                // 3. Return the data
+//                completion(mockResponse)
+//            }
+//        }
 }
