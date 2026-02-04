@@ -99,4 +99,76 @@ final class ScriptedIdeasController {
             createdAt: db.created_at
         )
     }
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - CHAT HISTORY
+    
+    
+    func batchSaveMessages(ideaID: UUID, messages: [Message]) async throws {
+            let session = try await client.auth.session
+            
+            // Convert your UI messages to Database Payloads
+        let payloads = messages.enumerated().map { (index, msg) in
+            
+            // 2. Logic: Create a timestamp based on the index.
+            // If we have 10 messages, the last one (index 9) is 'Now'.
+            // The one before it (index 8) is 'Now - 1 second', etc.
+            // This ensures strict chronological order in the database.
+            let secondsAgo = Double(messages.count - 1 - index)
+            let uniqueDate = Date().addingTimeInterval(-secondsAgo)
+            
+            return ChatMessageInsertPayload(
+                idea_id: ideaID,
+                user_id: session.user.id,
+                is_user: msg.isUser,
+                text_content: msg.text,
+                created_at: uniqueDate // <--- Sending our calculated time
+            )
+        }
+            
+            // Insert all at once
+        try await client.database
+            .from("chat_history")
+            .insert(payloads)
+            .execute()
+        }
+    
+    func saveChatMessage(ideaID: UUID, text: String, isUser: Bool) async throws {
+            let session = try await client.auth.session
+            
+            let payload = ChatMessageInsertPayload(
+                idea_id: ideaID,
+                user_id: session.user.id,
+                is_user: isUser,
+                text_content: text,
+                created_at: Date()
+            )
+            
+            try await client.database
+                .from("chat_history")
+                .insert(payload)
+                .execute()
+        }
+    
+    
+    
+    func fetchChatHistory(for ideaID: UUID) async throws -> [Message] {
+            let rows: [ChatMessageDB] = try await client.database
+                .from("chat_history")
+                .select()
+                .eq("idea_id", value: ideaID)
+                .order("created_at", ascending: true) // Oldest first
+                .execute()
+                .value
+            
+            // Convert DB format back to UI format
+            return rows.map { row in
+                Message(text: row.text_content, isUser: row.is_user)
+            }
+        }
 }

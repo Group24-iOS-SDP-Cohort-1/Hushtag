@@ -221,21 +221,49 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             }
     }
 
+//    func sendMessage(_ text: String) {
+//        messages.append(Message(text: text, isUser: true))
+//        tableView.reloadData()
+//
+//        let indexPath = IndexPath(row: messages.count - 1, section: 0)
+//        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+//
+//        textFieldView.text = ""
+//        textViewDidChange(textFieldView)
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//            self.generateBotReply(for: text)
+//                }
+//    }
+
+    
     func sendMessage(_ text: String) {
-        messages.append(Message(text: text, isUser: true))
-        tableView.reloadData()
+            // 1. Update UI
+            messages.append(Message(text: text, isUser: true))
+            tableView.reloadData()
+            
+            let indexPath = IndexPath(row: messages.count - 1, section: 0)
+            tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
 
-        let indexPath = IndexPath(row: messages.count - 1, section: 0)
-        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+            textFieldView.text = ""
+            textViewDidChange(textFieldView)
 
-        textFieldView.text = ""
-        textViewDidChange(textFieldView)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.generateBotReply(for: text)
+            // 2. NEW: Database Check (Live Phase)
+            // If we have an ID (meaning the user has already marked a script), save this message now.
+            if let scriptID = currentActiveScript?.id {
+                Task {
+                    print("☁️ Saving user message to DB...")
+                    try? await dbController.saveChatMessage(ideaID: scriptID, text: text, isUser: true)
                 }
-    }
+            }
 
+            // 3. Generate Reply
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.generateBotReply(for: text)
+            }
+        }
+    
+    
         func generateBotReply(for userText: String) {
             
             // 1. UI: Add temporary "Thinking..." message
@@ -267,6 +295,13 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 // Add actual response
                 let finalText = responseText ?? "Sorry, I couldn't connect to the server."
                 self.messages.append(Message(text: finalText, isUser: false))
+                
+                if let scriptID = self.currentActiveScript?.id {
+                    Task {
+                        print("☁️ Saving AI message to DB...")
+                        try? await self.dbController.saveChatMessage(ideaID: scriptID, text: finalText, isUser: false)
+                    }
+                }
                 
                 self.tableView.reloadData()
                 self.scrollToBottom()
@@ -407,9 +442,17 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     // SCENARIO 1: Creating a new script (Must have text, can't be nil)
                     if type == "script", let validText = text, currentActiveScript == nil {
                         print("🆕 Creating new script in Supabase...")
+                        
+                        // 1. Create the Idea Card
                         let newScript = try await dbController.addScript(scriptContent: validText)
                         self.currentActiveScript = newScript
                         print("✅ Created Script ID: \(newScript.id)")
+                        
+                        // 2. NEW: Save all the chat history we have so far!
+                        // We link the existing 'messages' array to this new Idea ID.
+                        print("💾 Saving chat history buffer...")
+                        try await dbController.batchSaveMessages(ideaID: newScript.id, messages: self.messages)
+                        print("✅ Chat history saved!")
                         
                     }
                     // SCENARIO 2: Updating (or Unmarking) an existing script
