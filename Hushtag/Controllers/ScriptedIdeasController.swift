@@ -22,7 +22,7 @@ final class ScriptedIdeasController {
             description: nil,
             script: scriptContent,
             thumbnail: nil,
-            tags: [] // <--- Initialize with empty array
+            tags: nil // <--- Initialize with empty array
         )
         
         let ideaDB: ScriptedIdeaDB = try await client.database
