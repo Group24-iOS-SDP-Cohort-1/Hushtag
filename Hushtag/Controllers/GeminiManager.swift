@@ -124,6 +124,33 @@ class GeminiManager {
 //                    
 //                    [Outro]
 //                    Host: Like and Subscribe!
+//                                        Mock Script:
+//                                        [Intro]
+//                                        Host: Welcome back to the channel!
+//                                        
+//                                        [Body]
+//                                        Host: Today we are testing the database integration.
+//                                        
+//                                        [Outro]
+//                                        Host: Like and Subscribe!
+//                                        Mock Script:
+//                                        [Intro]
+//                                        Host: Welcome back to the channel!
+//                                        
+//                                        [Body]
+//                                        Host: Today we are testing the database integration.
+//                                        
+//                                        [Outro]
+//                                        Host: Like and Subscribe!
+//                                        Mock Script:
+//                                        [Intro]
+//                                        Host: Welcome back to the channel!
+//                                        
+//                                        [Body]
+//                                        Host: Today we are testing the database integration.
+//                                        
+//                                        [Outro]
+//                                        Host: Like and Subscribe!
 //                    """
 //                }
 //                

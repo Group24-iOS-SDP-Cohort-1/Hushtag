@@ -16,25 +16,62 @@ class ViewScriptsViewController: UIViewController {
 
     var isSearchMode = false
     var likedIdeas: [Idea] = []
+    var myScripts: [ScriptedIdea] = []
+    
+    private let scriptsController = ScriptedIdeasController()
 
     @IBOutlet weak var scriptsCollectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        ideas = ideaResponse.ideas
-        likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
+        
+        
+//        ideas = ideaResponse.ideas
+//        likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
         navigationItem.title = pageTitle
         scriptsCollectionView.dataSource = self
         scriptsCollectionView.delegate = self
       
         scriptsCollectionView.register(UINib(nibName: "ScriptsCell1", bundle: nil), forCellWithReuseIdentifier: "scriptedIdeas")
         scriptsCollectionView.register(UINib(nibName: "LikedCellsNew", bundle: nil), forCellWithReuseIdentifier: "likedCellsNew")
+        
+        
         let layout = generateScriptsLayout(title: pageTitle)
         scriptsCollectionView.setCollectionViewLayout(layout, animated: true)
-        NotificationCenter.default.addObserver(self, selector: #selector(syncLikedIdeas), name: .didUpdateLikedStatus, object: nil)
-
-        updateEmptyState()
+        
+        if pageTitle == "Your Scripts" {
+                    // 1. Fetch from Supabase
+                    fetchMyScripts()
+                } else {
+                    // 2. Load Liked Ideas (Existing Logic)
+                    ideas = ideaResponse.ideas
+                    likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
+                    NotificationCenter.default.addObserver(self, selector: #selector(syncLikedIdeas), name: .didUpdateLikedStatus, object: nil)
+                    updateEmptyState()
+                }
     }
+    
+    
+    func fetchMyScripts() {
+            // Show a loading indicator here if you like
+            Task {
+                do {
+                    // Fetch using your new controller
+                    let scripts = try await scriptsController.fetchScripts()
+                    
+                    await MainActor.run {
+                        self.myScripts = scripts
+                        self.scriptsCollectionView.reloadData()
+                        self.updateEmptyState()
+                    }
+                } catch {
+                    print("Error fetching scripts: \(error)")
+                    // Handle error (e.g., show alert)
+                }
+            }
+        }
+    
+    
     @objc func syncLikedIdeas() {
         likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
         scriptsCollectionView.reloadData()
@@ -42,22 +79,38 @@ class ViewScriptsViewController: UIViewController {
     }
 
     private func updateEmptyState() {
+            
+            // Separate Empty State logic for "Your Scripts"
+            if pageTitle == "Your Scripts" {
+                if myScripts.isEmpty {
+                    showEmptyView(message: "No scripts yet", iconName: "doc.text")
+                    scriptsCollectionView.backgroundView?.isHidden = false
+                } else {
+                    scriptsCollectionView.backgroundView = nil
+                }
+                return
+            }
 
-        guard pageTitle != "Your Scripts" else {
-            scriptsCollectionView.backgroundView = nil
-            return
+            // Logic for "Liked Ideas"
+            if likedIdeas.isEmpty {
+                showEmptyView(message: "No liked ideas", iconName: "heart.slash")
+                scriptsCollectionView.backgroundView?.isHidden = false
+            } else {
+                scriptsCollectionView.backgroundView = nil
+            }
         }
-
-        if likedIdeas.isEmpty {
+        
+        // Helper to draw empty view
+        private func showEmptyView(message: String, iconName: String) {
             let emptyView = UIView(frame: scriptsCollectionView.bounds)
 
-            let imageView = UIImageView(image: UIImage(systemName: "heart.slash"))
+            let imageView = UIImageView(image: UIImage(systemName: iconName))
             imageView.tintColor = .tertiaryLabel
             imageView.heightAnchor.constraint(equalToConstant: 38).isActive = true
             imageView.widthAnchor.constraint(equalToConstant: 38).isActive = true
 
             let label = UILabel()
-            label.text = "No liked ideas"
+            label.text = message
             label.textColor = .secondaryLabel
             label.font = .systemFont(ofSize: 22, weight: .medium)
             label.textAlignment = .center
@@ -76,17 +129,14 @@ class ViewScriptsViewController: UIViewController {
             ])
 
             scriptsCollectionView.backgroundView = emptyView
-        } else {
-            scriptsCollectionView.backgroundView = nil
         }
-    }
 
 }
 
 extension ViewScriptsViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if pageTitle == "Your Scripts"{
-            return ideas.count
+            return myScripts.count
         }else{
             return likedIdeas.count
         }
@@ -99,8 +149,8 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
                 for: indexPath
             ) as! ScriptsCell1
 
-            let idea = ideas[indexPath.row]
-            cell.configureCell(idea: idea)
+            let script = myScripts[indexPath.row]
+            cell.configureCell(with: script)
             return cell
         }
 
@@ -199,10 +249,10 @@ extension ViewScriptsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 
         if pageTitle == "Your Scripts"{
-            let idea = ideas[indexPath.row]
+            let script = myScripts[indexPath.row]
             let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
             if let destinationVC = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas {
-                destinationVC.idea = idea
+                destinationVC.idea = script
                 self.navigationController?.pushViewController(destinationVC, animated: true)
             }
             return

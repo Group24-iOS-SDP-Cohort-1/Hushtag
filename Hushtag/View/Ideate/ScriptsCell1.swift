@@ -29,36 +29,45 @@ class ScriptsCell1: UICollectionViewCell {
         Description.textColor = .secondaryLabel
 }
     
-    func configureCell(idea : Idea) {
-        Title.text = idea.title
-        Description.text = idea.description
-        configureHashtags(idea.hashtag)
+    func configureCell(with script: ScriptedIdea) {
+        // 1. Safely Set UI Elements
+        // Use '?? ""' to provide an empty string if the value is nil
+        Title.text = script.title ?? ""
+        Description.text = script.description ?? ""
+        
+        // Safely handle tags: if nil, pass an empty array []
+        configureHashtags(script.tags ?? [])
+
+        // 2. Calculate Progress
         let totalCriteria: Float = 4.0
         var filledCriteria: Float = 0.0
             
-        if !idea.title.isEmpty {
+        // Check if Title exists AND is not empty
+        if let title = script.title, !title.isEmpty {
             filledCriteria += 1
         }
             
-        if !idea.description.isEmpty {
+        // Check if Description exists AND is not empty
+        if let desc = script.description, !desc.isEmpty {
             filledCriteria += 1
         }
             
-        if !idea.script.isEmpty {
+        // Check if Script body exists AND is not empty
+        if let scriptContent = script.script, !scriptContent.isEmpty {
             filledCriteria += 1
         }
             
-        if !idea.thumbnail.isEmpty {
+        // Check if Thumbnail URL exists AND is not empty
+        if let thumb = script.thumbnailURL, !thumb.isEmpty {
             filledCriteria += 1
         }
             
-        //Calculating Percentage of completion
+        // 3. Set Progress
         let progress = filledCriteria / totalCriteria
-            
-        //Setting Progress
         progressView.setProgress(value: progress)
     }
-
+    
+    
     private func configureHashtags(_ hashtags: [String]) {
             badgeStack.arrangedSubviews.forEach {
                 badgeStack.removeArrangedSubview($0)
