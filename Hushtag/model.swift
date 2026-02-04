@@ -20,4 +20,5 @@ final class VideoViewModel: ObservableObject {
             }
         }
     }
+
 }

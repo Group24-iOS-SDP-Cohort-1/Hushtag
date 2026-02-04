@@ -156,7 +156,7 @@ class Ideate1: UIViewController {
                 title: $0.title,
                 description: $0.description,
                 script: nil,
-                hashtag: $0.hashtags,
+                hashtag: $0.hashtags ?? [],
                 videos: nil as [Video]?,
                 liked: nil as Bool?,
                 tag: "",
@@ -289,6 +289,8 @@ extension Ideate1: IdeaSearchDelegate {
             do {
                 let videos = try await YouTubeService().search(query: keyword)
                 self.ideas = mapVideosToIdeas(videos)
+            
+
 
                 DispatchQueue.main.async {
                     self.collectionView.reloadSections(IndexSet(integer: 1))

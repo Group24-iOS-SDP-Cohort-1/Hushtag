@@ -15,23 +15,23 @@ class temp: UIViewController {
         }
 
         @IBAction func testConnection(_ sender: UIButton) {
-            Task { @MainActor in
-                       await test()
-                   }
+//            Task { @MainActor in
+//                       await test()
+//                   }
         }
 
-    func test() async {
-        do {
-            let videos = try await YouTubeService()
-                .search(query: "night skincare routine")
-
-            print("✅ VIDEOS COUNT:", videos.count)
-            videos.forEach {
-                print("• \($0.title)")
-            }
-
-        } catch {
-            print("❌ ERROR:", error)
-        }
-    }
+//    func test() async {
+//        do {
+//            let videos = try await YouTubeService()
+//                .search(query: "night skincare routine")
+//
+//            print("✅ VIDEOS COUNT:", videos.count)
+//            videos.forEach {
+//                print("• \($0.title)")
+//            }
+//
+//        } catch {
+//            print("❌ ERROR:", error)
+//        }
+//    }
 }
