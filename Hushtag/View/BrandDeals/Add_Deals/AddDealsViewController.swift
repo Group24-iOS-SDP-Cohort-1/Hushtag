@@ -80,7 +80,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         guard let deal = editingDeal else { return }
 
         setText("Brand Name", value: deal.name)
-        setText("Platform", value: deal.platform.joined(separator: ", "))
+        setText("Platform", value: deal.platform.map { $0.rawValue.capitalized }.joined(separator: ", "))
         setText("Payment", value: "\(deal.payment)")
         setText("Phone number", value: "\(deal.mobileNumber)")
         setText("Email", value: deal.email)
@@ -207,9 +207,10 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 //        }
 
            // 3. Parse platform & payment
-           let platforms = platformRaw.isEmpty
-               ? []
-               : platformRaw.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+        let platforms: [Platform] = platformRaw
+            .split(separator: ",")
+            .compactMap { Platform(rawValue: $0.trimmingCharacters(in: .whitespaces).lowercased()) }
+
 
         let sanitizedPay = payRaw
             .replacingOccurrences(of: ",", with: "")
@@ -229,9 +230,6 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             deliverables: deliverables,
             reminder: reminderDate != nil ? [reminderDate!] : nil
         )
-
-
-
 
         _Concurrency.Task {
             do {

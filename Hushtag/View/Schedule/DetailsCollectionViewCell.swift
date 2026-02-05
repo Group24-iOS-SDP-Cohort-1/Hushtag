@@ -88,7 +88,7 @@ class DetailsCollectionViewCell: UICollectionViewCell {
             
             mainName.text = deal.name
             
-            platformLabel.text = "Platform: " + deal.platform.joined(separator: ", ")
+            platformLabel.text = deal.platform.map(\.rawValue).joined(separator: ", ")
             platformLabel.isHidden = false
         }
     }

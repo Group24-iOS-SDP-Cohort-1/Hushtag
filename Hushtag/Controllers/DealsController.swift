@@ -16,7 +16,7 @@ final class DealsController {
             email: deal.email,
             deadline: deal.deliverables.map(\.deadline).max() ?? Date(),
             reminder: deal.reminder,
-            platform: deal.platform.joined(separator: ",")
+            platform: deal.platform.map(\.rawValue)
         )
         
         let dealDB: DealDB = try await client.database
@@ -82,26 +82,23 @@ final class DealsController {
     }
     
     func updateDeal(_ deal: Deal) async throws -> Deal {
+        let session = try await client.auth.session
         
-        let iso = ISO8601DateFormatter()
-        
+        let payload = DealInsertPayload(
+            user_id: session.user.id,
+            name: deal.name,
+            payment: deal.payment,
+            mobileNumber: deal.mobileNumber,
+            email: deal.email,
+            deadline: deal.deliverables.map(\.deadline).max() ?? Date(),
+            reminder: deal.reminder,
+            platform: deal.platform.map(\.rawValue)
+        )
         
         let updatedDeal: DealDB = try await client.database
             .from("brand_deals")
-            .update([
-                "name": deal.name,
-                "payment": String(deal.payment),
-                "mobileNumber": String(deal.mobileNumber),
-                "email": deal.email,
-                "platform": deal.platform.joined(separator: ","),
-                "deadline": iso.string(
-                    from: deal.deliverables.map(\.deadline).max() ?? Date()
-                ),
-                "reminder": deal.reminder != nil
-                ? "{\(iso.string(from: deal.reminder!.first!))}"
-                : nil
-            ])
-            .eq("id", value: deal.id)  
+            .update(payload)
+            .eq("id", value: deal.id)
             .select()
             .single()
             .execute()
@@ -181,9 +178,7 @@ final class DealsController {
             mobileNumber: deal.mobileNumber ?? 0,
             email: deal.email ?? "",
             
-            platform: deal.platform
-                .split(separator: ",")
-                .map { String($0) },
+            platform: deal.platform,
             deliverables: deliverables.map {
                 Deliverable(
                     id: $0.id,
