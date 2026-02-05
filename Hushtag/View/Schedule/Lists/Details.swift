@@ -14,23 +14,36 @@ class Details: UIViewController {
     var onToggleTask: ((Post, Tasks) -> Void)?
     var onToggleDeliverable: ((Deal, Deliverable) -> Void)?
     private let postsController = PostsController()
+    private let dealsController = DealsController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         detailsView.dataSource = self
         detailsView.setCollectionViewLayout(generateLayout(), animated: false)
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handlePostsDidChange),
-            name: .postsDidChange,
-            object: nil
-        )
-        
     }
     
-    @objc private func handlePostsDidChange() {
-        detailsView.reloadData()
-    }
+//    @objc private func handlePostsDidChange() {
+//        Task {
+//            try await scheduleController.load()
+//
+//            await MainActor.run {
+//                self.filterItems(for: self.selectedDate)
+//                self.scheduleView.reloadSections(IndexSet(integer: 1))
+//            }
+//        }
+//    }
+//
+//    @objc private func handleDealsDidChange() {
+//        Task {
+//            try await scheduleController.load()
+//
+//            await MainActor.run {
+//                self.filterItems(for: self.selectedDate)
+//                self.scheduleView.reloadSections(IndexSet(integer: 1))
+//            }
+//        }
+//    }
+
     
     func generateLayout() -> UICollectionViewLayout {
         
@@ -133,6 +146,10 @@ class Details: UIViewController {
                     object: nil
                 )
                 
+                await MainActor.run {
+                    self.dismiss(animated: true)
+                }
+                
                 
             } catch {
                 await MainActor.run {
@@ -142,12 +159,41 @@ class Details: UIViewController {
                         preferredStyle: .alert
                     )
                     alert.addAction(UIAlertAction(title: "OK", style: .default))
-                    //self.present(alert, animated: true)
-                    self.dismiss(animated: true)
+                    self.present(alert, animated: true)
                 }
             }
         }
     }
+    
+    private func performDelete(dealId: UUID) {
+        Task {
+            do {
+                try await dealsController.deleteDeal(dealId)
+                
+                // Notify Schedule to reload
+                NotificationCenter.default.post(
+                    name: .dealsDidChange,
+                    object: nil
+                )
+                
+                await MainActor.run {
+                    self.dismiss(animated: true)
+                }
+                
+            } catch {
+                await MainActor.run {
+                    let alert = UIAlertController(
+                        title: "Failed to Delete",
+                        message: error.localizedDescription,
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
+                }
+            }
+        }
+    }
+    
     private func handleTaskToggle(post: Post, task: Tasks) async {
         onToggleTask?(post, task)
     }
@@ -206,20 +252,23 @@ extension Details: UICollectionViewDataSource {
                     
                     DispatchQueue.main.async {
                         let alert = UIAlertController(
-                            title: "Delete Post?",
-                            message: "This will permanently delete the post and all its tasks.",
+                            title: "Delete Deal?",
+                            message: "This will permanently delete the deal and all its deliverables.",
                             preferredStyle: .alert
                         )
                         
                         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
                         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-                            guard case .post(let post, _) = self.schedule,
-                                  let postId = post.id else { return }
-                            self.performDelete(postId: postId)
+                            guard case .deal(let deal, _) = self.schedule else { return }
+                            let dealId = deal.id
+                            self.performDelete(dealId: dealId)
                         })
                         
                         self.topMostViewController.present(alert, animated: true)
                     }
+                }
+                cell.onEditTapped = { [weak self] in
+                    self?.performSegue(withIdentifier: "editDeal", sender: self)
                 }
                 
                 return cell
@@ -268,6 +317,29 @@ extension Details: UICollectionViewDataSource {
                     for: indexPath
                 ) as! DetailsCollectionViewCell
                 cell.configureCommon(with: schedule)
+                cell.onDeleteTapped = { [weak self] in
+                    guard let self else { return }
+                    
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(
+                            title: "Delete Post?",
+                            message: "This will permanently delete the post and all its tasks.",
+                            preferredStyle: .alert
+                        )
+                        
+                        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+                            guard case .post(let post, _) = self.schedule,
+                                  let postId = post.id else { return }
+                            self.performDelete(postId: postId)
+                        })
+                        
+                        self.topMostViewController.present(alert, animated: true)
+                    }
+                }
+                cell.onEditTapped = { [weak self] in
+                    self?.performSegue(withIdentifier: "editPost", sender: self)
+                }
                 
                 return cell
             }

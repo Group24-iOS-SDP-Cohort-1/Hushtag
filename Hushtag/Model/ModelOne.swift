@@ -48,6 +48,13 @@ extension Date {
         return formatter
     }()
     
+    private static let timeOnlyFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"   // Example: 4:30 PM
+        formatter.locale = .current
+        return formatter
+    }()
+    
     func dayOnly() -> String {
         Self.dayOnlyFormatter.string(from: self)
     }
@@ -66,6 +73,10 @@ extension Date {
     
     func monthAndYear() -> String {
         Self.monthYearFormatter.string(from: self)
+    }
+    
+    func timeOnly() -> String {
+        Self.timeOnlyFormatter.string(from: self)
     }
 }
 

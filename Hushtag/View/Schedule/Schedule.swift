@@ -158,6 +158,7 @@ class Schedule: UIViewController {
         }
         return layout
     }
+    
     private func generateWeek(for date: Date) {
         let calendar = Calendar.current
         
@@ -312,15 +313,33 @@ class Schedule: UIViewController {
         }
     }
     
-    @objc private func handlePostsDidChange() {
+  
+    @objc private func handleDealsDidChange() {
         Task {
             do {
                 try await scheduleController.load()
-                
+
                 await MainActor.run {
                     self.filterItems(for: self.selectedDate)
                     self.scheduleView.reloadSections(IndexSet(integer: 1))
                 }
+
+            } catch {
+                print("❌ Failed to reload deals:", error)
+            }
+        }
+    }
+
+    @objc private func handlePostsDidChange() {
+        Task {
+            do {
+                try await scheduleController.load()
+
+                await MainActor.run {
+                    self.filterItems(for: self.selectedDate)
+                    self.scheduleView.reloadSections(IndexSet(integer: 1))
+                }
+
             } catch {
                 print("❌ Failed to reload posts:", error)
             }
@@ -468,7 +487,9 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
 extension Notification.Name {
     static let calendarSwipeLeft = Notification.Name("calendarSwipeLeft")
     static let calendarSwipeRight = Notification.Name("calendarSwipeRight")
+    static let scheduleDidChange = Notification.Name("scheduleDidChange")
     static let postsDidChange = Notification.Name("postsDidChange")
+    static let dealsDidChange = Notification.Name("dealsDidChange")
 }
 
 extension Schedule: ScheduleCollectionViewCellDelegate {

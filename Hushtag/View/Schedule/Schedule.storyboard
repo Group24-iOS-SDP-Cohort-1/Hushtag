@@ -133,8 +133,8 @@
                     </view>
                     <navigationItem key="navigationItem" title="Schedule" id="2kR-Fi-Rbt">
                         <barButtonItem key="leftBarButtonItem" id="Iu4-it-BXJ">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="nFG-MX-haa">
-                                <rect key="frame" x="20" y="4.6666666666666687" width="49.666666666666657" height="34.666666666666664"/>
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="nFG-MX-haa">
+                                <rect key="frame" x="20" y="9" width="36" height="26"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" title="" image="person.2.circle" catalog="system"/>
@@ -172,10 +172,10 @@
         <!--AddViewController-->
         <scene sceneID="6mE-XW-wAE">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="AddVC" storyboardName="Activities" referencedIdentifier="AddViewController" id="JVo-VW-pJQ" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardIdentifier="AddVC" storyboardName="AddPostViewController" referencedIdentifier="AddViewController" id="JVo-VW-pJQ" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wif-wD-mjb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3650" y="92"/>
+            <point key="canvasLocation" x="3677" y="92"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="G29-7p-k3z">

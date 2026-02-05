@@ -155,7 +155,6 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
            let payRaw      = fieldValues[safe: 2] ?? ""
            let phone       = fieldValues[safe: 3] ?? ""
            let email       = fieldValues[safe: 4] ?? ""
-           let deadlineRaw = fieldValues[safe: 5] ?? ""
 
 
            // 2. Read deliverables
