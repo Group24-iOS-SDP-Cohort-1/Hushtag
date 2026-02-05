@@ -30,14 +30,25 @@ class ScriptsCell1: UICollectionViewCell {
 }
     
     func configureCell(with script: ScriptedIdea) {
-        // 1. Safely Set UI Elements
-        // Use '?? ""' to provide an empty string if the value is nil
-        Title.text = script.title ?? ""
-        Description.text = script.description ?? ""
+        if let realTitle = script.title, !realTitle.isEmpty {
+            Title.text = realTitle
+            Title.textColor = .label // Standard color for user-selected title
+        } else {
+            Title.text = script.mockTitle ?? "Untitled Script"
+            // Optional: You could make mock text slightly lighter to differentiate
+            // Title.textColor = .secondaryLabel
+        }
         
-        // Safely handle tags: if nil, pass an empty array []
+        // Description: Use real desc -> fallback to Mock -> fallback to Empty
+        if let realDesc = script.description, !realDesc.isEmpty {
+            Description.text = realDesc
+        } else {
+            Description.text = script.mockDescription ?? "No description available"
+        }
+        
+        // Tags
         configureHashtags(script.tags ?? [])
-
+        
         // 2. Calculate Progress
         let totalCriteria: Float = 4.0
         var filledCriteria: Float = 0.0

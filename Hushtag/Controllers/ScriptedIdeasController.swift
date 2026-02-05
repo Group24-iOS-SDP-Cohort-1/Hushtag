@@ -22,7 +22,9 @@ final class ScriptedIdeasController {
             description: nil,
             script: scriptContent,
             thumbnail: nil,
-            tags: nil // <--- Initialize with empty array
+            tags: nil, // <--- Initialize with empty array
+            mock_title: nil,        // <--- Start empty
+            mock_description: nil   // <--- Start empty
         )
         
         let ideaDB: ScriptedIdeaDB = try await client.database
@@ -60,7 +62,9 @@ final class ScriptedIdeasController {
             description: idea.description,
             script: idea.script,
             thumbnail: idea.thumbnailURL,
-            tags: idea.tags // <--- Pass the tags here
+            tags: idea.tags, // <--- Pass the tags here
+            mock_title: idea.mockTitle,             // <--- Save Mock Title
+            mock_description: idea.mockDescription  // <--- Save Mock Desc
         )
         
         let updatedDB: ScriptedIdeaDB = try await client.database
@@ -96,6 +100,8 @@ final class ScriptedIdeasController {
             script: db.script,
             thumbnailURL: db.thumbnail,
             tags: db.tags ?? [], // <--- Map DB tags (safely unwrapped to empty array)
+            mockTitle: db.mock_title,             // <--- Map it
+            mockDescription: db.mock_description, // <--- Map it
             createdAt: db.created_at
         )
     }

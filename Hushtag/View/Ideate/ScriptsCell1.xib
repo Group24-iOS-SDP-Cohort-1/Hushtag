@@ -24,7 +24,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ERR-cR-hGb">
-                        <rect key="frame" x="10" y="43" width="353" height="13.333333333333336"/>
+                        <rect key="frame" x="10" y="43" width="295" height="13.333333333333336"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -46,10 +46,10 @@
             <constraints>
                 <constraint firstItem="tDx-bd-U3z" firstAttribute="centerY" secondItem="i6m-aB-d6n" secondAttribute="centerY" id="6g3-Yt-Uzu"/>
                 <constraint firstItem="i6m-aB-d6n" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="DPG-QJ-tZx"/>
+                <constraint firstItem="ERR-cR-hGb" firstAttribute="width" secondItem="i6m-aB-d6n" secondAttribute="width" id="Ddz-lW-zve"/>
                 <constraint firstItem="ERR-cR-hGb" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="HUh-P6-uaq"/>
                 <constraint firstItem="i6m-aB-d6n" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="15" id="MOg-Gu-9Hm"/>
                 <constraint firstAttribute="trailing" secondItem="tDx-bd-U3z" secondAttribute="trailing" constant="8" id="QEM-oW-Vex"/>
-                <constraint firstAttribute="trailing" secondItem="ERR-cR-hGb" secondAttribute="trailing" constant="10" id="iWo-db-AYj"/>
                 <constraint firstItem="iLd-Bo-tRt" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="l56-wA-q6B"/>
                 <constraint firstItem="iLd-Bo-tRt" firstAttribute="top" secondItem="ERR-cR-hGb" secondAttribute="bottom" constant="10" id="mKN-RA-zSS"/>
                 <constraint firstItem="tDx-bd-U3z" firstAttribute="leading" secondItem="i6m-aB-d6n" secondAttribute="trailing" constant="15" id="q4t-po-bg2"/>

@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import FoundationModels
+import NaturalLanguage
+
 
 class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, LikedCellDelegate {
 
@@ -432,11 +435,113 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         // 7. Present the Menu
         self.present(alert, animated: true)
     }
+    // MARK: - Apple Intelligence (FoundationModels) Mock Generation
+//    func generateAndSaveMockData(for scriptText: String, ideaID: UUID) {
+//            
+//            Task {
+//                // STRATEGY 1: Try Apple Intelligence (If available)
+//                if #available(iOS 18.0, *), SystemLanguageModel.default.availability == .available {
+//                    do {
+//                        print("🧠 Attempting Apple Intelligence generation...")
+//                        try await generateWithFoundationModel(scriptText: scriptText, ideaID: ideaID)
+//                        return // Success! Exit function.
+//                    } catch {
+//                        print("⚠️ Apple Intelligence failed (\(error.localizedDescription)). Switching to fallback.")
+//                        // If it fails, execution continues below to the fallback
+//                    }
+//                } else {
+//                    print("ℹ️ Apple Intelligence unavailable. Using standard NLP.")
+//                }
+//                
+//                // STRATEGY 2: Fallback to Standard NLP (NLTagger)
+//                // This works 100% of the time on all devices and simulators.
+//                self.generateWithNLTagger(scriptText: scriptText, ideaID: ideaID)
+//            }
+//        }
+    
+    // MARK: - Smart Mock Generation (Hybrid)
+        func generateAndSaveMockData(for scriptText: String, ideaID: UUID) {
+            
+            Task {
+                // --- DEBUG START ---
+                let status = SystemLanguageModel.default.availability
+                print("🔍 Debugging Apple Intelligence Status: \(status)")
+                
+                // Detailed check (Optional, helps narrow it down)
+                if status != .available {
+                    print("⚠️ Reason: Likely models not downloaded in Settings or Region blocked.")
+                }
+                // --- DEBUG END ---
+
+                // STRATEGY 1: Try Apple Intelligence (If available)
+                if #available(iOS 18.0, *), status == .available {
+                    do {
+                        print("🧠 Attempting Apple Intelligence generation...")
+                        try await generateWithFoundationModel(scriptText: scriptText, ideaID: ideaID)
+                        return // Success! Exit function.
+                    } catch {
+                        print("⚠️ Apple Intelligence failed (\(error.localizedDescription)). Switching to fallback.")
+                    }
+                } else {
+                    print("ℹ️ Apple Intelligence unavailable. Skipping generation (Stays Untitled).")
+                }
+            }
+        }
+    // MARK: - Helper 1: The AI Way (FoundationModels)
+        @available(iOS 18.0, *)
+        private func generateWithFoundationModel(scriptText: String, ideaID: UUID) async throws {
+            let prompt = """
+            Analyze this script. Return a Title and Description.
+            Format:
+            TITLE: [Title]
+            DESC: [Description]
+            
+            Script:
+            \(scriptText)
+            """
+            
+            let session = LanguageModelSession()
+            let response = try await session.respond(to: prompt)
+            let generatedText = response.content
+            
+            try await parseAndSave(text: generatedText, ideaID: ideaID, source: "Apple Intelligence")
+        }
+
+        // MARK: - Shared Saver logic
+        private func parseAndSave(text: String, ideaID: UUID, source: String) async throws {
+            var newMockTitle: String?
+            var newMockDesc: String?
+            
+            let lines = text.components(separatedBy: .newlines)
+            for line in lines {
+                let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+                if trimmed.hasPrefix("TITLE:") {
+                    newMockTitle = trimmed.replacingOccurrences(of: "TITLE:", with: "").trimmingCharacters(in: .whitespaces)
+                } else if trimmed.hasPrefix("DESC:") {
+                    newMockDesc = trimmed.replacingOccurrences(of: "DESC:", with: "").trimmingCharacters(in: .whitespaces)
+                }
+            }
+            
+            if newMockTitle != nil || newMockDesc != nil {
+                guard var script = self.currentActiveScript else { return }
+                
+                // Only overwrite if currently nil
+                if script.mockTitle == nil { script.mockTitle = newMockTitle }
+                if script.mockDescription == nil { script.mockDescription = newMockDesc }
+                
+                let updated = try await self.dbController.updateScript(script)
+                
+                await MainActor.run {
+                    self.currentActiveScript = updated
+                    print("✅ Mock data saved via \(source)")
+                }
+            }
+        }
     
     
     // Add this function to Chatbot class
     // MARK: - Database Logic
-        func syncToDatabase(type: String, text: String?) {
+    func syncToDatabase(type: String, text: String?) {
             Task {
                 do {
                     // SCENARIO 1: Creating a new script (Must have text, can't be nil)
@@ -448,11 +553,13 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                         self.currentActiveScript = newScript
                         print("✅ Created Script ID: \(newScript.id)")
                         
-                        // 2. NEW: Save all the chat history we have so far!
-                        // We link the existing 'messages' array to this new Idea ID.
+                        // 2. Save all the chat history
                         print("💾 Saving chat history buffer...")
                         try await dbController.batchSaveMessages(ideaID: newScript.id, messages: self.messages)
                         print("✅ Chat history saved!")
+                        
+                        print("✨ Generating mock data with Apple Intelligence...")
+                        self.generateAndSaveMockData(for: validText, ideaID: newScript.id)
                         
                     }
                     // SCENARIO 2: Updating (or Unmarking) an existing script
@@ -483,7 +590,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 }
             }
         }
-
 
     func getUnmarkedTypes() -> [String] {
         return requiredMarkTypes.filter { type in
