@@ -26,12 +26,12 @@ class ViewScriptsViewController: UIViewController {
         super.viewDidLoad()
         
         
-//        ideas = ideaResponse.ideas
-//        likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
+        //        ideas = ideaResponse.ideas
+        //        likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
         navigationItem.title = pageTitle
         scriptsCollectionView.dataSource = self
         scriptsCollectionView.delegate = self
-      
+        
         scriptsCollectionView.register(UINib(nibName: "ScriptsCell1", bundle: nil), forCellWithReuseIdentifier: "scriptedIdeas")
         scriptsCollectionView.register(UINib(nibName: "LikedCellsNew", bundle: nil), forCellWithReuseIdentifier: "likedCellsNew")
         
@@ -40,16 +40,25 @@ class ViewScriptsViewController: UIViewController {
         scriptsCollectionView.setCollectionViewLayout(layout, animated: true)
         
         if pageTitle == "Your Scripts" {
-                    // 1. Fetch from Supabase
-                    fetchMyScripts()
-                } else {
-                    // 2. Load Liked Ideas (Existing Logic)
-                    ideas = ideaResponse.ideas
-                    likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
-                    NotificationCenter.default.addObserver(self, selector: #selector(syncLikedIdeas), name: .didUpdateLikedStatus, object: nil)
-                    updateEmptyState()
-                }
+            // 1. Fetch from Supabase
+            fetchMyScripts()
+        } else {
+            // 2. Load Liked Ideas (Existing Logic)
+            ideas = ideaResponse.ideas
+            likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
+            NotificationCenter.default.addObserver(self, selector: #selector(syncLikedIdeas), name: .didUpdateLikedStatus, object: nil)
+            updateEmptyState()
+        }
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+            
+            // Refresh the list every time the view appears
+            if pageTitle == "Your Scripts" {
+                fetchMyScripts()
+            }
+        }
     
     
     func fetchMyScripts() {

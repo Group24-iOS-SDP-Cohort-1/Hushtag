@@ -23,7 +23,10 @@ class ScriptedIdeas: UIViewController {
     @IBOutlet weak var popupButton: UIButton!
 
 
-
+    @IBOutlet weak var optionsBarButton: UIBarButtonItem!
+    
+    private let dbController = ScriptedIdeasController()
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +45,69 @@ class ScriptedIdeas: UIViewController {
         setupDescription(with: idea.description)
         setupScriptContent(with: idea.script)
         setupThumbnail(with: idea.thumbnailURL)
+        
+        setupMenu()
     }
+    
+    private func setupMenu() {
+        // Option 1: View Chat History
+        let chatAction = UIAction(title: "View Chat History", image: UIImage(systemName: "bubble.left.and.bubble.right.fill")) { [weak self] _ in
+            self?.navigateToChat()
+        }
+        
+        // Option 2: Delete Script (Destructive)
+        let deleteAction = UIAction(title: "Delete Script", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
+            self?.confirmDelete()
+        }
+        
+        // Attach menu to the bar button
+        let menu = UIMenu(title: "", children: [chatAction, deleteAction])
+        optionsBarButton.menu = menu
+    }
+    
+    private func navigateToChat() {
+            guard let idea = self.idea else { return }
+            
+            let storyboard = UIStoryboard(name: "Chatbot", bundle: nil) // Ensure this matches your Storyboard name
+            if let chatVC = storyboard.instantiateViewController(withIdentifier: "Chatbot") as? Chatbot {
+                
+                // Pass the current script to the chatbot so it loads history
+                chatVC.currentActiveScript = idea
+                
+                self.navigationController?.pushViewController(chatVC, animated: true)
+            }
+        }
+    
+    private func confirmDelete() {
+            let alert = UIAlertController(title: "Delete Script", message: "Are you sure? This cannot be undone.", preferredStyle: .alert)
+            
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in
+                self.performDelete()
+            }))
+            
+            present(alert, animated: true)
+        }
+        
+        private func performDelete() {
+            guard let id = idea?.id else { return }
+            
+            Task {
+                do {
+                    // Call Supabase to delete
+                    try await dbController.deleteScript(id)
+                    
+                    await MainActor.run {
+                        // Navigate back to the list
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                } catch {
+                    print("Error deleting script: \(error)")
+                    // Optional: Show error alert
+                }
+            }
+        }
+    
     private func setupNavigationTitle(with title: String?) {
             let titleText = title ?? "Untitled Script"
             

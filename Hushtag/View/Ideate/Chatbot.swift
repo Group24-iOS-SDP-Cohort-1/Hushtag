@@ -90,6 +90,21 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     sendAutoMessage(text)
                     autoSendMessage = nil
                 }
+        
+        // --- NEW: Check for existing script and load history ---
+        if let script = currentActiveScript {
+                    print("📜 Loading history for script: \(script.id)")
+                    // Pass the ENTIRE script object so we can mark things after loading
+                    loadChatHistory(using: script)
+                } else {
+                    // New Chat Setup
+                    if messages.isEmpty {
+                        let welcomeMessage = "Welcome! I’m your scripting assistant. Lets write a script for you."
+                        messages.append(Message(text: welcomeMessage, isUser: false))
+                        tableView.reloadData()
+                        scrollToBottom()
+                    }
+                }
 
         setupKeyboardObservers()
         setupTapToDismiss()
@@ -98,6 +113,74 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+    
+    // MARK: - History Loading (Fixed)
+        func loadChatHistory(using script: ScriptedIdea) {
+            Task {
+                do {
+                    // 1. Fetch from Supabase
+                    let history = try await dbController.fetchChatHistory(for: script.id)
+                    
+                    await MainActor.run {
+                        // 2. Populate the messages array FIRST
+                        self.messages = history
+                        
+                        // 3. NOW it is safe to run restoration because 'self.messages' is not empty
+                        self.restoreMarkedState(from: script)
+                        
+                        // 4. Reload and scroll
+                        self.tableView.reloadData()
+                        
+                        if !self.messages.isEmpty {
+                            self.scrollToBottom()
+                        }
+                    }
+                } catch {
+                    print("Error loading history: \(error)")
+                }
+            }
+        }
+    
+    
+    // MARK: - Restore Selection State
+        func restoreMarkedState(from script: ScriptedIdea) {
+            print("Bot: Restoring marked state...")
+            
+            // Clear previous states to be safe
+            markedMessages = ["script": [], "title": [], "description": [], "thumbnail": []]
+            
+            for i in messages.indices {
+                // Normalize strings to ensure matches work even with accidental spaces
+                let msgText = messages[i].text.trimmingCharacters(in: .whitespacesAndNewlines)
+                
+                // 1. Check Title
+                if let title = script.title?.trimmingCharacters(in: .whitespacesAndNewlines), msgText == title {
+                    messages[i].markType = "title"
+                    markedMessages["title"] = [messages[i]]
+                }
+                // 2. Check Description
+                else if let desc = script.description?.trimmingCharacters(in: .whitespacesAndNewlines), msgText == desc {
+                    messages[i].markType = "description"
+                    markedMessages["description"] = [messages[i]]
+                }
+                // 3. Check Script
+                else if let sBody = script.script?.trimmingCharacters(in: .whitespacesAndNewlines), msgText == sBody {
+                    messages[i].markType = "script"
+                    markedMessages["script"] = [messages[i]]
+                }
+                // 4. Check Thumbnail
+                else if let thumb = script.thumbnailURL?.trimmingCharacters(in: .whitespacesAndNewlines), msgText == thumb {
+                    messages[i].markType = "thumbnail"
+                    markedMessages["thumbnail"] = [messages[i]]
+                }
+            }
+            
+            // Update the UI
+            showScriptSuggestions()
+            // Note: tableView.reloadData() is called by the parent function immediately after this returns
+        }
+    
+    
 
     func isTypeAlreadyMarked(_ type: String) -> Bool {
             return !(markedMessages[type]?.isEmpty ?? true)
@@ -319,122 +402,211 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             }
     }
 
-    @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
-        // 1. Trigger action only when the press begins
-        guard gesture.state == .began else { return }
-        guard let cellView = gesture.view else { return }
-        let row = cellView.tag
-        var message = messages[row]
-        
-        
-//        var sheetTitle = "Options"
-//        if let type = message.markType {
-//            sheetTitle = "Manage \(type.capitalized)"
-//        } else {
-//            sheetTitle = "Select Option"
+//    @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+//        // 1. Trigger action only when the press begins
+//        guard gesture.state == .began else { return }
+//        guard let cellView = gesture.view else { return }
+//        let row = cellView.tag
+//        var message = messages[row]
+//        
+//        
+////        var sheetTitle = "Options"
+////        if let type = message.markType {
+////            sheetTitle = "Manage \(type.capitalized)"
+////        } else {
+////            sheetTitle = "Select Option"
+////        }
+//        
+//        // 2. Create Alert Controller (ActionSheet style)
+//        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+//
+//        // 3. Define the Helper Function to add actions
+//        func addMarkAction(type: String) {
+//            let isMarked = message.markType == type
+//            
+//            // If this type is already taken by another message, don't show the button
+//            if !isMarked && isTypeAlreadyMarked(type) {
+//                return
+//            }
+//
+//            let title = isMarked ? "Unmark \(type.capitalized)" : "Mark as \(type.capitalized)"
+//            
+//            // Use Red (.destructive) for Unmark, Blue (.default) for Mark
+//            let style: UIAlertAction.Style = isMarked ? .destructive : .default
+//            
+//            alert.addAction(UIAlertAction(title: title, style: style) { _ in
+//                if isMarked {
+//                    // --- UNMARK LOGIC ---
+//                    message.markType = nil
+//                    
+//                    self.markedMessages[type]?.removeAll {
+//                        $0.text == message.text
+//                    }
+//                    
+//                    // Sync to DB (Set to NULL)
+//                    self.syncToDatabase(type: type, text: nil)
+//                    
+//                    self.didShowFinalReadyMessage = false
+//                    self.showScriptSuggestions()
+//
+//                } else {
+//                    // --- MARK LOGIC ---
+//                    // Safety: If it was marked as something else before, clear that old type
+//                    if let oldType = message.markType {
+//                        self.markedMessages[oldType]?.removeAll { $0.text == message.text }
+//                    }
+//
+//                    self.generateStack.isHidden = false
+//                    message.markType = type
+//                    self.markedMessages[type]?.append(message)
+//                    
+//                    // Sync to DB (Set to Value)
+//                    self.syncToDatabase(type: type, text: message.text)
+//                    
+//                    // Check if the set is complete
+//                    if self.isAllContentMarked() && !self.didShowFinalReadyMessage {
+//                        self.didShowFinalReadyMessage = true
+//                        
+//                        let finalMessage = Message(
+//                            text: "less goo your post is ready",
+//                            isUser: false
+//                        )
+//                        
+//                        self.messages.append(finalMessage)
+//                        
+//                        let indexPath = IndexPath(
+//                            row: self.messages.count - 1,
+//                            section: 0
+//                        )
+//                        
+//                        self.tableView.insertRows(at: [indexPath], with: .fade)
+//                        self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+//                    }
+//                    
+//                    self.showScriptSuggestions()
+//                }
+//                
+//                // Update the specific row to reflect UI changes (like highlighting)
+//                self.messages[row] = message
+//                self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
+//            })
 //        }
-        
-        // 2. Create Alert Controller (ActionSheet style)
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+//
+//        // 4. Decide which buttons to show
+//        if let currentMarkType = message.markType {
+//            // Case 1: Already Marked -> Only show the "Unmark" option
+//            addMarkAction(type: currentMarkType)
+//        } else {
+//            // Case 2: Not Marked -> Show all available options
+//            ["script", "title", "description", "thumbnail"].forEach { addMarkAction(type: $0) }
+//        }
+//
+//        // 5. Add Cancel Button
+//        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+//        
+//        // 6. iPad Crash Fix
+//        // Only apply popover settings if the device is actually an iPad.
+//        // This ensures iPhones still use the bottom sheet (Stacked) look.
+//        if UIDevice.current.userInterfaceIdiom == .pad {
+//            if let popoverController = alert.popoverPresentationController {
+//                popoverController.sourceView = cellView
+//                popoverController.sourceRect = cellView.bounds
+//                popoverController.permittedArrowDirections = .any
+//            }
+//        }
+//        
+//        // 7. Present the Menu
+//        self.present(alert, animated: true)
+//    }
+    
+    @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+            guard gesture.state == .began else { return }
+            guard let cellView = gesture.view else { return }
+            let row = cellView.tag
+            
+            var message = messages[row]
+            
+            let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
-        // 3. Define the Helper Function to add actions
-        func addMarkAction(type: String) {
-            let isMarked = message.markType == type
+            // LOGIC: Strict separation.
+            // If marked -> ONLY Unmark.
+            // If not marked -> ONLY Mark options.
             
-            // If this type is already taken by another message, don't show the button
-            if !isMarked && isTypeAlreadyMarked(type) {
-                return
-            }
-
-            let title = isMarked ? "Unmark \(type.capitalized)" : "Mark as \(type.capitalized)"
-            
-            // Use Red (.destructive) for Unmark, Blue (.default) for Mark
-            let style: UIAlertAction.Style = isMarked ? .destructive : .default
-            
-            alert.addAction(UIAlertAction(title: title, style: style) { _ in
-                if isMarked {
-                    // --- UNMARK LOGIC ---
+            if let currentType = message.markType {
+                // --- UNMARK OPTION ---
+                let title = "Unmark \(currentType.capitalized)"
+                let unmarkAction = UIAlertAction(title: title, style: .destructive) { _ in
+                    
+                    // 1. Update UI Model
                     message.markType = nil
+                    self.messages[row] = message // Update array
                     
-                    self.markedMessages[type]?.removeAll {
-                        $0.text == message.text
-                    }
+                    // 2. Clear Internal Dictionary
+                    self.markedMessages[currentType]?.removeAll { $0.text == message.text }
                     
-                    // Sync to DB (Set to NULL)
-                    self.syncToDatabase(type: type, text: nil)
+                    // 3. Sync to Database (Set column to NULL)
+                    self.syncToDatabase(type: currentType, text: nil)
                     
+                    // 4. Refresh UI
                     self.didShowFinalReadyMessage = false
                     self.showScriptSuggestions()
-
-                } else {
-                    // --- MARK LOGIC ---
-                    // Safety: If it was marked as something else before, clear that old type
-                    if let oldType = message.markType {
-                        self.markedMessages[oldType]?.removeAll { $0.text == message.text }
-                    }
-
-                    self.generateStack.isHidden = false
-                    message.markType = type
-                    self.markedMessages[type]?.append(message)
-                    
-                    // Sync to DB (Set to Value)
-                    self.syncToDatabase(type: type, text: message.text)
-                    
-                    // Check if the set is complete
-                    if self.isAllContentMarked() && !self.didShowFinalReadyMessage {
-                        self.didShowFinalReadyMessage = true
-                        
-                        let finalMessage = Message(
-                            text: "less goo your post is ready",
-                            isUser: false
-                        )
-                        
-                        self.messages.append(finalMessage)
-                        
-                        let indexPath = IndexPath(
-                            row: self.messages.count - 1,
-                            section: 0
-                        )
-                        
-                        self.tableView.insertRows(at: [indexPath], with: .fade)
-                        self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-                    }
-                    
-                    self.showScriptSuggestions()
+                    self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
                 }
+                alert.addAction(unmarkAction)
                 
-                // Update the specific row to reflect UI changes (like highlighting)
-                self.messages[row] = message
-                self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
-            })
-        }
-
-        // 4. Decide which buttons to show
-        if let currentMarkType = message.markType {
-            // Case 1: Already Marked -> Only show the "Unmark" option
-            addMarkAction(type: currentMarkType)
-        } else {
-            // Case 2: Not Marked -> Show all available options
-            ["script", "title", "description", "thumbnail"].forEach { addMarkAction(type: $0) }
-        }
-
-        // 5. Add Cancel Button
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
-        // 6. iPad Crash Fix
-        // Only apply popover settings if the device is actually an iPad.
-        // This ensures iPhones still use the bottom sheet (Stacked) look.
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            if let popoverController = alert.popoverPresentationController {
-                popoverController.sourceView = cellView
-                popoverController.sourceRect = cellView.bounds
-                popoverController.permittedArrowDirections = .any
+            } else {
+                // --- MARK OPTIONS ---
+                for type in requiredMarkTypes {
+                    // If "Title" is already assigned to a DIFFERENT message, don't show it here.
+                    if isTypeAlreadyMarked(type) { continue }
+                    
+                    let title = "Mark as \(type.capitalized)"
+                    let action = UIAlertAction(title: title, style: .default) { _ in
+                        
+                        // 1. Update UI Model
+                        message.markType = type
+                        self.messages[row] = message
+                        
+                        // 2. Update Internal Dictionary
+                        self.markedMessages[type]?.append(message)
+                        
+                        // 3. Sync to Database
+                        self.syncToDatabase(type: type, text: message.text)
+                        
+                        // 4. Check Completion
+                        self.generateStack.isHidden = false
+                        
+                        if self.isAllContentMarked() && !self.didShowFinalReadyMessage {
+                            self.didShowFinalReadyMessage = true
+                            
+                            let finalMessage = Message(text: "less goo your post is ready", isUser: false)
+                            self.messages.append(finalMessage)
+                            
+                            let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+                            self.tableView.insertRows(at: [indexPath], with: .fade)
+                            self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+                        }
+                        
+                        self.showScriptSuggestions()
+                        self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
+                    }
+                    alert.addAction(action)
+                }
             }
+
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            
+            // iPad Support
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                if let popoverController = alert.popoverPresentationController {
+                    popoverController.sourceView = cellView
+                    popoverController.sourceRect = cellView.bounds
+                    popoverController.permittedArrowDirections = .any
+                }
+            }
+            
+            self.present(alert, animated: true)
         }
-        
-        // 7. Present the Menu
-        self.present(alert, animated: true)
-    }
     // MARK: - Apple Intelligence (FoundationModels) Mock Generation
 //    func generateAndSaveMockData(for scriptText: String, ideaID: UUID) {
 //            
