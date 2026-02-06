@@ -8,16 +8,39 @@
 import Foundation
 
 struct ClusterResponse: Codable {
-    let clusters: ClusterResult
-    let embeddingsCount: Int
+    let videos: [ClusteredVideo]
 
-    enum CodingKeys: String, CodingKey {
-        case clusters
-        case embeddingsCount = "embeddings_count"
-    }
+    let clusters: [String: ClusterLabelInfo]
+    let gaps: [String]
 }
+
 
 struct ClusterResult: Codable {
     let labels: [Int]
     let outliers: [Int]
 }
+
+struct ClusteredVideo: Codable, Identifiable {
+    let id: String
+    let title: String
+    let description: String
+    let thumbnail: String?
+    let channel: String
+    let views: Int
+    let likes: Int
+    let publishedAt: String
+
+    let cluster: Int
+    let isOutlier: Bool
+
+    let clusterTitle: String?
+    let clusterDescription: String?
+    let clusterKeywords: [String]
+}
+
+struct ClusterLabelInfo: Codable {
+    let title: String
+    let description: String
+    let keywords: [String]
+}
+

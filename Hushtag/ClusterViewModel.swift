@@ -8,26 +8,53 @@
 import Foundation
 import Combine
 
+//@MainActor
+//final class ClusterViewModel: ObservableObject {
+//
+//    @Published var labels: [Int] = []
+//    @Published var outliers: [Int] = []
+//
+//    func runClustering(embeddings: [[Double]]) {
+//        Task {
+//            do {
+//                let result = try await ClusterService()
+//                    .cluster(embeddings: embeddings)
+//
+//                self.labels = result.clusters.labels
+//                self.outliers = result.clusters.outliers
+//
+//                print("✅ Cluster labels:", self.labels)
+//                print("🚨 Outliers:", self.outliers)
+//
+//            } catch {
+//                print("❌ Clustering failed:", error)
+//            }
+//        }
+//    }
+//}
+
 @MainActor
 final class ClusterViewModel: ObservableObject {
 
-    @Published var labels: [Int] = []
-    @Published var outliers: [Int] = []
+    @Published var videos: [ClusteredVideo] = []
+    @Published var clusterInfo: [String: ClusterLabelInfo] = [:]
+    @Published var gaps: [String] = []
 
-    func runClustering(embeddings: [[Double]]) {
+    func load(query: String) {
         Task {
             do {
                 let result = try await ClusterService()
-                    .cluster(embeddings: embeddings)
+                    .fetchClusters(query: query)
 
-                self.labels = result.clusters.labels
-                self.outliers = result.clusters.outliers
+                self.videos = result.videos
+                self.clusterInfo = result.clusters
+                self.gaps = result.gaps
 
-                print("✅ Cluster labels:", self.labels)
-                print("🚨 Outliers:", self.outliers)
+                print("✅ Loaded videos:", self.videos.count)
+                print("📌 Cluster titles:", self.clusterInfo)
 
             } catch {
-                print("❌ Clustering failed:", error)
+                print("❌ Failed:", error)
             }
         }
     }

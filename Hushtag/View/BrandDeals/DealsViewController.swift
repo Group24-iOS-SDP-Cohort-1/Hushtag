@@ -76,11 +76,7 @@ class DealsViewController: UIViewController {
                 print("❌ No auth session:", error)
             }
         }
-        
-        
-        
-        
-        
+    
         fetchDeals()
         
         print(deals.count)
@@ -104,10 +100,7 @@ class DealsViewController: UIViewController {
             .foregroundColor: purpleColor,
             .font: UIFont.systemFont(ofSize: 14, weight: .semibold)
         ], for: .selected)
-        
-        
     }
-    
     
     @IBAction func segmentedAction(_ sender: UISegmentedControl) {
         selectedSegmentIndex = sender.selectedSegmentIndex
@@ -138,8 +131,6 @@ class DealsViewController: UIViewController {
         }
         
     }
-    
-    
     
     func registerCell() {
         collectionView.register(
@@ -266,7 +257,6 @@ extension DealsViewController: DealsInfoDelegate {
         collectionView.collectionViewLayout.invalidateLayout()
         collectionView.reloadData()
     }
-    
     
 }
 

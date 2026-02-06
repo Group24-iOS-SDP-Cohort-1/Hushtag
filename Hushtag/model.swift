@@ -13,7 +13,7 @@ final class VideoViewModel: ObservableObject {
                     .search(query: "startup")
 
                 self.videos = result
-                print("Fetched videos:", result) // 👈 SEE RESULT HERE
+                //print("Fetched videos:", result) // 👈 SEE RESULT HERE
 
             } catch {
                 print("Error:", error)
