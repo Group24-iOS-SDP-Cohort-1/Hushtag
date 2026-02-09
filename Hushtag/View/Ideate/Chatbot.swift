@@ -325,7 +325,21 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     
     func sendMessage(_ text: String) {
             // 1. Update UI
-            messages.append(Message(text: text, isUser: true))
+        var prompt = text
+        if prompt.lowercased().contains("generate title"){
+            prompt = """
+            GENERATE TITLE - 
+                
+            Generate a catchy, short title for the script.
+            """
+        }else if prompt.lowercased().contains("generate description"){
+            prompt = """
+            GENERATE DESCRIPTION -
+                                    
+            Generate description a short, engaging description (2 sentences max) for the script.
+            """
+        }
+            messages.append(Message(text: prompt, isUser: true))
             tableView.reloadData()
             
             let indexPath = IndexPath(row: messages.count - 1, section: 0)
@@ -433,11 +447,29 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             // Everything else (Scripts, Chat, Advice) -> Use Gemini Only
             
             if !scriptContext.isEmpty && (lower.contains("generate title") || lower.contains("suggest title")) {
-                let prompt = "Generate title a catchy, short title for the following script:\n\n\(scriptContext)"
+                let prompt = """
+                    GENERATE TITLE - 
+                    
+                    Generate a catchy, short title for the following script.
+                    Format it strictly as:
+                    TITLE: [Title]
+                
+                    Script:
+                    \(scriptContext)
+                """
                 performHybridGeneration(prompt: prompt)
                 
             } else if !scriptContext.isEmpty && lower.contains("generate description") {
-                let prompt = "Generate description a short, engaging description (2 sentences max) for the following script:\n\n\(scriptContext)"
+                let prompt = """
+                    GENERATE DESCRIPTION -
+                    
+                    Generate description a short, engaging description (2 sentences max) for the following script.
+                    Format it strictly as:
+                    DESC: [Description]
+                    
+                    Script:
+                    \(scriptContext)
+                """
                 performHybridGeneration(prompt: prompt)
                 
             } else if !scriptContext.isEmpty && lower.contains("generate thumbnail") {
@@ -504,7 +536,23 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             if !self.messages.isEmpty { self.messages.removeLast() }
             
             let finalContent = text ?? "Sorry, I couldn't connect to the server."
-            self.messages.append(Message(text: finalContent, isUser: false))
+            var cleanContent = finalContent
+            
+            //print(text ?? "EMPTY")
+            
+            
+            let trimmed = finalContent.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            if trimmed.hasPrefix("TITLE:") {
+                // Remove "TITLE:" and trim spaces
+                cleanContent = trimmed.replacingOccurrences(of: "TITLE:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+            else if trimmed.hasPrefix("DESC:") {
+                // Remove "DESC:" and trim spaces
+                cleanContent = trimmed.replacingOccurrences(of: "DESC:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+            
+            self.messages.append(Message(text: cleanContent, isUser: false))
             
             if let scriptID = self.currentActiveScript?.id {
                 Task { try? await self.dbController.saveChatMessage(ideaID: scriptID, text: finalContent, isUser: false) }
@@ -779,6 +827,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     print("🧠 Asking Apple Intelligence Manager...")
                     // --- CALLING THE NEW MANAGER ---
                     let result = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
+                    print(result)
                     
                     // Parse the result locally
                     try await parseAndSave(text: result, ideaID: ideaID, source: "Apple Intelligence")
