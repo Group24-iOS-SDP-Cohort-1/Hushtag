@@ -350,49 +350,170 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         }
     
     
-        func generateBotReply(for userText: String) {
-            
-            // 1. UI: Add temporary "Thinking..." message
+//    func generateBotReply(for userText: String) {
+//            // UI: "Thinking..."
+//            let loadingMessage = Message(text: "Thinking...", isUser: false)
+//            messages.append(loadingMessage)
+//            tableView.reloadData()
+//            scrollToBottom()
+//            
+//            // --- LOGIC: Context Injection ---
+//            // If the user asks for Title/Description, we inject the marked script into the prompt.
+//            var prompt = userText
+//            let lower = userText.lowercased()
+//            
+//            // Check if we have a marked script to base the generation on
+//            let scriptContext = markedMessages["script"]?.first?.text ?? ""
+//            
+//            if !scriptContext.isEmpty {
+//                if lower.contains("generate title") || lower.contains("suggest title") {
+//                    prompt = "Generate a catchy, short title for the following script:\n\n\(scriptContext)"
+//                } else if lower.contains("generate description") {
+//                    prompt = "Generate a short, engaging description (2 sentences max) for the following script:\n\n\(scriptContext)"
+//                } else if lower.contains("generate thumbnail") {
+//                    prompt = "Describe a visual thumbnail image that would represent this script:\n\n\(scriptContext)"
+//                }
+//            }
+//            
+//            // --- CALL MANAGER ---
+//            Task {
+//                var responseText: String?
+//                
+//                // 1. Try Apple Intelligence
+//                if #available(iOS 18.0, *), AppleIntelligenceManager.shared.isAvailable {
+//                    do {
+//                        print("🧠 Asking Apple Intelligence...")
+//                        responseText = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
+//                    } catch {
+//                        print("⚠️ Apple AI failed: \(error). Falling back.")
+//                    }
+//                }
+//                
+//                // 2. Fallback to Gemini (if Apple failed or unavailable)
+//                if responseText == nil {
+//                    print("✨ Asking Gemini (Fallback)...")
+//                    await withCheckedContinuation { continuation in
+//                        GeminiManager.shared.generateContent(prompt: prompt) { result in
+//                            responseText = result
+//                            continuation.resume()
+//                        }
+//                    }
+//                }
+//                
+//                // 3. Update UI
+//                await MainActor.run {
+//                    if !self.messages.isEmpty { self.messages.removeLast() } // Remove "Thinking..."
+//                    
+//                    let finalContent = responseText ?? "Sorry, I couldn't connect to the server."
+//                    self.messages.append(Message(text: finalContent, isUser: false))
+//                    
+//                    if let scriptID = self.currentActiveScript?.id {
+//                        Task { try? await self.dbController.saveChatMessage(ideaID: scriptID, text: finalContent, isUser: false) }
+//                    }
+//                    
+//                    self.tableView.reloadData()
+//                    self.scrollToBottom()
+//                }
+//            }
+//        }
+    
+    func generateBotReply(for userText: String) {
             let loadingMessage = Message(text: "Thinking...", isUser: false)
             messages.append(loadingMessage)
             tableView.reloadData()
             scrollToBottom()
             
-            // 2. Logic: Customize prompt based on user intention
-            var prompt = userText
             let lower = userText.lowercased()
             
-            if lower.contains("generate title") {
-                 // We need to send context if we want a title for a specific script.
-                 // For now, let's assume the user just pasted the script or is asking generally.
-                 // Ideally, you'd append the previous bot message here.
-                 prompt = "Generate a catchy title for a script about: \(userText)"
-            }
+            // 1. Check for Context (Is the user asking based on a selected script?)
+            let scriptContext = markedMessages["script"]?.first?.text ?? ""
             
-            // 3. Call your Edge Function via the Manager
+            // ROUTING LOGIC:
+            // If "Generate Title/Description/Thumbnail" -> Use Hybrid (Apple First)
+            // Everything else (Scripts, Chat, Advice) -> Use Gemini Only
+            
+            if !scriptContext.isEmpty && (lower.contains("generate title") || lower.contains("suggest title")) {
+                let prompt = "Generate title a catchy, short title for the following script:\n\n\(scriptContext)"
+                performHybridGeneration(prompt: prompt)
+                
+            } else if !scriptContext.isEmpty && lower.contains("generate description") {
+                let prompt = "Generate description a short, engaging description (2 sentences max) for the following script:\n\n\(scriptContext)"
+                performHybridGeneration(prompt: prompt)
+                
+            } else if !scriptContext.isEmpty && lower.contains("generate thumbnail") {
+                let prompt = "Describe a visual thumbnail image that would represent this script:\n\n\(scriptContext)"
+                performHybridGeneration(prompt: prompt)
+                
+            } else {
+                // Default Case: Generating Scripts or General Chat
+                // User requested: "Script should get generated from Gemini only"
+                performGeminiGeneration(prompt: userText)
+            }
+        }
+        
+        // MARK: - Generation Strategy 1: Gemini ONLY
+        // Used for Scripts and General Chat
+        func performGeminiGeneration(prompt: String) {
+            print("✨ Routing to Gemini (Direct)...")
+            
             GeminiManager.shared.generateContent(prompt: prompt) { [weak self] responseText in
                 guard let self = self else { return }
+                self.handleAIResponse(responseText)
+            }
+        }
+        
+        // MARK: - Generation Strategy 2: Hybrid (Apple -> Gemini Fallback)
+        // Used for Titles, Descriptions, and Summaries
+        func performHybridGeneration(prompt: String) {
+            print("🧠 Routing to Hybrid (Apple First)...")
+            
+            Task {
+                var responseText: String?
                 
-                // Remove "Thinking..."
-                if !self.messages.isEmpty {
-                    self.messages.removeLast()
-                }
-                
-                // Add actual response
-                let finalText = responseText ?? "Sorry, I couldn't connect to the server."
-                self.messages.append(Message(text: finalText, isUser: false))
-                
-                if let scriptID = self.currentActiveScript?.id {
-                    Task {
-                        print("☁️ Saving AI message to DB...")
-                        try? await self.dbController.saveChatMessage(ideaID: scriptID, text: finalText, isUser: false)
+                // Step A: Try Apple Intelligence
+                if #available(iOS 18.0, *), AppleIntelligenceManager.shared.isAvailable {
+                    do {
+                        responseText = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
+                        print("✅ Apple Intelligence responded.")
+                    } catch {
+                        print("⚠️ Apple AI failed: \(error). Falling back.")
                     }
                 }
                 
-                self.tableView.reloadData()
-                self.scrollToBottom()
+                // Step B: Fallback to Gemini if Apple failed
+                if responseText == nil {
+                    print("✨ Apple unavailable/failed. Asking Gemini...")
+                    await withCheckedContinuation { continuation in
+                        GeminiManager.shared.generateContent(prompt: prompt) { result in
+                            responseText = result
+                            continuation.resume()
+                        }
+                    }
+                }
+                
+                // Step C: Handle Result
+                await MainActor.run {
+                    self.handleAIResponse(responseText)
+                }
             }
         }
+        
+        // Shared Response Handler
+        private func handleAIResponse(_ text: String?) {
+            // Remove "Thinking..."
+            if !self.messages.isEmpty { self.messages.removeLast() }
+            
+            let finalContent = text ?? "Sorry, I couldn't connect to the server."
+            self.messages.append(Message(text: finalContent, isUser: false))
+            
+            if let scriptID = self.currentActiveScript?.id {
+                Task { try? await self.dbController.saveChatMessage(ideaID: scriptID, text: finalContent, isUser: false) }
+            }
+            
+            self.tableView.reloadData()
+            self.scrollToBottom()
+        }
+    
 
 
     @IBAction func sendButton(_ sender: Any) {

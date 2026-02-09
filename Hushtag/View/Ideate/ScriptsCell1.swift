@@ -24,7 +24,7 @@ class ScriptsCell1: UICollectionViewCell {
         super.awakeFromNib()
         self.layer.cornerRadius = 12
         applyLiquidGlassEffect()
-        Title.numberOfLines = 3
+        Title.numberOfLines = 2
         Description.numberOfLines = 1
         Description.textColor = .secondaryLabel
 }
