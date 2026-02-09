@@ -607,77 +607,84 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             
             self.present(alert, animated: true)
         }
-    // MARK: - Apple Intelligence (FoundationModels) Mock Generation
-//    func generateAndSaveMockData(for scriptText: String, ideaID: UUID) {
+    
+    // MARK: - Smart Mock Generation (Hybrid)
+//        func generateAndSaveMockData(for scriptText: String, ideaID: UUID) {
 //            
 //            Task {
+//                // --- DEBUG START ---
+//                let status = SystemLanguageModel.default.availability
+//                print("🔍 Debugging Apple Intelligence Status: \(status)")
+//                
+//                // Detailed check (Optional, helps narrow it down)
+//                if status != .available {
+//                    print("⚠️ Reason: Likely models not downloaded in Settings or Region blocked.")
+//                }
+//                // --- DEBUG END ---
+//
 //                // STRATEGY 1: Try Apple Intelligence (If available)
-//                if #available(iOS 18.0, *), SystemLanguageModel.default.availability == .available {
+//                if #available(iOS 18.0, *), status == .available {
 //                    do {
 //                        print("🧠 Attempting Apple Intelligence generation...")
 //                        try await generateWithFoundationModel(scriptText: scriptText, ideaID: ideaID)
 //                        return // Success! Exit function.
 //                    } catch {
 //                        print("⚠️ Apple Intelligence failed (\(error.localizedDescription)). Switching to fallback.")
-//                        // If it fails, execution continues below to the fallback
 //                    }
 //                } else {
-//                    print("ℹ️ Apple Intelligence unavailable. Using standard NLP.")
+//                    print("ℹ️ Apple Intelligence unavailable. Skipping generation (Stays Untitled).")
 //                }
-//                
-//                // STRATEGY 2: Fallback to Standard NLP (NLTagger)
-//                // This works 100% of the time on all devices and simulators.
-//                self.generateWithNLTagger(scriptText: scriptText, ideaID: ideaID)
 //            }
 //        }
     
-    // MARK: - Smart Mock Generation (Hybrid)
-        func generateAndSaveMockData(for scriptText: String, ideaID: UUID) {
+    func generateAndSaveMockData(for scriptText: String, ideaID: UUID) {
+            guard #available(iOS 18.0, *), AppleIntelligenceManager.shared.isAvailable else {
+                print("ℹ️ Apple Intelligence unavailable. Skipping generation.")
+                return
+            }
             
             Task {
-                // --- DEBUG START ---
-                let status = SystemLanguageModel.default.availability
-                print("🔍 Debugging Apple Intelligence Status: \(status)")
+                let prompt = """
+                Analyze this script. Return a Title and Description.
+                Format:
+                TITLE: [Title]
+                DESC: [Description]
                 
-                // Detailed check (Optional, helps narrow it down)
-                if status != .available {
-                    print("⚠️ Reason: Likely models not downloaded in Settings or Region blocked.")
-                }
-                // --- DEBUG END ---
-
-                // STRATEGY 1: Try Apple Intelligence (If available)
-                if #available(iOS 18.0, *), status == .available {
-                    do {
-                        print("🧠 Attempting Apple Intelligence generation...")
-                        try await generateWithFoundationModel(scriptText: scriptText, ideaID: ideaID)
-                        return // Success! Exit function.
-                    } catch {
-                        print("⚠️ Apple Intelligence failed (\(error.localizedDescription)). Switching to fallback.")
-                    }
-                } else {
-                    print("ℹ️ Apple Intelligence unavailable. Skipping generation (Stays Untitled).")
+                Script:
+                \(scriptText)
+                """
+                
+                do {
+                    print("🧠 Asking Apple Intelligence Manager...")
+                    // --- CALLING THE NEW MANAGER ---
+                    let result = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
+                    
+                    // Parse the result locally
+                    try await parseAndSave(text: result, ideaID: ideaID, source: "Apple Intelligence")
+                } catch {
+                    print("⚠️ AI Manager Error: \(error.localizedDescription)")
                 }
             }
         }
-    // MARK: - Helper 1: The AI Way (FoundationModels)
-        @available(iOS 18.0, *)
-        private func generateWithFoundationModel(scriptText: String, ideaID: UUID) async throws {
-            let prompt = """
-            Analyze this script. Return a Title and Description.
-            Format:
-            TITLE: [Title]
-            DESC: [Description]
-            
-            Script:
-            \(scriptText)
-            """
-            
-            let session = LanguageModelSession()
-            let response = try await session.respond(to: prompt)
-            let generatedText = response.content
-            
-            try await parseAndSave(text: generatedText, ideaID: ideaID, source: "Apple Intelligence")
-        }
+//    // MARK: - Helper 1: The AI Way (FoundationModels)
+//        @available(iOS 18.0, *)
+//        private func generateWithFoundationModel(scriptText: String, ideaID: UUID) async throws {
+//            let prompt = """
+//            Analyze this script. Return a Title and Description.
+//            Format:
+//            TITLE: [Title]
+//            DESC: [Description]
+//            
+//            Script:
+//            \(scriptText)
+//            """
+//            
+//            let session = LanguageModelSession()
+//            let response = try await session.respond(to: prompt)
+//            let generatedText = response.content
+//            
+//            try await parseAndSave(text: generatedText, ideaID: ideaID, source: "Apple Intelligence")
+//        }
 
         // MARK: - Shared Saver logic
         private func parseAndSave(text: String, ideaID: UUID, source: String) async throws {
