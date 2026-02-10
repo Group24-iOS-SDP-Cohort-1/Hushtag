@@ -450,7 +450,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 let prompt = """
                     GENERATE TITLE - 
                     
-                    Generate a catchy, short title for the following script.
+                    You are a professional YouTube content creator and have high engagement rate on the platform with subcribers in hundredths of thousands. Generate a catchy, short title for the following script which will be SEO optimased and give higher engagement rate on a video for this script.
                     Format it strictly as:
                     TITLE: [Title]
                 
@@ -463,7 +463,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 let prompt = """
                     GENERATE DESCRIPTION -
                     
-                    Generate description a short, engaging description (2 sentences max) for the following script.
+                    Generate a short, engaging description (2 sentences max) for the following script.
                     Format it strictly as:
                     DESC: [Description]
                     
@@ -538,24 +538,37 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             let finalContent = text ?? "Sorry, I couldn't connect to the server."
             var cleanContent = finalContent
             
-            //print(text ?? "EMPTY")
+            let plainText = finalContent.replacingOccurrences(of: "*", with: "")
+            
+            print(text ?? "EMPTY")
             
             
-            let trimmed = finalContent.trimmingCharacters(in: .whitespacesAndNewlines)
+            let trimmed = plainText.trimmingCharacters(in: .whitespacesAndNewlines)
             
-            if trimmed.hasPrefix("TITLE:") {
+            if trimmed.uppercased().hasPrefix("TITLE:") {
                 // Remove "TITLE:" and trim spaces
-                cleanContent = trimmed.replacingOccurrences(of: "TITLE:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+                cleanContent = trimmed
+                    .replacingOccurrences(of: "TITLE:", with: "")
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .trimmingCharacters(in: CharacterSet(charactersIn: "\""))
             }
-            else if trimmed.hasPrefix("DESC:") {
+            else if trimmed.uppercased().hasPrefix("DESC:") {
                 // Remove "DESC:" and trim spaces
-                cleanContent = trimmed.replacingOccurrences(of: "DESC:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+                cleanContent = trimmed
+                    .replacingOccurrences(of: "DESC:", with: "")
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .trimmingCharacters(in: CharacterSet(charactersIn: "\""))
             }
+            else{
+                cleanContent = finalContent.trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+            
+            print(cleanContent)
             
             self.messages.append(Message(text: cleanContent, isUser: false))
             
             if let scriptID = self.currentActiveScript?.id {
-                Task { try? await self.dbController.saveChatMessage(ideaID: scriptID, text: finalContent, isUser: false) }
+                Task { try? await self.dbController.saveChatMessage(ideaID: scriptID, text: cleanContent, isUser: false) }
             }
             
             self.tableView.reloadData()
@@ -863,11 +876,18 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             
             let lines = text.components(separatedBy: .newlines)
             for line in lines {
-                let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
-                if trimmed.hasPrefix("TITLE:") {
-                    newMockTitle = trimmed.replacingOccurrences(of: "TITLE:", with: "").trimmingCharacters(in: .whitespaces)
-                } else if trimmed.hasPrefix("DESC:") {
-                    newMockDesc = trimmed.replacingOccurrences(of: "DESC:", with: "").trimmingCharacters(in: .whitespaces)
+                
+                let trimmed = line.replacingOccurrences(of: "*", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+                if trimmed.uppercased().hasPrefix("TITLE:") {
+                    newMockTitle = trimmed
+                        .replacingOccurrences(of: "TITLE:", with: "")
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                        .trimmingCharacters(in: CharacterSet(charactersIn: "\""))       // Remove quotes if AI added them
+                } else if trimmed.uppercased().hasPrefix("DESC:") {
+                    newMockDesc = trimmed
+                        .replacingOccurrences(of: "DESC:", with: "")
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                        //.trimmingCharacters(in: CharacterSet(charactersIn: "\""))     // Remove quotes if AI added them
                 }
             }
             
@@ -884,6 +904,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     self.currentActiveScript = updated
                     print("✅ Mock data saved via \(source)")
                 }
+            } else {
+                print("⚠️ Failed to parse Mock Data. AI Response format mismatch.")
             }
         }
     

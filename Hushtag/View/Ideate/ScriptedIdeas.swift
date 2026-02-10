@@ -149,8 +149,8 @@ class ScriptedIdeas: UIViewController {
             scriptTitle.text = "Script"
             
             // Styling the script text directly
-            script.text = content
-            script.font = UIFont.systemFont(ofSize: 16)
+            script.attributedText = content.toStyledScript()
+            //script.font = UIFont.systemFont(ofSize: 16)
             script.textColor = .label // Adapts to Dark/Light mode automatically
             script.isEditable = false
         }
