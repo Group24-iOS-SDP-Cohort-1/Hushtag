@@ -12,16 +12,16 @@ struct EngagementStyle {
     let icon: String
     let color: UIColor
 }
- 
+
 class IdeaCells: UICollectionViewCell {
     @IBOutlet weak var ideaTitle: UILabel!
     @IBOutlet weak var ideaView: UIView!
     @IBOutlet weak var badgeStack: UIStackView!
     @IBOutlet weak var keywordImage2: UIImageView!
     @IBOutlet weak var keywordText2: UILabel!
-
+    
     @IBOutlet weak var likeButton: UIButton!
-
+    
     var idea: Idea?
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -29,28 +29,25 @@ class IdeaCells: UICollectionViewCell {
         ideaTitle.numberOfLines = 2
         applyLiquidGlassEffect()
     }
-
+    
     private var likedIdeaIds: [String] = []
-
-    func configure(idea: Idea, keyword2: EngagementStyle) {
+    
+    func configure(idea: Idea) {
         self.idea = idea
         ideaTitle.text = idea.title
-        configureHashtags(idea.hashtag)
+        configureHashtags(idea.hashtags)
         updateLikeUI()
-        keywordText2.text = keyword2.text
-        keywordText2.textColor = keyword2.color
-        keywordImage2.image = UIImage(systemName: keyword2.icon)
-        keywordImage2.tintColor = keyword2.color
+        keywordText2.text = idea.format
     }
-
+    
     private func configureHashtags(_ hashtags: [String]) {
         badgeStack.arrangedSubviews.forEach {
             badgeStack.removeArrangedSubview($0)
             $0.removeFromSuperview()
         }
-        for tag in hashtags {
+        for tag in hashtags.prefix(2) {
             let badge: Badges = Badges.loadFromNib()
-
+            
             badge.configure(
                 text: tag,
                 color: .white,
@@ -58,29 +55,34 @@ class IdeaCells: UICollectionViewCell {
                 borderWidth: 0.2,
                 backgroundAlpha: 0.10
             )
-
+            
             badgeStack.addArrangedSubview(badge)
         }
     }
-
+    
     @IBAction func likeTapped(_ sender: UIButton) {
         guard let idea = idea else { return }
+        
         if LikedIds.likedIdeaIds.contains(idea.id) {
             LikedIds.likedIdeaIds.remove(idea.id)
         } else {
             LikedIds.likedIdeaIds.insert(idea.id)
         }
+        
         print("Liked IDs:", LikedIds.likedIdeaIds)
+        
         updateLikeUI()
         NotificationCenter.default.post(name: .didUpdateLikedStatus, object: nil)
     }
-
+    
     private func updateLikeUI() {
         guard let idea = idea else { return }
+        
         let isLiked = LikedIds.likedIdeaIds.contains(idea.id)
+        
         let imageName = isLiked ? "heart.fill" : "heart"
         likeButton.setImage(UIImage(systemName: imageName), for: .normal)
-        likeButton.tintColor = isLiked ? .accent : .accent
     }
-
+    
+    
 }

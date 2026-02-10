@@ -148,23 +148,23 @@ class Ideate1: UIViewController {
         }
     }
 
-    private func mapVideosToIdeas(_ videos: [VideoDTO]) -> [Idea] {
-        return videos.map {
-            Idea(
-                id: $0.id,
-                trending: nil,
-                title: $0.title,
-                description: $0.description,
-                script: nil,
-                hashtag: $0.hashtags ?? [],
-                videos: nil as [Video]?,
-                liked: nil as Bool?,
-                tag: "",
-                thumbnail: nil,
-                engagementRate: Double($0.views / 1000)
-            )
-        }
-    }
+//    private func mapVideosToIdeas(_ videos: [VideoDTO]) -> [Idea] {
+//        return videos.map {
+//            Idea(
+//                id: $0.id,
+//                trending: nil,
+//                title: $0.title,
+//                description: $0.description,
+//                script: nil,
+//                hashtag: $0.hashtags ?? [],
+//                videos: nil as [Video]?,
+//                liked: nil as Bool?,
+//                tag: "",
+//                thumbnail: nil,
+//                engagementRate: Double($0.views / 1000)
+//            )
+//        }
+//    }
 
 }
 
@@ -184,37 +184,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideaCell",for: indexPath) as! IdeaCells
 
         let idea = ideas[indexPath.row]
-        let engagement = Double(idea.engagementRate)
-        let category = categorizeIdea(engagementRate: engagement)
-        let keyword2: EngagementStyle
-
-        switch category {
-        case "Viral":
-            keyword2 = EngagementStyle(
-                text: "Trending",
-                icon: "flame",
-                color: .systemRed
-            )
-
-        case "Growing":
-            keyword2 = EngagementStyle(
-                text: "Growing",
-                icon: "bolt",
-                color: .systemOrange
-            )
-
-        case "Niche":
-            keyword2 = EngagementStyle(
-                text: "Niche",
-                icon: "bolt",
-                color: .systemGreen
-            )
-
-        default:
-            return cell
-        }
-
-        cell.configure(idea: idea, keyword2: keyword2)
+        cell.configure(idea: idea)
         return cell
     }
 
@@ -276,29 +246,54 @@ extension Notification.Name {
 }
 
 extension Ideate1: IdeaSearchDelegate {
-
+    
     func didTapSearch(with keyword: String) {
-
+        
         if keyword.isEmpty {
-           // ideas = ideaResponse.ideas
-            collectionView.reloadSections(IndexSet(integer: 1))
+            ideas = []
+            collectionView.reloadData()
             return
         }
-
+        
         Task {
             do {
-                let videos = try await YouTubeService().search(query: keyword)
-                self.ideas = mapVideosToIdeas(videos)
-            
+                let response = try await YouTubeService().search(query: keyword)
 
+                // ✅ NEW FLOW
+                let clusterIdeas = response.clusterIdeas
 
-                DispatchQueue.main.async {
-                    self.collectionView.reloadSections(IndexSet(integer: 1))
+                // Flatten clusterIdeas → Idea objects
+                let mappedIdeas: [Idea] = clusterIdeas.flatMap { cluster in
+                    cluster.ideas.map { geminiIdea in
+                        
+                        Idea(
+                            id: UUID(),
+                            title: geminiIdea.title,
+                            description: geminiIdea.description,
+                            format: geminiIdea.format,
+                            hashtags: geminiIdea.hashtags,
+                            noveltyScore: geminiIdea.noveltyScore,
+                            
+                            // ✅ IMPORTANT — Attach cluster videos
+                            videos: (cluster.videos ?? []).map { $0.toVideo() },
+                            
+                            liked: false
+                        )
+                    }
                 }
 
+                await MainActor.run {
+                    self.ideas = mappedIdeas
+                    print("Ideas Count:", self.ideas.count)
+                    self.collectionView.reloadData()
+                }
+                
             } catch {
                 print("❌ ERROR:", error)
             }
         }
     }
 }
+
+
+

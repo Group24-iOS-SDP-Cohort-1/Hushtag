@@ -8,7 +8,7 @@
 import Foundation
 
 struct LikedIds {
-    static var likedIdeaIds: Set<String> = []
+    static var likedIdeaIds: Set<UUID> = []
 }
 
 extension Date {
@@ -102,80 +102,42 @@ enum PlatformType:String{
     case youtube,instagram,facebook
 }
 //for idea
-struct IdeaResponse: Codable {
-    var ideas: [Idea] = []
-    //var videos: [Video] = []
-    
-    init() {
-        do {
-            let response = try load()
-            ideas = response.ideas
-            //videos = response.videos
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-    
-    func getRandomIdea() -> Idea? {
-        return ideas.randomElement()
-    }
-}
 
 struct Idea: Codable, Identifiable {
-    let id: String
-    let trending: String? 
+    let id: UUID
     let title: String
     let description: String
-    let script: String?
-    let hashtag: [String]
+    let format: String
+    let hashtags: [String]
+    let noveltyScore: Int
     let videos: [Video]?
-    var liked: Bool?
-    let tag: String?
-    let thumbnail: String?
-        let engagementRate: Double
-
-    enum CodingKeys: String, CodingKey {
-        case id, trending, title, description, script, hashtag, videos, liked, tag, thumbnail, engagementRate
-    }
+    let liked: Bool?
 }
 
-struct Video: Codable {
+//struct Video: Codable {
+//    let id: String
+//    let url: String
+//    let videoTitle: String
+//    let views: String
+//    let link: String
+//    let engagementRate: [EngagementPoint]?
+//}
+
+struct Video: Codable, Identifiable {
     let id: String
-    let url: String
-    let videoTitle: String
-    let views: String
-    let link: String
-    let engagementRate: [EngagementPoint]?
+    let title: String
+    let thumbnail: String
+    let channel: String
+    let views: Int
+    let likes: Int
+    let publishedAt: String
+    let link: String?
 }
+
 
 struct EngagementPoint: Codable {
     let date: Date
     let rate: Double
-}
-
-extension IdeaResponse {
-    func load(from filename: String = "DataStorejson") throws -> IdeaResponse {
-        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
-            throw NSError(
-                domain: "IdeaResponse",
-                code: 400,
-                userInfo: [NSLocalizedDescriptionKey: "DataSource.json not found"]
-            )
-        }
-        
-        let data = try Data(contentsOf: url)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(IdeaResponse.self, from: data)
-    }
-    
-    func decode(from data: Data) throws -> IdeaResponse {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(IdeaResponse.self, from: data)
-    }
-    
-    
 }
 
 //struct Task: Codable {

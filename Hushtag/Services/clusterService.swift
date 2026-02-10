@@ -38,7 +38,7 @@ final class ClusterService {
 //        return try JSONDecoder().decode(ClusterResponse.self, from: data)
 //    }
     
-    func fetchClusters(query: String) async throws -> ClusterResponse {
+    func fetchClusters(query: String) async throws -> SearchResponse {
 
         let url = URL(string: "\(projectURL)/functions/v1/cluster")!
         var request = URLRequest(url: url)
@@ -59,6 +59,6 @@ final class ClusterService {
             throw URLError(.badServerResponse)
         }
 
-        return try JSONDecoder().decode(ClusterResponse.self, from: data)
+        return try JSONDecoder().decode(SearchResponse.self, from: data)
     }
 }

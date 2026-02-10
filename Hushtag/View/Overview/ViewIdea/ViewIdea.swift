@@ -27,7 +27,7 @@ class ViewIdea: UIViewController {
 
     @IBOutlet weak var stackView: UIStackView!
     private var isChecked: Bool = false
-    private var chartHostingController: UIHostingController<EngagementLineChart>?
+    //private var chartHostingController: UIHostingController<EngagementLineChart>?
     var idea: Idea?
     var video: [Video] = []
     var onLikeStatusChanged: ((Idea) -> Void)?
@@ -44,7 +44,7 @@ class ViewIdea: UIViewController {
             titleLabel.numberOfLines = 0
             descriptionLabel.text = idea.description
             descriptionLabel.numberOfLines = 10
-            hashtagLabel.text = "#" + idea.hashtag.joined(separator: " #")
+            hashtagLabel.text = idea.hashtags.joined(separator: "   ")
             video = idea.videos ?? []
 
             isChecked = idea.liked ?? false
@@ -53,7 +53,7 @@ class ViewIdea: UIViewController {
       //  scrollView.alwaysBounceHorizontal = false
         videoView.isScrollEnabled = false
 
-        setupEngagementChart()
+        //setupEngagementChart()
         videoView.setCollectionViewLayout(generateLayout(), animated: true)
 //        scrollView.contentSize.width = stackView.frame.width
 //        scrollView.contentSize.height = stackView.frame.origin.y + stackView.frame.height + 200
@@ -98,7 +98,7 @@ class ViewIdea: UIViewController {
         
         likeButton.image = UIImage(systemName: imageName)
         sender.image = UIImage(systemName: imageName)
-        idea?.liked = isChecked
+        //idea?.liked = isChecked
         if let updatedIdea = idea {
             onLikeStatusChanged?(updatedIdea)
         }
@@ -187,39 +187,39 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
         let selectedVideo = video[indexPath.item]
 
         // Update chart with selected video
-        updateEngagementChart(for: selectedVideo)
+        //updateEngagementChart(for: selectedVideo)
 
-        guard let url = URL(string: selectedVideo.link) else { return }
+        guard let url = URL(string: selectedVideo.link ?? "") else { return }
         let safariVC = SFSafariViewController(url: url)
         present(safariVC, animated: true)
     }
 
-    func setupEngagementChart() {
-        guard !video.isEmpty else {
-            print("No videos available")
-            return
-        }
-
-        let chartView = EngagementLineChart(data: video)
-
-        let hostingVC = UIHostingController(rootView: chartView)
-        hostingVC.view.translatesAutoresizingMaskIntoConstraints = false
-        hostingVC.view.backgroundColor = .clear
-
-        addChild(hostingVC)
-        graphView.addSubview(hostingVC.view)
-        hostingVC.didMove(toParent: self)
-
-        NSLayoutConstraint.activate([
-            hostingVC.view.heightAnchor.constraint(equalToConstant: 240)
-        ])
-
-        chartHostingController = hostingVC
-    }
-
-    func updateEngagementChart(for video: Video) {
-        chartHostingController?.rootView = EngagementLineChart(data: [video])
-    }
+//    func setupEngagementChart() {
+//        guard !video.isEmpty else {
+//            print("No videos available")
+//            return
+//        }
+//
+//        let chartView = EngagementLineChart(data: video)
+//
+//        let hostingVC = UIHostingController(rootView: chartView)
+//        hostingVC.view.translatesAutoresizingMaskIntoConstraints = false
+//        hostingVC.view.backgroundColor = .clear
+//
+//        addChild(hostingVC)
+//        graphView.addSubview(hostingVC.view)
+//        hostingVC.didMove(toParent: self)
+//
+//        NSLayoutConstraint.activate([
+//            hostingVC.view.heightAnchor.constraint(equalToConstant: 240)
+//        ])
+//
+//        chartHostingController = hostingVC
+//    }
+//
+//    func updateEngagementChart(for video: Video) {
+//        chartHostingController?.rootView = EngagementLineChart(data: [video])
+//    }
 
 
     
