@@ -229,13 +229,16 @@
                             <constraint firstItem="JbU-vQ-nIL" firstAttribute="top" secondItem="8xV-Mv-C3u" secondAttribute="top" id="o0j-Yb-Qud"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="32i-lG-CJC"/>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="32i-lG-CJC">
+                        <barButtonItem key="rightBarButtonItem" image="ellipsis.circle" catalog="system" id="WVc-iU-PVO"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="Description" destination="HGa-5Z-b57" id="Qj1-0H-h0C"/>
                         <outlet property="descriptionStack" destination="oJf-bY-P9k" id="uoe-TE-WlK"/>
                         <outlet property="descriptionTitle" destination="RtB-WN-K3n" id="qPI-rT-DVD"/>
                         <outlet property="imageStack" destination="OcN-jm-zAl" id="rOl-tS-jLO"/>
                         <outlet property="imageView" destination="Lsr-OB-oXh" id="emN-VN-daf"/>
+                        <outlet property="optionsBarButton" destination="WVc-iU-PVO" id="7n8-cE-bt2"/>
                         <outlet property="popupButton" destination="i00-kp-PG6" id="dv9-bG-UQ5"/>
                         <outlet property="script" destination="r23-cE-o33" id="k2l-zA-8J4"/>
                         <outlet property="scriptStack" destination="myC-J6-nE4" id="rib-lI-nm5"/>
@@ -277,6 +280,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="ellipsis.circle" catalog="system" width="128" height="123"/>
         <image name="heart" catalog="system" width="128" height="107"/>
         <image name="person.2.circle" catalog="system" width="128" height="123"/>
         <namedColor name="AccentColor">

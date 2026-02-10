@@ -14,7 +14,7 @@ final class DealsInfo: UIViewController {
 
     var deals: Deal!
     var dealIndex: Int = -1
-    var selectedIdea: Idea?
+    var selectedIdea: ScriptedIdea?
     weak var delegate: DealsInfoDelegate?
 
 
@@ -328,7 +328,8 @@ extension DealsInfo: UICollectionViewDataSource {
                 withReuseIdentifier: "selectedIdeaCell",
                 for: indexPath
             ) as! ScriptsCell1
-            cell.configureCell(idea: selectedIdea!)
+            guard let selectedIdea = self.selectedIdea else { return UICollectionViewCell() }
+            cell.configureCell(with : selectedIdea)
             return cell
 
 

@@ -65,7 +65,6 @@ class AnalysisDataViewController: UIViewController {
             forCellWithReuseIdentifier: "revenue_cell"
         )
         
-        let purpleColor = UIColor(red: 139/255, green: 92/255, blue: 246/255, alpha: 1)
         let grayColor = UIColor.darkGray
 
         segmentedTimeOutlet.selectedSegmentIndex = 0
@@ -78,7 +77,7 @@ class AnalysisDataViewController: UIViewController {
 
         // Selected
         segmentedTimeOutlet.setTitleTextAttributes([
-            .foregroundColor: purpleColor,
+            .foregroundColor: UIColor.white,
             .font: UIFont.systemFont(ofSize: 14, weight: .semibold)
         ], for: .selected)
         
