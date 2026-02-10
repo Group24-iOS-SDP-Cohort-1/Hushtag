@@ -75,7 +75,7 @@ class DetailsCollectionViewCell: UICollectionViewCell {
             if let reminders = post.reminder, !reminders.isEmpty {
                 remindersLabel.text = reminders
                     .sorted()
-                    .map { $0.deadlineFormatted() }
+                    .map { $0.timeOnly() }
                     .joined(separator: ", ")
                 
                 remindersLabel.isHidden = false
@@ -88,7 +88,7 @@ class DetailsCollectionViewCell: UICollectionViewCell {
             
             mainName.text = deal.name
             
-            platformLabel.text = "Platform: " + deal.platform.joined(separator: ", ")
+            platformLabel.text = deal.platform.map(\.rawValue).joined(separator: ", ")
             platformLabel.isHidden = false
         }
     }
@@ -113,13 +113,13 @@ class DetailsCollectionViewCell: UICollectionViewCell {
     
     func configureMultiple(with task: Tasks) {
         subNameLabel.text = task.name
-        deadlineLabel.text = task.deadline.dayOnly()   // <-- uses Date extension
+        deadlineLabel.text = task.deadline.dateAndMonth()
         updateCompletionState(isCompleted: task.isCompleted)
     }
     
     func configureMultiple(with deliverable: Deliverable) {
         subNameLabel.text = deliverable.name
-        deadlineLabel.text = deliverable.deadline.dayOnly()
+        deadlineLabel.text = deliverable.deadline.dateAndMonth()
         updateCompletionState(isCompleted: deliverable.isCompleted)
     }
     

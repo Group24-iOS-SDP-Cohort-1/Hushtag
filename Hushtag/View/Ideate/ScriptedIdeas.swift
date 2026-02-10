@@ -179,12 +179,14 @@ class ScriptedIdeas: UIViewController {
     private func loadHTMLFile(for idea: Idea) {
         scriptStack.isHidden = true
         // Checking if idea.script exists
-        let scriptName = idea.script.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !scriptName.isEmpty else {
+        let scriptName = idea.script?.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+        guard ((scriptName?.isEmpty) == nil) else {
             return
         }
 
-        let fileName = scriptName.replacingOccurrences(of: ".html", with: "")
+        let fileName = scriptName?.replacingOccurrences(of: ".html", with: "")
         guard let url = Bundle.main.url(forResource: fileName, withExtension: "html") else {
             return
         }

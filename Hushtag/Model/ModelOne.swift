@@ -48,6 +48,13 @@ extension Date {
         return formatter
     }()
     
+    private static let timeOnlyFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"   // Example: 4:30 PM
+        formatter.locale = .current
+        return formatter
+    }()
+    
     func dayOnly() -> String {
         Self.dayOnlyFormatter.string(from: self)
     }
@@ -66,6 +73,10 @@ extension Date {
     
     func monthAndYear() -> String {
         Self.monthYearFormatter.string(from: self)
+    }
+    
+    func timeOnly() -> String {
+        Self.timeOnlyFormatter.string(from: self)
     }
 }
 
@@ -112,17 +123,17 @@ struct IdeaResponse: Codable {
 
 struct Idea: Codable, Identifiable {
     let id: String
-    let trending: String
+    let trending: String? 
     let title: String
     let description: String
-    let script: String
+    let script: String?
     let hashtag: [String]
-    let videos: [Video]
-    var liked: Bool
-    let tag: String
-    let thumbnail: String
-    let engagementRate: Double
-    
+    let videos: [Video]?
+    var liked: Bool?
+    let tag: String?
+    let thumbnail: String?
+        let engagementRate: Double
+
     enum CodingKeys: String, CodingKey {
         case id, trending, title, description, script, hashtag, videos, liked, tag, thumbnail, engagementRate
     }

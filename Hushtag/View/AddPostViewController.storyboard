@@ -7,7 +7,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Add Deals-->
+        <!--Add Posts-->
         <scene sceneID="Zxw-5Z-Bqc">
             <objects>
                 <tableViewController storyboardIdentifier="AddViewController" id="LbS-7B-Ltw" customClass="AddViewController" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
@@ -117,7 +117,7 @@
                             <outlet property="delegate" destination="LbS-7B-Ltw" id="ksl-45-Qox"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Add Deals" id="deE-xK-jHq">
+                    <navigationItem key="navigationItem" title="Add Posts" id="deE-xK-jHq">
                         <barButtonItem key="leftBarButtonItem" title="Item" image="xmark" catalog="system" id="CtN-Tl-8Wy"/>
                         <barButtonItem key="rightBarButtonItem" title="Item" image="checkmark" catalog="system" id="4jX-2v-bYD"/>
                     </navigationItem>
@@ -136,7 +136,7 @@
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                 </datePicker>
             </objects>
-            <point key="canvasLocation" x="2950.3816793893129" y="-188.02816901408451"/>
+            <point key="canvasLocation" x="3877.0992366412211" y="-188.02816901408451"/>
         </scene>
     </scenes>
     <resources>

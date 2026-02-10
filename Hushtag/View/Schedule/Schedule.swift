@@ -13,7 +13,7 @@ class Schedule: UIViewController {
     private let scheduleController = ScheduleItemController()
     private let postsController = PostsController()
     private let dealsController = DealsController()
-
+    
     private var todayItems: [ScheduleItem] = []
     
     private var selectedDate: Date = Date()
@@ -101,7 +101,7 @@ class Schedule: UIViewController {
             name: .postsDidChange,
             object: nil
         )
-
+        
     }
     
     private func filterItems(for date: Date) {
@@ -158,6 +158,7 @@ class Schedule: UIViewController {
         }
         return layout
     }
+    
     private func generateWeek(for date: Date) {
         let calendar = Calendar.current
         
@@ -214,7 +215,7 @@ class Schedule: UIViewController {
         post: Post,
         task: Tasks
     ) async {
-
+        
         // 🔄 Optimistic UI
         let optimisticPost: Post = {
             var copy = post
@@ -227,37 +228,37 @@ class Schedule: UIViewController {
             }
             return copy
         }()
-
+        
         scheduleController.replacePost(optimisticPost)
         filterItems(for: selectedDate)
-
+        
         await MainActor.run {
             scheduleView.reloadSections(IndexSet(integer: 1))
         }
-
+        
         do {
             let savedPost = try await ToggleService.toggleTask(
                 post: post,
                 task: task,
                 postsController: postsController
             )
-
+            
             scheduleController.replacePost(savedPost)
             filterItems(for: selectedDate)
-
+            
             await MainActor.run {
                 scheduleView.reloadSections(IndexSet(integer: 1))
             }
-
+            
         } catch {
             // 🔙 rollback
             scheduleController.replacePost(post)
             filterItems(for: selectedDate)
-
+            
             await MainActor.run {
                 scheduleView.reloadSections(IndexSet(integer: 1))
             }
-
+            
             print("❌ Failed to toggle task:", error)
         }
     }
@@ -266,7 +267,7 @@ class Schedule: UIViewController {
         deal: Deal,
         deliverable: Deliverable
     ) async {
-
+        
         let optimisticDeal: Deal = {
             var copy = deal
             copy.deliverables = deal.deliverables.map {
@@ -278,40 +279,57 @@ class Schedule: UIViewController {
             }
             return copy
         }()
-
+        
         scheduleController.replaceDeal(optimisticDeal)
         filterItems(for: selectedDate)
-
+        
         await MainActor.run {
             scheduleView.reloadSections(IndexSet(integer: 1))
         }
-
+        
         do {
             let savedDeal = try await ToggleService.toggleDeliverable(
                 deal: deal,
                 deliverable: deliverable,
                 dealsController: dealsController
             )
-
+            
             scheduleController.replaceDeal(savedDeal)
             filterItems(for: selectedDate)
-
+            
             await MainActor.run {
                 scheduleView.reloadSections(IndexSet(integer: 1))
             }
-
+            
         } catch {
             scheduleController.replaceDeal(deal)
             filterItems(for: selectedDate)
-
+            
             await MainActor.run {
                 scheduleView.reloadSections(IndexSet(integer: 1))
             }
-
+            
             print("❌ Failed to toggle deliverable:", error)
         }
     }
     
+  
+    @objc private func handleDealsDidChange() {
+        Task {
+            do {
+                try await scheduleController.load()
+
+                await MainActor.run {
+                    self.filterItems(for: self.selectedDate)
+                    self.scheduleView.reloadSections(IndexSet(integer: 1))
+                }
+
+            } catch {
+                print("❌ Failed to reload deals:", error)
+            }
+        }
+    }
+
     @objc private func handlePostsDidChange() {
         Task {
             do {
@@ -321,6 +339,7 @@ class Schedule: UIViewController {
                     self.filterItems(for: self.selectedDate)
                     self.scheduleView.reloadSections(IndexSet(integer: 1))
                 }
+
             } catch {
                 print("❌ Failed to reload posts:", error)
             }
@@ -449,11 +468,11 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
             vc.onToggleTask = { [weak self, weak vc] post, task in
                 Task {
                     await self?.handleTaskToggle(post: post, task: task)
-
+                    
                     if let updated = self?.scheduleController
                         .scheduleItems(on: self!.selectedDate)
                         .first(where: { $0.matches(post: post, task: task) }) {
-
+                        
                         await MainActor.run {
                             vc?.schedule = updated
                             vc?.detailsView.reloadData()
@@ -463,30 +482,30 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
             }
         }
     }
-    
 }
 
 extension Notification.Name {
     static let calendarSwipeLeft = Notification.Name("calendarSwipeLeft")
     static let calendarSwipeRight = Notification.Name("calendarSwipeRight")
+    static let scheduleDidChange = Notification.Name("scheduleDidChange")
     static let postsDidChange = Notification.Name("postsDidChange")
+    static let dealsDidChange = Notification.Name("dealsDidChange")
 }
 
 extension Schedule: ScheduleCollectionViewCellDelegate {
-
+    
     func didTapCompleted(item: ScheduleItem, indexPath: IndexPath) {
-
+        
         Task {
             switch item {
-
+                
             case .post(let post, let task):
                 await handleTaskToggle(post: post, task: task)
-
+                
             case .deal(let deal, let deliverable):
                 await handleDeliverableToggle(deal: deal, deliverable: deliverable)
             }
         }
     }
-
 }
 

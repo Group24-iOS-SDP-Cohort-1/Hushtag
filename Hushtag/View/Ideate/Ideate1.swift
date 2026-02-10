@@ -9,7 +9,7 @@ import UIKit
 
 class Ideate1: UIViewController {
 
-    var ideaResponse = IdeaResponse()
+  //  var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
     var selectedIdea: Idea?
     var selectedIndexPath: IndexPath?
@@ -21,7 +21,7 @@ class Ideate1: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-        ideas = ideaResponse.ideas
+        //ideas = ideaResponse.ideas
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -147,6 +147,25 @@ class Ideate1: UIViewController {
             return "Niche"
         }
     }
+
+    private func mapVideosToIdeas(_ videos: [VideoDTO]) -> [Idea] {
+        return videos.map {
+            Idea(
+                id: $0.id,
+                trending: nil,
+                title: $0.title,
+                description: $0.description,
+                script: nil,
+                hashtag: $0.hashtags ?? [],
+                videos: nil as [Video]?,
+                liked: nil as Bool?,
+                tag: "",
+                thumbnail: nil,
+                engagementRate: Double($0.views / 1000)
+            )
+        }
+    }
+
 }
 
 extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -237,22 +256,49 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
 
 }
 
-extension Ideate1: IdeaSearchDelegate {
-    func didTapSearch(with keyword: String) {
-        if keyword.isEmpty {
-            ideas = ideaResponse.ideas
-        } else {
-            ideas = ideaResponse.ideas.filter { idea in
-                idea.hashtag.contains { tag in
-                    tag.localizedCaseInsensitiveContains(keyword)
-                }
-            }
-        }
-        collectionView.reloadSections(IndexSet(integer: 1))
-    }
-}
+//extension Ideate1: IdeaSearchDelegate {
+//    func didTapSearch(with keyword: String) {
+//        if keyword.isEmpty {
+//            ideas = ideaResponse.ideas
+//        } else {
+//            ideas = ideaResponse.ideas.filter { idea in
+//                idea.hashtag.contains { tag in
+//                    tag.localizedCaseInsensitiveContains(keyword)
+//                }
+//            }
+//        }
+//        collectionView.reloadSections(IndexSet(integer: 1))
+//    }
+//}
 
 extension Notification.Name {
     static let didUpdateLikedStatus = Notification.Name("didUpdateLikedStatus")
 }
 
+extension Ideate1: IdeaSearchDelegate {
+
+    func didTapSearch(with keyword: String) {
+
+        if keyword.isEmpty {
+           // ideas = ideaResponse.ideas
+            collectionView.reloadSections(IndexSet(integer: 1))
+            return
+        }
+
+        Task {
+            do {
+                let videos = try await YouTubeService().search(query: keyword)
+                self.ideas = mapVideosToIdeas(videos)
+            
+
+
+                DispatchQueue.main.async {
+                    self.collectionView.reloadSections(IndexSet(integer: 1))
+                }
+
+            } catch {
+                print("❌ ERROR:", error)
+            }
+        }
+    }
+}

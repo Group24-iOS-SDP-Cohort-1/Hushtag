@@ -41,7 +41,7 @@ class Badges: UIView {
            borderWidth: CGFloat = 1,
            backgroundAlpha: CGFloat = 0.15
        ) {
-           badgeLabel.text = "#\(text)"
+           badgeLabel.text = "\(text)"
            badgeCornerRadius = cornerRadius
            badgeLabel.textColor = color
            layer.borderWidth = borderWidth

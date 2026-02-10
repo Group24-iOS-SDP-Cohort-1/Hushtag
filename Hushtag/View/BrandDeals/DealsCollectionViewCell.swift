@@ -54,7 +54,7 @@ class DealsCollectionViewCell: UICollectionViewCell{
             
             deliverablesValueLabel.textAlignment = .center
             deliverablesValueLabel.text = "\(completed) / \(total)"
-            deadlineValueLabel.text = deal.platform.joined(separator: ", ")
+            deadlineValueLabel.text = " "
             deadlineValueLabel.font = paymentValueLabel.font
             deadlineValueLabel.textColor = paymentValueLabel.textColor
         } else {

@@ -6,7 +6,7 @@ struct Deal: Identifiable, Sendable {
     let payment: Double
     let mobileNumber: Int64
     let email: String
-    let platform: [String]
+    let platform: [Platform]
     var deliverables: [Deliverable]
     let reminder: [Date]?
     var isCompleted: Bool {
@@ -31,7 +31,7 @@ nonisolated struct DealDB: Codable, Sendable {
     let email: String?
     let deadline: Date
     let reminder: [Date]?
-    let platform: String
+    let platform: [Platform]
     var isCompleted: Bool
 }
 
@@ -51,5 +51,5 @@ nonisolated struct DealInsertPayload: Encodable, Sendable{
     let email: String
     let deadline: Date
     let reminder: [Date]?
-    let platform: String
+    let platform: [String]
 }

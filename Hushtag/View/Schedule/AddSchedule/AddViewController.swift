@@ -4,13 +4,15 @@ import UIKit
 //sending the create post to parent view controller
 protocol AddViewDelegate: AnyObject {
     func addViewController(_ controller: AddViewController, didCreatePost post: Post)
+    func addViewController(_ controller: AddViewController, didUpdatePost post: Post,at index: Int)
 }
 
 class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
     
     weak var delegate: AddViewDelegate?
     var editingPost: Post?
-    
+    var editingIndex: Int?
+    private var editingTasks: [Tasks] = []
     private let postsController = PostsController()
     
     @IBOutlet weak var deadlinePicker: UIDatePicker!
@@ -55,6 +57,18 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
         
         deadlinePicker.addTarget(self, action: #selector(deadlinePickerChanged), for: .valueChanged)
         reminderPicker.addTarget(self, action: #selector(reminderChanged), for: .valueChanged)
+        
+        if let post = editingPost {
+                    editingTasks = post.tasks
+
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        tableView.layoutIfNeeded()
+        prefillIfNeeded()
     }
     
     @objc private func dismissKeyboard() {
@@ -78,45 +92,107 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
         reminderDate = reminderPicker.date
         setText("Reminder", value: dateFormatter.string(from: reminderPicker.date))
     }
-
     
-    private func buildPost() -> Post? {
-        
-        guard let deadline = deadlineDate else { return nil }
-        
-        if let reminder = reminderDate,
-           reminderWasManuallySet,
-           reminder >= deadline {
-            return nil
+    private func prefillIfNeeded() {
+        guard let post = editingPost else { return }
+
+        setText("Name", value: post.name)
+        setText("Platform", value: post.platform.map { $0.rawValue.capitalized }.joined(separator: ", "))
+
+        if let deadline = post.tasks.first?.deadline {
+            deadlineDate = deadline
+            setText("Deadline", value: dateFormatter.string(from: deadline))
         }
 
-        
-        let name = getValue("Post Name").isEmpty ? "Untitled Post" : getValue("Post Name")
+        if let reminder = post.reminder?.first {
+            reminderDate = reminder
+            dateFormatter.timeStyle = .short
+            setText("Reminder", value: dateFormatter.string(from: reminder))
+            dateFormatter.timeStyle = .none
+        }
+
+    }
+    
+//    private func buildPost() -> Post? {
+//        
+//        guard let deadline = deadlineDate else { return nil }
+//        
+//        if let reminder = reminderDate,
+//           reminderWasManuallySet,
+//           reminder >= deadline {
+//            return nil
+//        }
+//
+//        
+//        let name = getValue("Post Name").isEmpty ? "Untitled Post" : getValue("Post Name")
+//        let platformRaw = getValue("Platform")
+//        
+//        let platforms = platformRaw
+//            .split(separator: ",")
+//            .map { Platform(rawValue: $0.trimmingCharacters(in: .whitespaces).lowercased()) }
+//            .compactMap { $0 }
+//        
+//        // Deliverables
+//        let delIP = IndexPath(row: 0, section: Section.deliverables.rawValue)
+//        guard let cell = tableView.cellForRow(at: delIP) as? DeliverableCellAddDeal else {
+//            return nil
+//        }
+//        
+//        let tasks = zip(cell.deliverablesText, cell.deliverablesDates).map {
+//            title, date in
+//            Tasks(
+//                id: UUID(),
+//                name: title.isEmpty ? "Untitled Task" : title,
+//                deadline: date,
+//                isCompleted: false
+//            )
+//        }
+//        
+//        return Post(
+//            id: nil,
+//            name: name,
+//            platform: platforms,
+//            tasks: tasks,
+//            reminder: reminderDate != nil ? [reminderDate!] : [],
+//            deadline: deadline
+//        )
+//    }
+    
+    private func buildPost() -> Post? {
+
+        guard let deadline = deadlineDate else { return nil }
+
+        let postId = editingPost?.id ?? UUID()
+
+        let name = getValue("Post Name").isEmpty
+            ? "Untitled Post"
+            : getValue("Post Name")
+
         let platformRaw = getValue("Platform")
-        
+
         let platforms = platformRaw
             .split(separator: ",")
-            .map { Platform(rawValue: $0.trimmingCharacters(in: .whitespaces).lowercased()) }
-            .compactMap { $0 }
-        
-        // Deliverables
+            .compactMap {
+                Platform(rawValue: $0.trimmingCharacters(in: .whitespaces).lowercased())
+            }
+
         let delIP = IndexPath(row: 0, section: Section.deliverables.rawValue)
         guard let cell = tableView.cellForRow(at: delIP) as? DeliverableCellAddDeal else {
             return nil
         }
-        
-        let tasks = zip(cell.deliverablesText, cell.deliverablesDates).map {
-            title, date in
+
+        let tasks = zip(cell.deliverablesText, cell.deliverablesDates).map { title, date in
             Tasks(
                 id: UUID(),
+                //post_id: postId,
                 name: title.isEmpty ? "Untitled Task" : title,
                 deadline: date,
                 isCompleted: false
             )
         }
-        
+
         return Post(
-            id: nil,
+            id: postId,
             name: name,
             platform: platforms,
             tasks: tasks,

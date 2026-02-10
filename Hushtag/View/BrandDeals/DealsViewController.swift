@@ -20,7 +20,7 @@ class DealsViewController: UIViewController {
     var deals: [Deal] = []
     private var isSearching = false
     private var searchText = ""
-
+    
     private let dealsController = DealsController()
     
     var completedDeals: [Deal] {
@@ -40,23 +40,25 @@ class DealsViewController: UIViewController {
         }
     }
     private var selectedSegmentIndex = 0
-
+    
     var displayedDeals: [Deal] {
         let baseDeals = selectedSegmentIndex == 0 ? ongoingDeals : completedDeals
-
+        
         guard isSearching, !searchText.isEmpty else {
             return baseDeals
         }
-
+        
         let query = searchText.lowercased()
-
+        
         return baseDeals.filter {
             $0.name.lowercased().contains(query) ||
             $0.email.lowercased().contains(query) ||
-            $0.platform.joined(separator: " ").lowercased().contains(query)
+            $0.platform.contains(where: {
+                $0.rawValue.lowercased().contains(query)
+            })
         }
     }
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,11 +76,7 @@ class DealsViewController: UIViewController {
                 print("❌ No auth session:", error)
             }
         }
-        
-        
-        
-        
-        
+    
         fetchDeals()
         
         print(deals.count)
@@ -101,12 +99,8 @@ class DealsViewController: UIViewController {
             .foregroundColor: UIColor.white,
             .font: UIFont.systemFont(ofSize: 14, weight: .semibold)
         ], for: .selected)
-        segmentControl.selectedSegmentTintColor = .systemGray4
-        
-        
     }
-
-
+    
     @IBAction func segmentedAction(_ sender: UISegmentedControl) {
         selectedSegmentIndex = sender.selectedSegmentIndex
         
@@ -136,8 +130,6 @@ class DealsViewController: UIViewController {
         }
         
     }
-    
-    
     
     func registerCell() {
         collectionView.register(
@@ -254,40 +246,39 @@ extension DealsViewController: DealsInfoDelegate {
             collectionView.reloadData()
         }
     }
-
+    
     func dealsInfo(_ controller: DealsInfo, didDeleteDeal dealId: UUID) {
-
+        
         if let index = deals.firstIndex(where: { $0.id == dealId }) {
             deals.remove(at: index)
         }
-
+        
         collectionView.collectionViewLayout.invalidateLayout()
         collectionView.reloadData()
     }
-
-
+    
 }
 
 
 extension DealsViewController: AddDealsDelegate {
-
+    
     func addDealsViewController(
         _ controller: AddDealsViewController,
         didUpdateDeal deal: Deal,
         at index: Int
     ) {
-
+        
         if let realIndex = deals.firstIndex(where: { $0.id == deal.id }) {
             deals[realIndex] = deal
         }
-
-
+        
+        
         selectedSegmentIndex = segmentControl.selectedSegmentIndex
-
+        
         collectionView.collectionViewLayout.invalidateLayout()
         collectionView.reloadData()
     }
-
+    
     func addDealsViewController(
         _ controller: AddDealsViewController,
         didCreateDeal deal: Deal
@@ -297,20 +288,20 @@ extension DealsViewController: AddDealsDelegate {
 }
 
 extension DealsViewController: UISearchBarDelegate {
-
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         self.searchText = searchText
         isSearching = !searchText.isEmpty
         collectionView.reloadData()
     }
-
+    
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = ""
         searchBar.resignFirstResponder()
         isSearching = false
         collectionView.reloadData()
     }
-
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
     }

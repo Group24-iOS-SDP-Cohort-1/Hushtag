@@ -45,9 +45,9 @@ class ViewIdea: UIViewController {
             descriptionLabel.text = idea.description
             descriptionLabel.numberOfLines = 10
             hashtagLabel.text = "#" + idea.hashtag.joined(separator: " #")
-            video = idea.videos
+            video = idea.videos ?? []
 
-            isChecked = idea.liked
+            isChecked = idea.liked ?? false
             likeButton.image = UIImage(systemName: isChecked ? "heart.fill" : "heart")
         }
       //  scrollView.alwaysBounceHorizontal = false
