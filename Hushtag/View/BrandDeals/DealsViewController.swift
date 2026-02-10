@@ -88,7 +88,6 @@ class DealsViewController: UIViewController {
         segmentControl.selectedSegmentIndex = 0
         
         selectedSegmentIndex = 0
-        let purpleColor = UIColor.accent
         let grayColor = UIColor.darkGray
         
         // Not selected color appearance
@@ -99,9 +98,10 @@ class DealsViewController: UIViewController {
         
         // Selected color appearance
         segmentControl.setTitleTextAttributes([
-            .foregroundColor: purpleColor,
+            .foregroundColor: UIColor.white,
             .font: UIFont.systemFont(ofSize: 14, weight: .semibold)
         ], for: .selected)
+        segmentControl.selectedSegmentTintColor = .systemGray4
         
         
     }

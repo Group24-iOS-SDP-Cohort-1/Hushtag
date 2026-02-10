@@ -26,8 +26,16 @@ class ChatCell: UITableViewCell {
     }
 
     func configure(with message: Message) {
-        chatLabel.text = message.text
+        
         chatLabel.numberOfLines = 0
+        
+        if message.isUser{
+            chatLabel.text = message.text
+        }else{
+            chatLabel.attributedText = message.text.toMarkdownString()
+        }
+        //chatLabel.text = message.text
+        
 
         if message.markType != nil {
             starImage.isHidden = false

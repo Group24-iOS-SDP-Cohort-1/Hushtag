@@ -11,7 +11,7 @@ class ScriptedIdeas: UIViewController {
 
     @IBOutlet weak var script: UITextView!
 
-    var idea: Idea?
+    var idea: ScriptedIdea?
 
     @IBOutlet weak var descriptionTitle: UILabel!
     @IBOutlet weak var Description: UILabel!
@@ -23,48 +23,159 @@ class ScriptedIdeas: UIViewController {
     @IBOutlet weak var popupButton: UIButton!
 
 
-
+    @IBOutlet weak var optionsBarButton: UIBarButtonItem!
+    
+    private let dbController = ScriptedIdeasController()
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         scriptStack.isHidden = true
         descriptionStack.isHidden = true
+        imageStack.isHidden = true
+        
         guard let idea = idea else {
             script.text = "No idea received."
             return
         }
-        // Navigation title
-        let titleLabel = UILabel()
-        titleLabel.text = idea.title
-        titleLabel.numberOfLines = 3
-        titleLabel.textAlignment = .center
-        titleLabel.lineBreakMode = .byWordWrapping
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        self.navigationItem.titleView = titleLabel
-        NSLayoutConstraint.activate([
-            titleLabel.widthAnchor.constraint(lessThanOrEqualToConstant: view.bounds.width - 150)
-        ])
-        // Description
-        if idea.description.isEmpty {
-            descriptionStack.isHidden = true
-        } else {
+        
+        
+        setupNavigationTitle(with: idea.title)
+        setupDescription(with: idea.description)
+        setupScriptContent(with: idea.script)
+        setupThumbnail(with: idea.thumbnailURL)
+        
+        setupMenu()
+    }
+    
+    private func setupMenu() {
+        // Option 1: View Chat History
+        let chatAction = UIAction(title: "View Chat History", image: UIImage(systemName: "bubble.left.and.bubble.right.fill")) { [weak self] _ in
+            self?.navigateToChat()
+        }
+        
+        // Option 2: Delete Script (Destructive)
+        let deleteAction = UIAction(title: "Delete Script", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
+            self?.confirmDelete()
+        }
+        
+        // Attach menu to the bar button
+        let menu = UIMenu(title: "", children: [chatAction, deleteAction])
+        optionsBarButton.menu = menu
+    }
+    
+    private func navigateToChat() {
+            guard let idea = self.idea else { return }
+            
+            let storyboard = UIStoryboard(name: "Chatbot", bundle: nil) // Ensure this matches your Storyboard name
+            if let chatVC = storyboard.instantiateViewController(withIdentifier: "Chatbot") as? Chatbot {
+                
+                // Pass the current script to the chatbot so it loads history
+                chatVC.currentActiveScript = idea
+                
+                self.navigationController?.pushViewController(chatVC, animated: true)
+            }
+        }
+    
+    private func confirmDelete() {
+            let alert = UIAlertController(title: "Delete Script", message: "Are you sure? This cannot be undone.", preferredStyle: .alert)
+            
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in
+                self.performDelete()
+            }))
+            
+            present(alert, animated: true)
+        }
+        
+        private func performDelete() {
+            guard let id = idea?.id else { return }
+            
+            Task {
+                do {
+                    // Call Supabase to delete
+                    try await dbController.deleteScript(id)
+                    
+                    await MainActor.run {
+                        // Navigate back to the list
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                } catch {
+                    print("Error deleting script: \(error)")
+                    // Optional: Show error alert
+                }
+            }
+        }
+    
+    private func setupNavigationTitle(with title: String?) {
+            let titleText = title ?? "Untitled Script"
+            
+            let titleLabel = UILabel()
+            titleLabel.text = titleText
+            titleLabel.numberOfLines = 3
+            titleLabel.textAlignment = .center
+            titleLabel.lineBreakMode = .byWordWrapping
+            titleLabel.font = .systemFont(ofSize: 17, weight: .semibold)
+            titleLabel.translatesAutoresizingMaskIntoConstraints = false
+            
+            self.navigationItem.titleView = titleLabel
+            
+            NSLayoutConstraint.activate([
+                titleLabel.widthAnchor.constraint(lessThanOrEqualToConstant: view.bounds.width - 150)
+            ])
+        }
+        
+        private func setupDescription(with description: String?) {
+            guard let desc = description, !desc.isEmpty else {
+                descriptionStack.isHidden = true
+                return
+            }
+            
             descriptionStack.isHidden = false
             descriptionTitle.text = "Description"
-            Description.text = idea.description
-            Description.numberOfLines = 10
+            Description.text = desc
+            Description.numberOfLines = 0 // Allow unlimited lines
         }
-        // Image
-        if idea.thumbnail.isEmpty || UIImage(named: idea.thumbnail) == nil {
-            imageStack.isHidden = true
-        } else {
-            imageStack.isHidden = false
-            imageView.image = UIImage(named: idea.thumbnail)
+        
+        private func setupScriptContent(with scriptContent: String?) {
+            // If script is nil or empty, hide the stack
+            guard let content = scriptContent, !content.isEmpty else {
+                scriptStack.isHidden = true
+                return
+            }
+            
+            scriptStack.isHidden = false
+            scriptTitle.text = "Script"
+            
+            // Styling the script text directly
+            script.text = content
+            script.font = UIFont.systemFont(ofSize: 16)
+            script.textColor = .label // Adapts to Dark/Light mode automatically
+            script.isEditable = false
         }
-
-        // Script
-        loadHTMLFile(for: idea)
-    }
+        
+        private func setupThumbnail(with urlString: String?) {
+            // Safe check: Is the string valid?
+            guard let imageName = urlString, !imageName.isEmpty else {
+                imageStack.isHidden = true
+                return
+            }
+            
+            // Check if image exists in Assets (Local)
+            if let localImage = UIImage(named: imageName) {
+                imageStack.isHidden = false
+                imageView.image = localImage
+            }
+            // Logic for Remote URL (Placeholder for when you implement image downloading later)
+            else {
+                // print("Image URL found but not in assets: \(imageName)")
+                // Here you would use Kingfisher or URLSession to download the image
+                imageStack.isHidden = true
+            }
+        }
+    
+    
     private func loadHTMLFile(for idea: Idea) {
         scriptStack.isHidden = true
         // Checking if idea.script exists

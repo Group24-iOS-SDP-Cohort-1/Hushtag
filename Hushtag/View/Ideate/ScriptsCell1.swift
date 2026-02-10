@@ -24,41 +24,61 @@ class ScriptsCell1: UICollectionViewCell {
         super.awakeFromNib()
         self.layer.cornerRadius = 12
         applyLiquidGlassEffect()
-        Title.numberOfLines = 3
+        Title.numberOfLines = 2
         Description.numberOfLines = 1
         Description.textColor = .secondaryLabel
 }
     
-    func configureCell(idea : Idea) {
-        Title.text = idea.title
-        Description.text = idea.description
-        configureHashtags(idea.hashtag)
+    func configureCell(with script: ScriptedIdea) {
+        if let realTitle = script.title, !realTitle.isEmpty {
+            Title.text = realTitle
+            Title.textColor = .label // Standard color for user-selected title
+        } else {
+            Title.text = script.mockTitle ?? "Untitled Script"
+            // Optional: You could make mock text slightly lighter to differentiate
+            // Title.textColor = .secondaryLabel
+        }
+        
+        // Description: Use real desc -> fallback to Mock -> fallback to Empty
+        if let realDesc = script.description, !realDesc.isEmpty {
+            Description.text = realDesc
+        } else {
+            Description.text = script.mockDescription ?? "No description available"
+        }
+        
+        // Tags
+        configureHashtags(script.tags ?? [])
+        
+        // 2. Calculate Progress
         let totalCriteria: Float = 4.0
         var filledCriteria: Float = 0.0
             
-        if !idea.title.isEmpty {
+        // Check if Title exists AND is not empty
+        if let title = script.title, !title.isEmpty {
             filledCriteria += 1
         }
             
-        if !idea.description.isEmpty {
+        // Check if Description exists AND is not empty
+        if let desc = script.description, !desc.isEmpty {
             filledCriteria += 1
         }
             
-        if !idea.script.isEmpty {
+        // Check if Script body exists AND is not empty
+        if let scriptContent = script.script, !scriptContent.isEmpty {
             filledCriteria += 1
         }
             
-        if !idea.thumbnail.isEmpty {
+        // Check if Thumbnail URL exists AND is not empty
+        if let thumb = script.thumbnailURL, !thumb.isEmpty {
             filledCriteria += 1
         }
             
-        //Calculating Percentage of completion
+        // 3. Set Progress
         let progress = filledCriteria / totalCriteria
-            
-        //Setting Progress
         progressView.setProgress(value: progress)
     }
-
+    
+    
     private func configureHashtags(_ hashtags: [String]) {
             badgeStack.arrangedSubviews.forEach {
                 badgeStack.removeArrangedSubview($0)
