@@ -915,7 +915,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     print("🧠 Asking Apple Intelligence Manager...")
                     // --- CALLING THE NEW MANAGER ---
                     let result = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
-                    print(result)
+                    
+                    //print(result)
                     
                     // Parse the result locally
                     try await parseAndSave(text: result, ideaID: ideaID, source: "Apple Intelligence")

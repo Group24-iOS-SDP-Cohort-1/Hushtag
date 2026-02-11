@@ -35,6 +35,8 @@ class ViewScriptsViewController: UIViewController {
         
         setupSearchController()
         
+        //scriptsCollectionView.keyboardDismissMode = .onDrag
+        setupTapToDismiss()         //CHECK IF WE REALLY NEED TAP TO DISMIS, because collection view is taking the full screen space
         
         //        ideas = ideaResponse.ideas
         //        likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
@@ -80,6 +82,27 @@ class ViewScriptsViewController: UIViewController {
         navigationItem.searchController = searchController
         definesPresentationContext = true
         navigationItem.hidesSearchBarWhenScrolling = false
+    }
+    
+    
+    func setupTapToDismiss() {
+        // Add gesture to the collection view
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        
+        // IMPORTANT: This allows taps to pass through to the cells if you tap a cell.
+        // If you tap empty space, this gesture fires.
+        // If you tap a cell, the didSelectItemAt delegate fires as well.
+        tapGesture.cancelsTouchesInView = false
+        
+        scriptsCollectionView.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc func dismissKeyboard() {
+        // This closes the keyboard safely
+        view.endEditing(true)
+        
+        // Optional: If you want to deactivate the search bar completely (like clicking Cancel)
+        // searchController.isActive = false
     }
     
     
