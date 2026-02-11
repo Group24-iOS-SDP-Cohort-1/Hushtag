@@ -130,6 +130,7 @@ struct Video: Codable, Identifiable {
     let channel: String
     let views: Int
     let likes: Int
+    let comments: Int
     let publishedAt: String
     let link: String?
 }
@@ -388,26 +389,3 @@ extension Preferences {
         ]
     }
 }
-
-//enum ScheduleItem {
-//    case deal(Deal)
-//    case post(Post)
-//    
-//    func date() -> Date? {
-//        switch self {
-//        case .deal(let deal):
-//            return deal.deliverables.first?.deadline
-//        case .post(let post):
-//            return post.tasks?.first?.deadline
-//        }
-//    }
-//    
-//    var isCompleted: Bool {
-//        switch self {
-//        case .post(let post):
-//            return post.tasks?.allSatisfy { $0.isCompleted } ?? false
-//        case .deal(let deal):
-//            return deal.deliverables.allSatisfy { $0.isCompleted }
-//        }
-//    }
-//}

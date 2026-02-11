@@ -55,6 +55,7 @@ struct ClusteredVideo: Codable, Identifiable {
     let channel: String
     let views: Int
     let likes: Int
+    let comments: Int
     let publishedAt: String
     let cluster: Int
     let isOutlier: Bool
@@ -70,6 +71,7 @@ struct ClusteredVideo: Codable, Identifiable {
         case channel
         case views
         case likes
+        case comments
         case publishedAt
         case cluster
         case isOutlier
@@ -90,6 +92,7 @@ extension ClusteredVideo {
             channel: self.channel,
             views: self.views,
             likes: self.likes,
+            comments: self.comments,
             publishedAt: self.publishedAt,
             link: nil // ClusteredVideo doesn't include link
         )
