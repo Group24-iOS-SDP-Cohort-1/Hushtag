@@ -275,7 +275,7 @@ extension Ideate1: IdeaSearchDelegate {
                             noveltyScore: geminiIdea.noveltyScore,
                             
                             // ✅ IMPORTANT — Attach cluster videos
-                            videos: (cluster.videos ?? []).map { $0.toVideo() },
+                            videos: (cluster.videos).map { $0.toVideo() },
                             
                             liked: false
                         )
