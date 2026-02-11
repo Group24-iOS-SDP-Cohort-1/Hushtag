@@ -7,6 +7,10 @@
 
 import UIKit
 
+extension Notification.Name {
+    static let scriptDeleted = Notification.Name("scriptDeleted")
+}
+
 class ScriptedIdeas: UIViewController {
 
     @IBOutlet weak var script: UITextView!
@@ -79,34 +83,40 @@ class ScriptedIdeas: UIViewController {
         }
     
     private func confirmDelete() {
-            let alert = UIAlertController(title: "Delete Script", message: "Are you sure? This cannot be undone.", preferredStyle: .alert)
-            
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-            alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in
-                self.performDelete()
-            }))
-            
-            present(alert, animated: true)
-        }
+        let alert = UIAlertController(title: "Delete Script", message: "Are you sure? This cannot be undone.", preferredStyle: .alert)
         
-        private func performDelete() {
-            guard let id = idea?.id else { return }
-            
-            Task {
-                do {
-                    // Call Supabase to delete
-                    try await dbController.deleteScript(id)
-                    
-                    await MainActor.run {
-                        // Navigate back to the list
-                        self.navigationController?.popViewController(animated: true)
-                    }
-                } catch {
-                    print("Error deleting script: \(error)")
-                    // Optional: Show error alert
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in
+            self.performDelete()
+        }))
+        
+        present(alert, animated: true)
+    }
+        
+    private func performDelete() {
+        guard let id = idea?.id else { return }
+        
+        Task {
+            do {
+                // Call Supabase to delete
+                try await dbController.deleteScript(id)
+                
+                NotificationCenter.default.post(
+                    name: .scriptDeleted,
+                    object: nil,
+                    userInfo: ["deletedID": id]
+                )
+                
+                await MainActor.run {
+                    // Navigate back to the list
+                    self.navigationController?.popViewController(animated: true)
                 }
+            } catch {
+                print("Error deleting script: \(error)")
+                // Optional: Show error alert
             }
         }
+    }
     
     private func setupNavigationTitle(with title: String?) {
             let titleText = title ?? "Untitled Script"

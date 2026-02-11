@@ -118,20 +118,73 @@ class GeminiManager {
                 else {
                     // Default assumes it's a script request
                     mockResponse = """
-                    [0–3s | Close-up: bubbling milk]
-                    Text: “Indian sweets hit different ❤️”
-                    [3–7s | Slow stir]
-                    Voiceover: “It always starts with milk… and patience.”
-                    [7–12s | Add sugar + ghee]
-                    Text: “Low flame. High love.”
-                    [12–17s | Cardamom, saffron drop]
-                    Voiceover: “Cardamom in, aroma unlocked.”
-                    [17–22s | Shaping / cutting sweets]
-                    Text: “Mithai magic ✨”
-                    [22–27s | Garnish with nuts]
-                    Voiceover: “Finished with nuts, saffron, and tradition.”
-                    [27–30s | Final bite / smile shot]
-                    Text: “Not just dessert. It’s a celebration."
+                    Okay, here's a 30-second gym reel script designed for quick cuts, high energy, and motivational impact.
+
+                    ---
+
+                    **GYM REEL SCRIPT: "EARN IT"**
+
+                    **Goal:** Inspire viewers to hit the gym, showcase dedication, and project a strong, positive vibe.
+                    **Music:** Upbeat, driving instrumental track (e.g., electronic, rock, or hip-hop beat) – license-free or popular trending audio.
+
+                    **(0-2 seconds)**
+                    *   **VISUAL:** Quick, high-energy shot. Close-up of shoes hitting the gym floor, or a hand gripping a barbell.
+                    *   **TEXT OVERLAY:** **"IT STARTS NOW."** (Bold, impactful font)
+                    *   **SOUND:** Music drops in strong.
+
+                    **(2-5 seconds)**
+                    *   **VISUAL:** Rapid montage (1 second each)
+                        *   Walking into the gym, focused expression.
+                        *   Quick dynamic stretch (e.g., arm circles, leg swings).
+                        *   Loading heavy plates onto a barbell.
+                    *   **TEXT OVERLAY:** **"NO EXCUSES."**
+
+                    **(5-15 seconds)**
+                    *   **VISUAL:** Action montage – fast cuts, varying angles. Show effort and form.
+                        *   **5-7s:** Powerful squat or deadlift (1-2 reps, focused on explosion).
+                        *   **7-9s:** Intense bench press or overhead press (1-2 reps).
+                        *   **9-11s:** High-intensity cardio burst (e.g., sprinting on treadmill, rowing machine, battle ropes).
+                        *   **11-13s:** Dumbbell exercise (e.g., bicep curls, shoulder press, or lunges).
+                        *   **13-15s:** Close-up of muscle contraction, sweat dripping, determined facial expression.
+                    *   **TEXT OVERLAYS (flash quickly, interspersed):**
+                        *   **"ONE REP AT A TIME."**
+                        *   **"EARN YOUR RESULTS."**
+                        *   **"DISCIPLINE."**
+                    *   **SOUND:** Music maintains energy. Add subtle SFX: clanking weights, heavy breathing, grunts (if appropriate).
+
+                    **(15-20 seconds)**
+                    *   **VISUAL:** Slightly slower, more deliberate shot of completing a challenging set.
+                        *   Finishing a final rep, a moment of struggle, then a look of triumph and satisfaction.
+                        *   Wiping sweat, a genuine smile, or a fist pump.
+                    *   **TEXT OVERLAY:** **"THE WORK PAYS OFF."** ✨
+
+                    **(20-25 seconds)**
+                    *   **VISUAL:** Cool-down or post-workout shot.
+                        *   Stretching, or walking out of the gym with a confident stride.
+                        *   A quick shot of a water bottle/protein shake.
+                    *   **TEXT OVERLAY:** **"FEEL THE PROGRESS."**
+
+                    **(25-30 seconds)**
+                    *   **VISUAL:** Final impactful shot.
+                        *   Flexing a bicep/tricep, or a confident pose looking into the camera.
+                        *   Optional: A quick shot of the gym's name or your own gym attire brand.
+                    *   **TEXT OVERLAY:**
+                        *   **"WHAT ARE YOU WAITING FOR?"** 💪
+                        *   **[@YourInstagramHandle]** (smaller, at the bottom)
+                        *   **#GymMotivation #Workout #FitnessJourney** (smaller, at the bottom)
+                    *   **SOUND:** Music builds to a climax and fades out sharply.
+
+                    ---
+
+                    **Tips for Filming:**
+
+                    *   **Vary your angles:** Wide shots, close-ups, low angles for power.
+                    *   **Good Lighting:** Utilize natural light if possible, or gym lighting that makes muscles pop.
+                    *   **Smooth Transitions:** Use quick cuts, maybe a few subtle whip pans or jump cuts.
+                    *   **Authenticity:** Show real effort and genuine emotion.
+                    *   **Use a tripod or stabilizer:** For steady, professional-looking shots.
+                    *   **High-Quality Audio:** Even if it's just music, make sure it's clear and at the right volume.
+                    *   **Trending Audio:** Often the key to reach on Reels, so pick something popular that fits the mood.
                     """
                 }
                 
