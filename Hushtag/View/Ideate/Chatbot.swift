@@ -551,16 +551,56 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             }
         }
         
-        // MARK: - Generation Strategy 1: Gemini ONLY
+    // MARK: - Generation Strategy 1: Gemini -> Apple Fallback
         // Used for Scripts and General Chat
         func performGeminiGeneration(prompt: String) {
-            print("✨ Routing to Gemini (Direct)...")
+            print("✨ Routing to Gemini (Primary)...")
             
             GeminiManager.shared.generateContent(prompt: prompt) { [weak self] responseText in
                 guard let self = self else { return }
-                self.handleAIResponse(responseText)
+                
+                // Check if Gemini actually returned data
+                if let text = responseText, !text.isEmpty {
+                    // Success: Use Gemini response
+                    print("✅ Gemini Success")
+                    self.handleAIResponse(text)
+                } else {
+                    // Failure: Gemini returned nil or empty. Trigger Fallback.
+                    print("⚠️ Gemini failed. Initiating Fallback to Apple Intelligence...")
+                    self.performAppleFallback(prompt: prompt)
+                }
             }
         }
+    
+    // MARK: - Fallback Logic
+    func performAppleFallback(prompt: String) {
+        // 1. Check if Device supports it and it's available
+        guard #available(iOS 18.0, *), AppleIntelligenceManager.shared.isAvailable else {
+            print("❌ Apple Intelligence unavailable. Both models failed.")
+            // Send nil to handleAIResponse to trigger the "Sorry" message
+            self.handleAIResponse(nil)
+            return
+        }
+        
+        // 2. Try Apple Intelligence
+        Task {
+            do {
+                print("🧠 Asking Apple Intelligence (Fallback)...")
+                let result = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
+                
+                await MainActor.run {
+                    print("✅ Apple Intelligence Fallback Success")
+                    self.handleAIResponse(result)
+                }
+            } catch {
+                print("❌ Apple Intelligence Fallback Error: \(error)")
+                await MainActor.run {
+                    // If this fails too, we show the error message
+                    self.handleAIResponse(nil)
+                }
+            }
+        }
+    }
         
         // MARK: - Generation Strategy 2: Hybrid (Apple -> Gemini Fallback)
         // Used for Titles, Descriptions, and Summaries
