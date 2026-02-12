@@ -91,6 +91,15 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     autoSendMessage = nil
                 }
         
+        
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleScriptDeletion(_:)),
+            name: .scriptDeleted,
+            object: nil
+        )
+        
         // --- NEW: Check for existing script and load history ---
         if let script = currentActiveScript {
                     print("📜 Loading history for script: \(script.id)")
@@ -109,10 +118,66 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         setupKeyboardObservers()
         setupTapToDismiss()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if messages.isEmpty {
+            let welcomeMessage = "Welcome! I’m your scripting assistant. Lets write a script for you."
+            messages.append(Message(text: welcomeMessage, isUser: false))
+            tableView.reloadData()
+            scrollToBottom()
+        }
+    }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+    
+    
+    // MARK: SCRIPT DELETION
+    
+    @objc func handleScriptDeletion(_ notification: Notification) {
+        // 1. Check if we have an active script
+        guard let currentID = currentActiveScript?.id else { return }
+        
+        // 2. Check if the deleted ID matches our active ID
+        guard let deletedID = notification.userInfo?["deletedID"] as? UUID,
+              deletedID == currentID else {
+            return
+        }
+        
+        // 3. Reset on Main Thread
+        DispatchQueue.main.async { [weak self] in
+            print("🗑 Current script was deleted. Resetting chat...")
+            self?.resetToNewChat()
+        }
+    }
+    
+    func resetToNewChat() {
+        // 1. Clear Data Models
+        self.currentActiveScript = nil
+        self.messages.removeAll()
+        self.markedMessages = [
+            "script": [],
+            "title": [],
+            "description": [],
+            "thumbnail": []
+        ]
+        
+        // 2. Add Welcome Message
+        let welcomeMessage = "Welcome! I’m your scripting assistant. Lets write a script for you."
+        self.messages.append(Message(text: welcomeMessage, isUser: false))
+        
+        // 3. Reset UI
+        self.generateStack.isHidden = true
+        self.tableView.reloadData()
+        
+        // 4. Reset Text Input (Optional)
+        self.textFieldView.text = ""
+        self.textViewDidChange(self.textFieldView)
+    }
+    
+    
     
     // MARK: - History Loading (Fixed)
         func loadChatHistory(using script: ScriptedIdea) {
@@ -195,15 +260,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             return true
         }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if messages.isEmpty {
-            let welcomeMessage = "Welcome! I’m your scripting assistant. Lets write a script for you."
-            messages.append(Message(text: welcomeMessage, isUser: false))
-            tableView.reloadData()
-            scrollToBottom()
-        }
-    }
+    
 
 
     @IBAction func scriptView(_ sender: Any) {
@@ -216,6 +273,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         
     }
 
+    
+    //MARK: KEYBOARD DISMISS
 
     func setupTapToDismiss() {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -259,6 +318,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
             }
         }
+    
+    
+    //MARK: TABLE VIEW FUNCTIONS
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return messages.count
@@ -274,6 +336,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             return cell
 
     }
+    
+    
+    //MARK: MESSAGE SENDING
 
     func textViewDidChange(_ textView: UITextView) {
 
@@ -431,6 +496,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 //            }
 //        }
     
+    
+    //MARK: AI PROMPT AND REPLY FUNCTIONS
+    
     func generateBotReply(for userText: String) {
             let loadingMessage = Message(text: "Thinking...", isUser: false)
             messages.append(loadingMessage)
@@ -450,7 +518,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 let prompt = """
                     GENERATE TITLE - 
                     
-                    Generate a catchy, short title for the following script.
+                    You are a professional YouTube content creator and have high engagement rate on the platform with subcribers in hundredths of thousands. Generate a catchy, short title for the following script which will be SEO optimased and give higher engagement rate on a video for this script.
                     Format it strictly as:
                     TITLE: [Title]
                 
@@ -463,7 +531,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 let prompt = """
                     GENERATE DESCRIPTION -
                     
-                    Generate description a short, engaging description (2 sentences max) for the following script.
+                    Generate a short, engaging description (2 sentences max) for the following script.
                     Format it strictly as:
                     DESC: [Description]
                     
@@ -538,24 +606,37 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             let finalContent = text ?? "Sorry, I couldn't connect to the server."
             var cleanContent = finalContent
             
+            let plainText = finalContent.replacingOccurrences(of: "*", with: "")
+            
             //print(text ?? "EMPTY")
             
             
-            let trimmed = finalContent.trimmingCharacters(in: .whitespacesAndNewlines)
+            let trimmed = plainText.trimmingCharacters(in: .whitespacesAndNewlines)
             
-            if trimmed.hasPrefix("TITLE:") {
+            if trimmed.uppercased().hasPrefix("TITLE:") {
                 // Remove "TITLE:" and trim spaces
-                cleanContent = trimmed.replacingOccurrences(of: "TITLE:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+                cleanContent = trimmed
+                    .replacingOccurrences(of: "TITLE:", with: "")
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .trimmingCharacters(in: CharacterSet(charactersIn: "\""))
             }
-            else if trimmed.hasPrefix("DESC:") {
+            else if trimmed.uppercased().hasPrefix("DESC:") {
                 // Remove "DESC:" and trim spaces
-                cleanContent = trimmed.replacingOccurrences(of: "DESC:", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+                cleanContent = trimmed
+                    .replacingOccurrences(of: "DESC:", with: "")
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .trimmingCharacters(in: CharacterSet(charactersIn: "\""))
             }
+            else{
+                cleanContent = finalContent.trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+            
+            //print(cleanContent)
             
             self.messages.append(Message(text: cleanContent, isUser: false))
             
             if let scriptID = self.currentActiveScript?.id {
-                Task { try? await self.dbController.saveChatMessage(ideaID: scriptID, text: finalContent, isUser: false) }
+                Task { try? await self.dbController.saveChatMessage(ideaID: scriptID, text: cleanContent, isUser: false) }
             }
             
             self.tableView.reloadData()
@@ -688,6 +769,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 //        self.present(alert, animated: true)
 //    }
     
+    
+    
+    //MARK: LONG PRESS GESTURE FUNCTION
+    
     @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
             guard gesture.state == .began else { return }
             guard let cellView = gesture.view else { return }
@@ -806,6 +891,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 //            }
 //        }
     
+    
+    //MARK: GENERATING MOCK TITLE AND DESCRIPTION FUNCTION
+    
     func generateAndSaveMockData(for scriptText: String, ideaID: UUID) {
             guard #available(iOS 18.0, *), AppleIntelligenceManager.shared.isAvailable else {
                 print("ℹ️ Apple Intelligence unavailable. Skipping generation.")
@@ -827,7 +915,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     print("🧠 Asking Apple Intelligence Manager...")
                     // --- CALLING THE NEW MANAGER ---
                     let result = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
-                    print(result)
+                    
+                    //print(result)
                     
                     // Parse the result locally
                     try await parseAndSave(text: result, ideaID: ideaID, source: "Apple Intelligence")
@@ -863,11 +952,18 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             
             let lines = text.components(separatedBy: .newlines)
             for line in lines {
-                let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
-                if trimmed.hasPrefix("TITLE:") {
-                    newMockTitle = trimmed.replacingOccurrences(of: "TITLE:", with: "").trimmingCharacters(in: .whitespaces)
-                } else if trimmed.hasPrefix("DESC:") {
-                    newMockDesc = trimmed.replacingOccurrences(of: "DESC:", with: "").trimmingCharacters(in: .whitespaces)
+                
+                let trimmed = line.replacingOccurrences(of: "*", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+                if trimmed.uppercased().hasPrefix("TITLE:") {
+                    newMockTitle = trimmed
+                        .replacingOccurrences(of: "TITLE:", with: "")
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                        .trimmingCharacters(in: CharacterSet(charactersIn: "\""))       // Remove quotes if AI added them
+                } else if trimmed.uppercased().hasPrefix("DESC:") {
+                    newMockDesc = trimmed
+                        .replacingOccurrences(of: "DESC:", with: "")
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                        //.trimmingCharacters(in: CharacterSet(charactersIn: "\""))     // Remove quotes if AI added them
                 }
             }
             
@@ -884,6 +980,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     self.currentActiveScript = updated
                     print("✅ Mock data saved via \(source)")
                 }
+            } else {
+                print("⚠️ Failed to parse Mock Data. AI Response format mismatch.")
             }
         }
     

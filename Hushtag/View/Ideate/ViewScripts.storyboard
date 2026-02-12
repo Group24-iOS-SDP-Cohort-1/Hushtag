@@ -17,8 +17,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Rvi-Zn-zLk">
-                                <rect key="frame" x="17" y="281" width="359" height="571"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="onDrag" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Rvi-Zn-zLk">
+                                <rect key="frame" x="17" y="0.0" width="359" height="852"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="xJS-R5-7yY">
                                     <size key="itemSize" width="221" height="194"/>
@@ -76,24 +76,14 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="hms-kQ-QPA">
-                                <rect key="frame" x="20" y="187" width="353" height="64"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <outlet property="delegate" destination="Y6W-OH-hqX" id="h2N-2J-FIr"/>
-                                </connections>
-                            </searchBar>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="Rvi-Zn-zLk" secondAttribute="bottom" id="6PW-Rw-bqP"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Rvi-Zn-zLk" secondAttribute="trailing" constant="17" id="85q-Qh-HRB"/>
-                            <constraint firstItem="hms-kQ-QPA" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="VrK-8y-1KL"/>
-                            <constraint firstItem="Rvi-Zn-zLk" firstAttribute="top" secondItem="hms-kQ-QPA" secondAttribute="bottom" constant="30" id="cGs-fS-3pJ"/>
+                            <constraint firstItem="Rvi-Zn-zLk" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="iA1-vN-IR4"/>
                             <constraint firstItem="Rvi-Zn-zLk" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="17" id="kBo-yK-5HE"/>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="hms-kQ-QPA" secondAttribute="trailing" constant="20" id="r6H-tx-yIM"/>
-                            <constraint firstItem="hms-kQ-QPA" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="15" id="zVv-9R-p68"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="View Scripts" largeTitleDisplayMode="never" id="Gzl-OY-X8T"/>

@@ -18,40 +18,88 @@ extension UIViewController {
 
 
 extension String {
-    func toMarkdownString() -> NSAttributedString {
-        // 1. Attempt to parse Markdown (requires iOS 15+)
-        guard let attributedString = try? NSAttributedString(
-            markdown: self,
-            options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace)
-        ) else {
-            return NSAttributedString(string: self)
-        }
+    func toStyledScript() -> NSAttributedString {
+        // 1. Define your Design System
+//      let baseFont = UIFont.systemFont(ofSize: 16, weight: .regular)
+//      let boldFont = UIFont.systemFont(ofSize: 16, weight: .bold)
         
-        // 2. The Markdown parser often resets fonts to small/black.
-        // We create a mutable copy to re-apply your app's font sizes and colors.
-        let mutableString = NSMutableAttributedString(attributedString: attributedString)
-        let fullRange = NSRange(location: 0, length: mutableString.length)
-        
-        // 3. Define your base styles (Adjust size/color to match your app design)
-        let baseFont = UIFont.systemFont(ofSize: 16, weight: .regular)
-        let boldFont = UIFont.systemFont(ofSize: 16, weight: .bold)
-        // Adjust color based on your theme (e.g., .label for dark/light mode support)
+        let baseFont = UIFont.preferredFont(forTextStyle: .body)
+        let boldDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).withSymbolicTraits(.traitBold)
+        let boldFont = UIFont(descriptor: boldDescriptor!, size: 0)
         let textColor = UIColor.label
+        let bulletColor = UIColor.systemBlue
         
-        // 4. Iterate through the string to preserve Bold traits while fixing font size
-        mutableString.enumerateAttribute(.font, in: fullRange, options: []) { value, range, _ in
-            if let font = value as? UIFont, font.fontDescriptor.symbolicTraits.contains(.traitBold) {
-                // If Markdown made it bold, apply YOUR bold font
-                mutableString.addAttribute(.font, value: boldFont, range: range)
-            } else {
-                // Otherwise apply your regular font
-                mutableString.addAttribute(.font, value: baseFont, range: range)
+        // Paragraph style for normal text
+        let baseParagraph = NSMutableParagraphStyle()
+        //baseParagraph.lineSpacing = 6
+        //baseParagraph.paragraphSpacing = 12 // Reduced slightly to tighten general spacing
+        
+        // Paragraph style for Bullet Points
+        let bulletParagraph = NSMutableParagraphStyle()
+        //bulletParagraph.lineSpacing = 4
+        //bulletParagraph.paragraphSpacing = 6
+        bulletParagraph.headIndent = 20
+        bulletParagraph.firstLineHeadIndent = 0
+        
+        // 2. Start with the raw string
+        let attributedString = NSMutableAttributedString(
+            string: self,
+            attributes: [
+                .font: baseFont,
+                .foregroundColor: textColor,
+                .paragraphStyle: baseParagraph
+            ]
+        )
+        
+        // 3. PARSE BOLD (**text**)
+        let boldRegex = try! NSRegularExpression(pattern: "\\*\\*(.*?)\\*\\*", options: [])
+        let matches = boldRegex.matches(in: self, options: [], range: NSRange(location: 0, length: self.utf16.count))
+        
+        for match in matches.reversed() {
+            let fullRange = match.range
+            let innerRange = match.range(at: 1)
+            
+            if let swiftRange = Range(innerRange, in: self) {
+                let innerText = String(self[swiftRange])
+                attributedString.replaceCharacters(in: fullRange, with: innerText)
+                let newRange = NSRange(location: fullRange.location, length: innerText.utf16.count)
+                attributedString.addAttribute(.font, value: boldFont, range: newRange)
             }
         }
         
-        // 5. Force the text color
-        mutableString.addAttribute(.foregroundColor, value: textColor, range: fullRange)
+        // 4. PARSE BULLETS (* text)
+        let stringContent = attributedString.string
+        let bulletRegex = try! NSRegularExpression(pattern: "^\\s*\\*\\s+(.*)$", options: .anchorsMatchLines)
+        let bulletMatches = bulletRegex.matches(in: stringContent, options: [], range: NSRange(location: 0, length: stringContent.utf16.count))
         
-        return mutableString
+        for match in bulletMatches.reversed() {
+            let fullRange = match.range
+            let contentRange = match.range(at: 1)
+            
+            let nsString = stringContent as NSString
+            let contentText = nsString.substring(with: contentRange)
+            
+            let replacement = "•  \(contentText)"
+            attributedString.replaceCharacters(in: fullRange, with: replacement)
+            
+            let newRange = NSRange(location: fullRange.location, length: replacement.utf16.count)
+            attributedString.addAttribute(.paragraphStyle, value: bulletParagraph, range: newRange)
+            
+            let bulletRange = NSRange(location: fullRange.location, length: 1)
+            attributedString.addAttribute(.foregroundColor, value: bulletColor, range: bulletRange)
+        }
+        
+        // 5. CLEANUP: Remove "---" lines AND the surrounding extra newlines
+        // The regex now looks for: (newline) + (---) + (newline)
+        let separatorRegex = try! NSRegularExpression(pattern: "\\n+\\s*---\\s*\\n+", options: [])
+        let separatorMatches = separatorRegex.matches(in: attributedString.string, options: [], range: NSRange(location: 0, length: attributedString.string.utf16.count))
+        
+        for match in separatorMatches.reversed() {
+            // Replace the whole block with just TWO newlines (Standard paragraph break)
+            // This turns [Text] \n\n --- \n\n [Text]  --->  [Text] \n\n [Text]
+            attributedString.replaceCharacters(in: match.range, with: "\n\n")
+        }
+        
+        return attributedString
     }
 }

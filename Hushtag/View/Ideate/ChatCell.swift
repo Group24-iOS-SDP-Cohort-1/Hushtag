@@ -32,7 +32,7 @@ class ChatCell: UITableViewCell {
         if message.isUser{
             chatLabel.text = message.text
         }else{
-            chatLabel.attributedText = message.text.toMarkdownString()
+            chatLabel.attributedText = message.text.toStyledScript()
         }
         //chatLabel.text = message.text
         
