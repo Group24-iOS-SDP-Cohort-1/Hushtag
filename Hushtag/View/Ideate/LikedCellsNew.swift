@@ -36,7 +36,7 @@ class LikedCellsNew: UICollectionViewCell {
         self.idea = idea
         ideaTitle.text = idea.title
         updateLikeUI()
-        configureHashtags(idea.hashtag)
+        //configureHashtags(idea.hashtag)
     }
     
     private func configureHashtags(_ hashtags: [String]) {

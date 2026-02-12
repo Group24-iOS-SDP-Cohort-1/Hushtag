@@ -1,71 +1,88 @@
-//
-//  EngagementRateChart.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 07/01/26.
-//
-
 import SwiftUI
 import Charts
 
-struct EngagementLineChart: View {
-
+struct EngagementBarChart: View {
+    
     let data: [Video]
-
-    var averagedPoints: [(date: Date, rate: Double)] {
-        let calendar = Calendar.current
-
-        // 1. Flatten all engagement points
-        let allPoints = data.flatMap { $0.engagementRate ?? [] }
-
-        // 2. Group by day
-        let grouped = Dictionary(grouping: allPoints) {
-            calendar.startOfDay(for: $0.date)
+    @State private var selected: (index: Int, title: String, rate: Double)?
+    @State private var tooltipPosition: CGPoint = .zero
+    // Calculate engagement rate for each video
+    var engagementRates: [(index: Int, title: String, rate: Double)] {
+        
+        data.enumerated().map { i, video in
+            let likes = Double(video.likes)
+            let comments = Double(video.comments)
+            let views = Double(video.views)
+            
+            let rate = views > 0
+            ? ((likes + 2 * comments) / views)
+            : 0
+            
+            return (index: i, title: video.title, rate: rate)
         }
-
-        // 3. Average per day
-        return grouped.map { (date, points) in
-            let avg = points.map(\.rate).reduce(0, +) / Double(points.count)
-            return (date: date, rate: avg)
-        }
-        .sorted { $0.date < $1.date }
-    }
-
-    var body: some View {
-        Chart {
-            ForEach(averagedPoints, id: \.date) { point in
-                LineMark(
-                    x: .value("Date", point.date),
-                    y: .value("Avg Engagement Rate", point.rate)
-                )
-                .interpolationMethod(.catmullRom)
-
-                PointMark(
-                    x: .value("Date", point.date),
-                    y: .value("Avg Engagement Rate", point.rate)
-                )
-            }
-        }
-        .chartYScale(domain: .automatic)
-        .chartXAxis {
-            AxisMarks(values: .stride(by: .day)) {
-                AxisGridLine()
-                AxisTick()
-                AxisValueLabel(format: .dateTime.day().month())
-            }
-        }
-        .chartLegend(.hidden)
-        .frame(width: 369, height: 140)
-        .chartPlotStyle { plotArea in
-            plotArea
-                .padding(.horizontal, 0)
-                .padding(.vertical, 0)
-        }
-        .offset(y: -37)
-        .chartXAxisLabel("Past Week", position: .bottom, spacing: 0)
-        .chartYAxisLabel("Avg Engagement Rate", position: .trailing, spacing: 0)
-
-
     }
     
+    var body: some View {
+        ZStack {
+            
+            Chart {
+                ForEach(engagementRates, id: \.index) { item in
+                    
+                    BarMark(
+                        x: .value("Video", item.index),
+                        y: .value("Engagement Rate (%)", item.rate),
+                        width: .fixed(15)
+                    )
+                    .cornerRadius(6)
+                }
+            }
+            
+            .chartYAxis {
+                AxisMarks(position: .leading) {
+                    AxisGridLine()
+                    AxisTick()
+                    AxisValueLabel()
+                }
+            }
+            .chartXAxis {
+                AxisMarks(values: .automatic) { value in
+                    AxisValueLabel {
+                        if let title = value.as(String.self) {
+                            Text(title.prefix(6) + "…") // short labels
+                                .font(.caption2)
+                        }
+                    }
+                }
+            }
+            .chartOverlay { proxy in
+                GeometryReader { geo in
+                    Rectangle()
+                        .fill(Color.clear)
+                        .contentShape(Rectangle())
+                        .gesture(
+                            DragGesture(minimumDistance: 0)
+                                .onChanged { value in
+                                    guard let plotFrame = proxy.plotFrame else { return }
+                                    
+                                    let origin = geo[plotFrame].origin
+                                    let xPos = value.location.x - origin.x
+                                    
+                                    if let index: Int = proxy.value(atX: xPos),
+                                       let match = engagementRates.first(where: { $0.index == index }) {
+                                        selected = match
+                                    }
+                                }
+                                .onEnded { _ in
+                                    selected = nil
+                                }
+                        )
+                }
+            }
+            .frame(width: 369, height: 200)
+            .chartLegend(.hidden)
+            .chartXAxisLabel("Videos", position: .bottom, spacing: 0)
+            .chartYAxisLabel("Engagement Rate", position: .trailing, spacing: 0)
+            .chartXScale(range: .plotDimension(padding: 10))
+        }
+    }
 }

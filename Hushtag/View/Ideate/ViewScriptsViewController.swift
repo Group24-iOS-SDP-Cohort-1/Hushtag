@@ -8,7 +8,7 @@
 import UIKit
 
 class ViewScriptsViewController: UIViewController {
-    var ideaResponse = IdeaResponse()
+    //var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
     
     var pageTitle: String = ""
@@ -56,7 +56,7 @@ class ViewScriptsViewController: UIViewController {
             fetchMyScripts()
         } else {
             // 2. Load Liked Ideas (Existing Logic)
-            ideas = ideaResponse.ideas
+            //ideas = ideaResponse.ideas
             likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
             NotificationCenter.default.addObserver(self, selector: #selector(syncLikedIdeas), name: .didUpdateLikedStatus, object: nil)
             updateEmptyState()

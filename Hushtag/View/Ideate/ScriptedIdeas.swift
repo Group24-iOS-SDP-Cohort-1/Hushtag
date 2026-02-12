@@ -186,63 +186,7 @@ class ScriptedIdeas: UIViewController {
         }
     
     
-    private func loadHTMLFile(for idea: Idea) {
-        scriptStack.isHidden = true
-        // Checking if idea.script exists
-        let scriptName = idea.script?.trimmingCharacters(
-            in: .whitespacesAndNewlines
-        )
-        guard ((scriptName?.isEmpty) == nil) else {
-            return
-        }
-
-        let fileName = scriptName?.replacingOccurrences(of: ".html", with: "")
-        guard let url = Bundle.main.url(forResource: fileName, withExtension: "html") else {
-            return
-        }
-
-        do {
-            let html = try String(contentsOf: url, encoding: .utf8)
-            let attributed = try NSMutableAttributedString(
-                data: Data(html.utf8),
-                options: [
-                    .documentType: NSAttributedString.DocumentType.html,
-                    .characterEncoding: String.Encoding.utf8.rawValue
-                ],
-                documentAttributes: nil
-            )
-
-            // Check if current interface style is dark or light and set color accordingly
-            let currentStyle = traitCollection.userInterfaceStyle
-            let textColor: UIColor = currentStyle == .dark ? .white : .black
-
-            attributed.addAttribute(
-                .foregroundColor,
-                value: textColor,
-                range: NSRange(location: 0, length: attributed.length)
-            )
-
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineSpacing = 6
-
-            attributed.addAttributes(
-                [
-                    .paragraphStyle: paragraphStyle,
-                    .font: UIFont.systemFont(ofSize: 15)
-                ],
-                range: NSRange(location: 0, length: attributed.length)
-            )
-
-            if !attributed.string.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                script.attributedText = attributed
-                scriptTitle.text = "Script"
-                scriptStack.isHidden = false
-            }
-
-        } catch {
-            print("Error loading HTML: \(error.localizedDescription)")
-        }
-    }
+    
 
     @IBAction func schedule(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Activities", bundle: nil)
