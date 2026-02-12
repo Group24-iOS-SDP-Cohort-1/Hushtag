@@ -8,31 +8,40 @@
 import UIKit
 
 class Ideate1: UIViewController {
-
-  //  var ideaResponse = IdeaResponse()
+    
+    //  var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
     var selectedIdea: Idea?
     var selectedIndexPath: IndexPath?
-
+    
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var scriptButton: UIButton!
- 
-
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-        //ideas = ideaResponse.ideas
+        register()
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(UINib(nibName: "IdeaCells", bundle: nil), forCellWithReuseIdentifier: "ideaCell")
-        collectionView.register(UINib(nibName: "IdeaSearch", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "IdeaSearch")
-        collectionView.register(UINib(nibName: "SuggestedFYHeader", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "suggestedHeader")
+        
         NotificationCenter.default.addObserver(self, selector: #selector(refreshUI), name: .didUpdateLikedStatus, object: nil)
         scriptButton.layer.borderWidth = 1
         scriptButton.layer.borderColor = UIColor.accent.cgColor
         
         setupGlobalKeyboardDismiss()
+//        Task {
+//                await loadIdeasFromPreferences()
+//            }
+        self.ideas = SessionManager.shared.personalizedIdeas
+        collectionView.reloadData()
+    }
+    
+    private func register() {
+        collectionView.register(UINib(nibName: "IdeaCells", bundle: nil), forCellWithReuseIdentifier: "ideaCell")
+        collectionView.register(UINib(nibName: "IdeaSearch", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "IdeaSearch")
+        collectionView.register(UINib(nibName: "SuggestedFYHeader", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "suggestedHeader")
     }
     
     private func setupGlobalKeyboardDismiss() {
@@ -40,11 +49,11 @@ class Ideate1: UIViewController {
             target: self,
             action: #selector(dismissKeyboard)
         )
-
+        
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
     }
-
+    
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
@@ -52,15 +61,15 @@ class Ideate1: UIViewController {
     @objc func refreshUI() {
         collectionView.reloadData()
     }
-
+    
     @IBAction func scriptTap(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
-            let vc = storyboard.instantiateViewController(withIdentifier: "Chatbot")
-            navigationController?.pushViewController(vc, animated: true)
+        let vc = storyboard.instantiateViewController(withIdentifier: "Chatbot")
+        navigationController?.pushViewController(vc, animated: true)
     }
-
-
-
+    
+    
+    
     @IBAction func viewLikedTap(_ sender: UIBarButtonItem) {
         let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
         guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
@@ -68,26 +77,17 @@ class Ideate1: UIViewController {
         destinationVC.pageTitle = "Liked Ideas"
         self.navigationController?.pushViewController(destinationVC, animated: true)
     }
-
+    
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
             
             if sectionIndex == 0 {
-                let itemSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(1)
-                )
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(1))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
-                let groupSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(1)
-                )
-                let group = NSCollectionLayoutGroup.horizontal(
-                    layoutSize: groupSize,
-                    subitems: [item]
-                )
-
+                
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(1))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+                
                 let section = NSCollectionLayoutSection(group: group)
                 let headerSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
@@ -99,16 +99,16 @@ class Ideate1: UIViewController {
                     alignment: .top
                 )
                 section.boundarySupplementaryItems = [header]
-
+                
                 return section
             }
-
+            
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
                 heightDimension: .estimated(116)
             )
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
+            
             let groupSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .estimated(170)
@@ -119,7 +119,7 @@ class Ideate1: UIViewController {
             )
             
             let section = NSCollectionLayoutSection(group: group)
-
+            
             let headerSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .estimated(300)
@@ -133,7 +133,7 @@ class Ideate1: UIViewController {
             section.boundarySupplementaryItems = [header]
             section.interGroupSpacing = 15
             section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
-
+            
             return section
         }
     }
@@ -147,61 +147,117 @@ class Ideate1: UIViewController {
             return "Niche"
         }
     }
+    
+    //    private func mapVideosToIdeas(_ videos: [VideoDTO]) -> [Idea] {
+    //        return videos.map {
+    //            Idea(
+    //                id: $0.id,
+    //                trending: nil,
+    //                title: $0.title,
+    //                description: $0.description,
+    //                script: nil,
+    //                hashtag: $0.hashtags ?? [],
+    //                videos: nil as [Video]?,
+    //                liked: nil as Bool?,
+    //                tag: "",
+    //                thumbnail: nil,
+    //                engagementRate: Double($0.views / 1000)
+    //            )
+    //        }
+    //    }
+    
+    func loadIdeasFromPreferences() async {
 
-//    private func mapVideosToIdeas(_ videos: [VideoDTO]) -> [Idea] {
-//        return videos.map {
-//            Idea(
-//                id: $0.id,
-//                trending: nil,
-//                title: $0.title,
-//                description: $0.description,
-//                script: nil,
-//                hashtag: $0.hashtags ?? [],
-//                videos: nil as [Video]?,
-//                liked: nil as Bool?,
-//                tag: "",
-//                thumbnail: nil,
-//                engagementRate: Double($0.views / 1000)
-//            )
-//        }
-//    }
+        guard let prefs = SessionManager.shared.userPreferences else {
+            print("❌ No preferences found")
+            return
+        }
 
+        let topics = prefs.niche
+
+        guard topics.count >= 3 else {
+            print("❌ Not enough niche topics")
+            return
+        }
+
+        let selectedTopics = Array(topics.prefix(5))
+
+        print("🎯 Fetching ideas for:", selectedTopics)
+
+        var personalizedIdeas: [Idea] = []
+
+        for topic in selectedTopics {
+
+            do {
+                let response = try await YouTubeService().search(query: topic.rawValue)
+
+                // Flatten cluster ideas
+                if let firstIdea = response.clusterIdeas
+                    .flatMap({ $0.ideas })
+                    .first {
+
+                    let mapped = Idea(
+                        id: UUID(),
+                        title: firstIdea.title,
+                        description: firstIdea.description,
+                        format: firstIdea.format,
+                        hashtags: firstIdea.hashtags,
+                        noveltyScore: firstIdea.noveltyScore,
+                        videos: response.clusterIdeas.first?.videos.map { $0.toVideo() },
+                        liked: false
+                    )
+
+                    personalizedIdeas.append(mapped)
+                }
+
+            } catch {
+                print("❌ Error fetching topic \(topic):", error)
+            }
+        }
+
+        // Update UI
+        await MainActor.run {
+            self.ideas = personalizedIdeas
+            self.collectionView.reloadData()
+            print("✅ Loaded \(ideas.count) personalized ideas")
+        }
+    }
 }
 
 extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0 {
             return 0
         }
-       return  ideas.count
+        return  ideas.count
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideaCell",for: indexPath) as! IdeaCells
-
+        
         let idea = ideas[indexPath.row]
         cell.configure(idea: idea)
         return cell
     }
-
+    
     func collectionView( _ collectionView: UICollectionView,viewForSupplementaryElementOfKind kind: String,at indexPath: IndexPath
     ) -> UICollectionReusableView {
-
+        
         guard kind == UICollectionView.elementKindSectionHeader else {
             return UICollectionReusableView()
         }
-
+        
         if indexPath.section == 0 {
             let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: "IdeaSearch",
                 for: indexPath
             ) as! IdeaSearch
-
+            
             header.delegate = self
             return header
         } else {
@@ -213,7 +269,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             return header
         }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard indexPath.section == 1 else { return }
         let idea = ideas[indexPath.row]
@@ -223,7 +279,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         destinationVC.idea = idea
         self.navigationController?.pushViewController(destinationVC, animated: true)
     }
-
+    
 }
 
 //extension Ideate1: IdeaSearchDelegate {
@@ -258,10 +314,10 @@ extension Ideate1: IdeaSearchDelegate {
         Task {
             do {
                 let response = try await YouTubeService().search(query: keyword)
-
+                
                 // ✅ NEW FLOW
                 let clusterIdeas = response.clusterIdeas
-
+                
                 // Flatten clusterIdeas → Idea objects
                 let mappedIdeas: [Idea] = clusterIdeas.flatMap { cluster in
                     cluster.ideas.map { geminiIdea in
@@ -281,7 +337,7 @@ extension Ideate1: IdeaSearchDelegate {
                         )
                     }
                 }
-
+                
                 await MainActor.run {
                     self.ideas = mappedIdeas
                     print("Ideas Count:", self.ideas.count)
