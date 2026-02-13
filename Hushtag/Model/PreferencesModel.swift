@@ -8,7 +8,7 @@
 import Foundation
 
 nonisolated struct PreferenceInsertPayload: Codable {
-    let user_id: UUID
+    let id: UUID
     let niche: [String]
     let content_goals: [String]
     let content_length: [String]
@@ -27,7 +27,6 @@ struct UserPreference {
 
 nonisolated struct PreferenceDB: Codable, Sendable {
     let id: UUID
-    let user_id: UUID
     let created_at: Date
     let niche: [Niche]?
     let content_goals: [ContentGoal]?
@@ -82,8 +81,8 @@ enum ContentLength: String, Codable, CustomStringConvertible {
 enum ContentGoal: String, Codable, CustomStringConvertible {
     case growth
     case engagement
-    case retention
-    case conversion
+    case consistency
+    case creativity
     case branding
     var description: String {
         rawValue

@@ -43,7 +43,7 @@ nonisolated struct DeliverableDB: Codable, Sendable {
     let isCompleted: Bool
 }
 
-nonisolated struct DealInsertPayload: Encodable, Sendable{
+nonisolated struct DealInsertPayload: Encodable, Sendable {
     let user_id: UUID
     let name: String
     let payment: Double
