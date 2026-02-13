@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 class Ideate1: UIViewController {
     
     //  var ideaResponse = IdeaResponse()
@@ -104,13 +103,6 @@ class Ideate1: UIViewController {
         destinationVC.pageTitle = "Liked Ideas"
         self.navigationController?.pushViewController(destinationVC, animated: true)
     }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.ideas = syncLikedState(SessionManager.shared.personalizedIdeas)
-        collectionView.reloadData()
-    }
-
 
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
