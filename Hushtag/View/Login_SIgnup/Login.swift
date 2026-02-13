@@ -69,6 +69,8 @@ class Login: UIViewController {
             }
 
         _Concurrency.Task { @MainActor in
+            LoadingOverlay.shared.show()
+            
             do {
                 let user = try await viewModel.signInWithEmail(email: email, password: password)
                 
@@ -77,11 +79,11 @@ class Login: UIViewController {
                 self.navigateBasedOnOnboardingStatus()
                 
             } catch let error as LocalizedError {
-                
+                LoadingOverlay.shared.hide()
                 self.showAlert(title: "Login Failed", message: error.localizedDescription)
                 
             } catch {
-                
+                LoadingOverlay.shared.hide()
                 self.showAlert(title: "Login Failed", message: AuthError.unknown.localizedDescription)
                 
             }
@@ -94,6 +96,7 @@ class Login: UIViewController {
     @IBAction func googleLoginTapped(_ sender: Any) {
         
         _Concurrency.Task { @MainActor in
+            LoadingOverlay.shared.show()
             do {
                 let user = try await viewModel.signInWithGoogle()
                 
@@ -102,11 +105,11 @@ class Login: UIViewController {
                 self.navigateBasedOnOnboardingStatus()
                 
             } catch let error as LocalizedError {
-                
+                LoadingOverlay.shared.hide()
                 self.showAlert(title: "Login Failed", message: error.localizedDescription)
                 
             } catch {
-                
+                LoadingOverlay.shared.hide()
                 self.showAlert(title: "Login Failed", message: AuthError.unknown.localizedDescription)
                 
             }
@@ -158,7 +161,9 @@ extension UIViewController{
             duration: 0.25,
             options: .transitionCrossDissolve,
             animations: nil
-        )
+        ) { _ in
+            LoadingOverlay.shared.hide()
+        }
     }
     
     
@@ -209,7 +214,9 @@ extension UIViewController{
 
             // 3. Swap the root
             window.rootViewController = preferencesVC
-            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil) { _ in
+                LoadingOverlay.shared.hide()
+            }
             window.makeKeyAndVisible()
         }
     

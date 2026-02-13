@@ -76,15 +76,20 @@ class Signup: UIViewController {
             }
 
         _Concurrency.Task { @MainActor in
+            LoadingOverlay.shared.show()
                 do {
                     let user = try await viewModel.registerNewUserWithEmail(email: email, password: password)
 
                 
-                        self.appUser = user
-                        //self.navigateToHomeScreen()
+                    self.appUser = user
+                    //self.navigateToHomeScreen()
                     self.navigateToPreferencesScreen()
                 } catch let error as LocalizedError {
-                        self.showAlert(title: "Signup Failed", message: error.localizedDescription)
+                    LoadingOverlay.shared.hide()
+                    self.showAlert(title: "Signup Failed", message: error.localizedDescription)
+                } catch {
+                    LoadingOverlay.shared.hide()
+                    self.showAlert(title: "Signup Failed", message: "An unknown error occurred")
                 }
             }
         
