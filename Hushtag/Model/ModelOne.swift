@@ -118,7 +118,7 @@ enum PlatformType:String{
 
 struct Idea: Codable, Identifiable {
     let id: UUID
-    let ideaKey: String
+    let ideaKey: String?
     let title: String
     let description: String
     let format: String

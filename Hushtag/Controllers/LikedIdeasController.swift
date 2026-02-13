@@ -19,7 +19,7 @@ final class LikedIdeasController {
         let payload = LikedIdeaInsertPayload(
             id: UUID(),
             user_id: session.user.id,
-            ideaKey: idea.ideaKey,
+            ideaKey: idea.ideaKey ?? "",
             title: idea.title,
             description: idea.description,
             hashtags: idea.hashtags

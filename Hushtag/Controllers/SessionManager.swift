@@ -40,59 +40,60 @@ class SessionManager: ObservableObject {
     }
     
     func preloadIdeas() async {
-
+        
         guard let prefs = userPreferences else {
             print("❌ No prefs found")
             return
         }
-
-        let topics = prefs.niche
-        let selectedTopics = Array(topics.prefix(3))
-
+        
+        let selectedTopics = Array(prefs.niche.prefix(3))
         var loadedIdeas: [Idea] = []
-
+        
         for topic in selectedTopics {
-
+            
             do {
                 let response = try await YouTubeService().search(query: topic.rawValue)
-
-                if let firstIdea = response.clusterIdeas
-                    .flatMap({ $0.ideas })
-                    .first {
-
-                    let key = makeIdeaKey(
+                
+                // Pick first cluster
+                guard let firstCluster = response.clusterIdeas.first else {
+                    continue
+                }
+                
+                // Pick first Gemini idea from that cluster
+                guard let firstIdea = firstCluster.ideas.first else {
+                    continue
+                }
+                
+                // Map first 3 videos from that cluster
+                let mappedVideos: [Video] = firstCluster.videos
+                    .prefix(3)
+                    .map { $0.toVideo() }
+                
+                // Build final Idea
+                loadedIdeas.append(
+                    Idea(
+                        id: UUID(),
+                        ideaKey: nil,
                         title: firstIdea.title,
                         description: firstIdea.description,
                         format: firstIdea.format,
-                        hashtags: firstIdea.hashtags
+                        hashtags: firstIdea.hashtags,
+                        noveltyScore: firstIdea.noveltyScore,
+                        videos: mappedVideos,
+                        liked: false
                     )
-
-                    loadedIdeas.append(
-                        Idea(
-                            id: UUID(),
-                            ideaKey: key,
-                            title: firstIdea.title,
-                            description: firstIdea.description,
-                            format: firstIdea.format,
-                            hashtags: firstIdea.hashtags,
-                            noveltyScore: firstIdea.noveltyScore,
-                            videos: [],
-                            liked: false
-                        )
-                    )
-                }
-
+                )
+                
             } catch {
                 print("❌ Failed topic \(topic):", error)
             }
         }
-
+        
         await MainActor.run {
             self.personalizedIdeas = loadedIdeas
             print("✅ Preloaded ideas:", loadedIdeas.count)
         }
     }
-
     
     func clearSession() {
         currentUser = nil

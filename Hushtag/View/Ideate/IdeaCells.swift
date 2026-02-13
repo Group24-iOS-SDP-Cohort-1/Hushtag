@@ -71,7 +71,7 @@ class IdeaCells: UICollectionViewCell {
         idea.liked = !(idea.liked ?? false)
         self.idea = idea
         updateLikeUI()
-        delegate?.didToggleLikeFromFeed(for: idea.ideaKey)
+        delegate?.didToggleLikeFromFeed(for: idea.ideaKey ?? "")
 
     }
     
