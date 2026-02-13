@@ -111,7 +111,7 @@ struct Idea: Codable, Identifiable {
     let hashtags: [String]
     let noveltyScore: Int
     let videos: [Video]?
-    let liked: Bool?
+    var liked: Bool?
 }
 
 //struct Video: Codable {

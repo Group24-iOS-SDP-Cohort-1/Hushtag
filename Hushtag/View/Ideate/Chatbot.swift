@@ -9,12 +9,12 @@ import UIKit
 import FoundationModels
 import NaturalLanguage
 
-enum GenerationStrategy {
-    case geminiFirst // Try Gemini -> Fallback to Apple (For Scripts/Chat)
-    case appleFirst  // Try Apple -> Fallback to Gemini (For Titles/Descriptions)
-}
 
 class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, LikedCellDelegate {
+    func didToggleLike(for ideaId: UUID) {
+        ""
+    }
+
 
     @IBOutlet weak var tableView: UITableView!
 
@@ -376,6 +376,20 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             }
     }
 
+//    func sendMessage(_ text: String) {
+//        messages.append(Message(text: text, isUser: true))
+//        tableView.reloadData()
+//
+//        let indexPath = IndexPath(row: messages.count - 1, section: 0)
+//        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+//
+//        textFieldView.text = ""
+//        textViewDidChange(textFieldView)
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//            self.generateBotReply(for: text)
+//                }
+//    }
 
     
     func sendMessage(_ text: String) {
@@ -418,214 +432,49 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             }
         }
     
-    //MARK: AI PROMPT AND REPLY FUNCTIONS
     
-    func generateBotReply(for userText: String) {
-        // 1. UI Setup
-        let loadingMessage = Message(text: "Thinking...", isUser: false)
-        messages.append(loadingMessage)
-        tableView.reloadData()
-        scrollToBottom()
-        
-        let lower = userText.lowercased()
-        let scriptContext = markedMessages["script"]?.first?.text ?? ""
-        
-        // 2. Prepare Prompt & Determine Strategy
-        var finalPrompt = userText
-        var strategy: GenerationStrategy = .geminiFirst // DEFAULT: Scripts & Chat use Gemini First
-        
-        // --- ROUTING LOGIC ---
-        
-        if !scriptContext.isEmpty {
-            if lower.contains("generate title") || lower.contains("suggest title") {
-                // Strategy: Apple First for Titles
-                strategy = .appleFirst
-                finalPrompt = """
-                    GENERATE TITLE -
-                    You are a professional YouTube content creator. Generate a catchy, short title (SEO optimized) for the following script.
-                    Format: TITLE: [Title]
-                    
-                    Script:
-                    \(scriptContext)
-                    """
-            }
-            else if lower.contains("generate description") {
-                // Strategy: Apple First for Descriptions
-                strategy = .appleFirst
-                finalPrompt = """
-                    GENERATE DESCRIPTION -
-                    Generate a short, engaging description (2 sentences max).
-                    Format: DESC: [Description]
-                    
-                    Script:
-                    \(scriptContext)
-                    """
-            }
-            else if lower.contains("generate thumbnail") {
-                // Strategy: Apple First for Thumbnails
-                strategy = .appleFirst
-                finalPrompt = "Describe a visual thumbnail image that would represent this script:\n\n\(scriptContext)"
-            }
-            else{
-                strategy = .appleFirst
-                finalPrompt = userText
-            }
-        }
-//        else{
-//            strategy = .appleFirst
-//            finalPrompt = userText
-//        }
-        
-        
-        // 3. Execute Strategy
-        print("🚀 Starting Generation Strategy: \(strategy)")
-        switch strategy {
-        case .geminiFirst:
-            executeGemini(prompt: finalPrompt, isFallback: false)
-        case .appleFirst:
-            executeApple(prompt: finalPrompt, isFallback: false)
-        }
-    }
-    
-    // MARK: - Unified Worker Functions
-        
-        // Logic: Try Gemini. If fail AND not already a fallback -> Call Apple.
-        func executeGemini(prompt: String, isFallback: Bool) {
-            let label = isFallback ? "Fallback" : "Primary"
-            print("✨ Routing to Gemini (\(label))...")
-            
-            GeminiManager.shared.generateContent(prompt: prompt) { [weak self] responseText in
-                guard let self = self else { return }
-                
-                if let text = responseText, !text.isEmpty {
-                    print("✅ Gemini Success")
-                    self.handleAIResponse(text)
-                } else {
-                    print("⚠️ Gemini Failed.")
-                    if !isFallback {
-                        print("↪️ Switching to Apple Intelligence...")
-                        self.executeApple(prompt: prompt, isFallback: true)
-                    } else {
-                        print("❌ Both models failed.")
-                        self.handleAIResponse(nil) // Trigger final error message
-                    }
-                }
-            }
-        }
-        
-        // Logic: Try Apple. If fail AND not already a fallback -> Call Gemini.
-        func executeApple(prompt: String, isFallback: Bool) {
-            let label = isFallback ? "Fallback" : "Primary"
-            
-            // Check Availability
-            guard #available(iOS 18.0, *), AppleIntelligenceManager.shared.isAvailable else {
-                print("❌ Apple Intelligence unavailable.")
-                if !isFallback {
-                    print("↪️ Switching to Gemini...")
-                    executeGemini(prompt: prompt, isFallback: true)
-                } else {
-                    handleAIResponse(nil)
-                }
-                return
-            }
-            
-            print("🧠 Routing to Apple Intelligence (\(label))...")
-            
-            Task {
-                do {
-                    let result = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
-                    await MainActor.run {
-                        print("✅ Apple Intelligence Success")
-                        self.handleAIResponse(result)
-                    }
-                } catch {
-                    print("⚠️ Apple Intelligence Error: \(error)")
-                    await MainActor.run {
-                        if !isFallback {
-                            print("↪️ Switching to Gemini...")
-                            self.executeGemini(prompt: prompt, isFallback: true)
-                        } else {
-                            print("❌ Both models failed.")
-                            self.handleAIResponse(nil)
-                        }
-                    }
-                }
-            }
-        }
-    
-        
-//    // MARK: - Generation Strategy 1: Gemini -> Apple Fallback
-//        // Used for Scripts and General Chat
-//        func performGeminiGeneration(prompt: String) {
-//            print("✨ Routing to Gemini (Primary)...")
+//    func generateBotReply(for userText: String) {
+//            // UI: "Thinking..."
+//            let loadingMessage = Message(text: "Thinking...", isUser: false)
+//            messages.append(loadingMessage)
+//            tableView.reloadData()
+//            scrollToBottom()
 //            
-//            GeminiManager.shared.generateContent(prompt: prompt) { [weak self] responseText in
-//                guard let self = self else { return }
-//                
-//                // Check if Gemini actually returned data
-//                if let text = responseText, !text.isEmpty {
-//                    // Success: Use Gemini response
-//                    print("✅ Gemini Success")
-//                    self.handleAIResponse(text)
-//                } else {
-//                    // Failure: Gemini returned nil or empty. Trigger Fallback.
-//                    print("⚠️ Gemini failed. Initiating Fallback to Apple Intelligence...")
-//                    self.performAppleFallback(prompt: prompt)
+//            // --- LOGIC: Context Injection ---
+//            // If the user asks for Title/Description, we inject the marked script into the prompt.
+//            var prompt = userText
+//            let lower = userText.lowercased()
+//            
+//            // Check if we have a marked script to base the generation on
+//            let scriptContext = markedMessages["script"]?.first?.text ?? ""
+//            
+//            if !scriptContext.isEmpty {
+//                if lower.contains("generate title") || lower.contains("suggest title") {
+//                    prompt = "Generate a catchy, short title for the following script:\n\n\(scriptContext)"
+//                } else if lower.contains("generate description") {
+//                    prompt = "Generate a short, engaging description (2 sentences max) for the following script:\n\n\(scriptContext)"
+//                } else if lower.contains("generate thumbnail") {
+//                    prompt = "Describe a visual thumbnail image that would represent this script:\n\n\(scriptContext)"
 //                }
 //            }
-//        }
-//    
-//    // MARK: - Fallback Logic
-//    func performAppleFallback(prompt: String) {
-//        // 1. Check if Device supports it and it's available
-//        guard #available(iOS 18.0, *), AppleIntelligenceManager.shared.isAvailable else {
-//            print("❌ Apple Intelligence unavailable. Both models failed.")
-//            // Send nil to handleAIResponse to trigger the "Sorry" message
-//            self.handleAIResponse(nil)
-//            return
-//        }
-//        
-//        // 2. Try Apple Intelligence
-//        Task {
-//            do {
-//                print("🧠 Asking Apple Intelligence (Fallback)...")
-//                let result = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
-//                
-//                await MainActor.run {
-//                    print("✅ Apple Intelligence Fallback Success")
-//                    self.handleAIResponse(result)
-//                }
-//            } catch {
-//                print("❌ Apple Intelligence Fallback Error: \(error)")
-//                await MainActor.run {
-//                    // If this fails too, we show the error message
-//                    self.handleAIResponse(nil)
-//                }
-//            }
-//        }
-//    }
-//        
-//        // MARK: - Generation Strategy 2: Hybrid (Apple -> Gemini Fallback)
-//        // Used for Titles, Descriptions, and Summaries
-//        func performHybridGeneration(prompt: String) {
-//            print("🧠 Routing to Hybrid (Apple First)...")
 //            
+//            // --- CALL MANAGER ---
 //            Task {
 //                var responseText: String?
 //                
-//                // Step A: Try Apple Intelligence
+//                // 1. Try Apple Intelligence
 //                if #available(iOS 18.0, *), AppleIntelligenceManager.shared.isAvailable {
 //                    do {
+//                        print("🧠 Asking Apple Intelligence...")
 //                        responseText = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
-//                        print("✅ Apple Intelligence responded.")
 //                    } catch {
 //                        print("⚠️ Apple AI failed: \(error). Falling back.")
 //                    }
 //                }
 //                
-//                // Step B: Fallback to Gemini if Apple failed
+//                // 2. Fallback to Gemini (if Apple failed or unavailable)
 //                if responseText == nil {
-//                    print("✨ Apple unavailable/failed. Asking Gemini...")
+//                    print("✨ Asking Gemini (Fallback)...")
 //                    await withCheckedContinuation { continuation in
 //                        GeminiManager.shared.generateContent(prompt: prompt) { result in
 //                            responseText = result
@@ -634,13 +483,125 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 //                    }
 //                }
 //                
-//                // Step C: Handle Result
+//                // 3. Update UI
 //                await MainActor.run {
-//                    self.handleAIResponse(responseText)
+//                    if !self.messages.isEmpty { self.messages.removeLast() } // Remove "Thinking..."
+//                    
+//                    let finalContent = responseText ?? "Sorry, I couldn't connect to the server."
+//                    self.messages.append(Message(text: finalContent, isUser: false))
+//                    
+//                    if let scriptID = self.currentActiveScript?.id {
+//                        Task { try? await self.dbController.saveChatMessage(ideaID: scriptID, text: finalContent, isUser: false) }
+//                    }
+//                    
+//                    self.tableView.reloadData()
+//                    self.scrollToBottom()
 //                }
 //            }
 //        }
-//        
+    
+    
+    //MARK: AI PROMPT AND REPLY FUNCTIONS
+    
+    func generateBotReply(for userText: String) {
+            let loadingMessage = Message(text: "Thinking...", isUser: false)
+            messages.append(loadingMessage)
+            tableView.reloadData()
+            scrollToBottom()
+            
+            let lower = userText.lowercased()
+            
+            // 1. Check for Context (Is the user asking based on a selected script?)
+            let scriptContext = markedMessages["script"]?.first?.text ?? ""
+            
+            // ROUTING LOGIC:
+            // If "Generate Title/Description/Thumbnail" -> Use Hybrid (Apple First)
+            // Everything else (Scripts, Chat, Advice) -> Use Gemini Only
+            
+            if !scriptContext.isEmpty && (lower.contains("generate title") || lower.contains("suggest title")) {
+                let prompt = """
+                    GENERATE TITLE - 
+                    
+                    You are a professional YouTube content creator and have high engagement rate on the platform with subcribers in hundredths of thousands. Generate a catchy, short title for the following script which will be SEO optimased and give higher engagement rate on a video for this script.
+                    Format it strictly as:
+                    TITLE: [Title]
+                
+                    Script:
+                    \(scriptContext)
+                """
+                performHybridGeneration(prompt: prompt)
+                
+            } else if !scriptContext.isEmpty && lower.contains("generate description") {
+                let prompt = """
+                    GENERATE DESCRIPTION -
+                    
+                    Generate a short, engaging description (2 sentences max) for the following script.
+                    Format it strictly as:
+                    DESC: [Description]
+                    
+                    Script:
+                    \(scriptContext)
+                """
+                performHybridGeneration(prompt: prompt)
+                
+            } else if !scriptContext.isEmpty && lower.contains("generate thumbnail") {
+                let prompt = "Describe a visual thumbnail image that would represent this script:\n\n\(scriptContext)"
+                performHybridGeneration(prompt: prompt)
+                
+            } else {
+                // Default Case: Generating Scripts or General Chat
+                // User requested: "Script should get generated from Gemini only"
+                performGeminiGeneration(prompt: userText)
+            }
+        }
+        
+        // MARK: - Generation Strategy 1: Gemini ONLY
+        // Used for Scripts and General Chat
+        func performGeminiGeneration(prompt: String) {
+            print("✨ Routing to Gemini (Direct)...")
+            
+            GeminiManager.shared.generateContent(prompt: prompt) { [weak self] responseText in
+                guard let self = self else { return }
+                self.handleAIResponse(responseText)
+            }
+        }
+        
+        // MARK: - Generation Strategy 2: Hybrid (Apple -> Gemini Fallback)
+        // Used for Titles, Descriptions, and Summaries
+        func performHybridGeneration(prompt: String) {
+            print("🧠 Routing to Hybrid (Apple First)...")
+            
+            Task {
+                var responseText: String?
+                
+                // Step A: Try Apple Intelligence
+                if #available(iOS 18.0, *), AppleIntelligenceManager.shared.isAvailable {
+                    do {
+                        responseText = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
+                        print("✅ Apple Intelligence responded.")
+                    } catch {
+                        print("⚠️ Apple AI failed: \(error). Falling back.")
+                    }
+                }
+                
+                // Step B: Fallback to Gemini if Apple failed
+                if responseText == nil {
+                    print("✨ Apple unavailable/failed. Asking Gemini...")
+                    await withCheckedContinuation { continuation in
+                        GeminiManager.shared.generateContent(prompt: prompt) { result in
+                            responseText = result
+                            continuation.resume()
+                        }
+                    }
+                }
+                
+                // Step C: Handle Result
+                await MainActor.run {
+                    self.handleAIResponse(responseText)
+                }
+            }
+        }
+        
         // Shared Response Handler
         private func handleAIResponse(_ text: String?) {
             // Remove "Thinking..."
@@ -695,6 +656,124 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             }
     }
 
+//    @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+//        // 1. Trigger action only when the press begins
+//        guard gesture.state == .began else { return }
+//        guard let cellView = gesture.view else { return }
+//        let row = cellView.tag
+//        var message = messages[row]
+//        
+//        
+////        var sheetTitle = "Options"
+////        if let type = message.markType {
+////            sheetTitle = "Manage \(type.capitalized)"
+////        } else {
+////            sheetTitle = "Select Option"
+////        }
+//        
+//        // 2. Create Alert Controller (ActionSheet style)
+//        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+//
+//        // 3. Define the Helper Function to add actions
+//        func addMarkAction(type: String) {
+//            let isMarked = message.markType == type
+//            
+//            // If this type is already taken by another message, don't show the button
+//            if !isMarked && isTypeAlreadyMarked(type) {
+//                return
+//            }
+//
+//            let title = isMarked ? "Unmark \(type.capitalized)" : "Mark as \(type.capitalized)"
+//            
+//            // Use Red (.destructive) for Unmark, Blue (.default) for Mark
+//            let style: UIAlertAction.Style = isMarked ? .destructive : .default
+//            
+//            alert.addAction(UIAlertAction(title: title, style: style) { _ in
+//                if isMarked {
+//                    // --- UNMARK LOGIC ---
+//                    message.markType = nil
+//                    
+//                    self.markedMessages[type]?.removeAll {
+//                        $0.text == message.text
+//                    }
+//                    
+//                    // Sync to DB (Set to NULL)
+//                    self.syncToDatabase(type: type, text: nil)
+//                    
+//                    self.didShowFinalReadyMessage = false
+//                    self.showScriptSuggestions()
+//
+//                } else {
+//                    // --- MARK LOGIC ---
+//                    // Safety: If it was marked as something else before, clear that old type
+//                    if let oldType = message.markType {
+//                        self.markedMessages[oldType]?.removeAll { $0.text == message.text }
+//                    }
+//
+//                    self.generateStack.isHidden = false
+//                    message.markType = type
+//                    self.markedMessages[type]?.append(message)
+//                    
+//                    // Sync to DB (Set to Value)
+//                    self.syncToDatabase(type: type, text: message.text)
+//                    
+//                    // Check if the set is complete
+//                    if self.isAllContentMarked() && !self.didShowFinalReadyMessage {
+//                        self.didShowFinalReadyMessage = true
+//                        
+//                        let finalMessage = Message(
+//                            text: "less goo your post is ready",
+//                            isUser: false
+//                        )
+//                        
+//                        self.messages.append(finalMessage)
+//                        
+//                        let indexPath = IndexPath(
+//                            row: self.messages.count - 1,
+//                            section: 0
+//                        )
+//                        
+//                        self.tableView.insertRows(at: [indexPath], with: .fade)
+//                        self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+//                    }
+//                    
+//                    self.showScriptSuggestions()
+//                }
+//                
+//                // Update the specific row to reflect UI changes (like highlighting)
+//                self.messages[row] = message
+//                self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
+//            })
+//        }
+//
+//        // 4. Decide which buttons to show
+//        if let currentMarkType = message.markType {
+//            // Case 1: Already Marked -> Only show the "Unmark" option
+//            addMarkAction(type: currentMarkType)
+//        } else {
+//            // Case 2: Not Marked -> Show all available options
+//            ["script", "title", "description", "thumbnail"].forEach { addMarkAction(type: $0) }
+//        }
+//
+//        // 5. Add Cancel Button
+//        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+//        
+//        // 6. iPad Crash Fix
+//        // Only apply popover settings if the device is actually an iPad.
+//        // This ensures iPhones still use the bottom sheet (Stacked) look.
+//        if UIDevice.current.userInterfaceIdiom == .pad {
+//            if let popoverController = alert.popoverPresentationController {
+//                popoverController.sourceView = cellView
+//                popoverController.sourceRect = cellView.bounds
+//                popoverController.permittedArrowDirections = .any
+//            }
+//        }
+//        
+//        // 7. Present the Menu
+//        self.present(alert, animated: true)
+//    }
+    
+    
     
     //MARK: LONG PRESS GESTURE FUNCTION
     
@@ -787,6 +866,36 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             self.present(alert, animated: true)
         }
     
+    // MARK: - Smart Mock Generation (Hybrid)
+//        func generateAndSaveMockData(for scriptText: String, ideaID: UUID) {
+//            
+//            Task {
+//                // --- DEBUG START ---
+//                let status = SystemLanguageModel.default.availability
+//                print("🔍 Debugging Apple Intelligence Status: \(status)")
+//                
+//                // Detailed check (Optional, helps narrow it down)
+//                if status != .available {
+//                    print("⚠️ Reason: Likely models not downloaded in Settings or Region blocked.")
+//                }
+//                // --- DEBUG END ---
+//
+//                // STRATEGY 1: Try Apple Intelligence (If available)
+//                if #available(iOS 18.0, *), status == .available {
+//                    do {
+//                        print("🧠 Attempting Apple Intelligence generation...")
+//                        try await generateWithFoundationModel(scriptText: scriptText, ideaID: ideaID)
+//                        return // Success! Exit function.
+//                    } catch {
+//                        print("⚠️ Apple Intelligence failed (\(error.localizedDescription)). Switching to fallback.")
+//                    }
+//                } else {
+//                    print("ℹ️ Apple Intelligence unavailable. Skipping generation (Stays Untitled).")
+//                }
+//            }
+//        }
+    
+    
     //MARK: GENERATING MOCK TITLE AND DESCRIPTION FUNCTION
     
     func generateAndSaveMockData(for scriptText: String, ideaID: UUID) {
@@ -820,6 +929,25 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 }
             }
         }
+//    // MARK: - Helper 1: The AI Way (FoundationModels)
+//        @available(iOS 18.0, *)
+//        private func generateWithFoundationModel(scriptText: String, ideaID: UUID) async throws {
+//            let prompt = """
+//            Analyze this script. Return a Title and Description.
+//            Format:
+//            TITLE: [Title]
+//            DESC: [Description]
+//            
+//            Script:
+//            \(scriptText)
+//            """
+//            
+//            let session = LanguageModelSession()
+//            let response = try await session.respond(to: prompt)
+//            let generatedText = response.content
+//            
+//            try await parseAndSave(text: generatedText, ideaID: ideaID, source: "Apple Intelligence")
+//        }
 
         // MARK: - Shared Saver logic
         private func parseAndSave(text: String, ideaID: UUID, source: String) async throws {

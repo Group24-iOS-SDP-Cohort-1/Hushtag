@@ -10,7 +10,8 @@ import UIKit
 class ViewScriptsViewController: UIViewController {
     //var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
-    
+    private let likedIdeasController = LikedIdeasController()
+
     var pageTitle: String = ""
     var cellReuseIdentifier: String = "allScriptsCell"
     
@@ -57,10 +58,11 @@ class ViewScriptsViewController: UIViewController {
         } else {
             // 2. Load Liked Ideas (Existing Logic)
             //ideas = ideaResponse.ideas
-            likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
-            NotificationCenter.default.addObserver(self, selector: #selector(syncLikedIdeas), name: .didUpdateLikedStatus, object: nil)
-            updateEmptyState()
-        }
+//            likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
+//            NotificationCenter.default.addObserver(self, selector: #selector(syncLikedIdeas), name: .didUpdateLikedStatus, object: nil)
+//            updateEmptyState()
+            syncLikedIdeas()
+      }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -116,7 +118,7 @@ class ViewScriptsViewController: UIViewController {
                     // 2. Update the main source of truth
                     self.myScripts = scripts
                     
-                    // 3. 🟢 FIX: If we are searching, re-filter the new list immediately.
+                    // 3. FIX: If we are searching, re-filter the new list immediately.
                     // This removes the "ghost" item from the search results.
                     if self.isFiltering {
                         self.filterContentForSearchText(self.searchController.searchBar.text ?? "")
@@ -133,12 +135,30 @@ class ViewScriptsViewController: UIViewController {
     }
     
     
+//    @objc func syncLikedIdeas() {
+//        likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
+//        scriptsCollectionView.reloadData()
+//        updateEmptyState()
+//    }
+
     @objc func syncLikedIdeas() {
-        likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
-        scriptsCollectionView.reloadData()
-        updateEmptyState()
+        Task {
+            do {
+                let ideas = try await likedIdeasController.fetchLikedIdeas()
+
+                await MainActor.run {
+                    self.likedIdeas = ideas
+                    self.filteredLikedIdeas = ideas
+                    self.scriptsCollectionView.reloadData()
+                    self.updateEmptyState()
+                }
+            } catch {
+                print("Failed to fetch liked ideas:", error)
+            }
+        }
     }
-    
+
+
     private func updateEmptyState() {
         
         // Separate Empty State logic for "Your Scripts"
@@ -338,6 +358,64 @@ extension ViewScriptsViewController: UICollectionViewDelegate {
 }
 
 extension ViewScriptsViewController: LikedCellDelegate {
+
+        func didToggleLike(for ideaId: UUID) {
+
+            // Decide which array we are working on
+            let sourceArray = isFiltering ? filteredLikedIdeas : likedIdeas
+
+            guard let index = sourceArray.firstIndex(where: { $0.id == ideaId }) else {
+                print("❌ Idea not found for toggle")
+                return
+            }
+
+            Task {
+                do {
+                    let idea = sourceArray[index]
+
+                    if idea.liked == true {
+                        // UNLIKE
+                        try await likedIdeasController.unlikeIdea(title: idea.title)
+
+                        await MainActor.run {
+                            if self.isFiltering {
+                                self.filteredLikedIdeas[index].liked = false
+                                if let mainIndex = self.likedIdeas.firstIndex(where: { $0.id == ideaId }) {
+                                    self.likedIdeas[mainIndex].liked = false
+                                }
+                            } else {
+                                self.likedIdeas[index].liked = false
+                            }
+                        }
+
+                    } else {
+                        // LIKE
+                        try await likedIdeasController.likeIdea(idea)
+
+                        await MainActor.run {
+                            if self.isFiltering {
+                                self.filteredLikedIdeas[index].liked = true
+                                if let mainIndex = self.likedIdeas.firstIndex(where: { $0.id == ideaId }) {
+                                    self.likedIdeas[mainIndex].liked = true
+                                }
+                            } else {
+                                self.likedIdeas[index].liked = true
+                            }
+                        }
+                    }
+
+                    await MainActor.run {
+                        self.syncLikedIdeas()
+                    }
+
+
+                } catch {
+                    print("❌ Like toggle failed:", error)
+                }
+            }
+        }
+
+
     
     func didTapDraftScript(for idea: Idea) {
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)

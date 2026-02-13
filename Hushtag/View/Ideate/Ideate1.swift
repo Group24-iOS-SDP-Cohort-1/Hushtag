@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 class Ideate1: UIViewController {
     
     //  var ideaResponse = IdeaResponse()
@@ -26,7 +27,7 @@ class Ideate1: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshUI), name: .didUpdateLikedStatus, object: nil)
+      //  NotificationCenter.default.addObserver(self, selector: #selector(refreshUI), name: .didUpdateLikedStatus, object: nil)
         scriptButton.layer.borderWidth = 1
         scriptButton.layer.borderColor = UIColor.accent.cgColor
         
@@ -57,11 +58,11 @@ class Ideate1: UIViewController {
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
-    
-    @objc func refreshUI() {
-        collectionView.reloadData()
-    }
-    
+//    
+//    @objc func refreshUI() {
+//        collectionView.reloadData()
+//    }
+//    
     @IBAction func scriptTap(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "Chatbot")
@@ -241,6 +242,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         
         let idea = ideas[indexPath.row]
         cell.configure(idea: idea)
+        cell.delegate = self
         return cell
     }
     
@@ -351,5 +353,35 @@ extension Ideate1: IdeaSearchDelegate {
     }
 }
 
+extension Ideate1: IdeaCellDelegate {
+
+    func didToggleLikeFromFeed(for ideaId: UUID) {
+
+        guard let index = ideas.firstIndex(where: { $0.id == ideaId }) else { return }
+
+        Task {
+            do {
+                let idea = ideas[index]
+
+                if idea.liked == true {
+                    try await LikedIdeasController().unlikeIdea(title: idea.title)
+                    ideas[index].liked = false
+                } else {
+                    try await LikedIdeasController().likeIdea(idea)
+                    ideas[index].liked = true
+                }
+
+                await MainActor.run {
+                    collectionView.reloadItems(
+                        at: [IndexPath(row: index, section: 1)]
+                    )
+                }
+
+            } catch {
+                print("❌ Feed like failed:", error)
+            }
+        }
+    }
+}
 
 
