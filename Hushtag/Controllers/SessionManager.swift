@@ -60,9 +60,17 @@ class SessionManager: ObservableObject {
                     .flatMap({ $0.ideas })
                     .first {
 
+                    let key = makeIdeaKey(
+                        title: firstIdea.title,
+                        description: firstIdea.description,
+                        format: firstIdea.format,
+                        hashtags: firstIdea.hashtags
+                    )
+
                     loadedIdeas.append(
                         Idea(
                             id: UUID(),
+                            ideaKey: key,
                             title: firstIdea.title,
                             description: firstIdea.description,
                             format: firstIdea.format,

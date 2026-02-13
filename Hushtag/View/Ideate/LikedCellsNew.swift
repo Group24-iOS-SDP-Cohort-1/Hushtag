@@ -10,7 +10,10 @@ import UIKit
 
 protocol LikedCellDelegate: AnyObject {
     func didTapDraftScript(for idea: Idea)
+    func didToggleLike(for ideaKey: String)
 }
+
+
 
 class LikedCellsNew: UICollectionViewCell {
     @IBOutlet weak var ideaTitle: UILabel!
@@ -30,12 +33,14 @@ class LikedCellsNew: UICollectionViewCell {
         ideaTitle.numberOfLines = 2
         applyLiquidGlassEffect()
         draftScriptButton.addTarget(self, action: #selector(draftScriptTapped), for: .touchUpInside)
+        
     }
 
     func configureCell(idea: Idea){
         self.idea = idea
         ideaTitle.text = idea.title
-        updateLikeUI()
+        
+      updateLikeUI()
         //configureHashtags(idea.hashtag)
     }
     
@@ -62,26 +67,17 @@ class LikedCellsNew: UICollectionViewCell {
         }
 
     @IBAction func likeTapped(_ sender: UIButton) {
-        guard let idea = idea else { return }
+        guard var idea = idea else { return }
+        delegate?.didToggleLike(for: idea.ideaKey)
 
-        if LikedIds.likedIdeaIds.contains(idea.id) {
-            LikedIds.likedIdeaIds.remove(idea.id)
-        } else {
-            LikedIds.likedIdeaIds.insert(idea.id)
-        }
 
-        print("Liked IDs:", LikedIds.likedIdeaIds)
-        updateLikeUI()
-        onLikeToggle?()
-        NotificationCenter.default.post(name: .didUpdateLikedStatus, object: nil)
     }
     
-    private func updateLikeUI() {
-            guard let idea = idea else { return }
-            let isLiked = LikedIds.likedIdeaIds.contains(idea.id)
-            let imageName = isLiked ? "heart.fill" : "heart"
-            likeButton.setImage(UIImage(systemName: imageName), for: .normal)
-            likeButton.tintColor = isLiked ? .accent : .accent
+    func updateLikeUI() {
+        guard let idea = idea else { return }
+        let isLiked = idea.liked == true
+        let imageName = isLiked ? "heart.fill" : "heart"
+        likeButton.setImage(UIImage(systemName: imageName), for: .normal)
     }
 
     @objc private func draftScriptTapped() {

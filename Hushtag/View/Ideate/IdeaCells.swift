@@ -12,6 +12,10 @@ struct EngagementStyle {
     let icon: String
     let color: UIColor
 }
+protocol IdeaCellDelegate: AnyObject {
+    func didToggleLikeFromFeed(for ideaKey: String)
+}
+
 
 class IdeaCells: UICollectionViewCell {
     @IBOutlet weak var ideaTitle: UILabel!
@@ -21,7 +25,9 @@ class IdeaCells: UICollectionViewCell {
     @IBOutlet weak var keywordText2: UILabel!
     
     @IBOutlet weak var likeButton: UIButton!
-    
+    weak var delegate: IdeaCellDelegate?
+    private var ideaKey: String?
+
     var idea: Idea?
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -30,7 +36,7 @@ class IdeaCells: UICollectionViewCell {
         applyLiquidGlassEffect()
     }
     
-    private var likedIdeaIds: [String] = []
+
     
     func configure(idea: Idea) {
         self.idea = idea
@@ -61,28 +67,22 @@ class IdeaCells: UICollectionViewCell {
     }
     
     @IBAction func likeTapped(_ sender: UIButton) {
-        guard let idea = idea else { return }
-        
-        if LikedIds.likedIdeaIds.contains(idea.id) {
-            LikedIds.likedIdeaIds.remove(idea.id)
-        } else {
-            LikedIds.likedIdeaIds.insert(idea.id)
-        }
-        
-        print("Liked IDs:", LikedIds.likedIdeaIds)
-        
+        guard var idea = idea else { return }
+        idea.liked = !(idea.liked ?? false)
+        self.idea = idea
         updateLikeUI()
-        NotificationCenter.default.post(name: .didUpdateLikedStatus, object: nil)
+        delegate?.didToggleLikeFromFeed(for: idea.ideaKey)
+
     }
     
     private func updateLikeUI() {
-        guard let idea = idea else { return }
-        
-        let isLiked = LikedIds.likedIdeaIds.contains(idea.id)
-        
-        let imageName = isLiked ? "heart.fill" : "heart"
-        likeButton.setImage(UIImage(systemName: imageName), for: .normal)
-    }
+            guard let idea = idea else { return }
+            let isLiked = idea.liked == true
+            let imageName = isLiked ? "heart.fill" : "heart"
+            likeButton.setImage(UIImage(systemName: imageName), for: .normal)
+        }
+
+
     
     
 }
