@@ -68,12 +68,19 @@ class SessionManager: ObservableObject {
                 let mappedVideos: [Video] = firstCluster.videos
                     .prefix(3)
                     .map { $0.toVideo() }
-                
+
+                let key = makeIdeaKey(
+                    title: firstIdea.title,
+                    description: firstIdea.description,
+                    format: firstIdea.format,
+                    hashtags: firstIdea.hashtags
+                )
+
                 // Build final Idea
                 loadedIdeas.append(
                     Idea(
                         id: UUID(),
-                        ideaKey: nil,
+                        ideaKey: key,
                         title: firstIdea.title,
                         description: firstIdea.description,
                         format: firstIdea.format,

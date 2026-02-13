@@ -68,14 +68,11 @@ class IdeaCells: UICollectionViewCell {
     
     @IBAction func likeTapped(_ sender: UIButton) {
         guard var idea = idea else { return }
-        idea.liked = !(idea.liked ?? false)
-        self.idea = idea
-        updateLikeUI()
         delegate?.didToggleLikeFromFeed(for: idea.ideaKey ?? "")
 
     }
     
-    private func updateLikeUI() {
+    func updateLikeUI() {
             guard let idea = idea else { return }
             let isLiked = idea.liked == true
             let imageName = isLiked ? "heart.fill" : "heart"
