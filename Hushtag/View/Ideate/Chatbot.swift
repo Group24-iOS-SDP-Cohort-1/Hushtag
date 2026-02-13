@@ -11,9 +11,11 @@ import NaturalLanguage
 
 
 class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, LikedCellDelegate {
-    func didToggleLike(for ideaId: UUID) {
-        ""
+    func didToggleLike(for ideaKey: String) {
+    
     }
+
+
 
 
     @IBOutlet weak var tableView: UITableView!

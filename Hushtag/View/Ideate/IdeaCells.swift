@@ -13,7 +13,7 @@ struct EngagementStyle {
     let color: UIColor
 }
 protocol IdeaCellDelegate: AnyObject {
-    func didToggleLikeFromFeed(for ideaId: UUID)
+    func didToggleLikeFromFeed(for ideaKey: String)
 }
 
 
@@ -26,6 +26,7 @@ class IdeaCells: UICollectionViewCell {
     
     @IBOutlet weak var likeButton: UIButton!
     weak var delegate: IdeaCellDelegate?
+    private var ideaKey: String?
 
     var idea: Idea?
     override func awakeFromNib() {
@@ -66,8 +67,11 @@ class IdeaCells: UICollectionViewCell {
     }
     
     @IBAction func likeTapped(_ sender: UIButton) {
-        guard let idea = idea else { return }
-        delegate?.didToggleLikeFromFeed(for: idea.id)
+        guard var idea = idea else { return }
+        idea.liked = !(idea.liked ?? false)
+        self.idea = idea
+        updateLikeUI()
+        delegate?.didToggleLikeFromFeed(for: idea.ideaKey)
 
     }
     

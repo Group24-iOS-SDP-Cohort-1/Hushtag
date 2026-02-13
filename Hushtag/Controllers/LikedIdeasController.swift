@@ -15,10 +15,11 @@ final class LikedIdeasController {
     func likeIdea(_ idea: Idea) async throws {
 
         let session = try await client.auth.session
-        print("LIKING AS USER:", session.user.id)
+
         let payload = LikedIdeaInsertPayload(
             id: UUID(),
             user_id: session.user.id,
+            ideaKey: idea.ideaKey,
             title: idea.title,
             description: idea.description,
             hashtags: idea.hashtags
@@ -30,7 +31,7 @@ final class LikedIdeasController {
             .execute()
     }
 
-    func unlikeIdea(title: String) async throws {
+    func unlikeIdea(ideaKey: String) async throws {
 
         let session = try await client.auth.session
 
@@ -38,10 +39,9 @@ final class LikedIdeasController {
             .from("liked_ideas")
             .delete()
             .eq("user_id", value: session.user.id)
-            .eq("title", value: title)
+            .eq("ideaKey", value: ideaKey)
             .execute()
     }
-
 
     func fetchLikedIdeas() async throws -> [Idea] {
 
@@ -59,7 +59,8 @@ final class LikedIdeasController {
 
     private func mapToIdea(_ db: LikedIdeaDB) -> Idea {
         Idea(
-            id: db.id,
+            id: UUID(),
+            ideaKey: db.ideaKey,      
             title: db.title,
             description: db.description ?? "",
             format: "",
@@ -69,4 +70,5 @@ final class LikedIdeasController {
             liked: true
         )
     }
+
 }

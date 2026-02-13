@@ -6,6 +6,19 @@
 //
 
 import Foundation
+import CryptoKit
+
+func makeIdeaKey(
+    title: String,
+    description: String,
+    format: String,
+    hashtags: [String]
+) -> String {
+    let raw = "\(title.lowercased())|\(description.lowercased())|\(format)|\(hashtags.sorted().joined())"
+    let hash = SHA256.hash(data: Data(raw.utf8))
+    return hash.map { String(format: "%02x", $0) }.joined()
+}
+
 
 struct LikedIds {
     static var likedIdeaIds: Set<UUID> = []
@@ -105,6 +118,7 @@ enum PlatformType:String{
 
 struct Idea: Codable, Identifiable {
     let id: UUID
+    let ideaKey: String
     let title: String
     let description: String
     let format: String

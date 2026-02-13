@@ -359,12 +359,14 @@ extension ViewScriptsViewController: UICollectionViewDelegate {
 
 extension ViewScriptsViewController: LikedCellDelegate {
 
-        func didToggleLike(for ideaId: UUID) {
+    func didToggleLike(for ideaKey: String)
+        {
 
             // Decide which array we are working on
             let sourceArray = isFiltering ? filteredLikedIdeas : likedIdeas
 
-            guard let index = sourceArray.firstIndex(where: { $0.id == ideaId }) else {
+            guard let index = sourceArray.firstIndex(where: { $0.ideaKey == ideaKey })
+                else {
                 print("❌ Idea not found for toggle")
                 return
             }
@@ -375,17 +377,24 @@ extension ViewScriptsViewController: LikedCellDelegate {
 
                     if idea.liked == true {
                         // UNLIKE
-                        try await likedIdeasController.unlikeIdea(title: idea.title)
+                        try await likedIdeasController.unlikeIdea(ideaKey: ideaKey)
+
 
                         await MainActor.run {
                             if self.isFiltering {
                                 self.filteredLikedIdeas[index].liked = false
-                                if let mainIndex = self.likedIdeas.firstIndex(where: { $0.id == ideaId }) {
+                                if let mainIndex = self.likedIdeas.firstIndex(where: { $0.ideaKey == ideaKey }) {
                                     self.likedIdeas[mainIndex].liked = false
                                 }
+
                             } else {
                                 self.likedIdeas[index].liked = false
                             }
+                            NotificationCenter.default.post(
+                                name: .didUpdateLikedStatus,
+                                object: ideaKey
+                            )
+
                         }
 
                     } else {
@@ -395,9 +404,10 @@ extension ViewScriptsViewController: LikedCellDelegate {
                         await MainActor.run {
                             if self.isFiltering {
                                 self.filteredLikedIdeas[index].liked = true
-                                if let mainIndex = self.likedIdeas.firstIndex(where: { $0.id == ideaId }) {
-                                    self.likedIdeas[mainIndex].liked = true
+                                if let mainIndex = self.likedIdeas.firstIndex(where: { $0.ideaKey == ideaKey }) {
+                                    self.likedIdeas[mainIndex].liked = false
                                 }
+
                             } else {
                                 self.likedIdeas[index].liked = true
                             }

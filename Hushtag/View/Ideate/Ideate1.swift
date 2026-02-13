@@ -27,7 +27,13 @@ class Ideate1: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         
-      //  NotificationCenter.default.addObserver(self, selector: #selector(refreshUI), name: .didUpdateLikedStatus, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleLikeUpdate(_:)),
+            name: .didUpdateLikedStatus,
+            object: nil
+        )
+
         scriptButton.layer.borderWidth = 1
         scriptButton.layer.borderColor = UIColor.accent.cgColor
         
@@ -54,7 +60,25 @@ class Ideate1: UIViewController {
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
     }
-    
+
+    @objc private func handleLikeUpdate(_ notification: Notification) {
+        guard let ideaKey = notification.object as? String,
+              let index = ideas.firstIndex(where: { $0.ideaKey == ideaKey }) else {
+            return
+        }
+
+        ideas[index].liked = false
+
+        if let cell = collectionView.cellForItem(
+            at: IndexPath(row: index, section: 1)
+        ) as? IdeaCells {
+            cell.configure(idea: ideas[index])
+        }
+    }
+
+
+
+
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
@@ -192,13 +216,19 @@ class Ideate1: UIViewController {
             do {
                 let response = try await YouTubeService().search(query: topic.rawValue)
 
-                // Flatten cluster ideas
                 if let firstIdea = response.clusterIdeas
                     .flatMap({ $0.ideas })
                     .first {
+                    let key = makeIdeaKey(
+                        title: firstIdea.title,
+                        description: firstIdea.description,
+                        format: firstIdea.format,
+                        hashtags: firstIdea.hashtags
+                    )
 
                     let mapped = Idea(
                         id: UUID(),
+                        ideaKey: key,
                         title: firstIdea.title,
                         description: firstIdea.description,
                         format: firstIdea.format,
@@ -207,6 +237,7 @@ class Ideate1: UIViewController {
                         videos: response.clusterIdeas.first?.videos.map { $0.toVideo() },
                         liked: false
                     )
+
 
                     personalizedIdeas.append(mapped)
                 }
@@ -317,28 +348,34 @@ extension Ideate1: IdeaSearchDelegate {
             do {
                 let response = try await YouTubeService().search(query: keyword)
                 
-                // ✅ NEW FLOW
+                // NEW FLOW
                 let clusterIdeas = response.clusterIdeas
                 
                 // Flatten clusterIdeas → Idea objects
                 let mappedIdeas: [Idea] = clusterIdeas.flatMap { cluster in
                     cluster.ideas.map { geminiIdea in
-                        
-                        Idea(
+
+                        let key = makeIdeaKey(
+                            title: geminiIdea.title,
+                            description: geminiIdea.description,
+                            format: geminiIdea.format,
+                            hashtags: geminiIdea.hashtags
+                        )
+
+                        return Idea(
                             id: UUID(),
+                            ideaKey: key,
                             title: geminiIdea.title,
                             description: geminiIdea.description,
                             format: geminiIdea.format,
                             hashtags: geminiIdea.hashtags,
                             noveltyScore: geminiIdea.noveltyScore,
-                            
-                            // ✅ IMPORTANT — Attach cluster videos
                             videos: (cluster.videos).map { $0.toVideo() },
-                            
                             liked: false
                         )
                     }
                 }
+
                 
                 await MainActor.run {
                     self.ideas = mappedIdeas
@@ -355,33 +392,31 @@ extension Ideate1: IdeaSearchDelegate {
 
 extension Ideate1: IdeaCellDelegate {
 
-    func didToggleLikeFromFeed(for ideaId: UUID) {
+    func didToggleLikeFromFeed(for ideaKey: String) {
 
-        guard let index = ideas.firstIndex(where: { $0.id == ideaId }) else { return }
+        guard let index = ideas.firstIndex(where: { $0.ideaKey == ideaKey }) else {
+            return
+        }
 
         Task {
             do {
-                let idea = ideas[index]
-
-                if idea.liked == true {
-                    try await LikedIdeasController().unlikeIdea(title: idea.title)
+                if ideas[index].liked == true {
+                    try await LikedIdeasController().unlikeIdea(ideaKey: ideaKey)
                     ideas[index].liked = false
                 } else {
-                    try await LikedIdeasController().likeIdea(idea)
+                    try await LikedIdeasController().likeIdea(ideas[index])
                     ideas[index].liked = true
                 }
 
-                await MainActor.run {
-                    collectionView.reloadItems(
-                        at: [IndexPath(row: index, section: 1)]
-                    )
-                }
+
 
             } catch {
-                print("❌ Feed like failed:", error)
+                print("Feed like failed:", error)
             }
         }
     }
+
+
 }
 
 
