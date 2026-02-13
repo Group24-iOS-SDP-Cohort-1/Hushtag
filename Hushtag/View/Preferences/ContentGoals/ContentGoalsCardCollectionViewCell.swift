@@ -20,6 +20,13 @@ class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var innerCollectionView: UICollectionView!
     
     var sections: [PreferenceSection] = []
+    let goalMapping: [String: ContentGoal] = [
+        "Grow Audience": .growth,
+        "Boost Engagement": .engagement,
+        "Post More Consistently": .consistency,
+        "Try New Content Ideas": .creativity,
+        "Build My Personal Brand": .branding
+    ]
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -32,7 +39,7 @@ class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
         
         registerCells()
         
-        setupCardDesign()
+        applyLiquidGlassEffect()
         
         innerCollectionView.allowsMultipleSelection = true
         
@@ -60,32 +67,22 @@ class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
         }
     
     private func updateSelection() {
-        let selected = innerCollectionView.indexPathsForSelectedItems?
+
+        let selectedTitles = innerCollectionView.indexPathsForSelectedItems?
             .sorted { $0.item < $1.item }
             .map { sections[$0.section].options[$0.item] } ?? []
 
-        delegate?.preferenceCard(at: "Content Goals", didUpdateSelection: selected)
+        // Convert UI titles → enum rawValues
+        let selectedRawValues: [String] = selectedTitles.compactMap { title in
+            goalMapping[title]?.rawValue
+        }
+
+        delegate?.preferenceCard(
+            at: "Content Goals",
+            didUpdateSelection: selectedRawValues
+        )
     }
-    
-    func setupCardDesign() {
-            // Corner Radius
-//            self.layer.cornerRadius = 15
-//            self.layer.cornerCurve = .continuous // iOS Modern "smooth" corners
-//            
-//            // Background Color (Ensure it's white, or the shadow won't look right)
-//            self.backgroundColor = .white
-//            
-//            // Drop Shadow
-//            self.layer.shadowColor = UIColor.black.cgColor
-//            self.layer.shadowOpacity = 0.15  // 0.0 to 1.0 (0.15 is subtle and nice)
-//            self.layer.shadowOffset = CGSize(width: 0, height: 0) // Vertical shift
-//            self.layer.shadowRadius = 6 // How blurry the shadow is
-//            
-//            // CRITICAL: This must be false for shadows to appear outside the bounds
-//            self.layer.masksToBounds = false
-        
-        contentView.applyLiquidGlassEffect()
-    }
+
     
     func registerCells(){
         innerCollectionView.register(UINib(nibName: "ContentGoalsCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "contentGoalsCell")

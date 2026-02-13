@@ -10,22 +10,22 @@ import SafariServices
 
 
 //MARK: NEW ADDITION
-    protocol PreferenceCardSelectionDelegate: AnyObject {
-        /// index: which top-level card (0..n-1). isCompleted: whether the card is considered completed now.
-        func preferenceCard(at index: Int, didChangeCompletion isCompleted: Bool)
-        func preferenceCard(
-            at key: String,
-            didUpdateSelection selections: [String]
-        )
-        
-        func openURL(_ url: URL)
-    }
+protocol PreferenceCardSelectionDelegate: AnyObject {
+    /// index: which top-level card (0..n-1). isCompleted: whether the card is considered completed now.
+    func preferenceCard(at index: Int, didChangeCompletion isCompleted: Bool)
+    func preferenceCard(
+        at key: String,
+        didUpdateSelection selections: [String]
+    )
+    
+    func openURL(_ url: URL)
+}
 
 
 class PreferencesViewController: UIViewController {
     
     
-
+    
     @IBOutlet weak var preferencesCollectionView: UICollectionView!
     
     @IBOutlet weak var progessBarOutlet: UIProgressView!
@@ -54,13 +54,13 @@ class PreferencesViewController: UIViewController {
     
     
     
-//    var firstItem: PreferenceGroup = PreferenceGroup()
-//    var secondItem: PreferenceGroup = PreferenceGroup()
-//    var thirdItem: ContentPreferenceGroup = ContentPreferenceGroup()
+    //    var firstItem: PreferenceGroup = PreferenceGroup()
+    //    var secondItem: PreferenceGroup = PreferenceGroup()
+    //    var thirdItem: ContentPreferenceGroup = ContentPreferenceGroup()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
         
         
@@ -92,10 +92,10 @@ class PreferencesViewController: UIViewController {
         //print(preferenceItems)
         
         
-//        print("preferencesCollectionView:", preferencesCollectionView as Any)
-//        print("delegate set to:", preferencesCollectionView.delegate as Any)
-//        print("isScrollEnabled:", preferencesCollectionView.isScrollEnabled)
-//        print("userInteractionEnabled:", preferencesCollectionView.isUserInteractionEnabled)
+        //        print("preferencesCollectionView:", preferencesCollectionView as Any)
+        //        print("delegate set to:", preferencesCollectionView.delegate as Any)
+        //        print("isScrollEnabled:", preferencesCollectionView.isScrollEnabled)
+        //        print("userInteractionEnabled:", preferencesCollectionView.isUserInteractionEnabled)
         
         
         
@@ -108,7 +108,7 @@ class PreferencesViewController: UIViewController {
             updateSkipButton(for: 0)
             view.layoutIfNeeded()
         }
-
+        
         updateProgressFromCompletedStates(animated: false)
         
     }
@@ -117,26 +117,25 @@ class PreferencesViewController: UIViewController {
     
     @IBAction func submitButton(_ sender: Any) {
         _Concurrency.Task { @MainActor in
-                do {
-                    // This updates the metadata flag to TRUE
-                    try await AuthManager.shared.completeOnboarding()
-                    
-                    let isYoutubeConnected = true
-                    
-                    try await controller.savePreferences(
-                                        dict: selectedOptions,
-                                        isYoutubeConnected: isYoutubeConnected
-                                    )
-                    
-                    // Now they are officially an "Existing User" -> Go Home
-                 //   self.navigateToHomeScreen()
-
-                } catch {
-                    print("Failed to update onboarding status: \(error)")
-                    // You might want to let them in anyway, or show an alert
-                  //  self.navigateToHomeScreen()
-                }
+            do {
+                // This updates the metadata flag to TRUE
+                try await AuthManager.shared.completeOnboarding()
+                
+                let isYoutubeConnected = true
+                
+                try await controller.savePreferences(
+                    dict: selectedOptions,
+                    isYoutubeConnected: isYoutubeConnected
+                )
+                
+                self.navigateToHomeScreen()
+                
+            } catch {
+                print("Failed to update onboarding status: \(error)")
+                // You might want to let them in anyway, or show an alert
+                self.navigateToHomeScreen()
             }
+        }
     }
     
     
@@ -149,13 +148,13 @@ class PreferencesViewController: UIViewController {
     
     //NEW
     func updateProgressFromCompletedStates(animated: Bool = true) {
-            let completedCount = completedStates.filter { $0 }.count
-            let total = preferenceItems.count
-            guard total > 0 else { return }
-
-            let progress = Float(completedCount) / Float(total)
-            progessBarOutlet.setProgress(progress, animated: animated)
-        }
+        let completedCount = completedStates.filter { $0 }.count
+        let total = preferenceItems.count
+        guard total > 0 else { return }
+        
+        let progress = Float(completedCount) / Float(total)
+        progessBarOutlet.setProgress(progress, animated: animated)
+    }
     
     
     func updateProgressAndPagination(forIndex index: Int) {
@@ -163,18 +162,18 @@ class PreferencesViewController: UIViewController {
         pageControlOutlet.currentPage = index
         
         /*
-        
-        // Update Progress Bar
-        // We add 1 because index starts at 0, but progress should be non-zero for the first item.
-        // Example: Item 0 of 5 items = 1/5 (0.2) progress.
-        let totalItems = Float(preferenceItems.count)
-        
-        // Prevent division by zero crash
-        if totalItems > 0 {
-            let currentStep = Float(index)
-            let progress = currentStep / totalItems
-            progessBarOutlet.setProgress(progress, animated: true)
-        }
+         
+         // Update Progress Bar
+         // We add 1 because index starts at 0, but progress should be non-zero for the first item.
+         // Example: Item 0 of 5 items = 1/5 (0.2) progress.
+         let totalItems = Float(preferenceItems.count)
+         
+         // Prevent division by zero crash
+         if totalItems > 0 {
+         let currentStep = Float(index)
+         let progress = currentStep / totalItems
+         progessBarOutlet.setProgress(progress, animated: true)
+         }
          
          */
         
@@ -198,67 +197,67 @@ class PreferencesViewController: UIViewController {
     
     
     
-//MARK: GENERATE LAYOUT FUNCTION
+    //MARK: GENERATE LAYOUT FUNCTION
     
     func generateLayout() -> UICollectionViewLayout {
-
-            
-            let size = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(1.0)
-            )
-
-            
-            let item = NSCollectionLayoutItem(layoutSize: size)
-
-            
-            let groupSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(0.95),
-                heightDimension: .fractionalHeight(1.0)
-            )
-
-            
-            let group = NSCollectionLayoutGroup.horizontal(
-                layoutSize: groupSize,
-                subitems: [item]
-            )
-
-            
-            group.interItemSpacing = .fixed(10)
-
-            let section = NSCollectionLayoutSection(group: group)
-            section.orthogonalScrollingBehavior = .groupPagingCentered
-
-            
-            section.interGroupSpacing = 20
-
-            
-            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
-
-            
-            
-            //PROGRESS BAR AND PAGE CONTROL LOGIC
         
-            
+        
+        let size = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        
+        
+        let item = NSCollectionLayoutItem(layoutSize: size)
+        
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(0.95),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        
+        
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: groupSize,
+            subitems: [item]
+        )
+        
+        
+        group.interItemSpacing = .fixed(10)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .groupPagingCentered
+        
+        
+        section.interGroupSpacing = 20
+        
+        
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+        
+        
+        
+        //PROGRESS BAR AND PAGE CONTROL LOGIC
+        
+        
         section.visibleItemsInvalidationHandler = { [weak self] (items, offset, env) in
             guard let self = self else { return }
-
+            
             // compute center X of the visible area
             let containerCenterX = offset.x + (env.container.contentSize.width / 2.0)
-
+            
             // find the visible item whose center is nearest the container center
             let nearest = items.min { a, b in
                 abs(a.frame.midX - containerCenterX) < abs(b.frame.midX - containerCenterX)
             }
-
+            
             // fallback to 0 if nothing found
             let page = nearest?.indexPath.item ?? 0
-
+            
             DispatchQueue.main.async {
                 // update page control
                 self.pageControlOutlet.numberOfPages = max(1, self.preferenceItems.count)
                 self.pageControlOutlet.currentPage = page
-
+                
                 // update skip button without animations (prevents stutter)
                 UIView.performWithoutAnimation {
                     self.updateSkipButton(for: page)
@@ -266,17 +265,17 @@ class PreferencesViewController: UIViewController {
                 }
             }
         }
-            // --- THE NEW LOGIC ENDS HERE ---
-
-            let layout = UICollectionViewCompositionalLayout(section: section)
-
-            return layout
-
-        }
+        // --- THE NEW LOGIC ENDS HERE ---
+        
+        let layout = UICollectionViewCompositionalLayout(section: section)
+        
+        return layout
+        
+    }
     
     
     
-
+    
 }
 
 extension PreferencesViewController: UICollectionViewDataSource {
@@ -362,7 +361,7 @@ extension PreferencesViewController: UICollectionViewDataSource {
 extension PreferencesViewController: PreferenceCardSelectionDelegate {
     func preferenceCard(at index: Int, didChangeCompletion isCompleted: Bool) {
         guard index >= 0 && index < completedStates.count else { return }
-
+        
         // only update UI if state changed (avoids flicker)
         if completedStates[index] != isCompleted {
             completedStates[index] = isCompleted
@@ -371,15 +370,15 @@ extension PreferencesViewController: PreferenceCardSelectionDelegate {
     }
     
     func preferenceCard(at key: String, didUpdateSelection selections: [String]) {
-        selectedOptions[key] = selections
+        selectedOptions[key] = selections.map { $0.lowercased() }
         //print(selectedOptions[key])
         print("\n\n\(selectedOptions)")
     }
     
     func openURL(_ url: URL) {
-            let safariVC = SFSafariViewController(url: url)
-            present(safariVC, animated: true)
-        }
+        let safariVC = SFSafariViewController(url: url)
+        present(safariVC, animated: true)
+    }
 }
 
 

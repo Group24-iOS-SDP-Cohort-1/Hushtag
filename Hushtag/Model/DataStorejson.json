@@ -518,9 +518,10 @@
                     "hasTextInput": false,
                     "options": [
                         "Grow Audience",
-                        "Create more consistently",
+                        "Boost Engagement",
+                        "Post More Consistently",
                         "Experiment with Trends",
-                        "Find my niche voice"
+                        "Strengthen My Brand"
                     ]
                 }
             ]
@@ -548,7 +549,6 @@
                     "hasTextInput": false,
                     "options": [
                         "Short-Form",
-                        "Mid-Length",
                         "Long-Form"
                     ]
                 }

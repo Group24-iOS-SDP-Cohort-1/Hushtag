@@ -223,6 +223,7 @@ extension UIViewController{
             // UI updates must happen on Main Thread
             
                 if isComplete {
+                    await SessionManager.shared.restoreSession()
                     self.navigateToHomeScreen()
                 } else {
                     self.navigateToPreferencesScreen()

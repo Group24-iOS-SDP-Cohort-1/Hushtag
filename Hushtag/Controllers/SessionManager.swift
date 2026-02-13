@@ -31,7 +31,7 @@ class SessionManager: ObservableObject {
             
             await MainActor.run {
                 self.userPreferences = prefs
-                print("✅ Preferences loaded:", prefs)
+                print("Preferences loaded:", prefs)
             }
             
         } catch {

@@ -125,6 +125,7 @@ struct Idea: Codable, Identifiable {
     let hashtags: [String]
     let noveltyScore: Int
     let videos: [Video]?
+    var expandedDescription: String?
     var liked: Bool?
 }
 
