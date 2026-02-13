@@ -38,25 +38,39 @@ class ViewIdea: UIViewController {
         videoView.dataSource = self
         videoView.delegate = self
         
-        
         if let idea = idea {
             titleLabel.text = idea.title
             titleLabel.numberOfLines = 0
             descriptionLabel.text = idea.description
             descriptionLabel.numberOfLines = 10
+            if let expanded = idea.expandedDescription,
+               !expanded.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                
+                // Already expanded → show directly
+                descriptionLabel.text = expanded
+                
+            } else {
+                
+                // Show original first
+                descriptionLabel.text = idea.description
+                
+                // Call AI only once
+                Task {
+                    await expandDescriptionWithAI()
+                }
+            }
+            
             hashtagLabel.text = idea.hashtags.joined(separator: "   ")
             video = idea.videos ?? []
             
             isChecked = idea.liked ?? false
             likeButton.image = UIImage(systemName: isChecked ? "heart.fill" : "heart")
         }
-        //  scrollView.alwaysBounceHorizontal = false
         videoView.isScrollEnabled = false
         
         setupEngagementChart()
         videoView.setCollectionViewLayout(generateLayout(), animated: true)
-        //        scrollView.contentSize.width = stackView.frame.width
-        //        scrollView.contentSize.height = stackView.frame.origin.y + stackView.frame.height + 200
+        
         print("Scroll frame height:", scrollView.frame.height)
         print("Content height:", scrollView.contentLayoutGuide.layoutFrame.height)
     }
@@ -158,6 +172,52 @@ class ViewIdea: UIViewController {
             return section
         }
     }
+    
+    func expandDescriptionWithAI() async {
+        
+        guard let idea = idea else { return }
+        
+        // Make sure AI is supported
+        guard AppleIntelligenceManager.shared.isAvailable else {
+            print("Apple Intelligence not available")
+            return
+        }
+        
+        // Prompt for expansion
+        let prompt = """
+        Expand this YouTube idea description into 4-5 engaging lines.
+        Keep it natural, simple, and readable.
+        
+        Original:
+        "\(idea.description)"
+        """
+        
+        do {
+            let expanded = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
+            
+            // Smooth UI update
+            DispatchQueue.main.async {
+                self.animateDescriptionUpdate(expanded)
+            }
+            
+        } catch {
+            print("Expansion failed:", error.localizedDescription)
+        }
+    }
+    
+    func animateDescriptionUpdate(_ newText: String) {
+        
+        UIView.transition(
+            with: descriptionLabel,
+            duration: 0.2,
+            options: .transitionCrossDissolve
+        ) {
+            //self.descriptionLabel.numberOfLines = 5
+            self.descriptionLabel.text = newText
+            self.descriptionLabel.alpha = 1.0
+            self.idea?.expandedDescription = newText
+        }
+    }
 }
 
 extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -187,37 +247,36 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
         let selectedVideo = video[indexPath.item]
         
         // Update chart with selected video
-        //updateEngagementChart(for: selectedVideo)
         
         guard let url = URL(string: selectedVideo.link ?? "") else { return }
         let safariVC = SFSafariViewController(url: url)
         present(safariVC, animated: true)
     }
     
-        func setupEngagementChart() {
-            guard !video.isEmpty else {
-                print("No videos available")
-                return
-            }
-    
-            let chartView = EngagementBarChart(data: video)
-    
-            let hostingVC = UIHostingController(rootView: chartView)
-            hostingVC.view.translatesAutoresizingMaskIntoConstraints = false
-            hostingVC.view.backgroundColor = .clear
-    
-            addChild(hostingVC)
-            graphView.addSubview(hostingVC.view)
-            hostingVC.didMove(toParent: self)
-    
-            NSLayoutConstraint.activate([
-                hostingVC.view.heightAnchor.constraint(equalToConstant: 240)
-            ])
-    
-            chartHostingController = hostingVC
+    func setupEngagementChart() {
+        guard !video.isEmpty else {
+            print("No videos available")
+            return
         }
+        
+        let chartView = EngagementBarChart(data: video)
+        
+        let hostingVC = UIHostingController(rootView: chartView)
+        hostingVC.view.translatesAutoresizingMaskIntoConstraints = false
+        hostingVC.view.backgroundColor = .clear
+        
+        addChild(hostingVC)
+        graphView.addSubview(hostingVC.view)
+        hostingVC.didMove(toParent: self)
+        
+        NSLayoutConstraint.activate([
+            hostingVC.view.heightAnchor.constraint(equalToConstant: 240)
+        ])
+        
+        chartHostingController = hostingVC
+    }
     
-        func updateEngagementChart(for video: Video) {
-            chartHostingController?.rootView = EngagementBarChart(data: [video])
-        }
+    func updateEngagementChart(for video: Video) {
+        chartHostingController?.rootView = EngagementBarChart(data: [video])
+    }
 }
