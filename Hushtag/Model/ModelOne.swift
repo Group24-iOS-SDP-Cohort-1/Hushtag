@@ -24,6 +24,12 @@ struct LikedIds {
     static var likedIdeaIds: Set<String> = []
 }
 
+
+struct YouTubeAuthPayload: Encodable {
+    let user_id: String
+    let auth_code: String
+}
+
 extension Date {
     
     private static let dayOnlyFormatter: DateFormatter = {

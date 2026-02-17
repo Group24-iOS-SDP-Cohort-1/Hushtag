@@ -6,7 +6,12 @@
 //
 
 import UIKit
-import SafariServices
+import GoogleSignIn
+
+
+protocol YouTubeConnectDelegate: AnyObject {
+    func didTapConnectYouTube(from cell: AccountConnectCollectionViewCell)
+}
 
 
 //MARK: NEW ADDITION
@@ -18,7 +23,6 @@ protocol PreferenceCardSelectionDelegate: AnyObject {
         didUpdateSelection selections: [String]
     )
     
-    func openURL(_ url: URL)
 }
 
 
@@ -121,8 +125,9 @@ class PreferencesViewController: UIViewController {
                 // This updates the metadata flag to TRUE
                 try await AuthManager.shared.completeOnboarding()
                 
-                let isYoutubeConnected = true
-                
+                let isYoutubeConnected = completedStates.last == true
+
+
                 try await controller.savePreferences(
                     dict: selectedOptions,
                     isYoutubeConnected: isYoutubeConnected
@@ -353,6 +358,34 @@ extension PreferencesViewController: UICollectionViewDataSource {
             skipSubmitButton.title = "Skip"
         }
     }
+
+    func exchangeAuthCode(
+        _ code: String,
+        cell: AccountConnectCollectionViewCell
+    ) {
+        Task {
+            do {
+                try await YouTubeController.shared.exchangeAuthCode(code)
+
+                await MainActor.run {
+                    cell.isConnected = true
+                    cell.updateButtonAppearance(
+                        cell.youtubeOutlet,
+                        isSelected: true
+                    )
+
+                    self.completedStates[cell.cardIndex] = true
+                    self.updateProgressFromCompletedStates()
+                }
+
+            } catch {
+                print("❌ YouTube connect failed:", error)
+            }
+        }
+    }
+
+
+    
 }
 
 
@@ -375,14 +408,46 @@ extension PreferencesViewController: PreferenceCardSelectionDelegate {
         print("\n\n\(selectedOptions)")
     }
     
-    func openURL(_ url: URL) {
-        let safariVC = SFSafariViewController(url: url)
-        present(safariVC, animated: true)
-    }
+    
 }
 
 
 
+
+extension PreferencesViewController: YouTubeConnectDelegate {
+    func didTapConnectYouTube(from cell: AccountConnectCollectionViewCell) {
+        connectYouTube(cell: cell)
+    }
+
+    func connectYouTube(cell: AccountConnectCollectionViewCell) {
+
+        guard let user = GIDSignIn.sharedInstance.currentUser else {
+            print("❌ User not signed in with Google")
+            return
+        }
+
+        let scopes = [
+            "https://www.googleapis.com/auth/youtube.readonly",
+            "https://www.googleapis.com/auth/yt-analytics.readonly"
+        ]
+
+        user.addScopes(scopes, presenting: self) { updatedUser, error in
+
+            if let error = error {
+                print("❌ Permission denied:", error)
+                return
+            }
+
+            guard let authCode = updatedUser?.serverAuthCode else {
+                print("❌ Missing serverAuthCode")
+                return
+            }
+
+            self.exchangeAuthCode(authCode, cell: cell)
+        }
+    }
+
+}
 
 
 
