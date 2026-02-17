@@ -21,11 +21,12 @@ class AccountConnectCollectionViewCell: UICollectionViewCell {
     
     
     weak var delegate: PreferenceCardSelectionDelegate?
-    
+    weak var delegate1: YouTubeConnectDelegate?
+
     var cardIndex: Int = -1
     
-    var isConnected: [String : Bool] = ["YouTube" : false]
-    
+    var isConnected: Bool = false
+
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -47,7 +48,7 @@ class AccountConnectCollectionViewCell: UICollectionViewCell {
         headingLabel.text = item.title
         subheadingLabel.text = item.subheading
         
-        updateButtonAppearance(youtubeOutlet, isSelected: isConnected["YouTube"] ?? false)
+        updateButtonAppearance(youtubeOutlet, isSelected: isConnected)
     }
     
     func setupInitialButtonStyle(_ button: UIButton) {
@@ -76,37 +77,14 @@ class AccountConnectCollectionViewCell: UICollectionViewCell {
     private func notifyCompletionIfNeeded() {
             // sum selected items across sections
             
-            let completed = isConnected["YouTube"] ?? false
+        let completed = isConnected
             delegate?.preferenceCard(at: cardIndex, didChangeCompletion: completed)
         }
 
     @IBAction func youtubeAction(_ sender: Any) {
-//        if isConnected["YouTube"] == false {
-//            youtubeOutlet.backgroundColor = UIColor.accent
-//        }else{
-//            youtubeOutlet.backgroundColor = UIColor.clear
-//        }
-        
-        let currentState = isConnected["YouTube"] ?? false
-        
-        if currentState == false {
-            guard let url = URL(string: "https://www.apple.com") else {
-                return
-            }
-            
-//            if UIApplication.shared.canOpenURL(url) {
-//                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-//            }
-            
-            delegate?.openURL(url)
-            
-        }
-        let newState = !currentState
-        isConnected["YouTube"] = newState
-                
-        // Update UI
-        updateButtonAppearance(youtubeOutlet, isSelected: newState)
-        notifyCompletionIfNeeded()
+        guard !isConnected else { return }
+        delegate1?.didTapConnectYouTube(from: self)
+
     }
     
     

@@ -12,27 +12,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        
-        // 1. Assign the window scene (Standard boilerplate)
-        // If you don't assign this, the screen might be black if you deleted the storyboard reference.
-        // If you rely on storyboard, 'window' is already created, but we safeguard it here.
-        
-        // 2. CHECK FOR EXISTING USER
+    func scene(_ scene: UIScene,
+               willConnectTo session: UISceneSession,
+               options connectionOptions: UIScene.ConnectionOptions) {
+
+        // 🔥 ADD THIS BLOCK
+        GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+            if let error = error {
+                print("❌ Google restore failed:", error)
+            } else if user != nil {
+                print("✅ Google user restored")
+            }
+        }
+
+        // 🔥 YOUR EXISTING CODE (UNCHANGED)
         _Concurrency.Task {
             do {
-                // This checks if Supabase has a saved session on the device
                 let _ = try await AuthManager.shared.getCurrentSession()
-                
-                // If we get here, the user is logged in!
                 print("Auto-Login Successful")
-                
+
                 await SessionManager.shared.restoreSession()
-                
-                
-                // 3. Swap to Home Screen immediately
+
                 let isComplete = await AuthManager.shared.hasCompletedOnboarding()
-                
+
                 DispatchQueue.main.async {
                     if isComplete {
                         self.navigateToHomeScreen()
@@ -40,16 +42,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         self.navigateToPreferencesScreen()
                     }
                 }
-                
-                
+
             } catch {
-                // Session expired or doesn't exist.
-                // Do nothing. The app will just show the default Initial View Controller (Login).
                 print("No active session, staying on Login screen.")
             }
         }
     }
-    
+
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else { return }
         
