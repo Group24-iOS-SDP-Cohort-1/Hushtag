@@ -30,6 +30,9 @@ class Signup: UIViewController {
         styleTextField(confirmPasswordTextField)
         
         enableKeyboardDismissOnTap()
+        
+        // Programmatically connect the button since IBAction might be missing
+        googleButton.addTarget(self, action: #selector(googleSignUpTapped), for: .touchUpInside)
     }
     
     
@@ -91,8 +94,33 @@ class Signup: UIViewController {
                     LoadingOverlay.shared.hide()
                     self.showAlert(title: "Signup Failed", message: "An unknown error occurred")
                 }
-            }
+           }
         
+    }
+            
+            
+    @IBAction func googleSignUpTapped(_ sender: UIButton) {
+        _Concurrency.Task { @MainActor in
+            LoadingOverlay.shared.show()
+            do {
+                // Google Sign In handles both Login and Signup
+                let user = try await viewModel.signInWithGoogle()
+                
+                self.appUser = user
+                
+                // Use the shared extension method check onboarding status
+                self.navigateBasedOnOnboardingStatus()
+                
+            } catch let error as LocalizedError {
+                LoadingOverlay.shared.hide()
+                self.showAlert(title: "Sign Up Failed", message: error.localizedDescription)
+                
+            } catch {
+                LoadingOverlay.shared.hide()
+                self.showAlert(title: "Sign Up Failed", message: AuthError.unknown.localizedDescription)
+                
+            }
+        }
     }
     
 }

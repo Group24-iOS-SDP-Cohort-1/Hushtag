@@ -325,6 +325,9 @@
                                         </constraints>
                                         <inset key="contentEdgeInsets" minX="14" minY="14" maxX="14" maxY="14"/>
                                         <state key="normal" image="Image 1"/>
+                                        <connections>
+                                            <action selector="googleSignUpTapped:" destination="QaT-zs-A8B" eventType="touchUpInside" id="rOZ-0S-yMY"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I1V-Xp-MY8">
                                         <rect key="frame" x="88.999999999999986" y="0.0" width="70.000000000000014" height="70"/>
