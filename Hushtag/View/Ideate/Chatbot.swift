@@ -10,8 +10,8 @@ import FoundationModels
 import NaturalLanguage
 
 enum GenerationStrategy {
-    case geminiFirst // Try Gemini -> Fallback to Apple (For Scripts/Chat)
-    case appleFirst  // Try Apple -> Fallback to Gemini (For Titles/Descriptions)
+    case geminiFirst
+    case appleFirst  
 }
 
 class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, LikedCellDelegate {
@@ -39,6 +39,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     let dbController = ScriptedIdeasController() // Initialize your controller
     var currentActiveScript: ScriptedIdea?
+    var draftIdea: Idea?
 
 
     @IBOutlet weak var scriptedChats: UIBarButtonItem!
@@ -94,10 +95,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
                 generateStack.isHidden = true
 
-                if let text = autoSendMessage {
-                    sendAutoMessage(text)
-                    autoSendMessage = nil
-                }
+//                if let text = autoSendMessage {
+//                    sendAutoMessage(text)
+//                    autoSendMessage = nil
+//                }
 
 
 
@@ -129,12 +130,11 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if messages.isEmpty {
-            let welcomeMessage = "Welcome! I’m your scripting assistant. Lets write a script for you."
-            messages.append(Message(text: welcomeMessage, isUser: false))
-            tableView.reloadData()
-            scrollToBottom()
-        }
+        if let idea = draftIdea {
+                draftIdea = nil
+                didTapDraftScript(for: idea)
+            }
+
     }
 
     deinit {
@@ -346,7 +346,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
 
-    //MARK: MESSAGE SENDING
 
     func textViewDidChange(_ textView: UITextView) {
 
@@ -425,6 +424,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     //MARK: AI PROMPT AND REPLY FUNCTIONS
 
     func generateBotReply(for userText: String) {
+
         // 1. UI Setup
         let loadingMessage = Message(text: "Thinking...", isUser: false)
         messages.append(loadingMessage)
@@ -698,10 +698,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 sendMessage(text)
             }
     }
-
-
-    //MARK: LONG PRESS GESTURE FUNCTION
-
     @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
             guard gesture.state == .began else { return }
             guard let cellView = gesture.view else { return }
@@ -977,30 +973,51 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     @objc func generateButtonTapped(_ sender: UIButton) {
         guard let title = sender.currentTitle else { return }
+        if title.lowercased().contains("script") {
+              return
+          }
         sendMessage(title)
+
         generateStack.isHidden = true
   }
 
+
     func didTapDraftScript(for idea: Idea) {
+        let prompt = """
+        SYSTEM TASK: SCRIPT GENERATION
 
-        sendMessage("script")
+        You are a professional short-form content writer.
 
-        if let lastIndex = messages.indices.last {
-            messages[lastIndex].markType = "script"
-        }
+        IDEA TITLE:
+        \(idea.title)
 
+        IDEA DESCRIPTION:
+        \(idea.description)
+
+        REQUIREMENTS:
+        • Write a complete script
+        • Conversational, confident tone
+        • No questions, no clarification
+        • Directly generate the script
+
+        OUTPUT:
+        Script only.
+        """
+
+        sendMessage(prompt)
         generateStack.isHidden = false
         showScriptSuggestions()
-    }
 
-    func sendAutoMessage(_ text: String) {
-        messages.append(Message(text: text, isUser: true))
-        tableView.reloadData()
-        let indexPath = IndexPath(row: messages.count - 1, section: 0)
-        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.generateBotReply(for: text)
         }
-    }
+
+//    func sendAutoMessage(_ text: String) {
+//        messages.append(Message(text: text, isUser: true))
+//        tableView.reloadData()
+//        let indexPath = IndexPath(row: messages.count - 1, section: 0)
+//        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//            self.generateBotReply(for: text)
+//        }
+//    }
 
 }
