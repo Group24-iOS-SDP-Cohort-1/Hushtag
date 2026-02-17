@@ -93,6 +93,30 @@ extension Date {
     }
 }
 
+extension Int {
+    
+    func formattedCount() -> String {
+        let num = Double(self)
+
+        switch num {
+        case 0..<1_000:
+            return "\(self)"
+
+        case 1_000..<1_000_000:
+            return String(format: "%.1fK", num / 1_000)
+                .replacingOccurrences(of: ".0", with: "")
+
+        case 1_000_000..<1_000_000_000:
+            return String(format: "%.1fM", num / 1_000_000)
+                .replacingOccurrences(of: ".0", with: "")
+
+        default:
+            return String(format: "%.1fB", num / 1_000_000_000)
+                .replacingOccurrences(of: ".0", with: "")
+        }
+    }
+}
+
 
 struct AnalysisDateData: Codable, Identifiable {
     let id = UUID()
@@ -114,7 +138,20 @@ struct Message {
 enum PlatformType:String{
     case youtube,instagram,facebook
 }
-//for idea
+
+
+nonisolated struct ClusterIdeaAPIResponse: Codable {
+    let mode: String
+    let ideaLimit: Int?
+    let results: [ClusterIdea]
+}
+
+struct ClusterIdea: Codable {
+    let theme: String
+    let gaps: [String]
+    let format: String
+    let idea: Idea
+}
 
 struct Idea: Codable, Identifiable {
     let id: UUID
@@ -128,15 +165,6 @@ struct Idea: Codable, Identifiable {
     var expandedDescription: String?
     var liked: Bool?
 }
-
-//struct Video: Codable {
-//    let id: String
-//    let url: String
-//    let videoTitle: String
-//    let views: String
-//    let link: String
-//    let engagementRate: [EngagementPoint]?
-//}
 
 struct Video: Codable, Identifiable {
     let id: String
