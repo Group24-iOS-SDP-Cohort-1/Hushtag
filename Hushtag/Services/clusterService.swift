@@ -1,64 +1,69 @@
-//
-//  clusterService.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 04/02/26.
-//
-
 import Foundation
 
-final class ClusterService {
+final class SupabaseEdgeService {
 
-    private let anonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1dXV3dXlkbGdqaGd3d2Fic3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwMTEwMzAsImV4cCI6MjA4NDU4NzAzMH0.qTJ2zoIj3uBR5tSOp8-J-dU0ZPJIE_XKkw23zP4-sRg"
-    private let projectURL = "https://juuuwuydlgjhgwwabswy.supabase.co"
+    static let shared = SupabaseEdgeService()
+    private init() {}
 
-//    func cluster(embeddings: [[Double]]) async throws -> ClusterResponse {
-//
-//        let url = URL(string: "\(projectURL)/functions/v1/cluster")!
-//        var request = URLRequest(url: url)
-//
-//        request.httpMethod = "POST"
-//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-//        request.addValue("Bearer \(anonKey)", forHTTPHeaderField: "Authorization")
-//        request.addValue(anonKey, forHTTPHeaderField: "apikey")
-//
-//        let body = ["embeddings": embeddings]
-//        request.httpBody = try JSONEncoder().encode(body)
-//
-//        let (data, response) = try await URLSession.shared.data(for: request)
-//
-//        // 🔍 Debug
-//        print("RAW CLUSTER RESPONSE:",
-//              String(data: data, encoding: .utf8) ?? "nil")
-//
-//        guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
-//            throw URLError(.badServerResponse)
-//        }
-//
-//        return try JSONDecoder().decode(ClusterResponse.self, from: data)
-//    }
-    
-    func fetchClusters(query: String) async throws -> SearchResponse {
+    private let url = URL(string:
+        "https://juuuwuydlgjhgwwabswy.supabase.co/functions/v1/preference-search"
+    )!
 
-        let url = URL(string: "\(projectURL)/functions/v1/cluster")!
-        var request = URLRequest(url: url)
+    private let anonKey =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1dXV3dXlkbGdqaGd3d2Fic3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwMTEwMzAsImV4cCI6MjA4NDU4NzAzMH0.qTJ2zoIj3uBR5tSOp8-J-dU0ZPJIE_XKkw23zP4-sRg"
 
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("Bearer \(anonKey)", forHTTPHeaderField: "Authorization")
-        request.addValue(anonKey, forHTTPHeaderField: "apikey")
+    func fetchClusterIdeas(
+        clusters: [String],
+        completion: @escaping (Result<[ClusterIdea], Error>) -> Void
+    ) {
 
-        let body = ["query": query]
-        request.httpBody = try JSONEncoder().encode(body)
+        // ✅ No request struct needed
+        let jsonObject: [String: Any] = [
+            "clusters": clusters
+        ]
 
-        let (data, response) = try await URLSession.shared.data(for: request)
-
-        print("RAW EDGE RESPONSE:", String(data: data, encoding: .utf8) ?? "nil")
-
-        guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
-            throw URLError(.badServerResponse)
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: jsonObject) else {
+            completion(.failure(NSError(domain: "Encoding Error", code: 0)))
+            return
         }
 
-        return try JSONDecoder().decode(SearchResponse.self, from: data)
+        // Build request
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = jsonData
+
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("Bearer \(anonKey)", forHTTPHeaderField: "Authorization")
+
+        // Call API
+        URLSession.shared.dataTask(with: request) { data, _, error in
+
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let data = data else {
+                completion(.failure(NSError(domain: "No Data", code: 0)))
+                return
+            }
+
+            do {
+                let decoded = try JSONDecoder().decode(
+                    ClusterIdeaAPIResponse.self,
+                    from: data
+                )
+
+                DispatchQueue.main.async {
+                    completion(.success(decoded.results))
+                }
+
+            } catch {
+                print("❌ Decode error:", error)
+                completion(.failure(error))
+            }
+
+        }.resume()
     }
+
 }

@@ -40,60 +40,62 @@ class SessionManager: ObservableObject {
     }
     
     func preloadIdeas() async {
-        
+
         guard let prefs = userPreferences else {
             print("❌ No prefs found")
             return
         }
-        
+
+        // Take top 3 niches
         let selectedTopics = Array(prefs.niche.prefix(3))
-        var loadedIdeas: [Idea] = []
-        
-        for topic in selectedTopics {
-            
-            do {
-                let response = try await YouTubeService().search(query: topic.rawValue)
-                
-                // Pick first cluster
-                guard let firstCluster = response.clusterIdeas.first else {
-                    continue
+        let clusterStrings = selectedTopics.map { $0.rawValue }
+
+        print("🚀 Fetching ideas for:", clusterStrings)
+
+        do {
+            // Wrap completion API into async/await
+            let bundles: [ClusterIdea] = try await withCheckedThrowingContinuation { continuation in
+
+                SupabaseEdgeService.shared.fetchClusterIdeas(clusters: clusterStrings) { result in
+                    switch result {
+
+                    case .success(let bundles):
+                        continuation.resume(returning: bundles)
+
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
                 }
-                
-                // Pick first Gemini idea from that cluster
-                guard let firstIdea = firstCluster.ideas.first else {
-                    continue
-                }
-                
-                // Map first 3 videos from that cluster
-                let mappedVideos: [Video] = firstCluster.videos
-                    .prefix(3)
-                    .map { $0.toVideo() }
-                
-                // Build final Idea
-                loadedIdeas.append(
-                    Idea(
-                        id: UUID(),
-                        ideaKey: nil,
-                        title: firstIdea.title,
-                        description: firstIdea.description,
-                        format: firstIdea.format,
-                        hashtags: firstIdea.hashtags,
-                        noveltyScore: firstIdea.noveltyScore,
-                        videos: mappedVideos,
-                        liked: false
-                    )
-                )
-                
-            } catch {
-                print("❌ Failed topic \(topic):", error)
             }
-        }
-        
-        await MainActor.run {
-            self.personalizedIdeas = loadedIdeas
-            print("✅ Preloaded ideas:", loadedIdeas.count)
+
+            // Convert bundles → Ideas
+            let loadedIdeas: [Idea] = bundles.map { bundle in
+
+                Idea(
+                    id: bundle.idea.id,
+                    ideaKey: bundle.idea.ideaKey,
+                    title: bundle.idea.title,
+                    description: bundle.idea.description,
+                    format: bundle.idea.format,
+                    hashtags: bundle.idea.hashtags,
+                    noveltyScore: bundle.idea.noveltyScore,
+                    videos: bundle.idea.videos,
+                    expandedDescription: nil,
+                    liked: false
+                )
+            }
+
+            // Update UI safely
+            await MainActor.run {
+                self.personalizedIdeas = loadedIdeas
+                print("✅ Preloaded ideas from Edge Function:", loadedIdeas.count)
+            }
+
+        } catch {
+            print("❌ Failed to preload ideas:", error)
         }
     }
+
     
     func clearSession() {
         currentUser = nil

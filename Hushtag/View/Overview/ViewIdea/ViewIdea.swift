@@ -14,269 +14,219 @@ import Charts
 
 class ViewIdea: UIViewController {
     
-    @IBOutlet weak var videoView: UICollectionView!
-    @IBOutlet weak var hashtagLabel: UILabel!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var likeButton: UIBarButtonItem!
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var descriptionStack: UIStackView!
-    @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var graphView: UIView!
+    @IBOutlet weak var ideaView: UICollectionView!
     
-    @IBOutlet weak var draftScript: UIButton!
-    
-    @IBOutlet weak var stackView: UIStackView!
-    private var isChecked: Bool = false
-    private var chartHostingController: UIHostingController<EngagementBarChart>?
     var idea: Idea?
     var video: [Video] = []
-    var onLikeStatusChanged: ((Idea) -> Void)?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
-        videoView.dataSource = self
-        videoView.delegate = self
-        
-        if let idea = idea {
-            titleLabel.text = idea.title
-            titleLabel.numberOfLines = 0
-            descriptionLabel.text = idea.description
-            descriptionLabel.numberOfLines = 10
-            if let expanded = idea.expandedDescription,
-               !expanded.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                
-                // Already expanded → show directly
-                descriptionLabel.text = expanded
-                
-            } else {
-                
-                // Show original first
-                descriptionLabel.text = idea.description
-                
-                // Call AI only once
-                Task {
-                    await expandDescriptionWithAI()
-                }
-            }
-            
-            hashtagLabel.text = idea.hashtags.joined(separator: "   ")
-            video = idea.videos ?? []
-            
-            isChecked = idea.liked ?? false
-            likeButton.image = UIImage(systemName: isChecked ? "heart.fill" : "heart")
-        }
-        videoView.isScrollEnabled = false
-        
-        setupEngagementChart()
-        videoView.setCollectionViewLayout(generateLayout(), animated: true)
-        
-        print("Scroll frame height:", scrollView.frame.height)
-        print("Content height:", scrollView.contentLayoutGuide.layoutFrame.height)
+        ideaView.delegate = self
+        ideaView.dataSource = self
+        ideaView.setCollectionViewLayout(generateLayout(), animated: true)
     }
     
     
-    @IBAction func draftTap(_ sender: Any) {
-        guard let idea = idea else { return }
-        didTapDraftScript(for: idea)
-        
-    }
+    //    @IBAction func draftTap(_ sender: Any) {
+    //        guard let idea = idea else { return }
+    //        didTapDraftScript(for: idea)
+    //
+    //    }
     
-    func didTapDraftScript(for idea: Idea) {
-        let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
-        guard let chatVC = storyboard.instantiateViewController(
-            withIdentifier: "Chatbot"
-        ) as? Chatbot else { return }
-        chatVC.autoSendMessage = "script"
-        navigationController?.pushViewController(chatVC, animated: true)
-    }
+    //    func didTapDraftScript(for idea: Idea) {
+    //        let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
+    //        guard let chatVC = storyboard.instantiateViewController(
+    //            withIdentifier: "Chatbot"
+    //        ) as? Chatbot else { return }
+    //        chatVC.autoSendMessage = """
+    //Create a short creator-style script for this video idea:
+    //
+    //Title: "\(idea.title)"
+    //Description: "\(idea.description)"
+    //
+    //Structure:
+    //1. Hook (1 sentence)
+    //2. What happens (2–3 sentences)
+    //3. Twist or surprise (1 sentence)
+    //4. CTA (1 sentence)
+    //
+    //Tone: casual, friendly, modern.
+    //Length: 15–20 seconds.
+    //"""
+    //        navigationController?.pushViewController(chatVC, animated: true)
+    //    }
     
     func registerCell() {
-        videoView.register(
-            UINib (
-                nibName: "TrendingVideoCollectionViewCell",
-                bundle: nil
-            ),
-            forCellWithReuseIdentifier: "trending_video"
-        )
-        videoView.register(
+        
+        ideaView.register(
             UINib(nibName: "HeaderView",
                   bundle: nil),
             forSupplementaryViewOfKind: "header",
             withReuseIdentifier: "headerCell")
     }
     
-    @IBAction func likeButtonPressed(_ sender: UIBarButtonItem) {
-        isChecked.toggle()
-        let imageName = isChecked ? "heart.fill" : "heart"
-        
-        likeButton.image = UIImage(systemName: imageName)
-        sender.image = UIImage(systemName: imageName)
-        //idea?.liked = isChecked
-        if let updatedIdea = idea {
-            onLikeStatusChanged?(updatedIdea)
-        }
-    }
-    
     func generateLayout() -> UICollectionViewLayout {
-        
-        return UICollectionViewCompositionalLayout { sectionIndex, _ in
+        let layout = UICollectionViewCompositionalLayout {
+            section, env in
+            let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
             
-            // Only section 0 has horizontal scrolling
-            guard sectionIndex == 0 else {
-                return nil
+            let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "header", alignment: .top)
+            
+            if section == 0 {
+                
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+                
+                // create the item
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
+                
+                // create the group
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.25))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 7)
+                
+                //create the section
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+                
+                return section
+            }
+            else if section == 1 {
+                
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+                
+                // create the item
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
+                
+                // create the group
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.45), heightDimension: .estimated(110))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
+                
+                //create the section
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+                section.orthogonalScrollingBehavior = .continuous
+                section.boundarySupplementaryItems = [headerItem]
+                
+                return section
             }
             
-            // Header
-            let headerSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(50)
-            )
             
-            let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
-                layoutSize: headerSize,
-                elementKind: "header",
-                alignment: .top
-            )
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
             
-            // Item
-            let itemSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .estimated(150)
-            )
-            
+            // create the item
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            item.contentInsets = NSDirectionalEdgeInsets(
-                top: 0,
-                leading: 7,
-                bottom: 0,
-                trailing: 7
-            )
+            item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
             
-            // Group
-            let groupSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(0.75),
-                heightDimension: .estimated(200)
-            )
+            // create the group
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(50))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 7)
             
-            let group = NSCollectionLayoutGroup.horizontal(
-                layoutSize: groupSize,
-                subitems: [item]
-            )
-            
-            // Section
+            //create the section
             let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
             section.orthogonalScrollingBehavior = .continuous
             section.boundarySupplementaryItems = [headerItem]
             
             return section
         }
+        return layout
     }
     
-    func expandDescriptionWithAI() async {
+    func statistics(with idea: Idea) -> [Int] {
         
-        guard let idea = idea else { return }
-        
-        // Make sure AI is supported
-        guard AppleIntelligenceManager.shared.isAvailable else {
-            print("Apple Intelligence not available")
-            return
+        guard let videos = idea.videos, !videos.isEmpty else {
+            print("No videos available")
+            return []
         }
         
-        // Prompt for expansion
-        let prompt = """
-        Expand this YouTube idea description into 4-5 engaging lines.
-        Keep it natural, simple, and readable.
+        // Convert totals into Double
+        let totalViews = videos.reduce(0) { $0 + $1.views }
+        let totalLikes = videos.reduce(0) { $0 + $1.likes }
         
-        Original:
-        "\(idea.description)"
-        """
+        let count = videos.count
         
-        do {
-            let expanded = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
-            
-            // Smooth UI update
-            DispatchQueue.main.async {
-                self.animateDescriptionUpdate(expanded)
-            }
-            
-        } catch {
-            print("Expansion failed:", error.localizedDescription)
-        }
-    }
-    
-    func animateDescriptionUpdate(_ newText: String) {
+        let avgViews = totalViews / count
+        let avgLikes = totalLikes / count
         
-        UIView.transition(
-            with: descriptionLabel,
-            duration: 0.2,
-            options: .transitionCrossDissolve
-        ) {
-            //self.descriptionLabel.numberOfLines = 5
-            self.descriptionLabel.text = newText
-            self.descriptionLabel.alpha = 1.0
-            self.idea?.expandedDescription = newText
-        }
+        return [avgViews, avgLikes]
     }
 }
 
 extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 3
+    }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return video.count
+        if section == 0 {
+            return 1
+        } else if section == 1 {
+            return 2
+        }
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "trending_video", for: indexPath) as! TrendingVideoCollectionViewCell
-        
-        let vid = video[indexPath.item]
-        
-        cell.configureVideo(video: vid)
-        
-        return cell
-    }
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        
-        // create the header view
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: "header", withReuseIdentifier: "headerCell", for: indexPath) as! HeaderView
-        headerView.configureHeader(text: "Trending Videos")
-        return headerView
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedVideo = video[indexPath.item]
-        
-        // Update chart with selected video
-        
-        guard let url = URL(string: selectedVideo.link ?? "") else { return }
-        let safariVC = SFSafariViewController(url: url)
-        present(safariVC, animated: true)
-    }
-    
-    func setupEngagementChart() {
-        guard !video.isEmpty else {
-            print("No videos available")
-            return
+        if indexPath.section == 0 {
+            let cell = ideaView.dequeueReusableCell(withReuseIdentifier: "basicInfo", for: indexPath) as! IdeaDetailsCollectionViewCell
+            if let idea = idea {
+                cell.configure(with: idea)
+            }
+            
+            return cell
         }
         
-        let chartView = EngagementBarChart(data: video)
-        
-        let hostingVC = UIHostingController(rootView: chartView)
-        hostingVC.view.translatesAutoresizingMaskIntoConstraints = false
-        hostingVC.view.backgroundColor = .clear
-        
-        addChild(hostingVC)
-        graphView.addSubview(hostingVC.view)
-        hostingVC.didMove(toParent: self)
-        
-        NSLayoutConstraint.activate([
-            hostingVC.view.heightAnchor.constraint(equalToConstant: 240)
-        ])
-        
-        chartHostingController = hostingVC
+        else if indexPath.section == 1 {
+            let cell = ideaView.dequeueReusableCell(withReuseIdentifier: "statistics", for: indexPath) as! IdeaDetailsCollectionViewCell
+            
+            guard let idea = idea else { return cell }
+
+                // ✅ Use your existing stats function
+                let values = statistics(with: idea)
+
+                // Safe guard
+                guard indexPath.row < values.count else { return cell }
+
+                // Labels match values
+                let labels = ["Views", "Likes"]
+
+                let value = values[indexPath.row]
+                let label = labels[indexPath.row]
+
+                cell.configureStatistic(value, label)
+            return cell
+        }
+        let cell = ideaView.dequeueReusableCell(withReuseIdentifier: "gaps", for: indexPath) as! IdeaDetailsCollectionViewCell
+      
+            cell.configureHashtag(idea?.hashtags ?? [])
+     
+        return cell
     }
     
-    func updateEngagementChart(for video: Video) {
-        chartHostingController?.rootView = EngagementBarChart(data: [video])
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        if kind == "header", indexPath.section == 1 {
+            let headerView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: "header",
+                withReuseIdentifier: "headerCell",
+                for: indexPath
+            ) as! HeaderView
+            
+            headerView.configureHeader(text: "Performance Statistics")
+            return headerView
+        }
+        else if kind == "header", indexPath.section == 2 {
+            let headerView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: "header",
+                withReuseIdentifier: "headerCell",
+                for: indexPath
+            ) as! HeaderView
+            
+            headerView.configureHeader(text: "Trending Hashtags")
+            return headerView
+        }
+        return UICollectionReusableView()
     }
 }
