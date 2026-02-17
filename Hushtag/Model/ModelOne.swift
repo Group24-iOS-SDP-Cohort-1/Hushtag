@@ -21,7 +21,7 @@ func makeIdeaKey(
 
 
 struct LikedIds {
-    static var likedIdeaIds: Set<UUID> = []
+    static var likedIdeaIds: Set<String> = []
 }
 
 extension Date {

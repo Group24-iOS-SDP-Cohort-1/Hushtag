@@ -8,7 +8,6 @@
 import UIKit
 
 class Badges: UIView {
-
     
     @IBOutlet weak var badgeLabel: UILabel!
     

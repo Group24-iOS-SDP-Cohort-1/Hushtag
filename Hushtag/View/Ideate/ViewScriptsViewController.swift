@@ -359,84 +359,74 @@ extension ViewScriptsViewController: UICollectionViewDelegate {
 
 extension ViewScriptsViewController: LikedCellDelegate {
 
-    func didToggleLike(for ideaKey: String)
-        {
+    func didToggleLike(for ideaKey: String) {
 
-            // Decide which array we are working on
-            let sourceArray = isFiltering ? filteredLikedIdeas : likedIdeas
+        let sourceArray = isFiltering ? filteredLikedIdeas : likedIdeas
 
-            guard let index = sourceArray.firstIndex(where: { $0.ideaKey == ideaKey })
-                else {
-                print("❌ Idea not found for toggle")
-                return
-            }
-
-            Task {
-                do {
-                    let idea = sourceArray[index]
-
-                    if idea.liked == true {
-                        // UNLIKE
-                        try await likedIdeasController.unlikeIdea(ideaKey: ideaKey)
-
-
-                        await MainActor.run {
-                            if self.isFiltering {
-                                self.filteredLikedIdeas[index].liked = false
-                                if let mainIndex = self.likedIdeas.firstIndex(where: { $0.ideaKey == ideaKey }) {
-                                    self.likedIdeas[mainIndex].liked = false
-                                }
-
-                            } else {
-                                self.likedIdeas[index].liked = false
-                            }
-                            NotificationCenter.default.post(
-                                name: .didUpdateLikedStatus,
-                                object: ideaKey
-                            )
-
-                        }
-
-                    } else {
-                        // LIKE
-                        try await likedIdeasController.likeIdea(idea)
-
-                        await MainActor.run {
-                            if self.isFiltering {
-                                self.filteredLikedIdeas[index].liked = true
-                                if let mainIndex = self.likedIdeas.firstIndex(where: { $0.ideaKey == ideaKey }) {
-                                    self.likedIdeas[mainIndex].liked = false
-                                }
-
-                            } else {
-                                self.likedIdeas[index].liked = true
-                            }
-                        }
-                    }
-
-                    await MainActor.run {
-                        self.syncLikedIdeas()
-                    }
-
-
-                } catch {
-                    print("❌ Like toggle failed:", error)
-                }
-            }
+        guard let index = sourceArray.firstIndex(where: { $0.ideaKey == ideaKey }) else {
+            return
         }
 
+        let idea = sourceArray[index]
+        let isCurrentlyLiked = LikedIds.likedIdeaIds.contains(ideaKey)
 
-    
+        Task {
+            do {
+                if isCurrentlyLiked {
+                    //  UNLIKE
+                    try await likedIdeasController.unlikeIdea(ideaKey: ideaKey)
+                    LikedIds.likedIdeaIds.remove(ideaKey)
+
+                    //  UPDATE SESSION MANAGER (THIS FIXES IDEATE)
+                    if let smIndex = SessionManager.shared.personalizedIdeas
+                        .firstIndex(where: { $0.ideaKey == ideaKey }) {
+                        SessionManager.shared.personalizedIdeas[smIndex].liked = false
+                    }
+
+                } else {
+                    //  LIKE
+                    try await likedIdeasController.likeIdea(idea)
+                    LikedIds.likedIdeaIds.insert(ideaKey)
+
+                    if let smIndex = SessionManager.shared.personalizedIdeas
+                        .firstIndex(where: { $0.ideaKey == ideaKey }) {
+                        SessionManager.shared.personalizedIdeas[smIndex].liked = true
+                    }
+                }
+
+                await MainActor.run {
+
+                    // Remove from local lists if unliked
+                    if isCurrentlyLiked {
+                        self.likedIdeas.removeAll { $0.ideaKey == ideaKey }
+                        self.filteredLikedIdeas.removeAll { $0.ideaKey == ideaKey }
+                    }
+
+                    NotificationCenter.default.post(
+                        name: .didUpdateLikedStatus,
+                        object: ideaKey
+                    )
+
+                    self.scriptsCollectionView.reloadData()
+                }
+
+            } catch {
+                print("❌ Like toggle failed:", error)
+            }
+        }
+    }
+
     func didTapDraftScript(for idea: Idea) {
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
-        guard let chatVC = storyboard.instantiateViewController(
+        guard let vc = storyboard.instantiateViewController(
             withIdentifier: "Chatbot"
         ) as? Chatbot else { return }
-        chatVC.autoSendMessage = "script"
-        navigationController?.pushViewController(chatVC, animated: true)
+
+        vc.draftIdea = idea 
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
-
 
 
 extension ViewScriptsViewController: UISearchResultsUpdating {

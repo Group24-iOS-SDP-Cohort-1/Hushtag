@@ -7,14 +7,13 @@
 
 import UIKit
 
-
 class Ideate1: UIViewController {
     
     //  var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
     var selectedIdea: Idea?
     var selectedIndexPath: IndexPath?
-    
+    private let likedIdeasController = LikedIdeasController()
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var scriptButton: UIButton!
     
@@ -41,8 +40,10 @@ class Ideate1: UIViewController {
 //        Task {
 //                await loadIdeasFromPreferences()
 //            }
-        self.ideas = SessionManager.shared.personalizedIdeas
+
+        self.ideas = syncLikedState(SessionManager.shared.personalizedIdeas)
         collectionView.reloadData()
+
     }
     
     private func register() {
@@ -60,14 +61,13 @@ class Ideate1: UIViewController {
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
     }
-
     @objc private func handleLikeUpdate(_ notification: Notification) {
         guard let ideaKey = notification.object as? String,
               let index = ideas.firstIndex(where: { $0.ideaKey == ideaKey }) else {
             return
         }
 
-        ideas[index].liked = false
+        ideas[index].liked = LikedIds.likedIdeaIds.contains(ideaKey)
 
         if let cell = collectionView.cellForItem(
             at: IndexPath(row: index, section: 1)
@@ -75,6 +75,7 @@ class Ideate1: UIViewController {
             cell.configure(idea: ideas[index])
         }
     }
+
 
 
 
@@ -102,7 +103,7 @@ class Ideate1: UIViewController {
         destinationVC.pageTitle = "Liked Ideas"
         self.navigationController?.pushViewController(destinationVC, animated: true)
     }
-    
+
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
             
@@ -190,7 +191,25 @@ class Ideate1: UIViewController {
     //            )
     //        }
     //    }
-    
+
+    private func syncLikedState(_ ideas: [Idea]) -> [Idea] {
+        let likedKeys = LikedIds.likedIdeaIds
+
+        return ideas.map { idea in
+            var updated = idea
+
+            guard let key = idea.ideaKey else {
+                updated.liked = false
+                return updated
+            }
+
+            updated.liked = likedKeys.contains(key)
+            return updated
+        }
+    }
+
+
+
     func loadIdeasFromPreferences() async {
 
         guard let prefs = SessionManager.shared.userPreferences else {
@@ -339,10 +358,11 @@ extension Ideate1: IdeaSearchDelegate {
     func didTapSearch(with keyword: String) {
         
         if keyword.isEmpty {
-            ideas = []
+            self.ideas = syncLikedState(SessionManager.shared.personalizedIdeas)
             collectionView.reloadData()
             return
         }
+
         
         Task {
             do {
@@ -398,25 +418,54 @@ extension Ideate1: IdeaCellDelegate {
             return
         }
 
+        let isCurrentlyLiked = LikedIds.likedIdeaIds.contains(ideaKey)
+        let idea = ideas[index]
+
         Task {
             do {
-                if ideas[index].liked == true {
-                    try await LikedIdeasController().unlikeIdea(ideaKey: ideaKey)
-                    ideas[index].liked = false
+                if isCurrentlyLiked {
+                    //  UNLIKE
+                    try await likedIdeasController.unlikeIdea(ideaKey: ideaKey)
+                    LikedIds.likedIdeaIds.remove(ideaKey)
                 } else {
-                    try await LikedIdeasController().likeIdea(ideas[index])
-                    ideas[index].liked = true
+                    //  LIKE
+                    try await likedIdeasController.likeIdea(idea)
+                    LikedIds.likedIdeaIds.insert(ideaKey)
                 }
 
+                await MainActor.run {
+                    // Update Ideate list
+                    ideas[index].liked = !isCurrentlyLiked
 
+                    // Keep SessionManager in sync (VERY important)
+                    if let smIndex = SessionManager.shared.personalizedIdeas
+                        .firstIndex(where: { $0.ideaKey == ideaKey }) {
+                        SessionManager.shared.personalizedIdeas[smIndex].liked = !isCurrentlyLiked
+                    }
+
+                    // Notify other screens
+                    NotificationCenter.default.post(
+                        name: .didUpdateLikedStatus,
+                        object: ideaKey
+                    )
+
+                    if let cell = collectionView.cellForItem(
+                            at: IndexPath(row: index, section: 1)
+                        ) as? IdeaCells {
+                            cell.updateLikeUI()
+                        }
+                }
 
             } catch {
-                print("Feed like failed:", error)
+                print("❌ Like toggle failed:", error)
             }
         }
     }
 
 
-}
+    }
+
+
+
 
 
