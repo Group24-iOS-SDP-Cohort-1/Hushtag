@@ -33,14 +33,12 @@ class LikedCellsNew: UICollectionViewCell {
         ideaTitle.numberOfLines = 2
         applyLiquidGlassEffect()
         draftScriptButton.addTarget(self, action: #selector(draftScriptTapped), for: .touchUpInside)
-        
     }
 
     func configureCell(idea: Idea){
         self.idea = idea
         ideaTitle.text = idea.title
-        
-      updateLikeUI()
+        updateLikeUI()
         //configureHashtags(idea.hashtag)
     }
     
@@ -69,8 +67,6 @@ class LikedCellsNew: UICollectionViewCell {
     @IBAction func likeTapped(_ sender: UIButton) {
         guard var idea = idea else { return }
         delegate?.didToggleLike(for: idea.ideaKey ?? "")
-
-
     }
     
     func updateLikeUI() {
@@ -84,6 +80,7 @@ class LikedCellsNew: UICollectionViewCell {
             guard let idea = idea else { return }
             delegate?.didTapDraftScript(for: idea)
    }
+
 }
 
 

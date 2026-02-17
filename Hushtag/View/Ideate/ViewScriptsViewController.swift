@@ -422,7 +422,8 @@ extension ViewScriptsViewController: LikedCellDelegate {
             withIdentifier: "Chatbot"
         ) as? Chatbot else { return }
 
-        vc.autoSendMessage = "script"
+        vc.draftIdea = idea 
+
         navigationController?.pushViewController(vc, animated: true)
     }
 }
