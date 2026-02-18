@@ -31,21 +31,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     var messages: [Message] = []
     var autoSendMessage: String?
-
-    let botDatabase: [String: String] = [
-        "hi": "hello",
-        "hello": "Hi! How can I help you today?",
-        "script": "Real beauty isn’t about perfection.It’s about embracing who you are—your skin, your smile, your story.Every freckle, every flaw, every feature makes you unique.",
-        "generate title": "Real Beauty, Real Confidence",
-        "generate thumbnail": "Your thumbnail here",
-        "generate description": "Real Beauty, Real Confidence.Real beauty isn’t about perfection.",
-        "description": "Real Beauty, Real Confidence.Real beauty isn’t about perfection.",
-        "generate script": "Real beauty isn’t about perfection.It’s about embracing who you are—your skin, your smile, your story.Every freckle, every flaw, every feature makes you unique.",
-        "idea": "You can make a beauty product review",
-        "title": "Real Beauty, Real Confidence",
-        "default": "Sorry, I don't understand. Could you rephrase that?"
-    ]
-
+    let controller = ScriptedIdeasController()
     var markedMessages: [String: [Message]] = [
         "script": [],
         "title": [],
@@ -58,6 +44,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     let lineHeight: CGFloat = 100
     let requiredMarkTypes = ["script", "title", "description", "thumbnail"]
     var didShowFinalReadyMessage = false
+    var conversationID: UUID!
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,6 +72,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     sendAutoMessage(text)
                     autoSendMessage = nil
                 }
+        
+        conversationID = UUID()
+            print("🆕 Conversation started:", conversationID!)
 
         setupKeyboardObservers()
         setupTapToDismiss()
@@ -110,7 +101,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         super.viewDidAppear(animated)
         if messages.isEmpty {
             let welcomeMessage = "Welcome! I’m your scripting assistant. Lets write a script for you."
-            messages.append(Message(text: welcomeMessage, isUser: false))
+            messages.append(Message(role: "system", content: welcomeMessage))
             tableView.reloadData()
             scrollToBottom()
         }
@@ -178,9 +169,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
             cell.configure(with: messages[indexPath.row])
-            let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
-            longPress.minimumPressDuration = 0.5
-            cell.contentView.addGestureRecognizer(longPress)
+            //let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+            //longPress.minimumPressDuration = 0.5
+            //cell.contentView.addGestureRecognizer(longPress)
             cell.contentView.tag = indexPath.row
             return cell
 
@@ -219,39 +210,60 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
     func sendMessage(_ text: String) {
-        messages.append(Message(text: text, isUser: true))
-        tableView.reloadData()
 
-        let indexPath = IndexPath(row: messages.count - 1, section: 0)
-        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+        let userText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !userText.isEmpty else { return }
+
+        // 1. Show user message
+        messages.append(Message(role: "user", content: userText))
+        tableView.reloadData()
+        scrollToBottom()
 
         textFieldView.text = ""
         textViewDidChange(textFieldView)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.generateBotReply(for: text)
-                }
-    }
-
-    func generateBotReply(for userText: String) {
-        let input = userText
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .lowercased()
-
-        let output: String
-        if let response = botDatabase[input] {
-            output = response
-        } else if let responseDefault = botDatabase["default"] {
-            output = responseDefault
-        } else {
-            output = "Sorry"
-        }
-
-        messages.append(Message(text: output, isUser: false))
+        // 2. Show loading
+        messages.append(Message(role: "bot", content: "Thinking..."))
         tableView.reloadData()
+        scrollToBottom()
 
-        let indexPath = IndexPath(row: messages.count - 1, section: 0)
-        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+        // 3. Call Gemini
+        GeminiManager.shared.generateContent(prompt: userText, conversationID: conversationID) { [weak self] replyText in
+            guard let self = self else { return }
+
+            DispatchQueue.main.async {
+
+                // Remove Thinking...
+                if !self.messages.isEmpty {
+                    self.messages.removeLast()
+                }
+
+                guard let replyText else {
+                    self.messages.append(
+                        Message(role: "bot", content: "Gemini Failed")
+                    )
+                    self.tableView.reloadData()
+                    self.scrollToBottom()
+                    return
+                }
+
+                // Add bot reply
+                self.messages.append(
+                    Message(role: "bot", content: replyText)
+                )
+
+                self.tableView.reloadData()
+                self.scrollToBottom()
+            }
+
+            // Save into Supabase (this can stay background)
+            Task {
+                try await self.controller.addChatMessage(
+                    sender: .bot,
+                    content: replyText ?? ""
+                )
+            }
+        }
     }
 
 
@@ -262,91 +274,91 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             }
     }
 
-    @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
-        //to trigger action once the press begins
-        guard gesture.state == .began else { return }
-        //to get the view that we long pressed
-        guard let cellView = gesture.view else { return }
-        //to store the row the cell belongs to
-        let row = cellView.tag
-        //message object corresponsding to that row
-        var message = messages[row]
-
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-
-           // Helper to add mark/unmark option
-           func addMarkAction(type: String) {
-               let isMarked = message.markType == type
-               if !isMarked && isTypeAlreadyMarked(type) {
-                       return
-                   }
-
-               let title = isMarked ? "Unmark \(type.capitalized)" : "Mark as \(type.capitalized)"
-
-               alert.addAction(UIAlertAction(title: title, style: .default) { _ in
-                   if isMarked {
-                       message.markType = nil
-                       self.markedMessages[type]?.removeAll {
-                                               $0.text == message.text
-                                }
-                       self.didShowFinalReadyMessage = false
-                       self.showScriptSuggestions()
-
-                   } else {
-                       if let oldType = message.markType {
-                                      self.markedMessages[oldType]?.removeAll { $0.text == message.text }
-                                  }
-
-                       self.generateStack.isHidden = false
-                       message.markType = type
-                       self.markedMessages[type]?.append(message)
-
-                       if self.isAllContentMarked() && !self.didShowFinalReadyMessage {
-
-                           self.didShowFinalReadyMessage = true
-
-                           let finalMessage = Message(
-                               text: "less goo your post is ready",
-                               isUser: false
-                           )
-
-                           self.messages.append(finalMessage)
-
-                           let indexPath = IndexPath(
-                               row: self.messages.count - 1,
-                               section: 0
-                           )
-
-                           self.tableView.insertRows(at: [indexPath], with: .fade)
-                           self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-                       }
-
-
-                       switch type {
-                               case "script":
-                                   self.showScriptSuggestions()
-                               case "title":
-                                   self.showScriptSuggestions()
-                               case "description":
-                                   self.showScriptSuggestions()
-                               case "thumbnail":
-                                   self.showScriptSuggestions()
-
-                               default:
-                                   self.showScriptSuggestions()
-                               }
-                   }
-                   self.messages[row] = message
-                   self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
-               })
-           }
-
-           ["script", "title", "description", "thumbnail"].forEach { addMarkAction(type: $0) }
-
-           alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-           self.present(alert, animated: true)
-
-    }
+//    @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+//        //to trigger action once the press begins
+//        guard gesture.state == .began else { return }
+//        //to get the view that we long pressed
+//        guard let cellView = gesture.view else { return }
+//        //to store the row the cell belongs to
+//        let row = cellView.tag
+//        //message object corresponsding to that row
+//        var message = messages[row]
+//
+//        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+//
+//           // Helper to add mark/unmark option
+//           func addMarkAction(type: String) {
+//               let isMarked = message.markType == type
+//               if !isMarked && isTypeAlreadyMarked(type) {
+//                       return
+//                   }
+//
+//               let title = isMarked ? "Unmark \(type.capitalized)" : "Mark as \(type.capitalized)"
+//
+//               alert.addAction(UIAlertAction(title: title, style: .default) { _ in
+//                   if isMarked {
+//                       message.markType = nil
+//                       self.markedMessages[type]?.removeAll {
+//                                               $0.text == message.text
+//                                }
+//                       self.didShowFinalReadyMessage = false
+//                       self.showScriptSuggestions()
+//
+//                   } else {
+//                       if let oldType = message.markType {
+//                                      self.markedMessages[oldType]?.removeAll { $0.text == message.text }
+//                                  }
+//
+//                       self.generateStack.isHidden = false
+//                       message.markType = type
+//                       self.markedMessages[type]?.append(message)
+//
+//                       if self.isAllContentMarked() && !self.didShowFinalReadyMessage {
+//
+//                           self.didShowFinalReadyMessage = true
+//
+//                           let finalMessage = Message(
+//                               text: "less goo your post is ready",
+//                               isUser: false
+//                           )
+//
+//                           self.messages.append(finalMessage)
+//
+//                           let indexPath = IndexPath(
+//                               row: self.messages.count - 1,
+//                               section: 0
+//                           )
+//
+//                           self.tableView.insertRows(at: [indexPath], with: .fade)
+//                           self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+//                       }
+//
+//
+//                       switch type {
+//                               case "script":
+//                                   self.showScriptSuggestions()
+//                               case "title":
+//                                   self.showScriptSuggestions()
+//                               case "description":
+//                                   self.showScriptSuggestions()
+//                               case "thumbnail":
+//                                   self.showScriptSuggestions()
+//
+//                               default:
+//                                   self.showScriptSuggestions()
+//                               }
+//                   }
+//                   self.messages[row] = message
+//                   self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
+//               })
+//           }
+//
+//           ["script", "title", "description", "thumbnail"].forEach { addMarkAction(type: $0) }
+//
+//           alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+//           self.present(alert, animated: true)
+//
+//    }
 
 
     func getUnmarkedTypes() -> [String] {
@@ -416,22 +428,19 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
         sendAutoMessage("script")
 
-        if let lastIndex = messages.indices.last {
-            messages[lastIndex].markType = "script"
-        }
+//        if let lastIndex = messages.indices.last {
+//            messages[lastIndex].markType = "script"
+//        }
 
         generateStack.isHidden = false
         showScriptSuggestions()
     }
 
     func sendAutoMessage(_ text: String) {
-        messages.append(Message(text: text, isUser: true))
+        messages.append(Message(role: "user", content: text))
         tableView.reloadData()
         let indexPath = IndexPath(row: messages.count - 1, section: 0)
         tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.generateBotReply(for: text)
-        }
     }
 
 }
