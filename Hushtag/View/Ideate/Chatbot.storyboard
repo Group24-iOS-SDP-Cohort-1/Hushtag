@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="bxC-hh-2nZ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="kXP-LI-TCV">
     <device id="retina6_12" orientation="portrait" appearance="dark"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
@@ -83,10 +83,6 @@
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
-                                <connections>
-                                    <outlet property="dataSource" destination="Y6W-OH-hqX" id="RuO-Ka-Eal"/>
-                                    <outlet property="delegate" destination="Y6W-OH-hqX" id="beI-Jk-6IS"/>
-                                </connections>
                             </tableView>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nuj-q1-pSo">
                                 <rect key="frame" x="0.0" y="660" width="393" height="50"/>
@@ -130,7 +126,7 @@
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" image="arrow.up.circle.fill" catalog="system" title=""/>
                                                 <connections>
-                                                    <action selector="sendButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="0qO-WH-3zq"/>
+                                                    <action selector="sendButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="eVa-hx-f36"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -164,43 +160,43 @@
                         <barButtonItem key="rightBarButtonItem" title="Item" image="pencil.and.scribble" catalog="system" id="cl6-nn-yxF">
                             <color key="tintColor" name="AccentColor"/>
                             <connections>
-                                <action selector="scriptView:" destination="Y6W-OH-hqX" id="0Pq-zK-dub"/>
+                                <action selector="scriptView:" destination="Y6W-OH-hqX" id="16B-ca-pzW"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="Enterbutton" destination="nYb-18-tvh" id="PNi-ge-sor"/>
-                        <outlet property="GenerateStack" destination="ThS-3f-STF" id="iOB-LH-WI8"/>
-                        <outlet property="inputViewBottomConstraint" destination="k1n-mV-YhR" id="u5s-51-n64"/>
-                        <outlet property="scriptedChats" destination="cl6-nn-yxF" id="KVu-bm-2EF"/>
-                        <outlet property="tableView" destination="SNm-vA-oEx" id="6TJ-DM-Idy"/>
-                        <outlet property="textFieldView" destination="juk-cQ-ZRr" id="Wzg-iX-ikx"/>
-                        <outlet property="textStack" destination="ygC-V6-BK5" id="C3v-DR-7Cj"/>
-                        <outlet property="textView" destination="c7U-vD-YmN" id="xPB-cK-fSv"/>
-                        <outlet property="textViewHeightConstraint" destination="00h-x9-dme" id="CFd-jJ-EWB"/>
+                        <outlet property="enterbutton" destination="nYb-18-tvh" id="TeI-hA-D8L"/>
+                        <outlet property="generateStack" destination="ThS-3f-STF" id="LYE-gM-tYu"/>
+                        <outlet property="inputViewBottomConstraint" destination="k1n-mV-YhR" id="Zk7-Q1-VyW"/>
+                        <outlet property="scriptedChats" destination="cl6-nn-yxF" id="GJk-2s-0rT"/>
+                        <outlet property="tableView" destination="SNm-vA-oEx" id="atz-bq-0XL"/>
+                        <outlet property="textFieldView" destination="juk-cQ-ZRr" id="04H-c9-m8i"/>
+                        <outlet property="textStack" destination="ygC-V6-BK5" id="sFp-bj-J8W"/>
+                        <outlet property="textView" destination="c7U-vD-YmN" id="nMq-mx-H0S"/>
+                        <outlet property="textViewHeightConstraint" destination="00h-x9-dme" id="iBb-ni-kdq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1420.6106870229007" y="-265.49295774647891"/>
+            <point key="canvasLocation" x="2347.3282442748091" y="-265.49295774647891"/>
         </scene>
         <!--Navigation Controller-->
-        <scene sceneID="Uzc-CW-oDD">
+        <scene sceneID="r7E-HH-lrk">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="bxC-hh-2nZ" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="kXP-LI-TCV" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="6sU-Su-PUs">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Vmz-SD-Q0h">
                         <rect key="frame" x="0.0" y="118" width="393" height="54"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="Y6W-OH-hqX" kind="relationship" relationship="rootViewController" id="C4i-Cl-Zje"/>
+                        <segue destination="Y6W-OH-hqX" kind="relationship" relationship="rootViewController" id="S9u-IB-uwY"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="nQE-qP-Tbq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sE4-W8-rEV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="493.89312977099235" y="-265.49295774647891"/>
+            <point key="canvasLocation" x="1420.6106870229007" y="-265.49295774647891"/>
         </scene>
     </scenes>
     <resources>

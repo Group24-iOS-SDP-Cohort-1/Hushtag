@@ -76,7 +76,7 @@ class ScriptedIdeas: UIViewController {
             if let chatVC = storyboard.instantiateViewController(withIdentifier: "Chatbot") as? Chatbot {
                 
                 // Pass the current script to the chatbot so it loads history
-                chatVC.currentActiveScript = idea
+             
                 
                 self.navigationController?.pushViewController(chatVC, animated: true)
             }
