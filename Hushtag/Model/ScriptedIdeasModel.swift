@@ -14,7 +14,7 @@ struct ScriptedIdea: Identifiable, Sendable {
     var description: String?
     var script: String?
     var thumbnailURL: String?
-    var tags: [String]? // <--- NEW: UI Model Tag
+    var tags: [String]? // Keeping UI name as 'tags' for consistency, mapped from 'hashtags'
     var mockTitle: String?
     var mockDescription: String?
     let createdAt: Date
@@ -28,10 +28,10 @@ nonisolated struct ScriptedIdeaDB: Codable, Sendable {
     let description: String?
     let script: String?
     let thumbnail: String?
-    let tags: [String]? // <--- NEW: DB Column 'tags'
+    let hashtags: [String]? // <--- UPDATED: Matches DB schema 'hashtags'
     let mock_title: String?
     let mock_description: String?
-    let created_at: Date
+    let created_at: Date?
 }
 
 // 3. The Insert Payload
@@ -41,7 +41,7 @@ nonisolated struct ScriptedIdeaInsertPayload: Encodable, Sendable {
     let description: String?
     let script: String?
     let thumbnail: String?
-    let tags: [String]? // <--- NEW
+    let hashtags: [String]? // <--- UPDATED
     let mock_title: String?
     let mock_description: String?
 }
@@ -52,12 +52,12 @@ nonisolated struct ScriptedIdeaUpdatePayload: Encodable, Sendable {
     let description: String?
     let script: String?
     let thumbnail: String?
-    let tags: [String]? // <--- NEW
+    let hashtags: [String]? // <--- UPDATED
     let mock_title: String?
     let mock_description: String?
     
     enum CodingKeys: String, CodingKey {
-        case title, description, script, thumbnail, tags, mock_title, mock_description // <--- Added tags here
+        case title, description, script, thumbnail, hashtags, mock_title, mock_description // <--- UPDATED
     }
     
     func encode(to encoder: Encoder) throws {
@@ -68,7 +68,7 @@ nonisolated struct ScriptedIdeaUpdatePayload: Encodable, Sendable {
         try container.encode(description, forKey: .description)
         try container.encode(script, forKey: .script)
         try container.encode(thumbnail, forKey: .thumbnail)
-        try container.encode(tags, forKey: .tags) // <--- Encode tags
+        try container.encode(hashtags, forKey: .hashtags) // <--- UPDATED
         try container.encode(mock_title, forKey: .mock_title)
         try container.encode(mock_description, forKey: .mock_description)
     }
