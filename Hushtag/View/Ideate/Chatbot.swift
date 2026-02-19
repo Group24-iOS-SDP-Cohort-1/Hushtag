@@ -117,13 +117,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
 
     @IBAction func scriptView(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
+        let storyboard = UIStoryboard(name: "ChatHistory", bundle: nil)
         guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
-        guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
-        destinationVC.pageTitle = "Chat History"
+        guard let destinationVC = navVC.topViewController as? ChatHistory else {return}
         self.navigationController?.pushViewController(destinationVC, animated: true)
-
-
     }
 
 
