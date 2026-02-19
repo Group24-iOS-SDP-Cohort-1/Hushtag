@@ -29,7 +29,8 @@ private extension UIView {
             glassView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
 
-        let glassEffect = UIGlassEffect()
+        // FIXED: Use standard UIBlurEffect instead of possibly missing 'UIGlassEffect'
+        let glassEffect = UIBlurEffect(style: .systemUltraThinMaterial)
         UIView.animate(withDuration: 0.25) {
             glassView.effect = glassEffect
         }
