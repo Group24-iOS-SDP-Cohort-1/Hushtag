@@ -23,7 +23,7 @@ func classifyIntent(_ text: String) async throws -> Intent {
     Respond with ONLY the category name.
     """
 
-    let response = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
+    let response = try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
     let result = response.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
 
     switch result {

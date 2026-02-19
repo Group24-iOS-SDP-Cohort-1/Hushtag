@@ -67,36 +67,29 @@ class IdeaDetailsCollectionViewCell: UICollectionViewCell {
     }
     
     func expandDescriptionWithAI() async {
-    
-            guard let idea = idea else { return }
-    
-            // Make sure AI is supported
-            guard AppleIntelligenceManager.shared.isAvailable else {
-                print("Apple Intelligence not available")
-                return
+
+        guard let idea = idea else { return }
+
+        let prompt = """
+        Expand this YouTube idea description into 4–5 engaging lines.
+        Keep it natural, simple, and readable.
+
+        Original:
+        "\(idea.description)"
+        """
+
+        do {
+            let expanded = try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
+
+            DispatchQueue.main.async {
+                self.animateDescriptionUpdate(expanded)
             }
-    
-            // Prompt for expansion
-            let prompt = """
-            Expand this YouTube idea description into 4-5 engaging lines.
-            Keep it natural, simple, and readable.
-            
-            Original:
-            "\(idea.description)"
-            """
-    
-            do {
-                let expanded = try await AppleIntelligenceManager.shared.ask(prompt: prompt)
-    
-                // Smooth UI update
-                DispatchQueue.main.async {
-                    self.animateDescriptionUpdate(expanded)
-                }
-    
-            } catch {
-                print("Expansion failed:", error.localizedDescription)
-            }
+
+        } catch {
+            print("Expansion failed:", error.localizedDescription)
         }
+    }
+
         
         func animateDescriptionUpdate(_ newText: String) {
     
