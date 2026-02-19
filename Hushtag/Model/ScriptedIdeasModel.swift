@@ -28,7 +28,7 @@ nonisolated struct ScriptedIdeaDB: Codable, Sendable {
     let description: String?
     let script: String?
     let thumbnail: String?
-    let tags: [String]? // <--- NEW: DB Column 'tags'
+    let hashtags: [String]? // <--- UPDATED: Matches DB schema 'hashtags'
     let mock_title: String?
     let mock_description: String?
 }
@@ -41,7 +41,7 @@ nonisolated struct ScriptedIdeaInsertPayload: Codable, Sendable {
     let description: String?
     let script: String?
     let thumbnail: String?
-    let tags: [String]? // <--- NEW
+    let hashtags: [String]? // <--- UPDATED
     let mock_title: String?
     let mock_description: String?
 }
