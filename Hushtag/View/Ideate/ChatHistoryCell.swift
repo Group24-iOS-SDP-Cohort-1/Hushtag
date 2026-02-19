@@ -23,8 +23,8 @@ class ChatHistoryCell: UITableViewCell {
 
     }
     
-    func configure(with message: ChatMessageDB) {
-        titleLabel.text = message.content
+    func configure(with message: Conversation) {
+        titleLabel.text = "Conversation 1"
         timeLabel.text = ""
     }
 

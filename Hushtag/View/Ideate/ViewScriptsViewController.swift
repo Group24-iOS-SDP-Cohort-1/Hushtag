@@ -55,20 +55,20 @@ class ViewScriptsViewController: UIViewController {
         scriptsCollectionView.setCollectionViewLayout(layout, animated: true)
         
         if pageTitle == "Chat History" {
-
-            Task {
-                do {
-                    let history = try await controller.fetchChatHistory()
-
-                    await MainActor.run {
-                        self.chatHistory = history
-                        self.scriptsCollectionView.reloadData()
-                    }
-
-                } catch {
-                    print("❌ Error fetching chat history: \(error)")
-                }
-            }
+//
+//            Task {
+//                do {
+//                    let history = try await controller.fetchChatHistory()
+//
+//                    await MainActor.run {
+//                        self.chatHistory = history
+//                        self.scriptsCollectionView.reloadData()
+//                    }
+//
+//                } catch {
+//                    print("❌ Error fetching chat history: \(error)")
+//                }
+          //  }
         } else {
             // 2. Load Liked Ideas (Existing Logic)
             //ideas = ideaResponse.ideas

@@ -44,7 +44,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     let lineHeight: CGFloat = 100
     let requiredMarkTypes = ["script", "title", "description", "thumbnail"]
     var didShowFinalReadyMessage = false
-    var conversationID: UUID!
+    var conversationID: UUID?
 
 
     override func viewDidLoad() {
@@ -73,16 +73,54 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     autoSendMessage = nil
                 }
         
-        conversationID = UUID()
-            print("🆕 Conversation started:", conversationID!)
+        // ✅ Only create new conversation if none exists
+        if conversationID == nil {
+
+            conversationID = UUID()
+            print("🆕 New Conversation started:", conversationID!)
+
+            Task {
+                do {
+                    _ = try await controller.addConversation(id: conversationID ?? UUID())
+                    print("✅ Conversation created")
+                } catch {
+                    print("❌ Failed to create conversation:", error)
+                }
+            }
+
+        } else {
+            print("📌 Opening existing conversation:", conversationID!)
+        }
+
         Task {
             do {
-                let convo = try await controller.addConversation(id: conversationID)
+                let convo = try await controller.addConversation(id: conversationID ?? UUID())
                 print("✅ Conversation inserted:", convo)
             } catch {
                 print("❌ Failed to insert conversation:", error)
             }
         }
+        
+        Task {
+            do {
+                let history = try await controller.fetchMessages(for: conversationID ?? UUID())
+
+                let mapped = history.map {
+                    Message(role: $0.role.rawValue,
+                            content: $0.content)
+                }
+
+                await MainActor.run {
+                    self.messages = mapped
+                    self.tableView.reloadData()
+                    self.scrollToBottom()
+                }
+
+            } catch {
+                print("❌ Failed loading conversation:", error)
+            }
+        }
+
 
         setupKeyboardObservers()
         setupTapToDismiss()
@@ -230,7 +268,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         Task {
                 do {
                     _ = try await self.controller.addChatMessage(
-                        id: conversationID,
+                        id: conversationID ?? UUID(),
                         sender: .user,
                         content: userText
                     )
@@ -301,7 +339,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     print("routing to gemini")
                     GeminiManager.shared.generateContent(
                         prompt: userText,
-                        conversationID: conversationID
+                        conversationID: conversationID ?? UUID()
                     ) { reply in
                         self.latestScript = reply
                         self.handleBotReply(reply, source: "gemini")
