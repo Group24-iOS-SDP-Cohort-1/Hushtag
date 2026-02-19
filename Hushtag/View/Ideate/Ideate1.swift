@@ -59,7 +59,7 @@ class Ideate1: UIViewController {
     private func fetchRecentScripts() {
         Task {
             do {
-                let allScripts = try await scriptsController.fetchScripts()
+                let allScripts = try await scriptsController.fetchScript()
                 // Take top 5
                 let top5 = Array(allScripts.prefix(5))
                 

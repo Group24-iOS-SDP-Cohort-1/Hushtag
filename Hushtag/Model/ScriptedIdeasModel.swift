@@ -1,10 +1,3 @@
-//
-//  ScriptedIdeas.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 03/02/26.
-//
-
 import Foundation
 
 // 1. The UI Model
@@ -28,7 +21,7 @@ nonisolated struct ScriptedIdeaDB: Codable, Sendable {
     let description: String?
     let script: String?
     let thumbnail: String?
-    let hashtags: [String]? // <--- UPDATED: Matches DB schema 'hashtags'
+    let tags: [String]? // <--- NEW: DB Column 'tags'
     let mock_title: String?
     let mock_description: String?
 }
@@ -41,7 +34,7 @@ nonisolated struct ScriptedIdeaInsertPayload: Codable, Sendable {
     let description: String?
     let script: String?
     let thumbnail: String?
-    let hashtags: [String]? // <--- UPDATED
+    let tags: [String]? // <--- NEW
     let mock_title: String?
     let mock_description: String?
 }

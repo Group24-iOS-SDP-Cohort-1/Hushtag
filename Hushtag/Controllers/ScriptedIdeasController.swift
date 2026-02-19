@@ -65,4 +65,10 @@ final class ScriptedIdeasController {
         
         return result
     }
+    
+    func fetchScript() async throws -> [ScriptedIdea] {
+        let chats: [ScriptedIdea] = try await client.database.from("scripted_ideas").select().execute().value
+        
+        return chats
+    }
 }
