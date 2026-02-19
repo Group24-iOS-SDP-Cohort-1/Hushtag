@@ -34,7 +34,6 @@ class ChatCell: UITableViewCell {
         }else{
             chatLabel.attributedText = message.content.toStyledScript()
         }
-        chatLabel.text = message.content
         
 
         if message.mark != nil {

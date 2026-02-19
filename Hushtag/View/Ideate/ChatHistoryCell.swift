@@ -9,7 +9,7 @@ import UIKit
 
 class ChatHistoryCell: UITableViewCell {
 
-    
+    let controller = ScriptedIdeasController()
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
     
@@ -23,9 +23,39 @@ class ChatHistoryCell: UITableViewCell {
 
     }
     
-    func configure(with message: Conversation) {
-        titleLabel.text = "Conversation 1"
-        timeLabel.text = ""
+    func configure(with conversation: Conversation) {
+
+        titleLabel.text = "Loading..."
+        timeLabel.text = conversation.created_at?.timeOnly()
+
+        Task {
+            do {
+                // 1. Fetch messages for this conversation
+                let msgs = try await controller.fetchMessages(for: conversation.id)
+
+                guard !msgs.isEmpty else {
+                    await MainActor.run {
+                        self.titleLabel.text = "Empty Chat"
+                    }
+                    return
+                }
+
+                // 2. Generate AI title from messages
+                let aiTitle = try await controller.generateConversationTitleWithApple(
+                    messages: msgs
+                )
+
+                // 3. Update UI
+                await MainActor.run {
+                    self.titleLabel.text = aiTitle
+                }
+
+            } catch {
+                await MainActor.run {
+                    self.titleLabel.text = "Conversation"
+                }
+            }
+        }
     }
 
 }

@@ -129,5 +129,26 @@ final class ScriptedIdeasController {
 
         return result
     }
+    
+    func generateConversationTitleWithApple(
+        messages: [ChatMessageDB]
+    ) async throws -> String {
 
+        // Take only first 3 messages for context
+        let context = messages.prefix(3).map {
+            "\($0.role.rawValue): \($0.content)"
+        }.joined(separator: "\n")
+
+        let prompt = """
+        You are naming a chat conversation.
+
+        Conversation context:
+        \(context)
+
+        Task:
+        Generate ONE short catchy title (max 6 words).
+        """
+
+        return try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
+    }
 }
