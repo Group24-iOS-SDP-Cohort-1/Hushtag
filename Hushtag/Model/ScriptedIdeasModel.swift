@@ -67,11 +67,12 @@ nonisolated struct ScriptedIdeaInsertPayload: Codable, Sendable {
 //    }
 //}
 
-nonisolated struct ChatMessageDB: Codable {
+nonisolated struct ChatMessageDB: Codable, Identifiable {
     let id: UUID
+    let conversation_id: UUID
     let role: Role
     let content: String
-    let created_at: Date
+    let created_at: Date?
 }
 
 // 2. Insert Payload (Writing data)
@@ -97,6 +98,12 @@ nonisolated struct GeminiResponse: Codable {
 }
 
 nonisolated struct Conversation: Codable {
+    let id: UUID
+    let user_id: UUID
+    let created_at: Date?
+}
+
+nonisolated struct ConversationInsertPayload: Codable {
     let id: UUID
     let user_id: UUID
 }

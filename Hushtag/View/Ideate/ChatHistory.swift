@@ -3,29 +3,30 @@ import UIKit
 class ChatHistory: UITableViewController {
 
     let controller = ScriptedIdeasController()
-    var chatMessages: [ChatMessageDB] = []
+    var conversations: [Conversation] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        fetchHistory()
+        fetchConversationList()
     }
 
-    func fetchHistory() {
+    func fetchConversationList() {
         Task {
             do {
-                let history = try await controller.fetchChatHistory()
+                let result = try await controller.fetchConversations()
 
                 await MainActor.run {
-                    self.chatMessages = history
+                    self.conversations = result
                     self.tableView.reloadData()
                 }
 
             } catch {
-                print("❌ Error fetching chat history:", error)
+                print("❌ Failed to fetch conversations:", error)
             }
         }
     }
+
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -33,7 +34,7 @@ class ChatHistory: UITableViewController {
 
     override func tableView(_ tableView: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
-        return chatMessages.count
+        return conversations.count
     }
 
     override func tableView(_ tableView: UITableView,
@@ -46,10 +47,27 @@ class ChatHistory: UITableViewController {
             return UITableViewCell()
         }
 
-        let msg = chatMessages[indexPath.row]
+        let msg = conversations[indexPath.row]
 
         cell.configure(with: msg)
 
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView,
+                            didSelectRowAt indexPath: IndexPath) {
+
+        let convo = conversations[indexPath.row]
+
+        let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
+
+        guard let vc = storyboard.instantiateViewController(
+            withIdentifier: "Chatbot"
+        ) as? Chatbot else { return }
+
+        vc.conversationID = convo.id   // ✅ Pass selected conversation
+
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
 }

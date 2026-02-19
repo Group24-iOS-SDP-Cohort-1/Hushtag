@@ -25,8 +25,10 @@ final class ScriptedIdeasController {
         }
     
     func addConversation(id: UUID) async throws -> Conversation {
+
         let session = try await client.auth.session
-        let payload = Conversation(
+
+        let payload = ConversationInsertPayload(
             id: id,
             user_id: session.user.id
         )
@@ -41,7 +43,6 @@ final class ScriptedIdeasController {
 
         return result
     }
-
     
     func getBotMessage() async throws -> ChatMessageDB {
         let chats: ChatMessageDB = try await client.database.from("chat_history").select().eq("role", value: "bot").execute().value
@@ -49,11 +50,21 @@ final class ScriptedIdeasController {
         return chats
     }
     
-    func fetchChatHistory() async throws -> [ChatMessageDB] {
-        let chats: [ChatMessageDB] = try await client.database.from("chat_history").select().execute().value
-        
-        return chats
+    func fetchConversations() async throws -> [Conversation] {
+
+        let session = try await client.auth.session
+
+        let result: [Conversation] = try await client.database
+            .from("conversations")
+            .select()
+            .eq("user_id", value: session.user.id.uuidString)
+            .order("created_at", ascending: false)
+            .execute()
+            .value
+
+        return result
     }
+
     
     func updateScript() {
         
@@ -90,4 +101,17 @@ final class ScriptedIdeasController {
         
         return chats
     }
+    func fetchMessages(for conversationID: UUID) async throws -> [ChatMessageDB] {
+
+        let result: [ChatMessageDB] = try await client.database
+            .from("chat_history")
+            .select()
+            .eq("conversation_id", value: conversationID.uuidString)
+            .order("created_at", ascending: true)
+            .execute()
+            .value
+
+        return result
+    }
+
 }
