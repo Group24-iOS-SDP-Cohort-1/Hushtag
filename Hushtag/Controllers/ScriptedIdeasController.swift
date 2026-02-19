@@ -52,17 +52,33 @@ final class ScriptedIdeasController {
     
     func fetchConversations() async throws -> [Conversation] {
 
+//        let session = try await client.auth.session
+//
+//        let result: [Conversation] = try await client.database
+//            .from("conversations")
+//            .select()
+//            .eq("user_id", value: session.user.id.uuidString)
+//            .order("created_at", ascending: false)
+//            .execute()
+//            .value
+//
+//        return result
         let session = try await client.auth.session
 
-        let result: [Conversation] = try await client.database
-            .from("conversations")
-            .select()
-            .eq("user_id", value: session.user.id.uuidString)
-            .order("created_at", ascending: false)
-            .execute()
-            .value
+            let result: [Conversation] = try await client.database
+                .from("conversations")
+                .select("""
+                    id,
+                    user_id,
+                    created_at,
+                    chat_history!inner(conversation_id)
+                """)
+                .eq("user_id", value: session.user.id.uuidString)
+                .order("created_at", ascending: false)
+                .execute()
+                .value
 
-        return result
+            return result
     }
 
     
