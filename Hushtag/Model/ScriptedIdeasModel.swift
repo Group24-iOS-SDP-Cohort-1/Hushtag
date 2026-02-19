@@ -34,7 +34,7 @@ nonisolated struct ScriptedIdeaInsertPayload: Codable, Sendable {
     let description: String?
     let script: String?
     let thumbnail: String?
-    let tags: [String]? // <--- NEW
+    let hashtags: [String]? // <--- NEW
     let mock_title: String?
     let mock_description: String?
 }
@@ -66,3 +66,50 @@ nonisolated struct ScriptedIdeaInsertPayload: Codable, Sendable {
 //        try container.encode(mock_description, forKey: .mock_description)
 //    }
 //}
+
+nonisolated struct ChatMessageDB: Codable {
+    let id: UUID
+    let role: Role
+    let content: String
+    let created_at: Date
+}
+
+// 2. Insert Payload (Writing data)
+nonisolated struct ChatMessageInsertPayload: Codable {
+    let conversation_id: UUID
+    let role: Role
+    let content: String
+}
+
+nonisolated struct Message: Codable {
+    let role: String
+    let content: String
+    var mark: String?
+}
+struct GeminiEdgeResponse: Decodable {
+    let conversation_id: String
+    let message: GeminiResponse
+}
+
+nonisolated struct GeminiResponse: Codable {
+    let role: String
+    let content: String
+}
+
+nonisolated struct Conversation: Codable {
+    let id: UUID
+    let user_id: UUID
+}
+
+enum Role: String, Codable {
+    case bot
+    case user
+    case system
+    var desciption: String {
+        switch self {
+        case .bot: return "bot"
+        case .user: return "user"
+        case .system: return "system"
+        }
+    }
+}

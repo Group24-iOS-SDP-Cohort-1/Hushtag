@@ -5,11 +5,12 @@ final class ScriptedIdeasController {
     
     private let client = SupabaseConfig.client
     
-    func addChatMessage(sender: Role, content: String) async throws -> ChatMessageDB {
+    func addChatMessage(id: UUID, sender: Role, content: String) async throws -> ChatMessageDB {
 
             let payload = ChatMessageInsertPayload(
+                conversation_id: id,
                 role: sender,
-                message: content
+                content: content
             )
 
             let result: ChatMessageDB = try await client.database
@@ -22,6 +23,24 @@ final class ScriptedIdeasController {
 
             return result
         }
+    
+    func addConversation(id: UUID) async throws -> Conversation {
+        let session = try await client.auth.session
+        let payload = Conversation(
+            id: id,
+            user_id: session.user.id
+        )
+
+        let result: Conversation = try await client.database
+            .from("conversations")
+            .insert(payload)
+            .select()
+            .single()
+            .execute()
+            .value
+
+        return result
+    }
 
     
     func getBotMessage() async throws -> ChatMessageDB {
@@ -50,7 +69,7 @@ final class ScriptedIdeasController {
             description: script.description,
             script: script.script,
             thumbnail: script.thumbnailURL,
-            tags: script.tags,
+            hashtags: script.tags,
             mock_title: script.mockTitle,
             mock_description: script.mockDescription
         )

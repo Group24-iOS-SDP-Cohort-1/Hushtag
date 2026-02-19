@@ -18,8 +18,10 @@ class ViewScriptsViewController: UIViewController {
     var isSearchMode = false
     var likedIdeas: [Idea] = []
     var myScripts: [ScriptedIdea] = []
+    var chatHistory: [ChatMessageDB] = []
+
     
-    private let scriptsController = ScriptedIdeasController()
+    let controller = ScriptedIdeasController()
     
     // Search related properties
     private let searchController = UISearchController(searchResultsController: nil)
@@ -52,9 +54,21 @@ class ViewScriptsViewController: UIViewController {
         let layout = generateScriptsLayout(title: pageTitle)
         scriptsCollectionView.setCollectionViewLayout(layout, animated: true)
         
-        if pageTitle == "Your Scripts" {
-            // 1. Fetch from Supabase
-            //fetchMyScripts()
+        if pageTitle == "Chat History" {
+
+            Task {
+                do {
+                    let history = try await controller.fetchChatHistory()
+
+                    await MainActor.run {
+                        self.chatHistory = history
+                        self.scriptsCollectionView.reloadData()
+                    }
+
+                } catch {
+                    print("❌ Error fetching chat history: \(error)")
+                }
+            }
         } else {
             // 2. Load Liked Ideas (Existing Logic)
             //ideas = ideaResponse.ideas
@@ -162,7 +176,7 @@ class ViewScriptsViewController: UIViewController {
     private func updateEmptyState() {
         
         // Separate Empty State logic for "Your Scripts"
-        if pageTitle == "Your Scripts" {
+        if pageTitle == "Chat History" {
             if myScripts.isEmpty {
                 showEmptyView(message: "No scripts yet", iconName: "doc.text")
                 scriptsCollectionView.backgroundView?.isHidden = false
@@ -217,7 +231,7 @@ class ViewScriptsViewController: UIViewController {
 extension ViewScriptsViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if pageTitle == "Your Scripts" {
+        if pageTitle == "Chat History" {
             // If searching, use filtered list. Else, use full list.
             return isFiltering ? filteredMyScripts.count : myScripts.count
         } else {
@@ -227,7 +241,7 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        if pageTitle == "Your Scripts" {
+        if pageTitle == "Chat History" {
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "scriptedIdeas",
                 for: indexPath
@@ -270,7 +284,7 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
 }
 
 func generateScriptsLayout(title: String) -> UICollectionViewLayout{
-    if title == "Your Scripts"{
+    if title == "Chat History"{
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .fractionalHeight(1.0)
@@ -296,7 +310,7 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
         
         let layout = UICollectionViewCompositionalLayout(section: section)
         
-        print("Your Scripts")
+        print("Chat History")
         
         return layout
     }
@@ -336,7 +350,7 @@ extension ViewScriptsViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        if pageTitle == "Your Scripts" {
+        if pageTitle == "Chat History" {
             
             // Get the correct script based on search state
             let script: ScriptedIdea
@@ -468,10 +482,10 @@ extension ViewScriptsViewController: UISearchResultsUpdating {
         
         // Update empty state based on search results if searching
         if isFiltering {
-            if pageTitle == "Your Scripts" && filteredMyScripts.isEmpty {
+            if pageTitle == "Chat History" && filteredMyScripts.isEmpty {
                 showEmptyView(message: "No results found", iconName: "magnifyingglass")
                 scriptsCollectionView.backgroundView?.isHidden = false
-            } else if pageTitle != "Your Scripts" && filteredLikedIdeas.isEmpty {
+            } else if pageTitle != "Chat History" && filteredLikedIdeas.isEmpty {
                 showEmptyView(message: "No results found", iconName: "magnifyingglass")
                 scriptsCollectionView.backgroundView?.isHidden = false
             } else {

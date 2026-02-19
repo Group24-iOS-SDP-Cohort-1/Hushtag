@@ -34,14 +34,14 @@ class ChatCell: UITableViewCell {
         }else{
             chatLabel.attributedText = message.content.toStyledScript()
         }
-        //chatLabel.text = message.text
+        chatLabel.text = message.content
         
 
-//        if message.markType != nil {
-//            starImage.isHidden = false
-//               } else {
-//                   starImage.isHidden = true
-//               }
+        if message.mark != nil {
+            starImage.isHidden = false
+               } else {
+                   starImage.isHidden = true
+               }
 
         if message.role == "user" {
             chatView.backgroundColor = UIColor.accent

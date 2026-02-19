@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Scripting-->
+        <!--AI Assistant-->
         <scene sceneID="s0d-6b-0kx">
             <objects>
                 <viewController storyboardIdentifier="Chatbot" id="Y6W-OH-hqX" customClass="Chatbot" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
@@ -156,8 +156,8 @@
                             <constraint firstItem="c7U-vD-YmN" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leadingMargin" id="ucu-8c-3x9"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Scripting" largeTitleDisplayMode="never" id="iNc-XK-pMm">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="pencil.and.scribble" catalog="system" id="cl6-nn-yxF">
+                    <navigationItem key="navigationItem" title="AI Assistant" largeTitleDisplayMode="never" id="iNc-XK-pMm">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="message.badge" catalog="system" id="cl6-nn-yxF">
                             <color key="tintColor" name="AccentColor"/>
                             <connections>
                                 <action selector="scriptView:" destination="Y6W-OH-hqX" id="16B-ca-pzW"/>
@@ -201,7 +201,7 @@
     </scenes>
     <resources>
         <image name="arrow.up.circle.fill" catalog="system" width="128" height="123"/>
-        <image name="pencil.and.scribble" catalog="system" width="128" height="86"/>
+        <image name="message.badge" catalog="system" width="128" height="112"/>
         <image name="star.fill" catalog="system" width="128" height="116"/>
         <namedColor name="AccentColor">
             <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
