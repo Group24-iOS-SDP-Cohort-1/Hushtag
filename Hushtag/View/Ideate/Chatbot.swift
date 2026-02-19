@@ -308,34 +308,39 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     }
 
                 case .generateTitle:
-                    print("routing to apple")
-                    guard let script = self.latestScript else {
-                        self.handleBotReply("Please generate a script first.", source: "system")
-                        return
-                    }
+                    print("🍎 routing to apple (title)")
 
-                    if #available(iOS 18.0, *) {
-                        let reply = try await generateTitleWithApple(script: script)
-                        self.handleBotReply(reply, source: "apple")
-                    }
+                    let reply = try await generateTitleWithApple(
+                        script: self.latestScript,
+                        userPrompt: userText
+                    )
+
+                    self.handleBotReply(reply, source: "apple")
+
 
                 case .generateDescription:
-                    print("routing to apple")
-                    guard let script = self.latestScript else {
-                        self.handleBotReply("Please generate a script first.", source: "system")
-                        return
-                    }
+                    print("🍎 routing to apple (description)")
 
-                    if #available(iOS 18.0, *) {
-                        let reply = try await generateDescriptionWithApple(script: script)
-                        self.handleBotReply(reply, source: "apple")
-                    }
+                    let reply = try await generateDescriptionWithApple(
+                        script: self.latestScript,
+                        userPrompt: userText
+                    )
+
+                    self.handleBotReply(reply, source: "apple")
+
 
                 case .chat:
-                    if #available(iOS 18.0, *) {
-                        let reply = try await AppleIntelligenceManager.shared.ask(prompt: userText)
-                        self.handleBotReply(reply, source: "apple")
-                    }
+                    let prompt = """
+                    You are a friendly, casual AI assistant.
+                    You are allowed to chat freely, respond naturally, and talk about everyday topics.
+
+                    User message:
+                    \(userText)
+                    """
+
+                    let reply = try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
+                    self.handleBotReply(reply, source: "apple")
+
                 }
 
             } catch {
@@ -350,6 +355,25 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     
     func handleBotReply(_ replyText: String?, source: String) {
+
+
+        if let replyText {
+            Task {
+                do {
+                    _ = try await controller.addChatMessage(
+                        id: conversationID!,
+                        sender: .bot,
+                        content: replyText
+                    )
+                    print("✅ Bot message saved")
+                } catch {
+                    print("❌ Failed to save bot message:", error)
+                }
+            }
+        }
+
+
+        // 🔹 UI updates on main thread (unchanged)
         DispatchQueue.main.async {
 
             // Remove "Thinking..."
@@ -374,6 +398,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             self.scrollToBottom()
         }
     }
+
 
     @IBAction func sendButton(_ sender: Any) {
         let text = textFieldView.text.trimmingCharacters(in: .whitespacesAndNewlines)
