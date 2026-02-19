@@ -18,15 +18,27 @@ final class AppleIntelligenceManager {
         }
 
         // 2️⃣ Model availability check
-        guard SystemLanguageModel.default.availability == .available else {
-            throw AIError.unavailable
+        if #available(iOS 26.0, *) {
+            guard SystemLanguageModel.default.availability == .available else {
+                throw AIError.unavailable
+            }
+        } else {
+            // Fallback on earlier versions
         }
 
         // 3️⃣ Create session and ask
-        let session = LanguageModelSession()
-        let response = try await session.respond(to: prompt)
+        guard #available(iOS 26.0, *) else {
+                throw NSError(
+                    domain: "AppleIntelligence",
+                    code: 1,
+                    userInfo: [NSLocalizedDescriptionKey: "Apple Intelligence requires iOS 26+"]
+                )
+            }
 
-        return response.content
+            let session = LanguageModelSession()
+            let response = try await session.respond(to: prompt)
+
+            return response.content
     }
 
     enum AIError: Error, LocalizedError {
