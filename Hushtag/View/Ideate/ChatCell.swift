@@ -29,21 +29,21 @@ class ChatCell: UITableViewCell {
         
         chatLabel.numberOfLines = 0
         
-        if message.isUser{
-            chatLabel.text = message.text
+        if message.role == "user" {
+            chatLabel.text = message.content
         }else{
-            chatLabel.attributedText = message.text.toStyledScript()
+            chatLabel.attributedText = message.content.toStyledScript()
         }
         //chatLabel.text = message.text
         
 
-        if message.markType != nil {
-            starImage.isHidden = false
-               } else {
-                   starImage.isHidden = true
-               }
+//        if message.markType != nil {
+//            starImage.isHidden = false
+//               } else {
+//                   starImage.isHidden = true
+//               }
 
-        if message.isUser {
+        if message.role == "user" {
             chatView.backgroundColor = UIColor.accent
             chatLabel.textColor = .white
             leftSpacer.isHidden = false

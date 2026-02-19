@@ -54,7 +54,7 @@ class ViewScriptsViewController: UIViewController {
         
         if pageTitle == "Your Scripts" {
             // 1. Fetch from Supabase
-            fetchMyScripts()
+            //fetchMyScripts()
         } else {
             // 2. Load Liked Ideas (Existing Logic)
             //ideas = ideaResponse.ideas
@@ -70,7 +70,7 @@ class ViewScriptsViewController: UIViewController {
         
         // Refresh the list every time the view appears
         if pageTitle == "Your Scripts" {
-            fetchMyScripts()
+            //fetchMyScripts()
         }
     }
     
@@ -108,31 +108,31 @@ class ViewScriptsViewController: UIViewController {
     }
     
     
-    func fetchMyScripts() {
-        Task {
-            do {
-                // 1. Fetch fresh data from Supabase (Item is gone here)
-                let scripts = try await scriptsController.fetchScripts()
-                
-                await MainActor.run {
-                    // 2. Update the main source of truth
-                    self.myScripts = scripts
-                    
-                    // 3. FIX: If we are searching, re-filter the new list immediately.
-                    // This removes the "ghost" item from the search results.
-                    if self.isFiltering {
-                        self.filterContentForSearchText(self.searchController.searchBar.text ?? "")
-                    } else {
-                        // Otherwise, just reload normally
-                        self.scriptsCollectionView.reloadData()
-                        self.updateEmptyState()
-                    }
-                }
-            } catch {
-                print("Error fetching scripts: \(error)")
-            }
-        }
-    }
+//    func fetchMyScripts() {
+//        Task {
+//            do {
+//                // 1. Fetch fresh data from Supabase (Item is gone here)
+//                let scripts = try await scriptsController.fetchScripts()
+//                
+//                await MainActor.run {
+//                    // 2. Update the main source of truth
+//                    self.myScripts = scripts
+//                    
+//                    // 3. FIX: If we are searching, re-filter the new list immediately.
+//                    // This removes the "ghost" item from the search results.
+//                    if self.isFiltering {
+//                        self.filterContentForSearchText(self.searchController.searchBar.text ?? "")
+//                    } else {
+//                        // Otherwise, just reload normally
+//                        self.scriptsCollectionView.reloadData()
+//                        self.updateEmptyState()
+//                    }
+//                }
+//            } catch {
+//                print("Error fetching scripts: \(error)")
+//            }
+//        }
+//    }
     
     
 //    @objc func syncLikedIdeas() {

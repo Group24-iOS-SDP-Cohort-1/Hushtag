@@ -135,12 +135,6 @@ struct TimePayload: Codable {
     let minute: Int
 }
 
-struct Message {
-    let text: String
-    let isUser: Bool
-    var markType: String? = nil
-}
-
 enum PlatformType:String{
     case youtube,instagram,facebook
 }
