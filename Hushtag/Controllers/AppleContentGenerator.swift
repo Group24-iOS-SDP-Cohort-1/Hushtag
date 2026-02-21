@@ -27,7 +27,7 @@ func generateTitleWithApple(
     "\(userPrompt)"
 
     Task:
-    Generate 5 catchy, Gen-Z friendly titles with emojis.
+    Generate a youtube catchy, Gen-Z friendly title with no emojis and no quotes.
     """
 
     return try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
@@ -52,7 +52,7 @@ func generateDescriptionWithApple(
     }
 
     let prompt = """
-    You are writing an Instagram caption.
+    You are writing a Youtube caption.
 
     \(contextBlock)
 

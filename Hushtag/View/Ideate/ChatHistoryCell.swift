@@ -25,37 +25,9 @@ class ChatHistoryCell: UITableViewCell {
     
     func configure(with conversation: Conversation) {
         
-        titleLabel.text = "Loading..."
+        titleLabel.text = conversation.title
         timeLabel.text = conversation.created_at?.timeOnly()
         
-        Task {
-            do {
-                // 1. Fetch messages for this conversation
-                let msgs = try await controller.fetchMessages(for: conversation.id)
-                
-                guard !msgs.isEmpty else {
-                    await MainActor.run {
-                        self.titleLabel.text = "Empty Chat"
-                    }
-                    return
-                }
-                
-                // 2. Generate AI title from messages
-                let aiTitle = try await controller.generateConversationTitleWithApple(
-                    messages: msgs
-                )
-                
-                // 3. Update UI
-                await MainActor.run {
-                    self.titleLabel.text = aiTitle
-                }
-                
-            } catch {
-                await MainActor.run {
-                    self.titleLabel.text = "Conversation"
-                }
-            }
-        }
     }
     
 }

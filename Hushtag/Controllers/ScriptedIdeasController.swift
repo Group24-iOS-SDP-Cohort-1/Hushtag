@@ -70,6 +70,7 @@ final class ScriptedIdeasController {
                 .select("""
                     id,
                     user_id,
+                    title,
                     created_at,
                     chat_history!inner(conversation_id)
                 """)
@@ -134,22 +135,104 @@ final class ScriptedIdeasController {
         messages: [ChatMessageDB]
     ) async throws -> String {
 
-        // Take only first 3 messages for context
-        let context = messages.prefix(3).map {
-            "\($0.role.rawValue): \($0.content)"
-        }.joined(separator: "\n")
+        guard !messages.isEmpty else {
+            return "New Chat"
+        }
+
+        let context = messages
+            .prefix(4)
+            .map { "\($0.role.rawValue): \($0.content)" }
+            .joined(separator: "\n")
 
         let prompt = """
         You are naming a chat conversation.
 
-        Conversation context:
+        Conversation:
         \(context)
 
-        Task:
-        Generate ONE short catchy title (max 6 words).
+        Rules:
+        - Maximum 6 words
+        - No quotes
+        - No emojis
+        - No punctuation at the end
+        - Title case
+        - Return ONLY the title text
+
+        Output:
         """
 
-        return try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
+        let rawTitle = try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
+
+        return cleanTitle(rawTitle)
+    }
+    
+    private func cleanTitle(_ text: String) -> String {
+
+        var title = text
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: "\"", with: "")
+            .replacingOccurrences(of: "\n", with: "")
+        
+        // Limit to 6 words max
+        let words = title.split(separator: " ")
+        if words.count > 6 {
+            title = words.prefix(6).joined(separator: " ")
+        }
+
+        if title.isEmpty {
+            return "New Chat"
+        }
+
+        return title
+    }
+    
+    func updateConversationTitle(
+        conversationID: UUID,
+        title: String
+    ) async throws {
+        
+        try await client.database
+            .from("conversations")
+            .update(["title": title])
+            .eq("id", value: conversationID.uuidString)
+            .execute()
+    }
+    
+    func generateAndStoreTitleIfNeeded(conversationID: UUID) async throws {
+        
+        // 1️⃣ Fetch conversation
+        let conversations: [Conversation] = try await client.database
+            .from("conversations")
+            .select("id, user_id, title, created_at")
+            .eq("id", value: conversationID)
+            .execute()
+            .value
+        
+        guard let conversation = conversations.first else { return }
+        
+        // 2️⃣ Prevent regenerating
+        if let title = conversation.title,
+           !title.isEmpty,
+           title != "New Chat" {
+            return
+        }
+        
+        // 3️⃣ Fetch messages
+        let messages = try await fetchMessages(for: conversationID)
+        
+        // 4️⃣ Wait until meaningful context exists
+        guard messages.count >= 3 else { return }
+        
+        // 5️⃣ Generate title
+        let generatedTitle = try await generateConversationTitleWithApple(
+            messages: messages
+        )
+        
+        // 6️⃣ Update DB
+        try await updateConversationTitle(
+            conversationID: conversationID,
+            title: generatedTitle
+        )
     }
     
     func upsertScriptField(
@@ -177,4 +260,5 @@ final class ScriptedIdeasController {
                 .upsert(payload, onConflict: "chat_id")
                 .execute()
         }
+    
 }

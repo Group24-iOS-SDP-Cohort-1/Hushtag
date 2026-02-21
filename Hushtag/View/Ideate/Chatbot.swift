@@ -404,6 +404,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                         content: replyText
                     )
                     print("✅ Bot message saved")
+                    
+                    try await controller.generateAndStoreTitleIfNeeded(
+                        conversationID: conversationID!
+                    )
                 } catch {
                     print("❌ Failed to save bot message:", error)
                 }
