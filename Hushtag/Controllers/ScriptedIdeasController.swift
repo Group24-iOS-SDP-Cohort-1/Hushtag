@@ -151,4 +151,30 @@ final class ScriptedIdeasController {
 
         return try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
     }
+    
+    func upsertScriptField(
+            chatID: UUID,
+            field: String,
+            value: String
+        ) async throws {
+
+            let session = try await client.auth.session
+
+            let payload = ScriptedIdeaInsertPayload(
+                user_id: session.user.id,
+                chat_id: chatID,
+                title: field == "title" ? value : nil,
+                description: field == "description" ? value : nil,
+                script: field == "script" ? value : nil,
+                thumbnail: field == "thumbnail" ? value : nil,
+                hashtags: nil,
+                mock_title: nil,
+                mock_description: nil
+            )
+
+            try await client.database
+                .from("scripted_ideas")
+                .upsert(payload, onConflict: "chat_id")
+                .execute()
+        }
 }

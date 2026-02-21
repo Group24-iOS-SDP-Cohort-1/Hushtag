@@ -21,7 +21,7 @@ nonisolated struct ScriptedIdeaDB: Codable, Sendable {
     let description: String?
     let script: String?
     let thumbnail: String?
-    let tags: [String]? // <--- NEW: DB Column 'tags'
+    let tags: [String]?
     let mock_title: String?
     let mock_description: String?
 }
@@ -34,38 +34,10 @@ nonisolated struct ScriptedIdeaInsertPayload: Codable, Sendable {
     let description: String?
     let script: String?
     let thumbnail: String?
-    let hashtags: [String]? // <--- NEW
+    let hashtags: [String]? 
     let mock_title: String?
     let mock_description: String?
 }
-
-// 4. The Update Payload
-//nonisolated struct ScriptedIdeaUpdatePayload: Encodable, Sendable {
-//    let title: String?
-//    let description: String?
-//    let script: String?
-//    let thumbnail: String?
-//    let tags: [String]? // <--- NEW
-//    let mock_title: String?
-//    let mock_description: String?
-//
-//    enum CodingKeys: String, CodingKey {
-//        case title, description, script, thumbnail, tags, mock_title, mock_description // <--- Added tags here
-//    }
-//
-//    func encode(to encoder: Encoder) throws {
-//        var container = encoder.container(keyedBy: CodingKeys.self)
-//
-//        // .encode(...) will write 'null' into the JSON if the value is nil
-//        try container.encode(title, forKey: .title)
-//        try container.encode(description, forKey: .description)
-//        try container.encode(script, forKey: .script)
-//        try container.encode(thumbnail, forKey: .thumbnail)
-//        try container.encode(tags, forKey: .tags) // <--- Encode tags
-//        try container.encode(mock_title, forKey: .mock_title)
-//        try container.encode(mock_description, forKey: .mock_description)
-//    }
-//}
 
 nonisolated struct ChatMessageDB: Codable, Identifiable {
     let id: UUID

@@ -8,16 +8,14 @@ final class AppleIntelligenceManager {
     static let shared = AppleIntelligenceManager()
     private init() {}
 
-    /// Safe entry point for asking Apple Intelligence.
-    /// Callers never check availability or iOS version.
     func askSafely(prompt: String) async throws -> String {
 
-        // 1️⃣ Platform availability check
+        // Platform availability check
         guard #available(iOS 18.0, *) else {
             throw AIError.unavailable
         }
 
-        // 2️⃣ Model availability check
+        // Model availability check
         if #available(iOS 26.0, *) {
             guard SystemLanguageModel.default.availability == .available else {
                 throw AIError.unavailable
@@ -26,7 +24,7 @@ final class AppleIntelligenceManager {
             // Fallback on earlier versions
         }
 
-        // 3️⃣ Create session and ask
+        // Create session and ask
         guard #available(iOS 26.0, *) else {
                 throw NSError(
                     domain: "AppleIntelligence",
