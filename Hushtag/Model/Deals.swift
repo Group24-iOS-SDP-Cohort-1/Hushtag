@@ -6,11 +6,16 @@ struct Deal: Identifiable, Sendable {
     let payment: Double
     let mobileNumber: Int64
     let email: String
+    let deadline: Date
     let platform: [Platform]
     var deliverables: [Deliverable]
     let reminder: [Date]?
+    var isManuallyCompleted: Bool = false
+    
     var isCompleted: Bool {
-        guard !deliverables.isEmpty else { return false }
+        if deliverables.isEmpty {
+            return isManuallyCompleted
+        }
         return deliverables.allSatisfy { $0.isCompleted }
     }
 }
@@ -43,7 +48,7 @@ nonisolated struct DeliverableDB: Codable, Sendable {
     let isCompleted: Bool
 }
 
-nonisolated struct DealInsertPayload: Encodable, Sendable {
+nonisolated struct DealInsertPayload: Encodable, Sendable{
     let user_id: UUID
     let name: String
     let payment: Double
@@ -52,4 +57,5 @@ nonisolated struct DealInsertPayload: Encodable, Sendable {
     let deadline: Date
     let reminder: [Date]?
     let platform: [String]
+    let isCompleted: Bool
 }

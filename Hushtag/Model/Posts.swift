@@ -89,10 +89,20 @@ enum ScheduleItem: Identifiable, Sendable {
     }
 }
 
-enum Platform: String, Codable {
+enum Platform: String, Codable , CaseIterable {
     case instagram
     case youtube
     case x
     case pinterest
     case others
+    
+    var description : String {
+        switch self {
+        case .instagram: return "Instagram"
+        case .youtube: return "YouTube"
+        case .x: return "X"
+        case .pinterest: return "Pinterest"
+        case .others: return "Others"
+        }
+    }
 }

@@ -225,6 +225,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             payment: paymentValue,
             mobileNumber: Int64(phone) ?? 0,
             email: email,
+            deadline: deadlineDate ?? Date(),
             platform: platforms,
             deliverables: deliverables,
             reminder: reminderDate != nil ? [reminderDate!] : nil
@@ -308,19 +309,49 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             toolbar.setItems([doneButton], animated: true)
 
             switch placeholder {
+            case "Platform":
+                let button = UIButton(type: .system)
+                button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+                
+                let actions = Platform.allCases.map { platform in
+                    UIAction(title: platform.rawValue.capitalized) { _ in
+                        cell.textField.text = platform.rawValue.capitalized
+                    }
+                }
+                
+                let menu = UIMenu(children: actions)
+                button.menu = menu
+                button.showsMenuAsPrimaryAction = true
+                
+                cell.textField.rightView = button
+                cell.textField.rightViewMode = .always
+                // cell.textField.isEnabled = false // Optional: prevent typing if strict selection needed
+                
             case "Payment":
+                cell.textField.rightView = nil
+                cell.textField.rightViewMode = .never
                 cell.textField.keyboardType = .decimalPad
             case "Phone number":
+                cell.textField.rightView = nil
+                cell.textField.rightViewMode = .never
                 cell.textField.keyboardType = .phonePad
             case "Email":
+                cell.textField.rightView = nil
+                cell.textField.rightViewMode = .never
                 cell.textField.keyboardType = .emailAddress
             case "Deadline":
+                cell.textField.rightView = nil
+                cell.textField.rightViewMode = .never
                 cell.textField.inputView = deadlinePicker
                 cell.textField.inputAccessoryView = toolbar
             case "Reminder":
+                cell.textField.rightView = nil
+                cell.textField.rightViewMode = .never
                 cell.textField.inputView = reminderPicker
                 cell.textField.inputAccessoryView = toolbar
             default:
+                cell.textField.rightView = nil
+                cell.textField.rightViewMode = .never
                 cell.textField.keyboardType = .default
             }
 

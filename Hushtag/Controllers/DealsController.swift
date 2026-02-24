@@ -14,9 +14,10 @@ final class DealsController {
             payment: deal.payment,
             mobileNumber: deal.mobileNumber,
             email: deal.email,
-            deadline: deal.deliverables.map(\.deadline).max() ?? Date(),
+            deadline: deal.deadline,
             reminder: deal.reminder,
-            platform: deal.platform.map(\.rawValue)
+            platform: deal.platform.map(\.rawValue),
+            isCompleted: deal.isCompleted
         )
         
         let dealDB: DealDB = try await client.database
@@ -90,9 +91,10 @@ final class DealsController {
             payment: deal.payment,
             mobileNumber: deal.mobileNumber,
             email: deal.email,
-            deadline: deal.deliverables.map(\.deadline).max() ?? Date(),
+            deadline: deal.deadline,
             reminder: deal.reminder,
-            platform: deal.platform.map(\.rawValue)
+            platform: deal.platform.map(\.rawValue),
+            isCompleted: deal.isCompleted
         )
         
         let updatedDeal: DealDB = try await client.database
@@ -147,6 +149,14 @@ final class DealsController {
     }
     
     
+    func updateDealStatus(dealId: UUID, isCompleted: Bool) async throws {
+        try await client.database
+            .from("brand_deals")
+            .update(["isCompleted": isCompleted])
+            .eq("id", value: dealId)
+            .execute()
+    }
+    
     func deleteDeal(_ dealId: UUID) async throws {
         
         let session = try await client.auth.session
@@ -177,6 +187,7 @@ final class DealsController {
             payment: deal.payment ?? 0.0,
             mobileNumber: deal.mobileNumber ?? 0,
             email: deal.email ?? "",
+            deadline: deal.deadline,
             
             platform: deal.platform,
             deliverables: deliverables.map {
@@ -188,7 +199,8 @@ final class DealsController {
                     isCompleted: $0.isCompleted
                 )
             },
-            reminder: deal.reminder ?? []
+            reminder: deal.reminder ?? [],
+            isManuallyCompleted: deal.isCompleted
         )
     }
 }
