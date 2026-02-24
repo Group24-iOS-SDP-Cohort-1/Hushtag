@@ -47,10 +47,10 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.backgroundColor = .clear
-        tableView.separatorStyle = .none
+        tableView.backgroundColor = .systemGroupedBackground
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 56
+        tableView.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
         
         deadlineDate = deadlinePicker.date
         reminderDate = reminderPicker.date
@@ -96,7 +96,7 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
     private func prefillIfNeeded() {
         guard let post = editingPost else { return }
 
-        setText("Name", value: post.name)
+        setText("Post Name", value: post.name)
         setText("Platform", value: post.platform.map { $0.rawValue.capitalized }.joined(separator: ", "))
 
         if let deadline = post.tasks.first?.deadline {
@@ -231,8 +231,17 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        
         return Section.allCases.count
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard let sec = Section(rawValue: section) else { return nil }
+        switch sec {
+        case .mainFields:
+            return "Post Details"
+        case .deliverables:
+            return "Tasks"
+        }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -273,7 +282,28 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
             
             switch placeholder {
                 
+            case "Platform":
+                let button = UIButton(type: .system)
+                button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+                
+                let actions = Platform.allCases.map { platform in
+                    UIAction(title: platform.rawValue.capitalized) { _ in
+                        cell.textField.text = platform.rawValue.capitalized
+                    }
+                }
+                
+                let menu = UIMenu(children: actions)
+                button.menu = menu
+                button.showsMenuAsPrimaryAction = true
+                
+                cell.textField.rightView = button
+                cell.textField.rightViewMode = .always
+                cell.textField.inputView = nil
+                cell.textField.inputAccessoryView = toolbar
+                
             case "Deadline":
+                cell.textField.rightView = nil
+                cell.textField.rightViewMode = .never
                 let picker = UIDatePicker()
                 picker.datePickerMode = .dateAndTime
                 picker.preferredDatePickerStyle = .wheels
@@ -283,10 +313,14 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
 
                 
             case "Reminder":
+                cell.textField.rightView = nil
+                cell.textField.rightViewMode = .never
                 cell.textField.inputView = reminderPicker
                 cell.textField.inputAccessoryView = toolbar
                 
             default:
+                cell.textField.rightView = nil
+                cell.textField.rightViewMode = .never
                 cell.textField.inputView = nil
                 cell.textField.inputAccessoryView = nil
             }
