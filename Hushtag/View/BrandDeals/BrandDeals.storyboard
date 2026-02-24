@@ -268,9 +268,9 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="ift-r7-xm6" firstAttribute="top" secondItem="bQ7-sg-YyA" secondAttribute="top" id="AfL-P4-6GN"/>
-                                        <constraint firstItem="ift-r7-xm6" firstAttribute="leading" secondItem="bQ7-sg-YyA" secondAttribute="leading" constant="16" id="GVT-Zc-J0I"/>
-                                        <constraint firstAttribute="bottom" secondItem="ift-r7-xm6" secondAttribute="bottom" constant="16" id="IH8-SO-9uB"/>
-                                        <constraint firstAttribute="trailing" secondItem="ift-r7-xm6" secondAttribute="trailing" constant="16" id="QPr-Ok-m5g"/>
+                                        <constraint firstItem="ift-r7-xm6" firstAttribute="leading" secondItem="bQ7-sg-YyA" secondAttribute="leading" id="GVT-Zc-J0I"/>
+                                        <constraint firstAttribute="bottom" secondItem="ift-r7-xm6" secondAttribute="bottom" id="IH8-SO-9uB"/>
+                                        <constraint firstAttribute="trailing" secondItem="ift-r7-xm6" secondAttribute="trailing" id="QPr-Ok-m5g"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>

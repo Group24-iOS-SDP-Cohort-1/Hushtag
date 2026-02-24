@@ -42,8 +42,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.backgroundColor = .clear
-        tableView.separatorStyle = .none
+        tableView.backgroundColor = .systemGroupedBackground
         
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 56
@@ -274,6 +273,16 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
        }
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard let sec = Section(rawValue: section) else { return nil }
+        switch sec {
+        case .mainFields:
+            return "Deal Details"
+        case .deliverables:
+            return "Deliverables"
+        }
     }
 
 
