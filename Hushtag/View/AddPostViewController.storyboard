@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="LbS-7B-Ltw">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Nav-Add-Post">
     <device id="retina6_12" orientation="portrait" appearance="dark"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
@@ -15,27 +15,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <view key="tableFooterView" contentMode="scaleToFill" id="cmv-k0-oDP">
-                            <rect key="frame" x="0.0" y="217.66666603088379" width="393" height="129"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QI1-oG-KGK">
-                                    <rect key="frame" x="100" y="46.333333333333329" width="193" height="36.333333333333329"/>
-                                    <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="filled" title="Submit"/>
-                                    <connections>
-                                        <action selector="submitTapped:" destination="LbS-7B-Ltw" eventType="touchUpInside" id="kyT-W5-FYF"/>
-                                    </connections>
-                                </button>
-                            </subviews>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            <constraints>
-                                <constraint firstAttribute="trailing" secondItem="QI1-oG-KGK" secondAttribute="trailing" constant="100" id="bE5-CT-rqT"/>
-                                <constraint firstItem="QI1-oG-KGK" firstAttribute="top" secondItem="cmv-k0-oDP" secondAttribute="top" constant="46.333333969116211" id="egF-iC-sGq"/>
-                                <constraint firstItem="QI1-oG-KGK" firstAttribute="centerY" secondItem="cmv-k0-oDP" secondAttribute="centerY" id="gRX-Ts-LqR"/>
-                                <constraint firstItem="QI1-oG-KGK" firstAttribute="leading" secondItem="cmv-k0-oDP" secondAttribute="leading" constant="100" id="lZ4-IX-c4g"/>
-                            </constraints>
-                        </view>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="MainFieldCell" id="G9e-Dh-Y0G" customClass="MainFieldCell" customModule="Hushtag" customModuleProvider="target">
                                 <rect key="frame" x="20" y="55.333332061767578" width="353" height="61"/>
@@ -137,6 +116,24 @@
                 </datePicker>
             </objects>
             <point key="canvasLocation" x="3877.0992366412211" y="-188.02816901408451"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="nav-controller">
+            <objects>
+                <navigationController storyboardIdentifier="AddPostNavVC" automaticallyAdjustsScrollViewInsets="NO" id="Nav-Add-Post" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="nav-bar-add-post">
+                        <rect key="frame" x="0.0" y="118" width="393" height="54"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="LbS-7B-Ltw" kind="relationship" relationship="rootViewController" id="segue-nav-post"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Nav-Add-Post-Responder" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3000" y="-188"/>
         </scene>
     </scenes>
     <resources>

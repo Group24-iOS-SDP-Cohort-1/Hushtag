@@ -50,7 +50,6 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
         tableView.backgroundColor = .systemGroupedBackground
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 56
-        tableView.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
         
         deadlineDate = deadlinePicker.date
         reminderDate = reminderPicker.date
@@ -62,6 +61,13 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
                     editingTasks = post.tasks
 
         }
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeTapped))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneTapped))
+    }
+    
+    @objc private func closeTapped() {
+        dismiss(animated: true)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -201,7 +207,8 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
         )
     }
     
-    @IBAction func submitTapped(_ sender: UIButton) {
+    @objc private func doneTapped() {
+        view.endEditing(true)
         
         Task {
             do {
