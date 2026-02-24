@@ -48,7 +48,7 @@ class ScriptedIdeas: UIViewController {
         setupNavigationTitle(with: idea.title)
         setupDescription(with: idea.description)
         setupScriptContent(with: idea.script)
-        setupThumbnail(with: idea.thumbnailURL)
+        setupThumbnail(with: idea.thumbnail)
         
         setupMenu()
     }

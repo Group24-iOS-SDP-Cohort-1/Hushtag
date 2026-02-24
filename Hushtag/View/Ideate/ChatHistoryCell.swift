@@ -17,7 +17,6 @@ class ChatHistoryCell: UITableViewCell {
     }
     
     func configure(with conversation: Conversation) {
-        
         titleLabel.text = conversation.title
         timeLabel.text = conversation.created_at?.timeOnly()
         

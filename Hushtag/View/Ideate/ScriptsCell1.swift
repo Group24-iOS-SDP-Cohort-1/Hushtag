@@ -34,7 +34,7 @@ class ScriptsCell1: UICollectionViewCell {
             Title.text = realTitle
             Title.textColor = .label // Standard color for user-selected title
         } else {
-            Title.text = script.mockTitle ?? "Untitled Script"
+            Title.text = "Untitled Script"
             // Optional: You could make mock text slightly lighter to differentiate
             // Title.textColor = .secondaryLabel
         }
@@ -43,7 +43,7 @@ class ScriptsCell1: UICollectionViewCell {
         if let realDesc = script.description, !realDesc.isEmpty {
             Description.text = realDesc
         } else {
-            Description.text = script.mockDescription ?? "No description available"
+            Description.text = "No description available"
         }
         
         // Tags
@@ -69,7 +69,7 @@ class ScriptsCell1: UICollectionViewCell {
         }
             
         // Check if Thumbnail URL exists AND is not empty
-        if let thumb = script.thumbnailURL, !thumb.isEmpty {
+        if let thumb = script.thumbnail, !thumb.isEmpty {
             filledCriteria += 1
         }
             

@@ -104,10 +104,33 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         Task {
             do {
                 let history = try await controller.fetchMessages(for: conversationID ?? UUID())
-                
-                let mapped = history.map {
-                    Message(role: $0.role.rawValue,
-                            content: $0.content)
+
+                // 1️⃣ Fetch scripted idea for this conversation
+                let allIdeas = try await controller.fetchScript()
+                let idea = allIdeas.first { $0.chat_id == self.conversationID }
+
+                // 2️⃣ Restore marks
+                let mapped = history.map { chat in
+                    
+                    var message = Message(
+                        role: chat.role.rawValue,
+                        content: chat.content,
+                        mark: nil
+                    )
+                    
+                    guard let idea else { return message }
+                    
+                    if chat.content == idea.script {
+                        message.mark = "script"
+                    } else if chat.content == idea.title {
+                        message.mark = "title"
+                    } else if chat.content == idea.description {
+                        message.mark = "description"
+                    } else if chat.content == idea.thumbnail {
+                        message.mark = "thumbnail"
+                    }
+                    
+                    return message
                 }
                 
                 await MainActor.run {

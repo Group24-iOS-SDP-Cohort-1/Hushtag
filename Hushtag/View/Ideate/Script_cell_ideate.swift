@@ -27,7 +27,7 @@ class Script_cell_ideate: UICollectionViewCell {
             title.text = realTitle
             title.textColor = .label
         } else {
-            title.text = script.mockTitle ?? "Untitled Script"
+            title.text = "Untitled Script"
         }
         
         // 2. Calculate Progress
@@ -50,7 +50,7 @@ class Script_cell_ideate: UICollectionViewCell {
         }
             
         // Check if Thumbnail URL exists AND is not empty
-        if let th = script.thumbnailURL, !th.isEmpty {
+        if let th = script.thumbnail, !th.isEmpty {
             filledCriteria += 1
         }
             
