@@ -8,7 +8,17 @@ class ChatHistory: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleScriptDeleted),
+            name: .scriptDeleted,
+            object: nil
+        )
+        fetchConversationList()
         
+    }
+    
+    @objc private func handleScriptDeleted(_ notification: Notification) {
         fetchConversationList()
     }
     

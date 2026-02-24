@@ -95,6 +95,15 @@ final class ScriptedIdeasController {
         
     }
     
+    func deleteScript(id: UUID) async throws {
+        
+        try await client.database
+            .from("scripted_ideas")
+            .delete()
+            .eq("id", value: id.uuidString)
+            .execute()
+    }
+    
     func addScript(_ script: ScriptedIdea) async throws -> ScriptedIdeaDB{
         let session = try await client.auth.session
         
