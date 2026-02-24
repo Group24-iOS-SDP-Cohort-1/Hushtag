@@ -1,10 +1,3 @@
-//
-//  ChatHistoryCell.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 19/02/26.
-//
-
 import UIKit
 
 class ChatHistoryCell: UITableViewCell {
