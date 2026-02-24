@@ -328,8 +328,11 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             guard let self = self else { return }
             
             do {
-                let intent = try await classifyIntent(userText)
-                
+                let intent = await AIResponseRouter.shared.classifyIntent(
+                    message: userText,
+                    conversationID: conversationID
+                )
+
                 print(intent)
                 
                 switch intent {

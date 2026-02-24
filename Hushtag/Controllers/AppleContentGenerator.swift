@@ -32,7 +32,7 @@ func generateTitleWithApple(
     """
 
     return await AIResponseRouter.shared.respond(
-        intent: .title,
+        intent: .generateTitle,
         prompt: prompt,
         conversationID: conversationID
     )
@@ -71,7 +71,7 @@ func generateDescriptionWithApple(
     """
 
     return await AIResponseRouter.shared.respond(
-        intent: .description,
+        intent: .generateDescription,
         prompt: prompt,
         conversationID: conversationID
     )

@@ -11,9 +11,9 @@ final class AIResponseRouter {
     private init() {}
 
     enum Intent {
-        case script
-        case title
-        case description
+        case generateScript
+        case generateTitle
+        case generateDescription
         case chat
     }
 
@@ -26,14 +26,14 @@ final class AIResponseRouter {
         switch intent {
 
         // 🌐 Heavy creative work → Gemini ONLY
-        case .script:
+        case .generateScript:
             return await callGemini(
                 prompt: prompt,
                 conversationID: conversationID
             )
 
         // 🍎 Refinement / chat → Apple → Gemini fallback
-        case .title, .description, .chat:
+        case . generateTitle, .generateDescription, .chat:
             do {
                 let reply = try await AppleIntelligenceManager.shared.askSafely(
                     prompt: prompt
@@ -64,6 +64,50 @@ final class AIResponseRouter {
                     returning: reply ?? "Something went wrong."
                 )
             }
+        }
+    }
+}
+
+extension AIResponseRouter {
+
+    func classifyIntent(
+        message: String,
+        conversationID: UUID?
+    ) async -> Intent {
+
+        let prompt = """
+        You are an intent classifier for a content creation app.
+
+        Classify the user's message into ONE of the following categories:
+        - script
+        - title
+        - description
+        - chat
+
+        Rules:
+        - Respond with ONLY the category name.
+        - No explanations.
+        - Lowercase only.
+
+        User message:
+        "\(message)"
+        """
+
+        let reply = await respond(
+            intent: .chat, // Apple first, Gemini fallback
+            prompt: prompt,
+            conversationID: conversationID
+        )
+
+        switch reply.trimmingCharacters(in: .whitespacesAndNewlines) {
+        case "script":
+            return .generateScript
+        case "title":
+            return .generateTitle
+        case "description":
+            return .generateDescription
+        default:
+            return .chat
         }
     }
 }
