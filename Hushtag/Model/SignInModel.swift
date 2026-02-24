@@ -120,27 +120,39 @@ struct SignInGoogleResult{
 
 class SignInGoogle {
     
+    @MainActor
     func startSignInWithGoogleFlow() async throws -> SignInGoogleResult {
-        try await withCheckedThrowingContinuation({ [weak self] continuation in
-            self?.signInWithGoogleFlow { result in
+        try await withCheckedThrowingContinuation({ continuation in
+            self.signInWithGoogleFlow { result in
                 continuation.resume(with: result)
             }
         })
     }
     
+    @MainActor
     func signInWithGoogleFlow(completion: @escaping (Result<SignInGoogleResult, Error>) -> Void) {
         
         guard let topVC = UIApplication.topViewController else{
-            completion(.failure(NSError()))
+            let error = NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not find the top view controller."])
+            //completion(.failure(NSError()))
+            completion(.failure(error))
             return
         }
         
-        GIDSignIn.sharedInstance.signIn(
-            withPresenting: topVC
-        ) { signInResult, error in
+        
+        
+        GIDSignIn.sharedInstance.signIn(withPresenting: topVC) { signInResult, error in
+            
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
             guard let user = signInResult?.user, let idToken = user.idToken else {
                 // Inspect error
-                completion(.failure(NSError()))
+                let tokenError = NSError(domain: "AuthError", code: -2, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve Google ID Token."])
+                //completion(.failure(NSError()))
+                completion(.failure(tokenError))
                 print("Error signing in: \(error?.localizedDescription ?? "No error description")")
                 return
             }
@@ -153,6 +165,7 @@ class SignInGoogle {
 
 
 extension UIApplication {
+    @MainActor
     static var topViewController: UIViewController? {
         guard let root = UIApplication.shared
             .connectedScenes
