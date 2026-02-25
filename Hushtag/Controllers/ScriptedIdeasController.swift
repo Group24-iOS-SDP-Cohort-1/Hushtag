@@ -215,7 +215,7 @@ final class ScriptedIdeasController {
     
     func generateAndStoreTitleIfNeeded(conversationID: UUID) async throws {
         
-        // 1️⃣ Fetch conversation
+        // Fetch conversation
         let conversations: [Conversation] = try await client.database
             .from("conversations")
             .select("id, user_id, title, created_at")
@@ -225,29 +225,37 @@ final class ScriptedIdeasController {
         
         guard let conversation = conversations.first else { return }
         
-        // 2️⃣ Prevent regenerating
+        // Prevent regenerating
         if let title = conversation.title,
            !title.isEmpty,
            title != "New Chat" {
             return
         }
         
-        // 3️⃣ Fetch messages
+        // Fetch messages
         let messages = try await fetchMessages(for: conversationID)
         
-        // 4️⃣ Wait until meaningful context exists
+        // Wait until meaningful context exists
         guard messages.count >= 3 else { return }
         
-        // 5️⃣ Generate title
+        // Generate title
         let generatedTitle = try await generateConversationTitleWithApple(
             messages: messages
         )
         
-        // 6️⃣ Update DB
+        // Update DB
         try await updateConversationTitle(
             conversationID: conversationID,
             title: generatedTitle
         )
+    }
+    
+    func deleteConversation(id: UUID) async throws {
+        try await client.database
+            .from("conversations")
+            .delete()
+            .eq("id", value: id)
+            .execute()
     }
     
     func upsertScriptField(

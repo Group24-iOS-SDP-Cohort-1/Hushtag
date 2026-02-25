@@ -92,6 +92,54 @@ class ChatHistory: UITableViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
+    override func tableView(_ tableView: UITableView,
+                            trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
+    -> UISwipeActionsConfiguration? {
+        
+        let deleteAction = UIContextualAction(
+            style: .destructive,
+            title: "Delete"
+        ) { [weak self] _, _, completion in
+            
+            guard let self = self else { return }
+            
+            let convo = self.sections[indexPath.section].items[indexPath.row]
+            
+            Task {
+                do {
+                    // Delete from database
+                    try await self.controller.deleteConversation(id: convo.id)
+                    
+                    // Update UI on main thread
+                    await MainActor.run {
+                        self.removeConversationFromDataSource(at: indexPath)
+                        completion(true)
+                    }
+                    
+                } catch {
+                    print("❌ Failed to delete:", error)
+                    completion(false)
+                }
+            }
+        }
+        
+        deleteAction.image = UIImage(systemName: "trash")
+        
+        return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
+    
+    private func removeConversationFromDataSource(at indexPath: IndexPath) {
+        
+        sections[indexPath.section].items.remove(at: indexPath.row)
+        
+        if sections[indexPath.section].items.isEmpty {
+            sections.remove(at: indexPath.section)
+            tableView.deleteSections(IndexSet(integer: indexPath.section), with: .fade)
+        } else {
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+    }
+    
     func groupConversations(_ conversations: [Conversation])
     -> [(title: String, items: [Conversation])] {
         
