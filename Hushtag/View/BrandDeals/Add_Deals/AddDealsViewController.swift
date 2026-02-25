@@ -242,6 +242,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
                             didUpdateDeal: updatedDeal,
                             at: index
                         )
+                        NotificationCenter.default.post(name: .dealsDidChange, object: nil)
                         self.dismiss(animated: true)
                     }
                 }
@@ -254,6 +255,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
                             self,
                             didCreateDeal: savedDeal
                         )
+                        NotificationCenter.default.post(name: .dealsDidChange, object: nil)
                         self.dismiss(animated: true)
                     }
                 }
