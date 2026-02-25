@@ -332,6 +332,7 @@ extension PreferencesViewController: UICollectionViewDataSource {
             
             //NEW
             cell.delegate = self
+            cell.delegate1 = self
             cell.cardIndex = indexPath.item
             
             //updateSkipButton(for: indexPath.item)
@@ -359,30 +360,7 @@ extension PreferencesViewController: UICollectionViewDataSource {
         }
     }
 
-    func exchangeAuthCode(
-        _ code: String,
-        cell: AccountConnectCollectionViewCell
-    ) {
-        Task {
-            do {
-                try await YouTubeController.shared.exchangeAuthCode(code)
 
-                await MainActor.run {
-                    cell.isConnected = true
-                    cell.updateButtonAppearance(
-                        cell.youtubeOutlet,
-                        isSelected: true
-                    )
-
-                    self.completedStates[cell.cardIndex] = true
-                    self.updateProgressFromCompletedStates()
-                }
-
-            } catch {
-                print("❌ YouTube connect failed:", error)
-            }
-        }
-    }
 
 
     
@@ -420,37 +398,36 @@ extension PreferencesViewController: YouTubeConnectDelegate {
     }
 
     func connectYouTube(cell: AccountConnectCollectionViewCell) {
-
-        guard let user = GIDSignIn.sharedInstance.currentUser else {
-            print("❌ User not signed in with Google")
-            return
-        }
-
-        let scopes = [
-            "https://www.googleapis.com/auth/youtube.readonly",
-            "https://www.googleapis.com/auth/yt-analytics.readonly"
-        ]
-
-        user.addScopes(scopes, presenting: self) { updatedUser, error in
-
-            if let error = error {
-                print("❌ Permission denied:", error)
-                return
+        
+        let viewModel = SignInModel()
+        
+        Task {
+            do {
+                try await viewModel.connectYouTube()
+                
+                await MainActor.run {
+                    cell.isConnected = true
+                    cell.updateButtonAppearance(
+                        cell.youtubeOutlet,
+                        isSelected: true
+                    )
+                    
+                    self.completedStates[cell.cardIndex] = true
+                    self.updateProgressFromCompletedStates()
+                    
+                    let alert = UIAlertController(title: "Success", message: "Successfully connected YouTube account!", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
+                }
+                
+            } catch {
+                await MainActor.run {
+                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
+                }
+                print("❌ YouTube connect failed:", error)
             }
-
-            guard let authCode = updatedUser?.serverAuthCode else {
-                print("❌ Missing serverAuthCode")
-                return
-            }
-
-            self.exchangeAuthCode(authCode, cell: cell)
         }
     }
-
 }
-
-
-
-
-
-
