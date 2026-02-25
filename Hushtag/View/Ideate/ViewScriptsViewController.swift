@@ -460,7 +460,7 @@ extension ViewScriptsViewController: UISearchResultsUpdating {
             let titleMatch = script.title?.lowercased().contains(searchText.lowercased()) ?? false
             
             // Check Mock Title (AI Generated)
-            let mockTitleMatch = script.mockTitle?.lowercased().contains(searchText.lowercased()) ?? false
+            //let mockTitleMatch = script.mockTitle?.lowercased().contains(searchText.lowercased()) ?? false
             
             // Check Tags (Array of strings)
             // Note: Ensure your ScriptedIdea model has a 'tags' property.
@@ -469,7 +469,7 @@ extension ViewScriptsViewController: UISearchResultsUpdating {
                 tag.lowercased().contains(searchText.lowercased())
             } ?? false
             
-            return titleMatch || mockTitleMatch || tagsMatch
+            return titleMatch || tagsMatch
         }
         
         // 2. Filter "Liked Ideas" (Optional, if you want search on this page too)

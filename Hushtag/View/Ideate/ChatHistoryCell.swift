@@ -1,10 +1,3 @@
-//
-//  ChatHistoryCell.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 19/02/26.
-//
-
 import UIKit
 
 class ChatHistoryCell: UITableViewCell {
@@ -24,7 +17,6 @@ class ChatHistoryCell: UITableViewCell {
     }
     
     func configure(with conversation: Conversation) {
-        
         titleLabel.text = conversation.title
         timeLabel.text = conversation.created_at?.timeOnly()
         

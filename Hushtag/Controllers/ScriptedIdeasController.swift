@@ -72,7 +72,15 @@ final class ScriptedIdeasController {
                     user_id,
                     title,
                     created_at,
-                    chat_history!inner(conversation_id)
+                    chat_history!inner(conversation_id),
+                    scripted_ideas (
+                        id,
+                        chat_id,
+                        title,
+                        description,
+                        script,
+                        thumbnail
+                    )
                 """)
                 .eq("user_id", value: session.user.id.uuidString)
                 .order("created_at", ascending: false)
@@ -87,6 +95,15 @@ final class ScriptedIdeasController {
         
     }
     
+    func deleteScript(id: UUID) async throws {
+        
+        try await client.database
+            .from("scripted_ideas")
+            .delete()
+            .eq("id", value: id.uuidString)
+            .execute()
+    }
+    
     func addScript(_ script: ScriptedIdea) async throws -> ScriptedIdeaDB{
         let session = try await client.auth.session
         
@@ -96,10 +113,8 @@ final class ScriptedIdeasController {
             title: script.title,
             description: script.description,
             script: script.script,
-            thumbnail: script.thumbnailURL,
+            thumbnail: script.thumbnail,
             hashtags: script.tags,
-            mock_title: script.mockTitle,
-            mock_description: script.mockDescription
         )
         
         let result: ScriptedIdeaDB = try await client.database
@@ -251,8 +266,6 @@ final class ScriptedIdeasController {
                 script: field == "script" ? value : nil,
                 thumbnail: field == "thumbnail" ? value : nil,
                 hashtags: nil,
-                mock_title: nil,
-                mock_description: nil
             )
 
             try await client.database

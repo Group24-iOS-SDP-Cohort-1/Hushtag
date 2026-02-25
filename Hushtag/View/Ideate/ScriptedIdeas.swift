@@ -48,7 +48,7 @@ class ScriptedIdeas: UIViewController {
         setupNavigationTitle(with: idea.title)
         setupDescription(with: idea.description)
         setupScriptContent(with: idea.script)
-        setupThumbnail(with: idea.thumbnailURL)
+        setupThumbnail(with: idea.thumbnail)
         
         setupMenu()
     }
@@ -98,8 +98,7 @@ class ScriptedIdeas: UIViewController {
         
         Task {
             do {
-                // Call Supabase to delete
-                //try await dbController.deleteScript(id)
+                try await dbController.deleteScript(id: id)
                 
                 NotificationCenter.default.post(
                     name: .scriptDeleted,
@@ -108,14 +107,28 @@ class ScriptedIdeas: UIViewController {
                 )
                 
                 await MainActor.run {
-                    // Navigate back to the list
                     self.navigationController?.popViewController(animated: true)
                 }
+                
             } catch {
                 print("Error deleting script: \(error)")
-                // Optional: Show error alert
             }
         }
+    }
+    
+    private func navigateToChat() {
+        guard let idea = self.idea else { return }
+        
+        let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
+        
+        guard let chatVC = storyboard.instantiateViewController(
+            withIdentifier: "Chatbot"
+        ) as? Chatbot else { return }
+        
+        // 🔥 This is the important line
+        chatVC.conversationID = idea.chat_id
+        
+        self.navigationController?.pushViewController(chatVC, animated: true)
     }
     
     private func setupNavigationTitle(with title: String?) {

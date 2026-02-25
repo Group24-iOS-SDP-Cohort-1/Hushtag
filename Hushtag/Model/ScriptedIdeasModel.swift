@@ -7,10 +7,8 @@ nonisolated struct ScriptedIdea: Identifiable, Codable, Sendable {
     var title: String?
     var description: String?
     var script: String?
-    var thumbnailURL: String?
+    var thumbnail: String?
     var tags: [String]?
-    var mockTitle: String?
-    var mockDescription: String?
 }
 
 // 2. The Database Model
@@ -34,9 +32,7 @@ nonisolated struct ScriptedIdeaInsertPayload: Codable, Sendable {
     let description: String?
     let script: String?
     let thumbnail: String?
-    let hashtags: [String]? 
-    let mock_title: String?
-    let mock_description: String?
+    let hashtags: [String]?
 }
 
 nonisolated struct ChatMessageDB: Codable, Identifiable {
@@ -74,6 +70,16 @@ nonisolated struct Conversation: Codable {
     let user_id: UUID
     let title: String?
     let created_at: Date?
+    let scripted_ideas: ScriptedIdeaDB?
+    
+    var hasStar: Bool {
+        guard let idea = scripted_ideas else { return false }
+
+        return idea.title != nil ||
+               idea.description != nil ||
+               idea.script != nil ||
+               idea.thumbnail != nil
+    }
 }
 
 nonisolated struct ConversationInsertPayload: Codable {
