@@ -2,8 +2,9 @@ import Foundation
 
 func generateTitleWithApple(
     script: String?,
-    userPrompt: String
-) async throws -> String {
+    userPrompt: String,
+    conversationID: UUID?
+) async -> String {
 
     let contextBlock: String
     if let script = script {
@@ -30,13 +31,18 @@ func generateTitleWithApple(
     Generate a youtube catchy, Gen-Z friendly title with no emojis and no quotes.
     """
 
-    return try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
+    return await AIResponseRouter.shared.respond(
+        intent: .generateTitle,
+        prompt: prompt,
+        conversationID: conversationID
+    )
 }
 
 func generateDescriptionWithApple(
     script: String?,
-    userPrompt: String
-) async throws -> String {
+    userPrompt: String,
+    conversationID: UUID?
+) async -> String {
 
     let contextBlock: String
     if let script = script {
@@ -64,5 +70,9 @@ func generateDescriptionWithApple(
     Include emojis and 3–5 hashtags.
     """
 
-    return try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
+    return await AIResponseRouter.shared.respond(
+        intent: .generateDescription,
+        prompt: prompt,
+        conversationID: conversationID
+    )
 }

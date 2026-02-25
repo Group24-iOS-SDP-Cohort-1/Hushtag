@@ -328,8 +328,11 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             guard let self = self else { return }
             
             do {
-                let intent = try await classifyIntent(userText)
-                
+                let intent = await AIResponseRouter.shared.classifyIntent(
+                    message: userText,
+                    conversationID: conversationID
+                )
+
                 print(intent)
                 
                 switch intent {
@@ -346,27 +349,27 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     }
                     
                 case .generateTitle:
-                    print("🍎 routing to apple (title)")
-                    
-                    let reply = try await generateTitleWithApple(
+                    print("🍎 routing via router (title)")
+
+                    let reply = await generateTitleWithApple(
                         script: self.latestScript,
-                        userPrompt: userText
+                        userPrompt: userText,
+                        conversationID: conversationID
                     )
-                    
-                    self.handleBotReply(reply, source: "apple")
-                    
-                    
+
+                    self.handleBotReply(reply, source: "auto")
+
                 case .generateDescription:
-                    print("🍎 routing to apple (description)")
-                    
-                    let reply = try await generateDescriptionWithApple(
+                    print("🍎 routing via router (description)")
+
+                    let reply = await generateDescriptionWithApple(
                         script: self.latestScript,
-                        userPrompt: userText
+                        userPrompt: userText,
+                        conversationID: conversationID
                     )
-                    
-                    self.handleBotReply(reply, source: "apple")
-                    
-                    
+
+                    self.handleBotReply(reply, source: "auto")
+
                 case .chat:
                     let prompt = """
                     You are a friendly, casual AI assistant.
@@ -376,9 +379,14 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     \(userText)
                     """
                     
-                    let reply = try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
-                    self.handleBotReply(reply, source: "apple")
-                    
+                    let reply = await AIResponseRouter.shared.respond(
+                        intent: .chat,
+                        prompt: prompt,
+                        conversationID: conversationID
+                    )
+
+                    self.handleBotReply(reply, source: "auto")
+
                 }
                 
             } catch {
