@@ -56,7 +56,7 @@ class ScriptedIdeas: UIViewController {
     private func setupMenu() {
         // Option 1: View Chat History
         let chatAction = UIAction(title: "View Chat History", image: UIImage(systemName: "bubble.left.and.bubble.right.fill")) { [weak self] _ in
-            //self?.navigateToChat()
+            self?.navigateToChat()
         }
         
         // Option 2: Delete Script (Destructive)
@@ -69,18 +69,6 @@ class ScriptedIdeas: UIViewController {
         optionsBarButton.menu = menu
     }
     
-//    private func navigateToChat() {
-//            guard let idea = self.idea else { return }
-//            
-//            let storyboard = UIStoryboard(name: "Chatbot", bundle: nil) // Ensure this matches your Storyboard name
-//            if let chatVC = storyboard.instantiateViewController(withIdentifier: "Chatbot") as? Chatbot {
-//                
-//                // Pass the current script to the chatbot so it loads history
-//             
-//                
-//                self.navigationController?.pushViewController(chatVC, animated: true)
-//            }
-//        }
     
     private func confirmDelete() {
         let alert = UIAlertController(title: "Delete Script", message: "Are you sure? This cannot be undone.", preferredStyle: .alert)
@@ -106,7 +94,7 @@ class ScriptedIdeas: UIViewController {
                     userInfo: ["deletedID": id]
                 )
                 
-                await MainActor.run {
+                DispatchQueue.main.async {
                     self.navigationController?.popViewController(animated: true)
                 }
                 
@@ -125,7 +113,7 @@ class ScriptedIdeas: UIViewController {
             withIdentifier: "Chatbot"
         ) as? Chatbot else { return }
         
-        // 🔥 This is the important line
+        // This is the important line
         chatVC.conversationID = idea.chat_id
         
         self.navigationController?.pushViewController(chatVC, animated: true)

@@ -104,11 +104,11 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         Task {
             do {
                 let history = try await controller.fetchMessages(for: conversationID ?? UUID())
-
+                
                 // 1️⃣ Fetch scripted idea for this conversation
                 let allIdeas = try await controller.fetchScript()
                 let idea = allIdeas.first { $0.chat_id == self.conversationID }
-
+                
                 // 2️⃣ Restore marks
                 let mapped = history.map { chat in
                     
@@ -308,120 +308,68 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         scrollToBottom()
         
         // 3. Call Gemini
-        //        GeminiManager.shared.generateContent(prompt: userText, conversationID: conversationID) { [weak self] replyText in
-        //            guard let self = self else { return }
-        //
-        //            DispatchQueue.main.async {
-        //
-        //                // Remove Thinking...
-        //                if !self.messages.isEmpty {
-        //                    self.messages.removeLast()
-        //                }
-        //
-        //                guard let replyText else {
-        //                    self.messages.append(
-        //                        Message(role: "bot", content: "Gemini Failed")
-        //                    )
-        //                    self.tableView.reloadData()
-        //                    self.scrollToBottom()
-        //                    return
-        //                }
-        //
-        //                // Add bot reply
-        //                self.messages.append(
-        //                    Message(role: "bot", content: replyText)
-        //                )
-        //
-        //                self.tableView.reloadData()
-        //                self.scrollToBottom()
-        //            }
-        //
-        //            // Save into Supabase (this can stay background)
-        //            Task {
-        //                try await self.controller.addChatMessage(
-        //                    id: self.conversationID,
-        //                    sender: .bot,
-        //                    content: replyText ?? ""
-        //                )
-        //            }
-        //        }
         
-        // 3️⃣ Decide intent & route
+        // Decide intent & route
         Task { [weak self] in
             guard let self = self else { return }
             
-            do {
-                let intent = await AIResponseRouter.shared.classifyIntent(
-                    message: userText,
-                    conversationID: conversationID
-                )
-
-                print(intent)
+            let intent = await AIResponseRouter.shared.classifyIntent(
+                message: userText,
+                conversationID: conversationID
+            )
+            
+            print(intent)
+            
+            switch intent {
                 
-                switch intent {
-                    
-                case .generateScript:
-                    // 🔥 Gemini writes script
-                    print("routing to gemini")
-                    GeminiManager.shared.generateContent(
-                        prompt: userText,
-                        conversationID: conversationID ?? UUID()
-                    ) { reply in
-                        self.latestScript = reply
-                        self.handleBotReply(reply, source: "gemini")
-                    }
-                    
-                case .generateTitle:
-                    print("🍎 routing via router (title)")
-
-                    let reply = await generateTitleWithApple(
-                        script: self.latestScript,
-                        userPrompt: userText,
-                        conversationID: conversationID
-                    )
-
-                    self.handleBotReply(reply, source: "auto")
-
-                case .generateDescription:
-                    print("🍎 routing via router (description)")
-
-                    let reply = await generateDescriptionWithApple(
-                        script: self.latestScript,
-                        userPrompt: userText,
-                        conversationID: conversationID
-                    )
-
-                    self.handleBotReply(reply, source: "auto")
-
-                case .chat:
-                    let prompt = """
-                    You are a friendly, casual AI assistant.
-                    You are allowed to chat freely, respond naturally, and talk about everyday topics.
-                    
-                    User message:
-                    \(userText)
-                    """
-                    
-                    let reply = await AIResponseRouter.shared.respond(
-                        intent: .chat,
-                        prompt: prompt,
-                        conversationID: conversationID
-                    )
-
-                    self.handleBotReply(reply, source: "auto")
-
+            case .generateScript:
+                print("routing to gemini")
+                
+                GeminiManager.shared.generateContent(
+                    prompt: userText,
+                    conversationID: conversationID ?? UUID()
+                ) { reply in
+                    self.latestScript = reply
+                    self.handleBotReply(reply, source: "gemini")
                 }
                 
-            } catch {
-                self.handleBotReply(
-                    "I couldn’t understand that request. Try rephrasing.",
-                    source: "system"
+            case .generateTitle:
+                let reply = await generateTitleWithApple(
+                    script: self.latestScript,
+                    userPrompt: userText,
+                    conversationID: conversationID
                 )
+                
+                self.handleBotReply(reply, source: "auto")
+                
+            case .generateDescription:
+                let reply = await generateDescriptionWithApple(
+                    script: self.latestScript,
+                    userPrompt: userText,
+                    conversationID: conversationID
+                )
+                
+                self.handleBotReply(reply, source: "auto")
+                
+            case .chat:
+                let prompt = """
+                You are a friendly, casual AI assistant.
+                You are allowed to chat freely.
+                
+                User message:
+                \(userText)
+                """
+                
+                let reply = await AIResponseRouter.shared.respond(
+                    intent: .chat,
+                    prompt: prompt,
+                    conversationID: conversationID
+                )
+                
+                self.handleBotReply(reply, source: "auto")
             }
         }
-        
     }
-    
     
     func handleBotReply(_ replyText: String?, source: String) {
         
