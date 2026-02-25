@@ -24,18 +24,15 @@ class DeliverableCellAddDeal: UITableViewCell, UITextViewDelegate{
     private var deliverableDates: [Date] = []
     override func awakeFromNib() {
         super.awakeFromNib()
-        backgroundColor = .clear
-        contentView.backgroundColor = .clear
         selectionStyle = .none
 
-                // Card style
-                cardView.layer.cornerRadius = 16
-                cardView.layer.masksToBounds = false
-                cardView.backgroundColor = .clear
-                cardView.applyLiquidGlassEffect()
-                // Button style
-                addButton.setTitle("+ Deliverables", for: .normal)
+        // Card style
+        cardView.backgroundColor = .clear
+        
+        // Button style
+        addButton.setTitle("+ Deliverables", for: .normal)
     }
+
     private func renumberPlaceholders() {
         for (i, tv) in deliverableTextViews.enumerated() {
             let newPlaceholder = "\(placeholderPrefix) \(i + 1)"

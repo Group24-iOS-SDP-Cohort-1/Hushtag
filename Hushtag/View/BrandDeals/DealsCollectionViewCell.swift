@@ -54,7 +54,7 @@ class DealsCollectionViewCell: UICollectionViewCell{
             
             deliverablesValueLabel.textAlignment = .center
             deliverablesValueLabel.text = "\(completed) / \(total)"
-            deadlineValueLabel.text = " "
+            deadlineValueLabel.text = deal.platform.first?.rawValue.capitalized ?? "Platform"
             deadlineValueLabel.font = paymentValueLabel.font
             deadlineValueLabel.textColor = paymentValueLabel.textColor
         } else {
@@ -65,20 +65,24 @@ class DealsCollectionViewCell: UICollectionViewCell{
             
             deliverablesValueLabel.text = "\(completed) / \(total)"
             captionLabel.text = completed == 0 ? "Get started with" : "Next Deliverable"
+            deadlineValueLabel.text = deal.deadline.deadlineFormatted()
             updateNextDeadline(deal)
         }
     }
     
     private func updateNextDeadline(_ deal: Deal) {
+        if deal.deliverables.isEmpty {
+            nextDeliverableLabel.text = "Main Deliverable"
+            return
+        }
+        
         let pending = deal.deliverables.filter { !$0.isCompleted }
         
         guard let deliverable = pending.min(by: { $0.deadline < $1.deadline }) else {
             nextDeliverableLabel.text = "-"
-            deadlineValueLabel.text = "-"
             return
         }
         
         nextDeliverableLabel.text = deliverable.name
-        deadlineValueLabel.text = deliverable.deadline.deadlineFormatted()
     }
 }

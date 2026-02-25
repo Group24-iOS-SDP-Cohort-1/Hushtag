@@ -172,7 +172,7 @@
         <!--AddViewController-->
         <scene sceneID="6mE-XW-wAE">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="AddVC" storyboardName="AddPostViewController" referencedIdentifier="AddViewController" id="JVo-VW-pJQ" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardIdentifier="AddVC" storyboardName="AddPostViewController" id="JVo-VW-pJQ" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wif-wD-mjb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3677" y="92"/>

@@ -141,10 +141,29 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MRK-DL-BTN">
+                                <rect key="frame" x="96.666666666666686" y="719" width="200" height="50"/>
+                                <color key="backgroundColor" name="AccentColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="JXy-xX-Cbc"/>
+                                    <constraint firstAttribute="height" constant="50" id="MRK-DL-HGT"/>
+                                </constraints>
+                                <state key="normal" title="Mark Deal as Completed">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <buttonConfiguration key="configuration" style="plain" title="Mark as Completed">
+                                    <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="toggleCompletionStatus:" destination="bZL-Eh-1SZ" eventType="touchUpInside" id="MRK-DL-ACT"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="XEE-7q-6TD"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="MRK-DL-BTN" firstAttribute="centerX" secondItem="7uh-oy-gwc" secondAttribute="centerX" id="0ES-HF-iFb"/>
+                            <constraint firstItem="XEE-7q-6TD" firstAttribute="bottom" secondItem="MRK-DL-BTN" secondAttribute="bottom" constant="15" id="MRK-DL-BTM"/>
                             <constraint firstItem="XY6-99-hcX" firstAttribute="leading" secondItem="XEE-7q-6TD" secondAttribute="leading" id="ONx-YZ-5eq"/>
                             <constraint firstItem="XY6-99-hcX" firstAttribute="top" secondItem="XEE-7q-6TD" secondAttribute="top" id="VbY-q6-rDA"/>
                             <constraint firstItem="XEE-7q-6TD" firstAttribute="trailing" secondItem="XY6-99-hcX" secondAttribute="trailing" id="bdh-GV-Us2"/>
@@ -169,6 +188,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="XY6-99-hcX" id="2Qq-cM-L6e"/>
+                        <outlet property="completeButton" destination="MRK-DL-BTN" id="MRK-DL-OUT"/>
                         <outlet property="delete" destination="juk-aF-zn5" id="nat-FS-LGk"/>
                     </connections>
                 </viewController>
@@ -248,9 +268,9 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="ift-r7-xm6" firstAttribute="top" secondItem="bQ7-sg-YyA" secondAttribute="top" id="AfL-P4-6GN"/>
-                                        <constraint firstItem="ift-r7-xm6" firstAttribute="leading" secondItem="bQ7-sg-YyA" secondAttribute="leading" constant="16" id="GVT-Zc-J0I"/>
-                                        <constraint firstAttribute="bottom" secondItem="ift-r7-xm6" secondAttribute="bottom" constant="16" id="IH8-SO-9uB"/>
-                                        <constraint firstAttribute="trailing" secondItem="ift-r7-xm6" secondAttribute="trailing" constant="16" id="QPr-Ok-m5g"/>
+                                        <constraint firstItem="ift-r7-xm6" firstAttribute="leading" secondItem="bQ7-sg-YyA" secondAttribute="leading" id="GVT-Zc-J0I"/>
+                                        <constraint firstAttribute="bottom" secondItem="ift-r7-xm6" secondAttribute="bottom" id="IH8-SO-9uB"/>
+                                        <constraint firstAttribute="trailing" secondItem="ift-r7-xm6" secondAttribute="trailing" id="QPr-Ok-m5g"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>

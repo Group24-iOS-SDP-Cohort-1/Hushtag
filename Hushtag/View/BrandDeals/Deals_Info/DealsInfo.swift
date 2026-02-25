@@ -20,23 +20,65 @@ final class DealsInfo: UIViewController {
 
     private let cardBackgroundKind = "card-background"
 
+    @IBOutlet weak var completeButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         title = deals.name
         view.backgroundColor = .black
-
+        
         configureCollectionView()
         configureLayout()
+        
+        // Initial setup
+        completeButton.layer.cornerRadius = 12
+        updateButtonState()
+    }
+    
+    private func updateButtonState() {
+        if !deals.deliverables.isEmpty {
+            completeButton.isHidden = true
+            return
+        }
+        
+        completeButton.isHidden = false
+        
+        let isCompleted = deals.isManuallyCompleted
+        let title = isCompleted ? "Marked" : "Mark as Completed"
+        
+        
+        completeButton.setTitle(title, for: .normal)
+        //completeButton.backgroundColor = color
+    }
+    
+    @IBAction func toggleCompletionStatus(_ sender: Any) {
+        let newStatus = !deals.isManuallyCompleted
+        deals.isManuallyCompleted = newStatus
+        updateButtonState()
+        
+        _Concurrency.Task {
+            do {
+                try await DealsController().updateDealStatus(dealId: deals.id, isCompleted: newStatus)
+                
+                await MainActor.run {
+                    self.delegate?.dealsInfo(self, didUpdateDeal: self.deals, at: self.dealIndex)
+                }
+            } catch {
+                print("❌ Failed to update deal status:", error)
+                // Revert UI on failure
+                deals.isManuallyCompleted = !newStatus
+                updateButtonState()
+            }
+        }
     }
 
     @IBAction func editModal(_ sender: Any) {
         let storyboard = UIStoryboard(name: "BrandDeals", bundle: nil)
-
+        
            let vc = storyboard.instantiateViewController(
                withIdentifier: "AddDealsViewController"
            ) as! AddDealsViewController
-
 
            vc.editingDeal = deals
            vc.editingIndex = dealIndex
@@ -46,11 +88,6 @@ final class DealsInfo: UIViewController {
            vc.delegate = self
            let nav = UINavigationController(rootViewController: vc)
            nav.modalPresentationStyle = .pageSheet
-
-//           if let sheet = nav.sheetPresentationController {
-//               sheet.detents = [.medium(), .large()]
-//               sheet.prefersGrabberVisible = true
-//           }
 
            present(nav, animated: true)
     }
@@ -92,8 +129,6 @@ final class DealsInfo: UIViewController {
             }
         }
     }
-
-
 }
 
 
@@ -102,7 +137,11 @@ extension DealsInfo {
 
     
     private var sections: [Section] {
-        var result: [Section] = [.details, .deliverables]
+        var result: [Section] = [.details]
+        
+        if !deals.deliverables.isEmpty {
+           result.append(.deliverables)
+        }
 
         if selectedIdea != nil {
             result.append(.selectedIdea)

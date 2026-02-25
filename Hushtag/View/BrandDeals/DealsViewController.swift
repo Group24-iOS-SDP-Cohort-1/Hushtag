@@ -24,20 +24,12 @@ class DealsViewController: UIViewController {
     private let dealsController = DealsController()
     
     var completedDeals: [Deal] {
-        deals.filter {
-            let total = $0.deliverables.count
-            let completed = $0.deliverables.filter { $0.isCompleted }.count
-            return total > 0 && completed == total
-        }
+        deals.filter { $0.isCompleted }
     }
     
     
     var ongoingDeals: [Deal] {
-        return deals.filter {
-            let total = $0.deliverables.count
-            let completed = $0.deliverables.filter { $0.isCompleted }.count
-            return total > 0 && completed != total
-        }
+        return deals.filter { !$0.isCompleted }
     }
     private var selectedSegmentIndex = 0
     
