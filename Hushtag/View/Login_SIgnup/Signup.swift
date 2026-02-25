@@ -100,8 +100,11 @@ class Signup: UIViewController {
             
             
     @IBAction func googleSignUpTapped(_ sender: UIButton) {
-        _Concurrency.Task { @MainActor in
+        Task { @MainActor in
             LoadingOverlay.shared.show()
+            
+            defer { LoadingOverlay.shared.hide() }
+            
             do {
                 // Google Sign In handles both Login and Signup
                 let user = try await viewModel.signInWithGoogle()
@@ -112,11 +115,11 @@ class Signup: UIViewController {
                 self.navigateBasedOnOnboardingStatus()
                 
             } catch let error as LocalizedError {
-                LoadingOverlay.shared.hide()
+                //LoadingOverlay.shared.hide()
                 self.showAlert(title: "Sign Up Failed", message: error.localizedDescription)
                 
             } catch {
-                LoadingOverlay.shared.hide()
+                //LoadingOverlay.shared.hide()
                 self.showAlert(title: "Sign Up Failed", message: AuthError.unknown.localizedDescription)
                 
             }

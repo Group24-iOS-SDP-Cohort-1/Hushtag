@@ -63,10 +63,10 @@ class Login: UIViewController {
 //            }
 //        }
         guard let email = emailTextField.text, !email.isEmpty,
-              let password = passwordTextField.text, !password.isEmpty else {
-                showAlert(title: "Error", message: AuthError.emptyFields.localizedDescription)
-                return
-            }
+            let password = passwordTextField.text, !password.isEmpty else {
+            showAlert(title: "Error", message: AuthError.emptyFields.localizedDescription)
+            return
+        }
 
         _Concurrency.Task { @MainActor in
             LoadingOverlay.shared.show()
@@ -95,8 +95,11 @@ class Login: UIViewController {
     
     @IBAction func googleLoginTapped(_ sender: Any) {
         
-        _Concurrency.Task { @MainActor in
+        Task { @MainActor in
             LoadingOverlay.shared.show()
+            
+            defer { LoadingOverlay.shared.hide() }
+            
             do {
                 let user = try await viewModel.signInWithGoogle()
                 
@@ -105,11 +108,11 @@ class Login: UIViewController {
                 self.navigateBasedOnOnboardingStatus()
                 
             } catch let error as LocalizedError {
-                LoadingOverlay.shared.hide()
+                //LoadingOverlay.shared.hide()
                 self.showAlert(title: "Login Failed", message: error.localizedDescription)
                 
             } catch {
-                LoadingOverlay.shared.hide()
+                //LoadingOverlay.shared.hide()
                 self.showAlert(title: "Login Failed", message: AuthError.unknown.localizedDescription)
                 
             }
