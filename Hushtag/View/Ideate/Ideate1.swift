@@ -14,6 +14,7 @@ class Ideate1: UIViewController {
     var selectedIdea: Idea?
     var selectedIndexPath: IndexPath?
     private let likedIdeasController = LikedIdeasController()
+    var isSearching: Bool = false
     
     // NEW: Recent Scripts Data
     var recentScripts: [ScriptedIdea] = []
@@ -103,7 +104,7 @@ class Ideate1: UIViewController {
         ideas[index].liked = LikedIds.likedIdeaIds.contains(ideaKey)
         
         // Dynamic section adjustment
-        let suggestedSectionIndex = recentScripts.isEmpty ? 1 : 2
+        let suggestedSectionIndex = (recentScripts.isEmpty || isSearching) ? 1 : 2
 
         if let cell = collectionView.cellForItem(
             at: IndexPath(row: index, section: suggestedSectionIndex)
@@ -162,12 +163,13 @@ class Ideate1: UIViewController {
                     alignment: .top
                 )
                 section.boundarySupplementaryItems = [header]
+                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 15, trailing: 0)
                 
                 return section
             }
             
             // Determine if Section 1 is "Recent Scripts" or "Suggested"
-            let isRecentScriptsSection = !self.recentScripts.isEmpty && sectionIndex == 1
+            let isRecentScriptsSection = !self.recentScripts.isEmpty && !self.isSearching && sectionIndex == 1
             
             if isRecentScriptsSection {
                 // Horizontal Layout for Recent Scripts
@@ -176,7 +178,7 @@ class Ideate1: UIViewController {
                     heightDimension: .fractionalHeight(1.0)
                 )
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 5, bottom: 0, trailing: 5)
+                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10)
                 
                 let groupSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(0.47),
@@ -186,7 +188,7 @@ class Ideate1: UIViewController {
                 
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
-                section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+                section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 0)
                 
                 // Header (using HeaderView)
                 let headerSize = NSCollectionLayoutSize(
@@ -198,6 +200,7 @@ class Ideate1: UIViewController {
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .top
                 )
+                header.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
                 section.boundarySupplementaryItems = [header]
                 
                 return section
@@ -230,10 +233,12 @@ class Ideate1: UIViewController {
                 elementKind: UICollectionView.elementKindSectionHeader,
                 alignment: .top
             )
+            header.contentInsets = NSDirectionalEdgeInsets(top: -5, leading: 0, bottom: 0, trailing: 0)
             
             section.boundarySupplementaryItems = [header]
             section.interGroupSpacing = 15
-            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+            let sectionTopInset: CGFloat = self.isSearching ? 0 : 5
+            section.contentInsets = NSDirectionalEdgeInsets(top: sectionTopInset, leading: 0, bottom: 0, trailing: 0)
             
             return section
         }
@@ -352,7 +357,7 @@ class Ideate1: UIViewController {
 
 extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return recentScripts.isEmpty ? 2 : 3
+        return (recentScripts.isEmpty || isSearching) ? 2 : 3
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -360,7 +365,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             return 0
         }
         
-        if !recentScripts.isEmpty && section == 1 {
+        if !recentScripts.isEmpty && !isSearching && section == 1 {
             return recentScripts.count
         }
         
@@ -370,7 +375,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         // Recent Scripts Section
-        if !recentScripts.isEmpty && indexPath.section == 1 {
+        if !recentScripts.isEmpty && !isSearching && indexPath.section == 1 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scriptCellIdeate", for: indexPath) as! Script_cell_ideate
             let script = recentScripts[indexPath.row]
             cell.configureCell(with: script)
@@ -403,7 +408,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             header.delegate = self
             return header
             
-        } else if !recentScripts.isEmpty && indexPath.section == 1 {
+        } else if !recentScripts.isEmpty && !isSearching && indexPath.section == 1 {
             // Recent Scripts Header using HeaderView
             let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
@@ -427,7 +432,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         // Handle Tap on Recent Script
-        if !recentScripts.isEmpty && indexPath.section == 1 {
+        if !recentScripts.isEmpty && !isSearching && indexPath.section == 1 {
             let script = recentScripts[indexPath.row]
             let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
             if let destinationVC = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas {
@@ -438,7 +443,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         }
         
         // Handle Tap on Suggested Idea (correct section index)
-        let suggestedSectionIndex = recentScripts.isEmpty ? 1 : 2
+        let suggestedSectionIndex = (recentScripts.isEmpty || isSearching) ? 1 : 2
         
         if indexPath.section == suggestedSectionIndex {
             let idea = ideas[indexPath.row]
@@ -476,10 +481,13 @@ extension Ideate1: IdeaSearchDelegate {
     func didTapSearch(with keyword: String) {
         
         if keyword.isEmpty {
+            self.isSearching = false
             self.ideas = syncLikedState(SessionManager.shared.personalizedIdeas)
             collectionView.reloadData()
             return
         }
+        
+        self.isSearching = true
 
         
         Task {
@@ -567,7 +575,7 @@ extension Ideate1: IdeaCellDelegate {
                         object: ideaKey
                     )
 
-                    let suggestedSectionIndex = recentScripts.isEmpty ? 1 : 2
+                    let suggestedSectionIndex = (recentScripts.isEmpty || self.isSearching) ? 1 : 2
                     if let cell = collectionView.cellForItem(
                             at: IndexPath(row: index, section: suggestedSectionIndex)
                         ) as? IdeaCells {
