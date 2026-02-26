@@ -237,7 +237,8 @@ class Ideate1: UIViewController {
             
             section.boundarySupplementaryItems = [header]
             section.interGroupSpacing = 15
-            section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 0)
+            let sectionTopInset: CGFloat = self.isSearching ? 0 : 5
+            section.contentInsets = NSDirectionalEdgeInsets(top: sectionTopInset, leading: 0, bottom: 0, trailing: 0)
             
             return section
         }
