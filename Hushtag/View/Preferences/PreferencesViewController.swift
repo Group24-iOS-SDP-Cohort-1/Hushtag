@@ -404,6 +404,24 @@ extension PreferencesViewController: YouTubeConnectDelegate {
         Task {
             do {
                 try await viewModel.connectYouTube()
+
+                // 👉 Quick test to verify the proxy function works!
+                do {
+                    print("⏳ Testing proxy fetch for analytics...")
+                    // Fetching data from the start of the year to today
+                    let analyticsData = try await YouTubeController.shared.fetchAnalytics(
+                        startDate: "2026-01-01",
+                        endDate: "2026-02-26"
+                    )
+                    
+                    // Convert the raw JSON data to a readable string for the console
+                    if let jsonString = String(data: analyticsData, encoding: .utf8) {
+                        print("📈 PROXY SUCCESS - Raw YouTube Data:")
+                        print(jsonString)
+                    }
+                } catch {
+                    print("❌ PROXY FETCH FAILED: \(error)")
+                }
                 
                 await MainActor.run {
                     cell.isConnected = true
@@ -414,6 +432,9 @@ extension PreferencesViewController: YouTubeConnectDelegate {
                     
                     self.completedStates[cell.cardIndex] = true
                     self.updateProgressFromCompletedStates()
+                    
+                    
+                    
                     
                     let alert = UIAlertController(title: "Success", message: "Successfully connected YouTube account!", preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "OK", style: .default))

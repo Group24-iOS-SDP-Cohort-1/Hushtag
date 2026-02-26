@@ -1,90 +1,94 @@
-
 import Foundation
 import Supabase
-import CryptoKit
 
-// MARK: - Token Data Structure
+// MARK: - Edge Function Payloads
 
-nonisolated struct YouTubeTokens: Codable, Sendable {
-    let user_id: UUID
+/// Payload sent to the 'youtube-auth' function to securely save tokens
+struct YouTubeAuthPayload: Codable {
     let access_token: String
     let refresh_token: String
 }
 
-// MARK: - Encryption Utility
-
-struct TokenCrypto {
-    static let symmetricKey = SymmetricKey(size: .bits256)
-    
-    static func encrypt(_ string: String) throws -> String {
-        guard let data = string.data(using: .utf8) else {
-            throw NSError(domain: "CryptoError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to convert string to data"])
-        }
-        let sealedBox = try ChaChaPoly.seal(data, using: symmetricKey)
-        return sealedBox.combined.base64EncodedString()
-    }
-    
-    static func decrypt(_ base64String: String) throws -> String {
-        guard let data = Data(base64Encoded: base64String) else {
-            throw NSError(domain: "CryptoError", code: -2, userInfo: [NSLocalizedDescriptionKey: "Failed to decode base64 string"])
-        }
-        let sealedBox = try ChaChaPoly.SealedBox(combined: data)
-        let decryptedData = try ChaChaPoly.open(sealedBox, using: symmetricKey)
-        guard let decryptedString = String(data: decryptedData, encoding: .utf8) else {
-            throw NSError(domain: "CryptoError", code: -3, userInfo: [NSLocalizedDescriptionKey: "Failed to decode decrypted data to string"])
-        }
-        return decryptedString
-    }
+/// Payload sent to the 'fetch-youtube-analytics' proxy function
+struct AnalyticsRequestPayload: Codable {
+    let startDate: String
+    let endDate: String
 }
 
+// MARK: - YouTube Controller
 
 final class YouTubeController {
 
     static let shared = YouTubeController()
     private init() {}
 
+    // Assuming you have a SupabaseConfig setup in your project
     private let client = SupabaseConfig.client
 
-    /// Exchange Google OAuth auth code for YouTube access
-    func exchangeAuthCode(_ code: String) async throws {
-
-        let session = try await client.auth.session
-        let userId = session.user.id.uuidString
-
-        let payload = YouTubeAuthPayload(
-            user_id: userId,
-            auth_code: code
-        )
-
-
-        // 🔥 Call Supabase Edge Function
-        try await client.functions
-            .invoke(
-                "youtube-auth",
-                options: .init(body: payload)
-            )
-    }
+    // MARK: - 1. Secure Token Storage
     
-    /// Save YouTube analytics access and refresh tokens to Supabase
+    /// Sends the raw tokens to the backend to be securely encrypted and saved.
     func saveYouTubeTokens(accessToken: String, refreshToken: String) async throws {
-        let session = try await client.auth.session
-        let userId = session.user.id
+            
+            // 👉 DIAGNOSTIC CHECK: Are we actually logged in?
+            do {
+                let session = try await client.auth.session
+                print("🟢 SUPABASE AUTH OK: Logged in as \(session.user.id)")
+                
+                let payload = YouTubeAuthPayload(access_token: accessToken, refresh_token: refreshToken)
+                            try await client.functions.invoke("youtube-auth", options: .init(body: payload))
+                            print("✅ Tokens successfully encrypted and saved via backend proxy.")
+            } catch {
+                print("🔴 SUPABASE AUTH FAILED: No active session found!")
+                if let functionError = error as? FunctionsError,
+                               case .httpError(let code, let data) = functionError,
+                               let errorMessage = String(data: data, encoding: .utf8) {
+                                print("🔴 EDGE FUNCTION FAILED (Code \(code)): \(errorMessage)")
+                            } else {
+                                print("🔴 SUPABASE ERROR: \(error)")
+                            }
+                            throw error
+                //throw error // This will stop the function before it hits the 401
+            }
+            
+            let payload = YouTubeAuthPayload(
+                access_token: accessToken,
+                refresh_token: refreshToken
+            )
+
+            print("🚀 Sending tokens to Edge Function for secure storage...")
+            
+            try await client.functions
+                .invoke(
+                    "youtube-auth",
+                    options: .init(body: payload)
+                )
+            
+            print("✅ Tokens successfully encrypted and saved via backend proxy.")
+        }
+    
+    // MARK: - 2. Fetch Analytics Data
         
-        print("🔑 DEBUG - Raw Access Token: \(accessToken)")
-        print("🔄 DEBUG - Raw Refresh Token: \(refreshToken)")
-        
-        let encryptedAccess = try TokenCrypto.encrypt(accessToken)
-        let encryptedRefresh = try TokenCrypto.encrypt(refreshToken)
-        
-        let tokenData = YouTubeTokens(
-            user_id: userId,
-            access_token: encryptedAccess,
-            refresh_token: encryptedRefresh
-        )
-        
-        try await client.database
-            .from("youtube_tokens")
-            .upsert(tokenData)
-            .execute()
-    }
+        /// Calls the proxy Edge Function to get the user's YouTube views
+        func fetchAnalytics(startDate: String, endDate: String) async throws -> Data {
+            
+            let payload = AnalyticsRequestPayload(
+                startDate: startDate,
+                endDate: endDate
+            )
+            
+            print("📊 Requesting analytics from Edge Function...")
+            
+            // Invoke the fetch-youtube-analytics Edge Function and capture raw Data
+            let responseData: Data = try await client.functions
+                .invoke(
+                    "fetch-youtube-analytics",
+                    options: .init(body: payload),
+                    decode: { data, response in
+                        return data // 👉 THE FIX: Explicitly return the raw Data
+                    }
+                )
+            
+            return responseData
+        }
 }
