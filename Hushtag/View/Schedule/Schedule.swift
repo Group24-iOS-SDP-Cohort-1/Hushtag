@@ -102,6 +102,14 @@ class Schedule: UIViewController {
             object: nil
         )
         
+        // listen for successful update/insertion of deals
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDealsDidChange),
+            name: .dealsDidChange,
+            object: nil
+        )
+        
     }
     
     private func filterItems(for date: Date) {

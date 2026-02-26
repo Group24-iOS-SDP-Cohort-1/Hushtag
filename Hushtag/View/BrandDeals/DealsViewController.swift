@@ -91,6 +91,14 @@ class DealsViewController: UIViewController {
             .foregroundColor: UIColor.white,
             .font: UIFont.systemFont(ofSize: 14, weight: .semibold)
         ], for: .selected)
+        
+        // Listen for successful update/insertion/deletion of deals from anywhere
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDealsDidChange),
+            name: .dealsDidChange,
+            object: nil
+        )
     }
     
     @IBAction func segmentedAction(_ sender: UISegmentedControl) {
@@ -100,6 +108,10 @@ class DealsViewController: UIViewController {
         collectionView.setCollectionViewLayout(generateLayout(), animated: false)
         
         collectionView.reloadData()
+    }
+    
+    @objc private func handleDealsDidChange() {
+        fetchDeals()
     }
     
     private func fetchDeals()  {
