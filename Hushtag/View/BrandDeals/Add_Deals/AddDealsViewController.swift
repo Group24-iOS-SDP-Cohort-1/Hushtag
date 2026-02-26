@@ -7,14 +7,14 @@ protocol AddDealsDelegate: AnyObject {
 
 }
 
-class AddDealsViewController: UITableViewController, DeliverableCellAddDealDelegate {
+class AddDealsViewController: UITableViewController {
     
     weak var delegate: AddDealsDelegate?
     private var deals: [Deal] = []
     var editingDeal: Deal?
     var editingIndex: Int?
     private let dealsController = DealsController()
-    private var editingDeliverables: [Deliverable] = []
+    private var currentDeliverables: [Deliverable] = []
 
     @IBOutlet weak var deadlinePicker: UIDatePicker!
     @IBOutlet weak var reminderPicker: UIDatePicker!
@@ -38,7 +38,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         "Reminder"
     ]
     
-    var deliverablePlaceholders : [String] = []
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,8 +60,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         reminderPicker.addTarget(self, action: #selector(reminderDateChanged), for: .valueChanged)
 
         if let deal = editingDeal {
-                    editingDeliverables = deal.deliverables
-
+            currentDeliverables = deal.deliverables
         }
 
     }
@@ -156,53 +155,8 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
            let email       = fieldValues[safe: 4] ?? ""
 
 
-           // 2. Read deliverables
-           let delIP = IndexPath(row: 0, section: Section.deliverables.rawValue)
-           guard let delCell = tableView.cellForRow(at: delIP) as? DeliverableCellAddDeal else {
-               return
-           }
-
-           let texts = delCell.deliverablesText
-           let dates = delCell.deliverablesDates
            let deal_id = editingDeal?.id ?? UUID()
-           var deliverables: [Deliverable] = []
-
-           for (i, text) in texts.enumerated() {
-               let title = text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                   ? "Untitled Deliverable"
-                   : text
-
-               let deadline = dates[safe: i] ?? Date()
-
-               let old = editingDeal?.deliverables[safe: i]
-
-
-               deliverables.append(
-                   Deliverable(
-                       id: UUID(),
-                       deal_id: old?.id ?? UUID(),
-                       name: title,
-                       deadline: deadline,
-                       isCompleted: old?.isCompleted ?? false
-                   )
-               )
-
-           }
-//        if deliverables.isEmpty {
-//            let dateFormatter = DateFormatter()
-//            dateFormatter.dateStyle = .medium
-//            let deadline = dateFormatter.date(from: deadlineRaw) ?? Date()
-//
-//            deliverables.append(
-//                Deliverable(
-//                    id: UUID(),
-//                    deal_id: deal_id,
-//                    name: "Main Deliverable",
-//                    deadline: deadline,
-//                    isCompleted: false
-//                )
-//            )
-//        }
+           let deliverables = currentDeliverables
 
            // 3. Parse platform & payment
         let platforms: [Platform] = platformRaw
@@ -277,13 +231,63 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
         return 2
     }
 
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let sec = Section(rawValue: section) else { return nil }
+        
+        if sec == .deliverables {
+            let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 44))
+            headerView.backgroundColor = .clear
+            
+            let titleLabel = UILabel()
+            titleLabel.text = "Deliverables"
+            titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
+            titleLabel.textColor = .secondaryLabel
+            titleLabel.translatesAutoresizingMaskIntoConstraints = false
+            headerView.addSubview(titleLabel)
+            
+            let addButton = UIButton(type: .system)
+            addButton.setTitle("+ Add Deliverable", for: .normal)
+            addButton.titleLabel?.font = .systemFont(ofSize: 13, weight: .semibold)
+            addButton.translatesAutoresizingMaskIntoConstraints = false
+            addButton.addTarget(self, action: #selector(addDeliverableTapped), for: .touchUpInside)
+            headerView.addSubview(addButton)
+            
+            NSLayoutConstraint.activate([
+                titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+                titleLabel.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -8),
+                
+                addButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -16),
+                addButton.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -8)
+            ])
+            
+            return headerView
+        }
+        
+        let label = UILabel()
+        label.text = "Deal Details"
+        return nil
+    }
+
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let sec = Section(rawValue: section) else { return nil }
-        switch sec {
-        case .mainFields:
+        if sec == .mainFields {
             return "Deal Details"
-        case .deliverables:
-            return "Deliverables"
+        }
+        return nil
+    }
+
+    @objc private func addDeliverableTapped() {
+        let newDeliverable = Deliverable(id: UUID(), deal_id: editingDeal?.id ?? UUID(), name: "", deadline: Date(), isCompleted: false)
+        currentDeliverables.append(newDeliverable)
+        
+        let indexPath = IndexPath(row: currentDeliverables.count - 1, section: Section.deliverables.rawValue)
+        tableView.insertRows(at: [indexPath], with: .automatic)
+    }
+
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if indexPath.section == Section.deliverables.rawValue, editingStyle == .delete {
+            currentDeliverables.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
 
@@ -293,7 +297,7 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
 
         return section == Section.mainFields.rawValue
                 ? fieldPlaceholders.count
-                : 1
+                : currentDeliverables.count
 
     }
 
@@ -370,58 +374,27 @@ class AddDealsViewController: UITableViewController, DeliverableCellAddDealDeleg
             
         case .deliverables:
             let cell = tableView.dequeueReusableCell(
-                withIdentifier: "DeliverableCell",
+                withIdentifier: "DynamicItemCell",
                 for: indexPath
-            ) as! DeliverableCellAddDeal
-
-            cell.delegate = self
-            cell.placeholderPrefix = "Deliverable"
-            cell.addButton.setTitle("+ Deliverables", for: .normal)
-
-            // Prefill only when editing
-            if !editingDeliverables.isEmpty {
-                for d in editingDeliverables {
-                    cell.addDeliverableField(placeholder: d.name)
-                }
-                editingDeliverables.removeAll()
+            ) as! DynamicItemCell
+            
+            let deliverable = currentDeliverables[indexPath.row]
+            cell.configure(title: deliverable.name, placeholder: "Deliverable title", date: deliverable.deadline)
+            
+            cell.titleChanged = { [weak self] newTitle in
+                self?.currentDeliverables[indexPath.row].name = newTitle
             }
-
+            
+            cell.dateChanged = { [weak self] newDate in
+                self?.currentDeliverables[indexPath.row].deadline = newDate
+            }
+            
             return cell
-
         }
     }
 
     @objc func dismissPicker() {
         view.endEditing(true)
-    }
-    
-    
-    func deliverableCellDidTapAdd(_ cell: DeliverableCellAddDeal) {
-        let nextNumber = deliverablePlaceholders.count + 1
-        let placeholder = "Deliverable \(nextNumber)"
-        deliverablePlaceholders.append(placeholder)
-        
-        guard let indexPath = tableView.indexPath(for: cell) else { return }
-        
-        
-        cell.addDeliverableField(placeholder: placeholder)
-        
-        // recalculating the size
-        tableView.beginUpdates()
-        tableView.endUpdates()
-        
-        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-    }
-    
-    func deliverableCell(_ cell: DeliverableCellAddDeal, didRemoveAt index: Int) {
-        // remove placeholder that matches the deleted row (if present)
-        if index >= 0 && index < deliverablePlaceholders.count {
-            deliverablePlaceholders.remove(at: index)
-        }
-        
-        // recalculating the size
-        tableView.beginUpdates()
-        tableView.endUpdates()
     }
 }
 

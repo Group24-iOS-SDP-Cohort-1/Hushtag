@@ -7,12 +7,12 @@ protocol AddViewDelegate: AnyObject {
     func addViewController(_ controller: AddViewController, didUpdatePost post: Post,at index: Int)
 }
 
-class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
+class AddViewController: UITableViewController {
     
     weak var delegate: AddViewDelegate?
     var editingPost: Post?
     var editingIndex: Int?
-    private var editingTasks: [Tasks] = []
+    private var currentTasks: [Tasks] = []
     private let postsController = PostsController()
     
     @IBOutlet weak var deadlinePicker: UIDatePicker!
@@ -42,7 +42,7 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
         "Reminder"
     ]
     
-    var taskPlaceholders = ["Task 1"]
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,8 +58,7 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
         reminderPicker.addTarget(self, action: #selector(reminderChanged), for: .valueChanged)
         
         if let post = editingPost {
-                    editingTasks = post.tasks
-
+            currentTasks = post.tasks
         }
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeTapped))
@@ -119,51 +118,7 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
 
     }
     
-//    private func buildPost() -> Post? {
-//        
-//        guard let deadline = deadlineDate else { return nil }
-//        
-//        if let reminder = reminderDate,
-//           reminderWasManuallySet,
-//           reminder >= deadline {
-//            return nil
-//        }
-//
-//        
-//        let name = getValue("Post Name").isEmpty ? "Untitled Post" : getValue("Post Name")
-//        let platformRaw = getValue("Platform")
-//        
-//        let platforms = platformRaw
-//            .split(separator: ",")
-//            .map { Platform(rawValue: $0.trimmingCharacters(in: .whitespaces).lowercased()) }
-//            .compactMap { $0 }
-//        
-//        // Deliverables
-//        let delIP = IndexPath(row: 0, section: Section.deliverables.rawValue)
-//        guard let cell = tableView.cellForRow(at: delIP) as? DeliverableCellAddDeal else {
-//            return nil
-//        }
-//        
-//        let tasks = zip(cell.deliverablesText, cell.deliverablesDates).map {
-//            title, date in
-//            Tasks(
-//                id: UUID(),
-//                name: title.isEmpty ? "Untitled Task" : title,
-//                deadline: date,
-//                isCompleted: false
-//            )
-//        }
-//        
-//        return Post(
-//            id: nil,
-//            name: name,
-//            platform: platforms,
-//            tasks: tasks,
-//            reminder: reminderDate != nil ? [reminderDate!] : [],
-//            deadline: deadline
-//        )
-//    }
-    
+
     private func buildPost() -> Post? {
 
         guard let deadline = deadlineDate else { return nil }
@@ -182,20 +137,7 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
                 Platform(rawValue: $0.trimmingCharacters(in: .whitespaces).lowercased())
             }
 
-        let delIP = IndexPath(row: 0, section: Section.deliverables.rawValue)
-        guard let cell = tableView.cellForRow(at: delIP) as? DeliverableCellAddDeal else {
-            return nil
-        }
-
-        let tasks = zip(cell.deliverablesText, cell.deliverablesDates).map { title, date in
-            Tasks(
-                id: UUID(),
-                //post_id: postId,
-                name: title.isEmpty ? "Untitled Task" : title,
-                deadline: date,
-                isCompleted: false
-            )
-        }
+        let tasks = currentTasks
 
         return Post(
             id: postId,
@@ -241,13 +183,63 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
         return Section.allCases.count
     }
 
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let sec = Section(rawValue: section) else { return nil }
+        
+        if sec == .deliverables {
+            let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 44))
+            headerView.backgroundColor = .clear
+            
+            let titleLabel = UILabel()
+            titleLabel.text = "Tasks"
+            titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
+            titleLabel.textColor = .secondaryLabel
+            titleLabel.translatesAutoresizingMaskIntoConstraints = false
+            headerView.addSubview(titleLabel)
+            
+            let addButton = UIButton(type: .system)
+            addButton.setTitle("+ Add Task", for: .normal)
+            addButton.titleLabel?.font = .systemFont(ofSize: 13, weight: .semibold)
+            addButton.translatesAutoresizingMaskIntoConstraints = false
+            addButton.addTarget(self, action: #selector(addTaskTapped), for: .touchUpInside)
+            headerView.addSubview(addButton)
+            
+            NSLayoutConstraint.activate([
+                titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+                titleLabel.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -8),
+                
+                addButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -16),
+                addButton.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -8)
+            ])
+            
+            return headerView
+        }
+        
+        let label = UILabel()
+        label.text = "Post Details"
+        return nil
+    }
+
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let sec = Section(rawValue: section) else { return nil }
-        switch sec {
-        case .mainFields:
+        if sec == .mainFields {
             return "Post Details"
-        case .deliverables:
-            return "Tasks"
+        }
+        return nil
+    }
+
+    @objc private func addTaskTapped() {
+        let newTask = Tasks(id: UUID(), name: "", deadline: Date(), isCompleted: false)
+        currentTasks.append(newTask)
+        
+        let indexPath = IndexPath(row: currentTasks.count - 1, section: Section.deliverables.rawValue)
+        tableView.insertRows(at: [indexPath], with: .automatic)
+    }
+
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if indexPath.section == Section.deliverables.rawValue, editingStyle == .delete {
+            currentTasks.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
     
@@ -258,7 +250,7 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
         case .mainFields:
             return mainPlaceholders.count
         case .deliverables:
-            return 1
+            return currentTasks.count
         }
     }
     
@@ -338,14 +330,20 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
             
         case .deliverables:
             let cell = tableView.dequeueReusableCell(
-                withIdentifier: "DeliverableCell",
+                withIdentifier: "DynamicItemCell",
                 for: indexPath
-            ) as! DeliverableCellAddDeal
+            ) as! DynamicItemCell
             
-            cell.delegate = self
-            cell.configure(initialPlaceholders: taskPlaceholders)
-            cell.placeholderPrefix = "Task"
-            cell.addButton.setTitle("+ Task", for: .normal)
+            let task = currentTasks[indexPath.row]
+            cell.configure(title: task.name, placeholder: "Task title", date: task.deadline)
+            
+            cell.titleChanged = { [weak self] newTitle in
+                self?.currentTasks[indexPath.row].name = newTitle
+            }
+            
+            cell.dateChanged = { [weak self] newDate in
+                self?.currentTasks[indexPath.row].deadline = newDate
+            }
             
             return cell
         }
@@ -360,25 +358,5 @@ class AddViewController: UITableViewController, DeliverableCellAddDealDelegate {
                     .lowercased()
                 )
             }
-    }
-    
-    func deliverableCellDidTapAdd(_ cell: DeliverableCellAddDeal) {
-        let next = taskPlaceholders.count + 1
-        let placeholder = "Task \(next)"
-        taskPlaceholders.append(placeholder)
-        
-        cell.addDeliverableField(placeholder: placeholder)
-        
-        tableView.beginUpdates()
-        tableView.endUpdates()
-    }
-    
-    func deliverableCell(_ cell: DeliverableCellAddDeal, didRemoveAt index: Int) {
-        if index < taskPlaceholders.count {
-            taskPlaceholders.remove(at: index)
-        }
-        
-        tableView.beginUpdates()
-        tableView.endUpdates()
     }
 }

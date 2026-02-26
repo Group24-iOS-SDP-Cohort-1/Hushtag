@@ -22,8 +22,8 @@ struct Deal: Identifiable, Sendable {
 struct Deliverable: Identifiable, Sendable {
     let id: UUID
     let deal_id: UUID
-    let name: String
-    let deadline: Date
+    var name: String
+    var deadline: Date
     var isCompleted: Bool
 }
 
