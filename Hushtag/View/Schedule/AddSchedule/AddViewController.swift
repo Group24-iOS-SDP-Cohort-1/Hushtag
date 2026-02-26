@@ -159,16 +159,30 @@ class AddViewController: UITableViewController {
                     return
                 }
                 
-                let savedPost = try await postsController.addPost(post)
-                NotificationCenter.default.post(
-                    name: .postsDidChange,
-                    object: nil
-                )
-                delegate?.addViewController(self, didCreatePost: savedPost)
-                dismiss(animated: true)
+                if editingPost != nil {
+                    let updatedPost = try await postsController.updatePost(post)
+                    NotificationCenter.default.post(
+                        name: .postsDidChange,
+                        object: nil
+                    )
+                    
+                    if let index = editingIndex {
+                        // Assuming you have an update delegate method, but since the bug was here, the update logic was missing completely in AddViewController!
+                        // We will post notification and dismiss as the main update method.
+                    }
+                    dismiss(animated: true)
+                } else {
+                    let savedPost = try await postsController.addPost(post)
+                    NotificationCenter.default.post(
+                        name: .postsDidChange,
+                        object: nil
+                    )
+                    delegate?.addViewController(self, didCreatePost: savedPost)
+                    dismiss(animated: true)
+                }
                 
             } catch {
-                print("❌ Failed to insert post:", error)
+                print("❌ Failed to save post:", error)
             }
         }
     }

@@ -187,15 +187,17 @@ class AddDealsViewController: UITableViewController {
         _Concurrency.Task {
             do {
                
-                if let index = editingIndex {
+                if editingDeal != nil { // Check if we are editing an existing deal
                     let updatedDeal = try await dealsController.updateDeal(newDeal)
 
                     await MainActor.run {
-                        self.delegate?.addDealsViewController(
-                            self,
-                            didUpdateDeal: updatedDeal,
-                            at: index
-                        )
+                        if let index = editingIndex {
+                            self.delegate?.addDealsViewController(
+                                self,
+                                didUpdateDeal: updatedDeal,
+                                at: index
+                            )
+                        } // If there's no index (e.g. from Schedule), delegate isn't strictly needed for the list to update since we fire NotificationCenter
                         NotificationCenter.default.post(name: .dealsDidChange, object: nil)
                         self.dismiss(animated: true)
                     }

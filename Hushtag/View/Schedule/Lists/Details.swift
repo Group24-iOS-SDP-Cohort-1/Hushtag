@@ -202,6 +202,28 @@ class Details: UIViewController {
         onToggleDeliverable?(deal, deliverable)
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "editPost" {
+            if let nav = segue.destination as? UINavigationController,
+               let dest = nav.topViewController as? AddViewController,
+               case .post(let post, _) = schedule {
+                dest.editingPost = post
+            } else if let dest = segue.destination as? AddViewController,
+                      case .post(let post, _) = schedule {
+                dest.editingPost = post
+            }
+        } else if segue.identifier == "editDeal" {
+            if let nav = segue.destination as? UINavigationController,
+               let dest = nav.topViewController as? AddDealsViewController,
+               case .deal(let deal, _) = schedule {
+                dest.editingDeal = deal
+            } else if let dest = segue.destination as? AddDealsViewController,
+                      case .deal(let deal, _) = schedule {
+                dest.editingDeal = deal
+            }
+        }
+    }
+    
 }
 
 extension Details: UICollectionViewDataSource {
