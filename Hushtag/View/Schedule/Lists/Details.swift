@@ -20,29 +20,48 @@ class Details: UIViewController {
         super.viewDidLoad()
         detailsView.dataSource = self
         detailsView.setCollectionViewLayout(generateLayout(), animated: false)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handlePostsDidChange), name: .postsDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDealsDidChange), name: .dealsDidChange, object: nil)
     }
     
-//    @objc private func handlePostsDidChange() {
-//        Task {
-//            try await scheduleController.load()
-//
-//            await MainActor.run {
-//                self.filterItems(for: self.selectedDate)
-//                self.scheduleView.reloadSections(IndexSet(integer: 1))
-//            }
-//        }
-//    }
-//
-//    @objc private func handleDealsDidChange() {
-//        Task {
-//            try await scheduleController.load()
-//
-//            await MainActor.run {
-//                self.filterItems(for: self.selectedDate)
-//                self.scheduleView.reloadSections(IndexSet(integer: 1))
-//            }
-//        }
-//    }
+    @objc private func handlePostsDidChange() {
+        Task {
+            do {
+                let posts = try await postsController.fetchPosts()
+                if case .post(let currentPost, let currentTask) = self.schedule {
+                    if let updatedPost = posts.first(where: { $0.id == currentPost.id }) {
+                        let updatedTask = updatedPost.tasks.first(where: { $0.id == currentTask.id }) ?? updatedPost.tasks.first ?? currentTask
+                        await MainActor.run {
+                            self.schedule = .post(post: updatedPost, task: updatedTask)
+                            self.detailsView.reloadData()
+                        }
+                    }
+                }
+            } catch {
+                print("Failed to fetch posts: \(error)")
+            }
+        }
+    }
+
+    @objc private func handleDealsDidChange() {
+        Task {
+            do {
+                let deals = try await dealsController.fetchDeals()
+                if case .deal(let currentDeal, let currentDeliverable) = self.schedule {
+                    if let updatedDeal = deals.first(where: { $0.id == currentDeal.id }) {
+                        let updatedDeliverable = updatedDeal.deliverables.first(where: { $0.id == currentDeliverable.id }) ?? updatedDeal.deliverables.first ?? currentDeliverable
+                        await MainActor.run {
+                            self.schedule = .deal(deal: updatedDeal, deliverable: updatedDeliverable)
+                            self.detailsView.reloadData()
+                        }
+                    }
+                }
+            } catch {
+                print("Failed to fetch deals: \(error)")
+            }
+        }
+    }
 
     
     func generateLayout() -> UICollectionViewLayout {
