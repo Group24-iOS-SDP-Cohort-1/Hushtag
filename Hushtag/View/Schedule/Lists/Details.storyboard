@@ -268,7 +268,7 @@
         <!--AddDealsViewController-->
         <scene sceneID="aw7-Gl-4lM">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="AddDealsViewController" storyboardName="BrandDeals" referencedIdentifier="AddDealsViewController" id="Wcw-uA-Sf5" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardIdentifier="AddDealsViewController" storyboardName="BrandDeals" referencedIdentifier="Nav-Add-Deal" id="Wcw-uA-Sf5" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="DyX-2F-HuZ"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BNL-9U-fH9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -278,7 +278,7 @@
         <!--AddPostViewController-->
         <scene sceneID="d9x-1q-dXt">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="AddViewController" storyboardName="AddPostViewController" id="U0I-WM-TCw" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardIdentifier="AddViewController" storyboardName="AddPostViewController" referencedIdentifier="AddPostNavVC" id="U0I-WM-TCw" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="3wk-dx-hcY"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rbU-c7-94t" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

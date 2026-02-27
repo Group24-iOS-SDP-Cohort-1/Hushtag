@@ -70,10 +70,17 @@ class SessionManager: ObservableObject {
 
             // Convert bundles → Ideas
             let loadedIdeas: [Idea] = bundles.map { bundle in
+                
+                let generatedKey = makeIdeaKey(
+                    title: bundle.idea.title,
+                    description: bundle.idea.description,
+                    format: bundle.idea.format,
+                    hashtags: bundle.idea.hashtags
+                )
 
-                Idea(
+                return Idea(
                     id: bundle.idea.id,
-                    ideaKey: bundle.idea.ideaKey,
+                    ideaKey: bundle.idea.ideaKey ?? generatedKey,
                     title: bundle.idea.title,
                     description: bundle.idea.description,
                     format: bundle.idea.format,

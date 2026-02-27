@@ -85,7 +85,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Brand Deals" id="fpR-OI-OUV">
                         <barButtonItem key="leftBarButtonItem" id="DeI-ph-lDh">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="PyZ-sL-gAf">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="PyZ-sL-gAf">
                                 <rect key="frame" x="20" y="9" width="36" height="26"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -232,21 +232,21 @@
                                     <outlet property="textField" destination="kcS-fS-lqB" id="S3B-6j-zXw"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeliverableCell" id="WQf-gz-H9g" customClass="DeliverableCellAddDeal" customModule="Hushtag" customModuleProvider="target">
-                                <rect key="frame" x="20" y="116.33333206176758" width="353" height="83.333335876464844"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeliverableCell" id="WQf-gz-H9g">
+                                <rect key="frame" x="20" y="116.33333206176758" width="353" height="67.333335876464844"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WQf-gz-H9g" id="bQ7-sg-YyA">
-                                    <rect key="frame" x="0.0" y="0.0" width="353" height="83.333335876464844"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="353" height="67.333335876464844"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ift-r7-xm6">
-                                            <rect key="frame" x="16" y="0.0" width="321" height="67.333333333333329"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="353" height="67.333333333333329"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ipu-uK-y9Z">
-                                                    <rect key="frame" x="16" y="16.000000000000004" width="289" height="35.333333333333343"/>
+                                                    <rect key="frame" x="16" y="16.000000000000004" width="321" height="35.333333333333343"/>
                                                     <subviews>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6u7-lx-HNB">
-                                                            <rect key="frame" x="0.0" y="0.0" width="289" height="35.333333333333336"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="321" height="35.333333333333336"/>
                                                             <color key="tintColor" red="0.5450980392" green="0.36078431370000003" blue="0.96470588239999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <state key="normal" title="Button"/>
                                                             <buttonConfiguration key="configuration" style="plain" title="Deliverables"/>
@@ -277,6 +277,60 @@
                                     <outlet property="addButton" destination="6u7-lx-HNB" id="xuQ-J7-Owm"/>
                                     <outlet property="cardView" destination="ift-r7-xm6" id="RQt-5F-foB"/>
                                     <outlet property="stackView" destination="ipu-uK-y9Z" id="tII-3G-Fus"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="DynamicItemCell" id="dynamic-deal-cell" customClass="DynamicItemCell" customModule="Hushtag" customModuleProvider="target">
+                                <rect key="frame" x="20" y="183.66666793823242" width="353" height="51"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="dynamic-deal-cell" id="dynamic-deal-content">
+                                    <rect key="frame" x="0.0" y="0.0" width="353" height="51"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="tv-deal-cell">
+                                            <rect key="frame" x="16" y="15" width="180" height="44"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="44" id="hc-deal-cell"/>
+                                                <constraint firstAttribute="width" constant="120" id="wc-tv-deal"/>
+                                            </constraints>
+                                            <color key="textColor" systemColor="labelColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            <connections>
+                                                <outlet property="delegate" destination="dynamic-deal-cell" id="del-deal-cell"/>
+                                            </connections>
+                                        </textView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Placeholder" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-deal-cell">
+                                            <rect key="frame" x="16" y="14.999999999999998" width="180" height="19.333333333333329"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" systemColor="placeholderTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="dp-deal-cell">
+                                            <rect key="frame" x="204" y="8.6666666666666643" width="133" height="34"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="34" id="hc-dp-deal"/>
+                                            </constraints>
+                                            <connections>
+                                                <action selector="dateDidChangeWithSender:" destination="dynamic-deal-cell" eventType="valueChanged" id="act-deal-cell"/>
+                                            </connections>
+                                        </datePicker>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="lbl-deal-cell" firstAttribute="leading" secondItem="tv-deal-cell" secondAttribute="leading" id="c1-deal-cell"/>
+                                        <constraint firstItem="lbl-deal-cell" firstAttribute="top" secondItem="tv-deal-cell" secondAttribute="top" id="c2-deal-cell"/>
+                                        <constraint firstItem="lbl-deal-cell" firstAttribute="trailing" secondItem="tv-deal-cell" secondAttribute="trailing" id="c3-deal-cell"/>
+                                        <constraint firstItem="dp-deal-cell" firstAttribute="leading" secondItem="tv-deal-cell" secondAttribute="trailing" constant="8" id="c5-deal-cell"/>
+                                        <constraint firstItem="tv-deal-cell" firstAttribute="leading" secondItem="dynamic-deal-content" secondAttribute="leadingMargin" id="c6-deal-cell"/>
+                                        <constraint firstItem="tv-deal-cell" firstAttribute="top" secondItem="dynamic-deal-content" secondAttribute="topMargin" id="c7-deal-cell"/>
+                                        <constraint firstItem="dp-deal-cell" firstAttribute="centerY" secondItem="dynamic-deal-content" secondAttribute="centerY" id="c8-deal-cell"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="dp-deal-cell" secondAttribute="trailing" id="c9-deal-cell"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="datePicker" destination="dp-deal-cell" id="out-dp-deal-cell"/>
+                                    <outlet property="placeholderLabel" destination="lbl-deal-cell" id="out-lbl-deal-cell"/>
+                                    <outlet property="titleField" destination="tv-deal-cell" id="out-tv-deal-cell"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -327,7 +381,7 @@
         <!--Navigation Controller-->
         <scene sceneID="0h5-Wq-jgB">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="u03-JL-NsK" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="Nav-Add-Deal" automaticallyAdjustsScrollViewInsets="NO" id="u03-JL-NsK" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="xd3-ry-ypt">
                         <rect key="frame" x="0.0" y="16" width="393" height="54"/>
@@ -363,6 +417,12 @@
         <namedColor name="AccentColor">
             <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="placeholderTextColor">
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29803921570000003" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

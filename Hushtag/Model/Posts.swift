@@ -14,8 +14,8 @@ struct Post: Identifiable, Sendable {
 }
 struct Tasks: Identifiable, Sendable {
     let id: UUID
-    let name: String
-    let deadline: Date
+    var name: String
+    var deadline: Date
     var isCompleted: Bool
 }
 

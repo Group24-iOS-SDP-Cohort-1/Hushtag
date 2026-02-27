@@ -43,7 +43,7 @@
                                     <outlet property="textField" destination="QR2-M3-tHW" id="Wom-XQ-Jg1"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeliverableCell" id="yaL-cE-zVj" customClass="DeliverableCellAddDeal" customModule="Hushtag" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="DeliverableCell" id="yaL-cE-zVj">
                                 <rect key="frame" x="20" y="116.33333206176758" width="353" height="83.333335876464844"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="yaL-cE-zVj" id="ayZ-Lf-fDN">
@@ -88,6 +88,61 @@
                                     <outlet property="addButton" destination="3E5-6l-7sd" id="QLs-Yn-ctl"/>
                                     <outlet property="cardView" destination="XoO-Gc-0qe" id="kGR-wU-7Kp"/>
                                     <outlet property="stackView" destination="Poc-H7-87z" id="M4M-FI-mQj"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="DynamicItemCell" id="dynamic-post-cell" customClass="DynamicItemCell" customModule="Hushtag" customModuleProvider="target">
+                                <rect key="frame" x="20" y="199.66666793823242" width="353" height="80"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="dynamic-post-cell" id="dynamic-post-content">
+                                    <rect key="frame" x="0.0" y="0.0" width="353" height="80"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="tv-post-cell">
+                                            <rect key="frame" x="16" y="11" width="180" height="44"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="44" id="hc-post-cell"/>
+                                                <constraint firstAttribute="width" constant="120" id="wc-tv-post"/>
+                                            </constraints>
+                                            <color key="textColor" systemColor="labelColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            <connections>
+                                                <outlet property="delegate" destination="dynamic-post-cell" id="del-post-cell"/>
+                                            </connections>
+                                        </textView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Placeholder" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbl-post-cell">
+                                            <rect key="frame" x="16" y="11" width="191" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" systemColor="placeholderTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="dp-post-cell">
+                                            <rect key="frame" x="204" y="15" width="133" height="34"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="34" id="hc-dp-post"/>
+                                            </constraints>
+                                            <connections>
+                                                <action selector="dateDidChangeWithSender:" destination="dynamic-post-cell" eventType="valueChanged" id="act-post-cell"/>
+                                            </connections>
+                                        </datePicker>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="lbl-post-cell" firstAttribute="leading" secondItem="tv-post-cell" secondAttribute="leading" id="c1-post-cell"/>
+                                        <constraint firstItem="lbl-post-cell" firstAttribute="top" secondItem="tv-post-cell" secondAttribute="top" id="c2-post-cell"/>
+                                        <constraint firstItem="lbl-post-cell" firstAttribute="trailing" secondItem="tv-post-cell" secondAttribute="trailing" id="c3-post-cell"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="tv-post-cell" secondAttribute="bottom" id="c4-post-cell"/>
+                                        <constraint firstItem="dp-post-cell" firstAttribute="leading" secondItem="tv-post-cell" secondAttribute="trailing" constant="8" id="c5-post-cell"/>
+                                        <constraint firstItem="tv-post-cell" firstAttribute="leading" secondItem="dynamic-post-content" secondAttribute="leadingMargin" id="c6-post-cell"/>
+                                        <constraint firstItem="tv-post-cell" firstAttribute="top" secondItem="dynamic-post-content" secondAttribute="topMargin" id="c7-post-cell"/>
+                                        <constraint firstItem="dp-post-cell" firstAttribute="centerY" secondItem="dynamic-post-content" secondAttribute="centerY" id="c8-post-cell"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="dp-post-cell" secondAttribute="trailing" id="c9-post-cell"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="datePicker" destination="dp-post-cell" id="out-dp-post-cell"/>
+                                    <outlet property="placeholderLabel" destination="lbl-post-cell" id="out-lbl-post-cell"/>
+                                    <outlet property="titleField" destination="tv-post-cell" id="out-tv-post-cell"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -141,6 +196,12 @@
         <image name="xmark" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="placeholderTextColor">
+            <color red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29803921570000003" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
