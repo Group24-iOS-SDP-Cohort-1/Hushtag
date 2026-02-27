@@ -115,6 +115,44 @@ class PreferencesViewController: UIViewController {
         
         updateProgressFromCompletedStates(animated: false)
         
+        checkExistingYouTubeConnection()
+        
+    }
+    
+    private func checkExistingYouTubeConnection() {
+        Task {
+            let isConnected = await YouTubeController.shared.checkYouTubeConnection()
+            if isConnected {
+                
+                // 👉 Quick test to verify the proxy function works with the new tokens!
+                do {
+                    print("⏳ Google Login Complete: Testing proxy fetch for analytics...")
+                    // Fetching data from the start of the year to today
+                    let analyticsData = try await YouTubeController.shared.fetchAnalytics(
+                        startDate: "2026-01-01",
+                        endDate: "2026-02-26"
+                    )
+                    
+                    if let jsonString = String(data: analyticsData, encoding: .utf8) {
+                        print("📈 GOOGLE SUCCESS - Raw YouTube Data:")
+                        print(jsonString)
+                    }
+                } catch {
+                    print("❌ GOOGLE PROXY FETCH FAILED: \(error)")
+                }
+                
+                await MainActor.run {
+                    // Assuming YouTube connect card is at index 3
+                    if self.completedStates.count > 3 {
+                        self.completedStates[3] = true
+                        self.updateProgressFromCompletedStates()
+                        
+                        // Force a reload so cellForItemAt will pass the updated `isConnected` state to the cell
+                        self.preferencesCollectionView.reloadData()
+                    }
+                }
+            }
+        }
     }
     
     
@@ -328,6 +366,10 @@ extension PreferencesViewController: UICollectionViewDataSource {
             return cell
         }else if indexPath.item == 3{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "accountCell", for: indexPath) as! AccountConnectCollectionViewCell
+            
+            // Set the cell's internal connection state before configuring
+            cell.isConnected = completedStates[indexPath.item]
+            
             cell.configureCell(with : item)
             
             //NEW

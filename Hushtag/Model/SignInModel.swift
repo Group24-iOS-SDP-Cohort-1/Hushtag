@@ -106,8 +106,21 @@ class SignInModel {
     func signInWithGoogle() async throws -> AppUser {
         let signInGoogle = SignInGoogle()
         let googleResult = try await signInGoogle.startSignInWithGoogleFlow()
-        return try await AuthManager.shared.signInWithGoogle(idToken: googleResult.idToken)
         
+        let user = try await AuthManager.shared.signInWithGoogle(idToken: googleResult.idToken)
+        
+        if let accessToken = googleResult.accessToken, let refreshToken = googleResult.refreshToken, !refreshToken.isEmpty {
+            do {
+                try await YouTubeController.shared.saveYouTubeTokens(
+                    accessToken: accessToken,
+                    refreshToken: refreshToken
+                )
+            } catch {
+                print("Failed to save YouTube tokens during Google Sign-In: \(error)")
+            }
+        }
+        
+        return user
     }
     
     // MARK: - YouTube Connect Flow
@@ -128,8 +141,10 @@ class SignInModel {
 
 
 
-struct SignInGoogleResult{
+struct SignInGoogleResult {
     let idToken: String
+    let accessToken: String?
+    let refreshToken: String?
 }
 
 struct ConnectYouTubeResult {
@@ -160,7 +175,11 @@ class SignInGoogle {
         
         
         
-        GIDSignIn.sharedInstance.signIn(withPresenting: topVC) { signInResult, error in
+        GIDSignIn.sharedInstance.signIn(
+            withPresenting: topVC,
+            hint: nil,
+            additionalScopes: ["https://www.googleapis.com/auth/yt-analytics.readonly"]
+        ) { signInResult, error in
             
             if let error = error {
                 completion(.failure(error))
@@ -175,7 +194,15 @@ class SignInGoogle {
                 print("Error signing in: \(error?.localizedDescription ?? "No error description")")
                 return
             }
-            completion(.success(.init(idToken: idToken.tokenString)))
+            
+            let accessToken = user.accessToken.tokenString
+            let refreshToken = user.refreshToken.tokenString
+            
+            completion(.success(.init(
+                idToken: idToken.tokenString,
+                accessToken: accessToken,
+                refreshToken: refreshToken
+            )))
         }
     }
     

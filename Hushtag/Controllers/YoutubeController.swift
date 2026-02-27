@@ -15,6 +15,12 @@ struct AnalyticsRequestPayload: Codable {
     let endDate: String
 }
 
+struct YouTubeTokenCheck: Codable {
+    let user_id: UUID
+}
+
+
+
 // MARK: - YouTube Controller
 
 final class YouTubeController {
@@ -91,4 +97,27 @@ final class YouTubeController {
             
             return responseData
         }
+        
+    // MARK: - 3. Check Connection State
+    
+    /// Checks if the current user has connected their YouTube account by verifying if a token row exists
+    func checkYouTubeConnection() async -> Bool {
+        do {
+            let session = try await client.auth.session
+            
+            // Bypass Strict Concurrency Codable struct mismatches with a plain Sendable Dictionary
+            let _: [String: String] = try await client.database
+                .from("youtube_tokens")
+                .select("user_id")
+                .eq("user_id", value: session.user.id)
+                .single()
+                .execute()
+                .value
+            
+            return true
+        } catch {
+            print("YouTube connection check Failed or Not Found: \(error)")
+            return false
+        }
+    }
 }
