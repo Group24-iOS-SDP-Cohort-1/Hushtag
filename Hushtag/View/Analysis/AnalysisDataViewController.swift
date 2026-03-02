@@ -10,6 +10,8 @@ class AnalysisDataViewController: UIViewController {
     var audienceMetrics: [AudienceMetrics] = []
     var latestContent: [LatestContent] = []
     var topVideos: [TopVideo] = []
+    var revenueInsight: [RevenueInsight] = []
+    var audienceDemographic: [AudienceDemographic] = []
     
     @IBOutlet weak var analysisCollectionView: UICollectionView!
     @IBOutlet weak var segmentedTimeOutlet: UISegmentedControl!
@@ -23,6 +25,8 @@ class AnalysisDataViewController: UIViewController {
             await loadAudience()
             await loadLatestContent()
             await loadTopVideos()
+            await loadRevenueInsights()
+            await loadAudienceDemographic()
         }
         
         analysisCollectionView.register(
@@ -125,7 +129,7 @@ class AnalysisDataViewController: UIViewController {
             }
             
         } catch {
-            print("Error fetching audience:", error)
+            print("Error fetching latest content:", error)
         }
     }
     
@@ -139,11 +143,37 @@ class AnalysisDataViewController: UIViewController {
             }
             
         } catch {
-            print("Top video fetch error:", error)
+            print("Error fetching top video:", error)
         }
     }
     
+    func loadRevenueInsights() async {
+        do {
+            revenueInsight = try await controller.fetchRevenueInsight()
+            print(revenueInsight)
+            
+            await MainActor.run {
+                self.analysisCollectionView.reloadSections(IndexSet(integer: 3))
+            }
+            
+        } catch {
+            print("Error fetching revenue insight:", error)
+        }
+    }
     
+    func loadAudienceDemographic() async {
+        do {
+            audienceDemographic = try await controller.fetchAudienceDemographic()
+            print(audienceDemographic)
+            
+            await MainActor.run {
+                self.analysisCollectionView.reloadSections(IndexSet(integer: 4))
+            }
+            
+        } catch {
+            print("Error fetching revenue insight:", error)
+        }
+    }
     
     //FUNCTION TO CHANGE DATA WHEN THE SELECTED SEGMENT CHANGES
     
@@ -218,9 +248,26 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
                 withReuseIdentifier: "revenue_cell",
                 for: indexPath
             ) as! RevenueSourceCell
-            
-            if let item = analysisData?.revenueSource[indexPath.row] {
-                cell.configure(with: item)
+            guard let latest = revenueInsight.first else {
+                return cell
+            }
+            switch indexPath.row {
+                
+            case 0:
+                cell.configure(metric: .ads, data: latest.estimated_ad_revenue)
+                
+            case 1:
+                cell.configure(metric: .paidContent, data: latest.gross_revenue)
+                
+            case 2:
+                cell.configure(metric: .ypp, data: latest.ypp_revenue)
+                
+            case 3:
+                cell.configure(metric: .collaboration, data: 20.00)
+                
+                
+            default:
+                break
             }
             return cell
         }
@@ -232,9 +279,10 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
                 for: indexPath
             ) as! AudienceChartCell
             
-            if let data = analysisData {
-                cell.configure(with: data)
+            guard let latest = audienceDemographic.first else {
+                return cell
             }
+            cell.configure(with: latest)
             return cell
         }
         

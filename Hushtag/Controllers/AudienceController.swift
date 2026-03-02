@@ -43,4 +43,32 @@ final class AudienceController {
         
         return data
     }
+    
+    func fetchRevenueInsight() async throws -> [RevenueInsight] {
+        let session = try await client.auth.session
+        
+        let data: [RevenueInsight] = try await client.database
+            .from("revenue_insights")
+            .select()
+            .eq("user_id", value: session.user.id)
+            .execute()
+            .value
+        
+        return data
+    }
+    
+    func fetchAudienceDemographic() async throws -> [AudienceDemographic] {
+        let session = try await client.auth.session
+        
+        let data: [AudienceDemographic] = try await client.database
+            .from("audience_demographics")
+            .select()
+            .eq("user_id", value: session.user.id)
+            .execute()
+            .value
+        
+        return data
+    }
+    
+    
 }
