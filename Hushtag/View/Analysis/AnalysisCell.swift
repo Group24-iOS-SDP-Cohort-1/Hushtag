@@ -25,7 +25,7 @@ class AnalysisCell: UICollectionViewCell {
         data: Int
     ) {
 
-        analysisValue.text = "\(data)"
+        analysisValue.text = "\(data.formattedCount())"
         var title: String!
         switch metric {
 

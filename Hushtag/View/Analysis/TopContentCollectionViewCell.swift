@@ -15,17 +15,41 @@ class TopContentCollectionViewCell: UICollectionViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        thumbnailImageView.layer.cornerRadius = 10
-        thumbnailImageView.clipsToBounds = true
-        backgroundColor = .clear
-        contentView.backgroundColor = .clear
-        contentView.applyLiquidGlassEffect()
+        applyLiquidGlassEffect()
     }
-    func configure(with item: TopContentItem) {
+    
+    func configure(with item: TopVideo) {
         titleLabel.text = item.title
         titleLabel.numberOfLines = 1
-        viewsLabel.text = "\(item.views) • \(item.publishedTime)"
-        thumbnailImageView.image = UIImage(named: item.thumbnail)
+        viewsLabel.text = "\(item.views.formattedCount()) views • \(item.published_at.dateAndMonth())"
+        thumbnailImageView.loadImage(from: item.thumbnail)
     }
 
 }
+
+// to load thumbnail
+extension UIImageView {
+
+    func loadImage(from urlString: String) {
+
+        guard let url = URL(string: urlString) else {
+            return
+        }
+
+        Task {
+            do {
+                let (data, _) =
+                    try await URLSession.shared.data(from: url)
+
+                if let image = UIImage(data: data) {
+                    await MainActor.run {
+                        self.image = image
+                    }
+                }
+            } catch {
+                print("Image load failed:", error)
+            }
+        }
+    }
+}
+

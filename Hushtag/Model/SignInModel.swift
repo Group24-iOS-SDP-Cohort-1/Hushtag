@@ -178,7 +178,7 @@ class SignInGoogle {
         GIDSignIn.sharedInstance.signIn(
             withPresenting: topVC,
             hint: nil,
-            additionalScopes: ["https://www.googleapis.com/auth/yt-analytics.readonly"]
+            additionalScopes: ["https://www.googleapis.com/auth/yt-analytics.readonly", "https://www.googleapis.com/auth/youtube.readonly"]
         ) { signInResult, error in
             
             if let error = error {
