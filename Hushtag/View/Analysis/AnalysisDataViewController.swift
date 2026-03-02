@@ -1,30 +1,31 @@
-//
-//  AnalysisDataViewController.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 08/12/25.
-//
-
 import UIKit
 
 class AnalysisDataViewController: UIViewController {
 
-    
     var analysisResponse = AnalysisResponse()
     var analysisData: Analysis?
     var platform: String = ""
-    //var dataStore: DataStore = DataStore.shared
     var fullAnalysis: [Analysis]?
+    let controller = AudienceController()
+    var audienceMetrics: [AudienceMetrics] = []
     
     @IBOutlet weak var analysisCollectionView: UICollectionView!
-    
     @IBOutlet weak var segmentedTimeOutlet: UISegmentedControl!
    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         fullAnalysis = analysisResponse.analysis
-        //print(fullAnalysis)
+        NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(handleAnalytics),
+                name: .analyticsUpdated,
+                object: nil
+            )
+        
+        Task {
+                    await loadAudience()
+                }
         
         analysisCollectionView.register(
             UINib(nibName: "LatestContentPerformanceCell", bundle: nil),
@@ -87,6 +88,15 @@ class AnalysisDataViewController: UIViewController {
         loadDataFor(segmentIndex: 0)
     }
     
+    @objc private func handleAnalytics(_ notification: Notification) {
+
+        guard let data = notification.object as? Data else { return }
+
+        print("✅ Analytics received in controller")
+
+        // decode + update UI here
+    }
+    
     //FUNCTION TO LOAD THE DATA FOR THE SELECTED INDEX
     
     func loadDataFor(segmentIndex: Int) {
@@ -100,6 +110,20 @@ class AnalysisDataViewController: UIViewController {
 
         analysisData = fullAnalysis[segmentIndex]
         analysisCollectionView.reloadData()
+    }
+    
+    func loadAudience() async {
+        do {
+            audienceMetrics = try await controller.fetchData()
+            print(audienceMetrics)
+
+            await MainActor.run {
+                self.analysisCollectionView.reloadSections(IndexSet(integer: 0))
+            }
+
+        } catch {
+            print("Error fetching audience:", error)
+        }
     }
 
 
@@ -123,7 +147,7 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
 
         switch section {
         case 0:
-            return analysisData?.audienceGrid.count ?? 0
+            return 3
         case 1:
             return 1
         case 2:
@@ -209,19 +233,30 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
 
         // SECTION 0 – Audience Metrics
         let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "analysis_page_cell",
-            for: indexPath
-        ) as! AnalysisCell
+                withReuseIdentifier: "analysis_page_cell",
+                for: indexPath
+            ) as! AnalysisCell
 
-        if let metric = analysisData?.audienceGrid[indexPath.row] {
-            cell.configureCell(
-                value: metric.value,
-                type: metric.title,
-                change: metric.change
-            )
-        }
+            guard let latest = audienceMetrics.first else {
+                return cell
+            }
 
-        return cell
+            switch indexPath.row {
+
+            case 0:
+                cell.configure(metric: .views, data: latest.views)
+
+            case 1:
+                cell.configure(metric: .likes, data: latest.likes)
+
+            case 2:
+                cell.configure(metric: .watchTime, data: latest.estimated_minutes_watched)
+
+            default:
+                break
+            }
+
+            return cell
     }
     
     

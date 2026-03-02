@@ -58,7 +58,6 @@ final class DealsController {
         
         
         let session = try await client.auth.session
-        print("FETCH UID:", session.user.id)
         
         let deals: [DealDB] = try await client.database
             .from("brand_deals")

@@ -17,38 +17,39 @@ class AnalysisCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        applyLiquidGlassEffect()
     }
     
-    func configureCell(value: String, type: String, change: String) {
+    func configure(
+        metric: AnalysisMetric,
+        data: Int
+    ) {
 
-        // Main value & title
-        analysisValue.text = value
-        analysisType.text = type
+        analysisValue.text = "\(data)"
+        var title: String!
+        switch metric {
 
-        // Change label
-        changeLabel.text = change
+        case .views:
+            title = "Views"
+            sfSymbol.image =
+                UIImage(systemName: "eye.fill")
 
-        // Arrow + color based on change (NOT value)
-        if change.contains("+") {
-            sfSymbol.image = UIImage(systemName: "arrow.up.circle.fill")
-            sfSymbol.tintColor = .systemGreen
-            changeLabel.textColor = .systemGreen
-            sfSymbol.isHidden = false
-        } else if change.contains("-") {
-            sfSymbol.image = UIImage(systemName: "arrow.down.circle.fill")
-            sfSymbol.tintColor = .systemRed
-            changeLabel.textColor = .systemRed
-            sfSymbol.isHidden = false
-        } else {
-            sfSymbol.isHidden = true
-            changeLabel.textColor = .secondaryLabel
+        case .likes:
+            title = "Likes"
+            sfSymbol.image =
+                UIImage(systemName: "hand.thumbsup.fill")
+
+        case .watchTime:
+            title = "Watch Time"
+            sfSymbol.image =
+                UIImage(systemName: "clock.fill")
         }
 
-        // Styling
-        contentView.layer.cornerRadius = 12
-        contentView.layer.masksToBounds = true
-        contentView.applyLiquidGlassEffect()
-        backgroundColor = .clear
+        analysisType.text = title
+
+        //  No comparison data yet
+        changeLabel.text = "--"
+        changeLabel.textColor = .secondaryLabel
     }
     
     

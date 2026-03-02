@@ -5,18 +5,15 @@ import Supabase
 
 /// Payload sent to the 'youtube-auth' function to securely save tokens
 struct YouTubeAuthPayload: Codable {
+    let action: String
     let access_token: String
     let refresh_token: String
 }
 
-/// Payload sent to the 'fetch-youtube-analytics' proxy function
 struct AnalyticsRequestPayload: Codable {
+    let action: String
     let startDate: String
     let endDate: String
-}
-
-struct YouTubeTokenCheck: Codable {
-    let user_id: UUID
 }
 
 
@@ -24,80 +21,76 @@ struct YouTubeTokenCheck: Codable {
 // MARK: - YouTube Controller
 
 final class YouTubeController {
-
+    
     static let shared = YouTubeController()
     private init() {}
-
+    
     // Assuming you have a SupabaseConfig setup in your project
     private let client = SupabaseConfig.client
-
+    
     // MARK: - 1. Secure Token Storage
     
     /// Sends the raw tokens to the backend to be securely encrypted and saved.
-    func saveYouTubeTokens(accessToken: String, refreshToken: String) async throws {
-            
-            // 👉 DIAGNOSTIC CHECK: Are we actually logged in?
-            do {
-                let session = try await client.auth.session
-                print("🟢 SUPABASE AUTH OK: Logged in as \(session.user.id)")
-                
-                let payload = YouTubeAuthPayload(access_token: accessToken, refresh_token: refreshToken)
-                            try await client.functions.invoke("youtube-auth", options: .init(body: payload))
-                            print("✅ Tokens successfully encrypted and saved via backend proxy.")
-            } catch {
-                print("🔴 SUPABASE AUTH FAILED: No active session found!")
-                if let functionError = error as? FunctionsError,
-                               case .httpError(let code, let data) = functionError,
-                               let errorMessage = String(data: data, encoding: .utf8) {
-                                print("🔴 EDGE FUNCTION FAILED (Code \(code)): \(errorMessage)")
-                            } else {
-                                print("🔴 SUPABASE ERROR: \(error)")
-                            }
-                            throw error
-                //throw error // This will stop the function before it hits the 401
-            }
-            
-            let payload = YouTubeAuthPayload(
-                access_token: accessToken,
-                refresh_token: refreshToken
+    func saveYouTubeTokens(
+        accessToken: String,
+        refreshToken: String
+    ) async throws {
+        
+        let session = try await client.auth.session
+        print("🟢 SUPABASE AUTH OK: \(session.user.id)")
+        
+        let payload = YouTubeAuthPayload(
+            action: "save_tokens",
+            access_token: accessToken,
+            refresh_token: refreshToken
+        )
+        
+        print("🚀 Sending tokens to unified YouTube function...")
+        
+        try await client.functions.invoke(
+            "youtube-auth",
+            options: .init(
+                headers: [
+                    "Authorization": "Bearer \(session.accessToken)"
+                ],
+                body: payload
             )
-
-            print("🚀 Sending tokens to Edge Function for secure storage...")
-            
-            try await client.functions
-                .invoke(
-                    "youtube-auth",
-                    options: .init(body: payload)
-                )
-            
-            print("✅ Tokens successfully encrypted and saved via backend proxy.")
-        }
+        )
+        
+        print("✅ Tokens encrypted & saved")
+    }
     
     // MARK: - 2. Fetch Analytics Data
+    
+    /// Calls the proxy Edge Function to get the user's YouTube views
+    func fetchAnalytics(
+        startDate: String,
+        endDate: String
+    ) async throws -> Data {
         
-        /// Calls the proxy Edge Function to get the user's YouTube views
-        func fetchAnalytics(startDate: String, endDate: String) async throws -> Data {
-            
-            let payload = AnalyticsRequestPayload(
-                startDate: startDate,
-                endDate: endDate
-            )
-            
-            print("📊 Requesting analytics from Edge Function...")
-            
-            // Invoke the fetch-youtube-analytics Edge Function and capture raw Data
-            let responseData: Data = try await client.functions
-                .invoke(
-                    "fetch-youtube-analytics",
-                    options: .init(body: payload),
-                    decode: { data, response in
-                        return data // 👉 THE FIX: Explicitly return the raw Data
-                    }
-                )
-            
-            return responseData
-        }
+        let session = try await client.auth.session
         
+        let payload = AnalyticsRequestPayload(
+            action: "fetch_analytics",
+            startDate: startDate,
+            endDate: endDate
+        )
+        
+        let responseData: Data =
+        try await client.functions.invoke(
+            "youtube-auth",
+            options: .init(
+                headers: [
+                    "Authorization": "Bearer \(session.accessToken)"
+                ],
+                body: payload
+            ),
+            decode: { data, _ in data }
+        )
+        
+        return responseData
+    }
+    
     // MARK: - 3. Check Connection State
     
     /// Checks if the current user has connected their YouTube account by verifying if a token row exists
@@ -120,4 +113,48 @@ final class YouTubeController {
             return false
         }
     }
+    
+    func restoreYouTubeConnectionIfNeeded() async {
+        do {
+            let isConnected = await checkYouTubeConnection()
+            
+            guard isConnected else {
+                print("⚠️ No YouTube connection found")
+                return
+            }
+            
+            print("✅ YouTube already connected")
+            
+            // CALL ANALYTICS HERE
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            
+            let endDate = formatter.string(from: Date())
+            let startDate = formatter.string(
+                from: Calendar.current.date(byAdding: .day, value: -28, to: Date())!
+            )
+            
+            let data = try await fetchAnalytics(
+                startDate: startDate,
+                endDate: endDate
+            )
+            
+            print("📊 ANALYTICS RESPONSE:")
+            print(String(data: data, encoding: .utf8) ?? "No data")
+            
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(
+                    name: .analyticsUpdated,
+                    object: data
+                )
+            }
+            
+        } catch {
+            print("❌ Analytics auto-fetch failed:", error)
+        }
+    }
+}
+
+extension Notification.Name {
+    static let analyticsUpdated = Notification.Name("analyticsUpdated")
 }
