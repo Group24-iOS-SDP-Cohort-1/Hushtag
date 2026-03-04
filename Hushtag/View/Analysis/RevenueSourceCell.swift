@@ -16,11 +16,35 @@ class RevenueSourceCell: UICollectionViewCell {
         super.awakeFromNib()
         applyLiquidGlassEffect()
     }
-    func configure(with data: RevenueSource) {
-        nameLabel.text = data.name
+    
+    func configure(metric: RevenueType, data: Double) {
+        
+        var title: String = ""
+        var sf: String = ""
+        
+        switch metric {
+
+        case .ads:
+            title = "Estimated Ad Revenue"
+            sf = "play.rectangle.fill"
+
+        case .paidContent:
+            title = "From Paid Content"
+            sf = "hand.thumbsup.fill"
+
+        case .ypp:
+            title = "Creator's Share from YPP"
+            sf = "person.2.fill"
+            
+        case .collaboration:
+            title = "Collaboration Revenue"
+            sf = "briefcase.fill"
+        }
+
         nameLabel.numberOfLines = 0
-        amountLabel.text = "Rs." + data.amount
-        sfSymbol.image = UIImage(systemName: data.sf)
+        nameLabel.text = title
+        amountLabel.text = "Rs. \(data)"
+        sfSymbol.image = UIImage(systemName: sf)
     }
 
 }

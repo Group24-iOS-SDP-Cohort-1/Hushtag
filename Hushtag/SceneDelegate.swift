@@ -29,9 +29,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         _Concurrency.Task {
             do {
                 let _ = try await AuthManager.shared.getCurrentSession()
-                print("Auto-Login Successful")
 
                 await SessionManager.shared.restoreSession()
+                await YouTubeController.shared.restoreYouTubeConnectionIfNeeded()
 
                 let isComplete = await AuthManager.shared.hasCompletedOnboarding()
 

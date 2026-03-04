@@ -9,7 +9,7 @@ import UIKit
 import SwiftUI
 
 class AudienceChartCell: UICollectionViewCell {
-
+    
     @IBOutlet weak var chartContainer: UIView!
     
     @IBOutlet weak var followersLabel: UILabel!
@@ -26,47 +26,37 @@ class AudienceChartCell: UICollectionViewCell {
         super.awakeFromNib()
     }
     
-    func configure(with data: Analysis) {
-            // A. Update the standard labels
-            followersLabel.text = data.followers
-            postsLabel.text = "\(data.post)"
-            
-            if data.ageGroup.count >= 2 {
-                ageLabel.text = "\(data.ageGroup[0])-\(data.ageGroup[1]) years"
-            }
+    func configure(with data: AudienceDemographic) {
+        // A. Update the standard labels
+        let followers =
+        data.subscribers_gained - data.subscribers_lost
 
-            // B. Embed the Chart
-            setupChart(genderData: data.gender)
+        followersLabel.text = followers.formattedCount()
+
+        ageLabel.text =
+        "\(data.top_age_group) years"
+
+        // optional
+        postsLabel.text = "-"
         
+        // B. Embed the Chart
+        setupChart(male: data.male_percentage, female: data.female_percentage)
         
-        let currentTotal = parseMetric(data.followers)     // "40k" -> 40000.0
-        let changeAmount = parseMetric(data.incFollowers)
-        
-        let previousTotal = currentTotal - changeAmount
-        
-        if previousTotal != 0 {
-                let percentChange = (changeAmount / previousTotal) * 100
-                
-                if percentChange > 0 {
-                    // POSITIVE: Force the "+" sign and use Green
-                    followersChangeLabel.text = String(format: "+%.0f%%", percentChange)
-                    followersChangeLabel.textColor = UIColor.systemGreen
-                } else if percentChange < 0 {
-                    // NEGATIVE: The "-" sign is automatic in the number. Use Red.
-                    // String(format: "%.0f") turns -25.0 into "-25"
-                    followersChangeLabel.text = String(format: "%.0f%%", percentChange)
-                    followersChangeLabel.textColor = UIColor.systemRed
-                } else {
-                    // ZERO: Grey
-                    followersChangeLabel.text = "0%"
-                    followersChangeLabel.textColor = UIColor.gray
-                }
-            } else {
-                // Edge case: If previous total was 0 (new account), growth is 100% or undefined
-                followersChangeLabel.text = "N/A"
-                followersChangeLabel.textColor = .gray
-            }
-        
+        let change =
+        Double(data.subscribers_gained -
+               data.subscribers_lost)
+
+        if change >= 0 {
+            followersChangeLabel.text =
+                "+\(Int(change))"
+            followersChangeLabel.textColor =
+                .systemGreen
+        } else {
+            followersChangeLabel.text =
+                "\(Int(change))"
+            followersChangeLabel.textColor =
+                .systemRed
+        }
         
         
         contentView.layer.cornerRadius = 12
@@ -80,33 +70,38 @@ class AudienceChartCell: UICollectionViewCell {
     
     
     
-    private func setupChart(genderData: [String: String]) {
-            let chartView = AudienceGenderChart(genderData: genderData)
-
-            if let existingController = hostingController {
-                // Optimization: If chart already exists, just update data
-                existingController.rootView = chartView
-            } else {
-                // Create new Hosting Controller
-                let controller = UIHostingController(rootView: chartView)
-                controller.view.backgroundColor = .clear
-                
-                // Add to the container view
-                chartContainer.addSubview(controller.view)
-                
-                // Auto Layout (Pin edges to container)
-                controller.view.translatesAutoresizingMaskIntoConstraints = false
-                NSLayoutConstraint.activate([
-                    controller.view.topAnchor.constraint(equalTo: chartContainer.topAnchor),
-                    controller.view.bottomAnchor.constraint(equalTo: chartContainer.bottomAnchor),
-                    controller.view.leadingAnchor.constraint(equalTo: chartContainer.leadingAnchor),
-                    controller.view.trailingAnchor.constraint(equalTo: chartContainer.trailingAnchor)
-                ])
-                
-                hostingController = controller
-            }
+    private func setupChart(
+        male: Double,
+        female: Double
+    ) {
+        
+        let chartView = AudienceGenderChart(
+            malePercentage: male,
+            femalePercentage: female
+        )
+        
+        if let existingController = hostingController {
+            existingController.rootView = chartView
+        } else {
+            
+            let controller =
+            UIHostingController(rootView: chartView)
+            
+            chartContainer.addSubview(controller.view)
+            
+            controller.view.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+                controller.view.topAnchor.constraint(equalTo: chartContainer.topAnchor),
+                controller.view.bottomAnchor.constraint(equalTo: chartContainer.bottomAnchor),
+                controller.view.leadingAnchor.constraint(equalTo: chartContainer.leadingAnchor),
+                controller.view.trailingAnchor.constraint(equalTo: chartContainer.trailingAnchor)
+            ])
+            
+            hostingController = controller
         }
-
+    }
+    
     
     
     private func parseMetric(_ value: String) -> Double {

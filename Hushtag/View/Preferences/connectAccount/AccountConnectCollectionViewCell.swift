@@ -83,6 +83,7 @@ class AccountConnectCollectionViewCell: UICollectionViewCell {
 
     @IBAction func youtubeAction(_ sender: Any) {
         guard !isConnected else { return }
+        print("Youtube tapped")
         delegate1?.didTapConnectYouTube(from: self)
 
     }

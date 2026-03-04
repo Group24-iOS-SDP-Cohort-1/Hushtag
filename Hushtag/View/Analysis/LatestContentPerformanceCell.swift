@@ -1,10 +1,3 @@
-//
-//  LatestContentPerformanceCell.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 06/01/26.
-//
-
 import UIKit
 
 class LatestContentPerformanceCell: UICollectionViewCell {
@@ -12,7 +5,7 @@ class LatestContentPerformanceCell: UICollectionViewCell {
     @IBOutlet weak var thumbnailImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var publishedLabel: UILabel!
-    @IBOutlet weak var rankingLabel: UILabel!
+    @IBOutlet weak var likesLabel: UILabel!
     @IBOutlet weak var viewsLabel: UILabel!
     @IBOutlet weak var durationLabel: UILabel!
     
@@ -20,17 +13,17 @@ class LatestContentPerformanceCell: UICollectionViewCell {
         super.awakeFromNib()
         // Initialization code
         thumbnailImageView.layer.cornerRadius = 10
-                thumbnailImageView.clipsToBounds = true
-                contentView.layer.cornerRadius = 16
-                contentView.applyLiquidGlassEffect()
+        thumbnailImageView.clipsToBounds = true
+        applyLiquidGlassEffect()
     }
-    func configure(with data: LatestContentPerformance) {
-            titleLabel.text = data.title
-            publishedLabel.text = data.publishedText
-            rankingLabel.text = data.ranking
-            viewsLabel.text = data.views
-            durationLabel.text = data.avgDuration
-            thumbnailImageView.image = UIImage(named: data.thumbnail)
-        }
-
+    
+    func configure(with data: LatestContent) {
+        titleLabel.text = data.title
+        publishedLabel.text = "\(data.published_at.monthAndYear())"
+        likesLabel.text = "\(data.likes)"
+        viewsLabel.text = "\(data.views)"
+        durationLabel.text = "\(data.duration_seconds) s"
+        thumbnailImageView.loadImage(from: data.thumbnail)
+    }
+    
 }

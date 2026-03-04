@@ -25,10 +25,10 @@ struct LikedIds {
 }
 
 
-struct YouTubeAuthPayload: Encodable {
-    let user_id: String
-    let auth_code: String
-}
+//struct YouTubeAuthPayload: Encodable {
+//    let user_id: String
+//    let auth_code: String
+//}
 
 extension Date {
     

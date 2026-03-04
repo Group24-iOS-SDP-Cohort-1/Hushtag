@@ -115,6 +115,44 @@ class PreferencesViewController: UIViewController {
         
         updateProgressFromCompletedStates(animated: false)
         
+        checkExistingYouTubeConnection()
+        
+    }
+    
+    private func checkExistingYouTubeConnection() {
+        Task {
+            let isConnected = await YouTubeController.shared.checkYouTubeConnection()
+            if isConnected {
+                
+                // 👉 Quick test to verify the proxy function works with the new tokens!
+                do {
+                    print("⏳ Google Login Complete: Testing proxy fetch for analytics...")
+                    // Fetching data from the start of the year to today
+                    let analyticsData = try await YouTubeController.shared.fetchAnalytics(
+                        startDate: "2026-01-01",
+                        endDate: "2026-02-26"
+                    )
+                    
+                    if let jsonString = String(data: analyticsData, encoding: .utf8) {
+                        print("📈 GOOGLE SUCCESS - Raw YouTube Data:")
+                        print(jsonString)
+                    }
+                } catch {
+                    print("❌ GOOGLE PROXY FETCH FAILED: \(error)")
+                }
+                
+                await MainActor.run {
+                    // Assuming YouTube connect card is at index 3
+                    if self.completedStates.count > 3 {
+                        self.completedStates[3] = true
+                        self.updateProgressFromCompletedStates()
+                        
+                        // Force a reload so cellForItemAt will pass the updated `isConnected` state to the cell
+                        self.preferencesCollectionView.reloadData()
+                    }
+                }
+            }
+        }
     }
     
     
@@ -328,10 +366,15 @@ extension PreferencesViewController: UICollectionViewDataSource {
             return cell
         }else if indexPath.item == 3{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "accountCell", for: indexPath) as! AccountConnectCollectionViewCell
+            
+            // Set the cell's internal connection state before configuring
+            cell.isConnected = completedStates[indexPath.item]
+            
             cell.configureCell(with : item)
             
             //NEW
             cell.delegate = self
+            cell.delegate1 = self
             cell.cardIndex = indexPath.item
             
             //updateSkipButton(for: indexPath.item)
@@ -359,30 +402,7 @@ extension PreferencesViewController: UICollectionViewDataSource {
         }
     }
 
-    func exchangeAuthCode(
-        _ code: String,
-        cell: AccountConnectCollectionViewCell
-    ) {
-        Task {
-            do {
-                try await YouTubeController.shared.exchangeAuthCode(code)
 
-                await MainActor.run {
-                    cell.isConnected = true
-                    cell.updateButtonAppearance(
-                        cell.youtubeOutlet,
-                        isSelected: true
-                    )
-
-                    self.completedStates[cell.cardIndex] = true
-                    self.updateProgressFromCompletedStates()
-                }
-
-            } catch {
-                print("❌ YouTube connect failed:", error)
-            }
-        }
-    }
 
 
     
@@ -420,37 +440,57 @@ extension PreferencesViewController: YouTubeConnectDelegate {
     }
 
     func connectYouTube(cell: AccountConnectCollectionViewCell) {
+        
+        let viewModel = SignInModel()
+        
+        Task {
+            do {
+                try await viewModel.connectYouTube()
 
-        guard let user = GIDSignIn.sharedInstance.currentUser else {
-            print("❌ User not signed in with Google")
-            return
-        }
-
-        let scopes = [
-            "https://www.googleapis.com/auth/youtube.readonly",
-            "https://www.googleapis.com/auth/yt-analytics.readonly"
-        ]
-
-        user.addScopes(scopes, presenting: self) { updatedUser, error in
-
-            if let error = error {
-                print("❌ Permission denied:", error)
-                return
+                // 👉 Quick test to verify the proxy function works!
+                do {
+                    print("⏳ Testing proxy fetch for analytics...")
+                    // Fetching data from the start of the year to today
+                    let analyticsData = try await YouTubeController.shared.fetchAnalytics(
+                        startDate: "2026-01-01",
+                        endDate: "2026-02-26"
+                    )
+                    
+                    // Convert the raw JSON data to a readable string for the console
+                    if let jsonString = String(data: analyticsData, encoding: .utf8) {
+                        print("📈 PROXY SUCCESS - Raw YouTube Data:")
+                        print(jsonString)
+                    }
+                } catch {
+                    print("❌ PROXY FETCH FAILED: \(error)")
+                }
+                
+                await MainActor.run {
+                    cell.isConnected = true
+                    cell.updateButtonAppearance(
+                        cell.youtubeOutlet,
+                        isSelected: true
+                    )
+                    
+                    self.completedStates[cell.cardIndex] = true
+                    self.updateProgressFromCompletedStates()
+                    
+                    
+                    
+                    
+                    let alert = UIAlertController(title: "Success", message: "Successfully connected YouTube account!", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
+                }
+                
+            } catch {
+                await MainActor.run {
+                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
+                }
+                print("❌ YouTube connect failed:", error)
             }
-
-            guard let authCode = updatedUser?.serverAuthCode else {
-                print("❌ Missing serverAuthCode")
-                return
-            }
-
-            self.exchangeAuthCode(authCode, cell: cell)
         }
     }
-
 }
-
-
-
-
-
-

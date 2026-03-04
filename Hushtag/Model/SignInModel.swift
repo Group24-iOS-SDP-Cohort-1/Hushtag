@@ -106,16 +106,50 @@ class SignInModel {
     func signInWithGoogle() async throws -> AppUser {
         let signInGoogle = SignInGoogle()
         let googleResult = try await signInGoogle.startSignInWithGoogleFlow()
-        return try await AuthManager.shared.signInWithGoogle(idToken: googleResult.idToken)
         
+        let user = try await AuthManager.shared.signInWithGoogle(idToken: googleResult.idToken)
+        
+        if let accessToken = googleResult.accessToken, let refreshToken = googleResult.refreshToken, !refreshToken.isEmpty {
+            do {
+                try await YouTubeController.shared.saveYouTubeTokens(
+                    accessToken: accessToken,
+                    refreshToken: refreshToken
+                )
+            } catch {
+                print("Failed to save YouTube tokens during Google Sign-In: \(error)")
+            }
+        }
+        
+        return user
+    }
+    
+    // MARK: - YouTube Connect Flow
+    
+    func connectYouTube() async throws {
+        let signInGoogle = SignInGoogle()
+        let youtubeResult = try await signInGoogle.startConnectYouTubeFlow()
+        
+        try await YouTubeController.shared.saveYouTubeTokens(
+            accessToken: youtubeResult.accessToken,
+            refreshToken: youtubeResult.refreshToken
+        )
     }
 }
 
 
 
 
-struct SignInGoogleResult{
+
+
+struct SignInGoogleResult {
     let idToken: String
+    let accessToken: String?
+    let refreshToken: String?
+}
+
+struct ConnectYouTubeResult {
+    let accessToken: String
+    let refreshToken: String
 }
 
 class SignInGoogle {
@@ -141,7 +175,11 @@ class SignInGoogle {
         
         
         
-        GIDSignIn.sharedInstance.signIn(withPresenting: topVC) { signInResult, error in
+        GIDSignIn.sharedInstance.signIn(
+            withPresenting: topVC,
+            hint: nil,
+            additionalScopes: ["https://www.googleapis.com/auth/yt-analytics.readonly", "https://www.googleapis.com/auth/youtube.readonly"]
+        ) { signInResult, error in
             
             if let error = error {
                 completion(.failure(error))
@@ -156,7 +194,67 @@ class SignInGoogle {
                 print("Error signing in: \(error?.localizedDescription ?? "No error description")")
                 return
             }
-            completion(.success(.init(idToken: idToken.tokenString)))
+            
+            let accessToken = user.accessToken.tokenString
+            let refreshToken = user.refreshToken.tokenString
+            
+            completion(.success(.init(
+                idToken: idToken.tokenString,
+                accessToken: accessToken,
+                refreshToken: refreshToken
+            )))
+        }
+    }
+    
+    // MARK: - YouTube Connect Flow
+    
+    @MainActor
+    func startConnectYouTubeFlow() async throws -> ConnectYouTubeResult {
+        try await withCheckedThrowingContinuation({ continuation in
+            self.connectYouTubeFlow { result in
+                continuation.resume(with: result)
+            }
+        })
+    }
+    
+    @MainActor
+    func connectYouTubeFlow(completion: @escaping (Result<ConnectYouTubeResult, Error>) -> Void) {
+        
+        guard let topVC = UIApplication.topViewController else{
+            let error = NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not find the top view controller."])
+            completion(.failure(error))
+            return
+        }
+        
+        GIDSignIn.sharedInstance.signIn(
+            withPresenting: topVC,
+            hint: nil,
+            additionalScopes: ["https://www.googleapis.com/auth/yt-analytics.readonly"]
+        ) { signInResult, error in
+            
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let user = signInResult?.user else {
+                let tokenError = NSError(domain: "AuthError", code: -3, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve user during YouTube connect."])
+                completion(.failure(tokenError))
+                print("Error connecting YouTube: User not found in result")
+                return
+            }
+            
+            let accessToken = user.accessToken.tokenString
+            let refreshToken = user.refreshToken.tokenString
+            
+//            guard let refreshToken = user.refreshToken.tokenString else {
+//                let tokenError = NSError(domain: "AuthError", code: -5, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve refresh token for YouTube."])
+//                completion(.failure(tokenError))
+//                print("Error connecting YouTube: Refresh token missing")
+//                return
+//            }
+            
+            completion(.success(.init(accessToken: accessToken, refreshToken: refreshToken)))
         }
     }
 }

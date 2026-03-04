@@ -1,30 +1,33 @@
-//
-//  AnalysisDataViewController.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 08/12/25.
-//
-
 import UIKit
 
 class AnalysisDataViewController: UIViewController {
-
     
     var analysisResponse = AnalysisResponse()
     var analysisData: Analysis?
     var platform: String = ""
-    //var dataStore: DataStore = DataStore.shared
     var fullAnalysis: [Analysis]?
+    let controller = AudienceController()
+    var audienceMetrics: [AudienceMetrics] = []
+    var latestContent: [LatestContent] = []
+    var topVideos: [TopVideo] = []
+    var revenueInsight: [RevenueInsight] = []
+    var audienceDemographic: [AudienceDemographic] = []
     
     @IBOutlet weak var analysisCollectionView: UICollectionView!
-    
     @IBOutlet weak var segmentedTimeOutlet: UISegmentedControl!
-   
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         fullAnalysis = analysisResponse.analysis
-        //print(fullAnalysis)
+        
+        Task {
+            await loadAudience()
+            await loadLatestContent()
+            await loadTopVideos()
+            await loadRevenueInsights()
+            await loadAudienceDemographic()
+        }
         
         analysisCollectionView.register(
             UINib(nibName: "LatestContentPerformanceCell", bundle: nil),
@@ -34,20 +37,20 @@ class AnalysisDataViewController: UIViewController {
             UINib(nibName: "TopContentCollectionViewCell", bundle: nil),
             forCellWithReuseIdentifier: "top_content_cell"
         )
-
+        
         // Do any additional setup after loading the view.
         self.navigationItem.title = "\(platform.capitalized) Analysis"
         analysisCollectionView.dataSource = self
         analysisCollectionView.register(
             UINib (
                 nibName: "AnalysisCell", bundle: nil),
-                forCellWithReuseIdentifier: "analysis_page_cell"
-            )
+            forCellWithReuseIdentifier: "analysis_page_cell"
+        )
         
         analysisCollectionView.register(
-                UINib(nibName: "AudienceChartCell", bundle: nil),
-                forCellWithReuseIdentifier: "gender_analysis_cell"
-            )
+            UINib(nibName: "AudienceChartCell", bundle: nil),
+            forCellWithReuseIdentifier: "gender_analysis_cell"
+        )
         
         analysisCollectionView.register(
             UINib(nibName: "HeaderView",
@@ -66,7 +69,7 @@ class AnalysisDataViewController: UIViewController {
         )
         
         let grayColor = UIColor.darkGray
-
+        
         segmentedTimeOutlet.selectedSegmentIndex = 0
         
         // Normal (not selected)
@@ -74,7 +77,7 @@ class AnalysisDataViewController: UIViewController {
             .foregroundColor: grayColor,
             .font: UIFont.systemFont(ofSize: 14, weight: .medium)
         ], for: .normal)
-
+        
         // Selected
         segmentedTimeOutlet.setTitleTextAttributes([
             .foregroundColor: UIColor.white,
@@ -97,19 +100,87 @@ class AnalysisDataViewController: UIViewController {
             print("Data not loaded")
             return
         }
-
+        
         analysisData = fullAnalysis[segmentIndex]
         analysisCollectionView.reloadData()
     }
-
-
+    
+    func loadAudience() async {
+        do {
+            audienceMetrics = try await controller.fetchAudienceMetrics()
+            print(audienceMetrics)
+            
+            await MainActor.run {
+                self.analysisCollectionView.reloadSections(IndexSet(integer: 0))
+            }
+            
+        } catch {
+            print("Error fetching audience:", error)
+        }
+    }
+    
+    func loadLatestContent() async {
+        do {
+            latestContent = try await controller.fetchLatestContent()
+            print(latestContent)
+            
+            await MainActor.run {
+                self.analysisCollectionView.reloadSections(IndexSet(integer: 1))
+            }
+            
+        } catch {
+            print("Error fetching latest content:", error)
+        }
+    }
+    
+    func loadTopVideos() async {
+        do {
+            topVideos = try await controller.fetchTopVideos()
+            print(topVideos)
+            
+            await MainActor.run {
+                self.analysisCollectionView.reloadSections(IndexSet(integer: 2))
+            }
+            
+        } catch {
+            print("Error fetching top video:", error)
+        }
+    }
+    
+    func loadRevenueInsights() async {
+        do {
+            revenueInsight = try await controller.fetchRevenueInsight()
+            print(revenueInsight)
+            
+            await MainActor.run {
+                self.analysisCollectionView.reloadSections(IndexSet(integer: 3))
+            }
+            
+        } catch {
+            print("Error fetching revenue insight:", error)
+        }
+    }
+    
+    func loadAudienceDemographic() async {
+        do {
+            audienceDemographic = try await controller.fetchAudienceDemographic()
+            print(audienceDemographic)
+            
+            await MainActor.run {
+                self.analysisCollectionView.reloadSections(IndexSet(integer: 4))
+            }
+            
+        } catch {
+            print("Error fetching revenue insight:", error)
+        }
+    }
     
     //FUNCTION TO CHANGE DATA WHEN THE SELECTED SEGMENT CHANGES
     
     @IBAction func segmentChanged(_ sender: UISegmentedControl) {
         loadDataFor(segmentIndex: sender.selectedSegmentIndex)
     }
-        
+    
 }
 
 extension AnalysisDataViewController: UICollectionViewDataSource {
@@ -120,14 +191,14 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-
+        
         switch section {
         case 0:
-            return analysisData?.audienceGrid.count ?? 0
+            return 3
         case 1:
             return 1
         case 2:
-            return analysisData?.topContent.count ?? 0
+            return 3
         case 3:
             return 4
         case 4:
@@ -141,18 +212,18 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
+        
         // SECTION 1 — Latest Content Performance
         if indexPath.section == 1 {
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "latest_content_performance_cell",
                 for: indexPath
             ) as! LatestContentPerformanceCell
-
-            if let latest = analysisData?.latestContent {
-                cell.configure(with: latest)
+            
+            guard let latest = latestContent.first else {
+                return cell
             }
-
+            cell.configure(with: latest)
             return cell
         }
         // SECTION 1 – Top Content
@@ -161,11 +232,14 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
                 withReuseIdentifier: "top_content_cell",
                 for: indexPath
             ) as! TopContentCollectionViewCell
-
-            if let item = analysisData?.topContent[indexPath.row] {
-                cell.configure(with: item)
+            
+            guard topVideos.indices.contains(indexPath.row) else {
+                return cell
             }
-
+            
+            let video = topVideos[indexPath.row]
+            cell.configure(with: video)
+            
             return cell
         }
         
@@ -174,9 +248,26 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
                 withReuseIdentifier: "revenue_cell",
                 for: indexPath
             ) as! RevenueSourceCell
-
-            if let item = analysisData?.revenueSource[indexPath.row] {
-                cell.configure(with: item)
+            guard let latest = revenueInsight.first else {
+                return cell
+            }
+            switch indexPath.row {
+                
+            case 0:
+                cell.configure(metric: .ads, data: latest.estimated_ad_revenue)
+                
+            case 1:
+                cell.configure(metric: .paidContent, data: latest.gross_revenue)
+                
+            case 2:
+                cell.configure(metric: .ypp, data: latest.ypp_revenue)
+                
+            case 3:
+                cell.configure(metric: .collaboration, data: 20.00)
+                
+                
+            default:
+                break
             }
             return cell
         }
@@ -187,40 +278,52 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
                 withReuseIdentifier: "gender_analysis_cell",
                 for: indexPath
             ) as! AudienceChartCell
-
-            if let data = analysisData {
-                cell.configure(with: data)
+            
+            guard let latest = audienceDemographic.first else {
+                return cell
             }
+            cell.configure(with: latest)
             return cell
         }
-
+        
         // SECTION 3 – Optimal Upload Time
         if indexPath.section == 5 {
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "optimal_time_cell",
                 for: indexPath
             ) as! OptimalTimeChartCell
-
+            
             if let data = analysisData {
                 cell.configure(with: data.optimalTime)
             }
             return cell
         }
-
+        
         // SECTION 0 – Audience Metrics
         let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "analysis_page_cell",
             for: indexPath
         ) as! AnalysisCell
-
-        if let metric = analysisData?.audienceGrid[indexPath.row] {
-            cell.configureCell(
-                value: metric.value,
-                type: metric.title,
-                change: metric.change
-            )
+        
+        guard let latest = audienceMetrics.first else {
+            return cell
         }
-
+        
+        switch indexPath.row {
+            
+        case 0:
+            cell.configure(metric: .views, data: latest.views)
+            
+        case 1:
+            cell.configure(metric: .likes, data: latest.likes)
+            
+        case 2:
+            cell.configure(metric: .watchTime, data: latest.estimated_minutes_watched)
+            
+        default:
+            break
+        }
+        
         return cell
     }
     
@@ -228,13 +331,13 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
-
+        
         let headerView = collectionView.dequeueReusableSupplementaryView(
             ofKind: "header",
             withReuseIdentifier: "headerCell",
             for: indexPath
         ) as! HeaderView
-
+        
         switch indexPath.section {
         case 0:
             headerView.configureHeader(text: "Audience Metrics")
@@ -251,7 +354,7 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
         default:
             break
         }
-
+        
         return headerView
     }
 }
@@ -261,13 +364,13 @@ func makeHeaderItem() -> NSCollectionLayoutBoundarySupplementaryItem {
         widthDimension: .fractionalWidth(1.0),
         heightDimension: .absolute(50)
     )
-
+    
     let header = NSCollectionLayoutBoundarySupplementaryItem(
         layoutSize: headerSize,
         elementKind: "header",
         alignment: .top
     )
-
+    
     // THIS is the key alignment fix
     header.contentInsets = NSDirectionalEdgeInsets(
         top: 0,
@@ -275,13 +378,13 @@ func makeHeaderItem() -> NSCollectionLayoutBoundarySupplementaryItem {
         bottom: 0,
         trailing: 16
     )
-
+    
     return header
 }
 
 
 func generateAnalysisLayout() -> UICollectionViewLayout {
-
+    
     let layout = UICollectionViewCompositionalLayout { section, _ in
         
         // Header
@@ -296,7 +399,7 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
             alignment: .top
         )
         
-    
+        
         if section == 0 {
             
             let itemSize = NSCollectionLayoutSize(
@@ -351,7 +454,7 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
             item.contentInsets = NSDirectionalEdgeInsets(
                 top: 5, leading: 5, bottom: 5, trailing: 5
             )
-        
+            
             let groupSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .estimated(75)
@@ -423,7 +526,7 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
             
             return sectionLayout
         }
-     
+        
         else if section == 4 {
             
             let itemSize = NSCollectionLayoutSize(
@@ -446,9 +549,9 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
             
             return section
         }
-   
+        
         else {
-
+            
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .estimated(200)
@@ -458,15 +561,15 @@ func generateAnalysisLayout() -> UICollectionViewLayout {
             item.contentInsets = NSDirectionalEdgeInsets(
                 top: 10, leading: 20, bottom: 10, trailing: 20
             )
-
+            
             let group = NSCollectionLayoutGroup.horizontal(
                 layoutSize: itemSize,
                 subitems: [item]
             )
-
+            
             let section = NSCollectionLayoutSection(group: group)
             section.boundarySupplementaryItems = [makeHeaderItem()]
-
+            
             return section
         }
     }
