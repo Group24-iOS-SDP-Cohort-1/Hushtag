@@ -112,7 +112,11 @@ final class YouTubeController {
         }
     }
     
-    func restoreYouTubeConnectionIfNeeded() async {
+    func restoreYouTubeConnectionIfNeeded(
+        startDate: String,
+        endDate: String
+    ) async {
+        
         do {
             let isConnected = await checkYouTubeConnection()
             
@@ -122,15 +126,6 @@ final class YouTubeController {
             }
             
             print("✅ YouTube already connected")
-            
-            // CALL ANALYTICS HERE
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd"
-            
-            let endDate = formatter.string(from: Date())
-            let startDate = formatter.string(
-                from: Calendar.current.date(byAdding: .day, value: -28, to: Date())!
-            )
             
             let data = try await fetchAnalytics(
                 startDate: startDate,

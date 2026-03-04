@@ -17,14 +17,19 @@ class AnalysisDataViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         Task {
+            let (start, end) = dateRange(for: 0)
             await loadAudience()
             await loadLatestContent()
             await loadTopVideos()
             await loadRevenueInsights()
             await loadAudienceDemographic()
             await loadViewerActivity()
+            
+            await YouTubeController.shared.restoreYouTubeConnectionIfNeeded(
+                startDate: start,
+                endDate: end
+            )
         }
         
         analysisCollectionView.register(
@@ -91,13 +96,13 @@ class AnalysisDataViewController: UIViewController {
     //FUNCTION TO LOAD THE DATA FOR THE SELECTED INDEX
     
     func loadDataFor(segmentIndex: Int) {
-//        guard
-//            let fullAnalysis,
-//            segmentIndex < fullAnalysis.count
-//        else {
-//            print("Data not loaded")
-//            return
-//        }
+        //        guard
+        //            let fullAnalysis,
+        //            segmentIndex < fullAnalysis.count
+        //        else {
+        //            print("Data not loaded")
+        //            return
+        //        }
         
         analysisCollectionView.reloadData()
     }
@@ -189,8 +194,25 @@ class AnalysisDataViewController: UIViewController {
     //FUNCTION TO CHANGE DATA WHEN THE SELECTED SEGMENT CHANGES
     
     @IBAction func segmentChanged(_ sender: UISegmentedControl) {
-        loadDataFor(segmentIndex: sender.selectedSegmentIndex)
+        let index = sender.selectedSegmentIndex
+        
+        Task {
+            
+            let (start, end) = dateRange(for: index)
+            
+            // Only YouTube analytics depends on date range
+            await YouTubeController.shared.restoreYouTubeConnectionIfNeeded(
+                startDate: start,
+                endDate: end
+            )
+            
+            // Reload collection view if needed
+            await MainActor.run {
+                self.analysisCollectionView.reloadData()
+            }
+        }
     }
+    
     
     func weeklyActivityData() -> [Int] {
         
@@ -208,7 +230,39 @@ class AnalysisDataViewController: UIViewController {
         
         return week
     }
+    
+    func dateRange(for segmentIndex: Int) -> (String, String) {
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        let endDate = Date()
+        let calendar = Calendar.current
+        
+        var startDate: Date
+        
+        switch segmentIndex {
+            
+        case 0: // 1 week
+            startDate = calendar.date(byAdding: .day, value: -7, to: endDate)!
+            
+        case 1: // 1 month
+            startDate = calendar.date(byAdding: .month, value: -1, to: endDate)!
+            
+        case 2: // 3 months
+            startDate = calendar.date(byAdding: .month, value: -3, to: endDate)!
+            
+        default:
+            startDate = calendar.date(byAdding: .day, value: -7, to: endDate)!
+        }
+        
+        return (
+            formatter.string(from: startDate),
+            formatter.string(from: endDate)
+        )
+    }
 }
+
 
 extension AnalysisDataViewController: UICollectionViewDataSource {
     

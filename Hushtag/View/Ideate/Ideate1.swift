@@ -38,15 +38,15 @@ class Ideate1: UIViewController {
             name: .didUpdateLikedStatus,
             object: nil
         )
-
+        
         scriptButton.layer.borderWidth = 1
         scriptButton.layer.borderColor = UIColor.accent.cgColor
         
         setupGlobalKeyboardDismiss()
-//        Task {
-//                await loadIdeasFromPreferences()
-//            }
-
+        //        Task {
+        //                await loadIdeasFromPreferences()
+        //            }
+        
         self.ideas = syncLikedState(SessionManager.shared.personalizedIdeas)
         // Fetch recent scripts
         fetchRecentScripts()
@@ -100,31 +100,31 @@ class Ideate1: UIViewController {
               let index = ideas.firstIndex(where: { $0.ideaKey == ideaKey }) else {
             return
         }
-
+        
         ideas[index].liked = LikedIds.likedIdeaIds.contains(ideaKey)
         
         // Dynamic section adjustment
         let suggestedSectionIndex = (recentScripts.isEmpty || isSearching) ? 1 : 2
-
+        
         if let cell = collectionView.cellForItem(
             at: IndexPath(row: index, section: suggestedSectionIndex)
         ) as? IdeaCells {
             cell.configure(idea: ideas[index])
         }
     }
-
-
-
-
-
+    
+    
+    
+    
+    
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
-//    
-//    @objc func refreshUI() {
-//        collectionView.reloadData()
-//    }
-//    
+    //
+    //    @objc func refreshUI() {
+    //        collectionView.reloadData()
+    //    }
+    //
     @IBAction func scriptTap(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "Chatbot")
@@ -140,7 +140,7 @@ class Ideate1: UIViewController {
         destinationVC.pageTitle = "Liked Ideas"
         self.navigationController?.pushViewController(destinationVC, animated: true)
     }
-
+    
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
             
@@ -193,7 +193,7 @@ class Ideate1: UIViewController {
                 // Header (using HeaderView)
                 let headerSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(40)
+                    heightDimension: .estimated(self.isSearching ? 0 : 50)
                 )
                 let header = NSCollectionLayoutBoundarySupplementaryItem(
                     layoutSize: headerSize,
@@ -254,67 +254,49 @@ class Ideate1: UIViewController {
         }
     }
     
-    //    private func mapVideosToIdeas(_ videos: [VideoDTO]) -> [Idea] {
-    //        return videos.map {
-    //            Idea(
-    //                id: $0.id,
-    //                trending: nil,
-    //                title: $0.title,
-    //                description: $0.description,
-    //                script: nil,
-    //                hashtag: $0.hashtags ?? [],
-    //                videos: nil as [Video]?,
-    //                liked: nil as Bool?,
-    //                tag: "",
-    //                thumbnail: nil,
-    //                engagementRate: Double($0.views / 1000)
-    //            )
-    //        }
-    //    }
-
     private func syncLikedState(_ ideas: [Idea]) -> [Idea] {
         let likedKeys = LikedIds.likedIdeaIds
-
+        
         return ideas.map { idea in
             var updated = idea
-
+            
             guard let key = idea.ideaKey else {
                 updated.liked = false
                 return updated
             }
-
+            
             updated.liked = likedKeys.contains(key)
             return updated
         }
     }
-
-
-
+    
+    
+    
     func loadIdeasFromPreferences() async {
-
+        
         guard let prefs = SessionManager.shared.userPreferences else {
             print("❌ No preferences found")
             return
         }
-
+        
         let topics = prefs.niche
-
+        
         guard topics.count >= 3 else {
             print("❌ Not enough niche topics")
             return
         }
-
+        
         let selectedTopics = Array(topics.prefix(5))
-
+        
         print("🎯 Fetching ideas for:", selectedTopics)
-
+        
         var personalizedIdeas: [Idea] = []
-
+        
         for topic in selectedTopics {
-
+            
             do {
                 let response = try await YouTubeService().search(query: topic.rawValue)
-
+                
                 if let firstIdea = response.clusterIdeas
                     .flatMap({ $0.ideas })
                     .first {
@@ -324,7 +306,7 @@ class Ideate1: UIViewController {
                         format: firstIdea.format,
                         hashtags: firstIdea.hashtags
                     )
-
+                    
                     let mapped = Idea(
                         id: UUID(),
                         ideaKey: key,
@@ -336,16 +318,16 @@ class Ideate1: UIViewController {
                         videos: response.clusterIdeas.first?.videos.map { $0.toVideo() },
                         liked: false
                     )
-
-
+                    
+                    
                     personalizedIdeas.append(mapped)
                 }
-
+                
             } catch {
                 print("❌ Error fetching topic \(topic):", error)
             }
         }
-
+        
         // Update UI
         await MainActor.run {
             self.ideas = personalizedIdeas
@@ -425,6 +407,8 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
                 withReuseIdentifier: "suggestedHeader",
                 for: indexPath
             ) as! SuggestedFYHeader
+            
+            header.isHidden = isSearching
             return header
         }
     }
@@ -457,21 +441,6 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
     
 }
 
-//extension Ideate1: IdeaSearchDelegate {
-//    func didTapSearch(with keyword: String) {
-//        if keyword.isEmpty {
-//            ideas = ideaResponse.ideas
-//        } else {
-//            ideas = ideaResponse.ideas.filter { idea in
-//                idea.hashtag.contains { tag in
-//                    tag.localizedCaseInsensitiveContains(keyword)
-//                }
-//            }
-//        }
-//        collectionView.reloadSections(IndexSet(integer: 1))
-//    }
-//}
-
 extension Notification.Name {
     static let didUpdateLikedStatus = Notification.Name("didUpdateLikedStatus")
 }
@@ -488,7 +457,6 @@ extension Ideate1: IdeaSearchDelegate {
         }
         
         self.isSearching = true
-
         
         Task {
             do {
@@ -496,18 +464,19 @@ extension Ideate1: IdeaSearchDelegate {
                 
                 // NEW FLOW
                 let clusterIdeas = response.clusterIdeas
+                collectionView.setCollectionViewLayout(generateLayout(), animated: false)
                 
                 // Flatten clusterIdeas → Idea objects
                 let mappedIdeas: [Idea] = clusterIdeas.flatMap { cluster in
                     cluster.ideas.map { geminiIdea in
-
+                        
                         let key = makeIdeaKey(
                             title: geminiIdea.title,
                             description: geminiIdea.description,
                             format: geminiIdea.format,
                             hashtags: geminiIdea.hashtags
                         )
-
+                        
                         return Idea(
                             id: UUID(),
                             ideaKey: key,
@@ -521,7 +490,7 @@ extension Ideate1: IdeaSearchDelegate {
                         )
                     }
                 }
-
+                
                 
                 await MainActor.run {
                     self.ideas = mappedIdeas
@@ -537,16 +506,16 @@ extension Ideate1: IdeaSearchDelegate {
 }
 
 extension Ideate1: IdeaCellDelegate {
-
+    
     func didToggleLikeFromFeed(for ideaKey: String) {
-
+        
         guard let index = ideas.firstIndex(where: { $0.ideaKey == ideaKey }) else {
             return
         }
-
+        
         let isCurrentlyLiked = LikedIds.likedIdeaIds.contains(ideaKey)
         let idea = ideas[index]
-
+        
         Task {
             do {
                 if isCurrentlyLiked {
@@ -558,37 +527,37 @@ extension Ideate1: IdeaCellDelegate {
                     try await likedIdeasController.likeIdea(idea)
                     LikedIds.likedIdeaIds.insert(ideaKey)
                 }
-
+                
                 await MainActor.run {
                     // Update Ideate list
                     ideas[index].liked = !isCurrentlyLiked
-
+                    
                     // Keep SessionManager in sync (VERY important)
                     if let smIndex = SessionManager.shared.personalizedIdeas
                         .firstIndex(where: { $0.ideaKey == ideaKey }) {
                         SessionManager.shared.personalizedIdeas[smIndex].liked = !isCurrentlyLiked
                     }
-
+                    
                     // Notify other screens
                     NotificationCenter.default.post(
                         name: .didUpdateLikedStatus,
                         object: ideaKey
                     )
-
+                    
                     let suggestedSectionIndex = (recentScripts.isEmpty || self.isSearching) ? 1 : 2
                     if let cell = collectionView.cellForItem(
-                            at: IndexPath(row: index, section: suggestedSectionIndex)
-                        ) as? IdeaCells {
-                            cell.updateLikeUI()
-                        }
+                        at: IndexPath(row: index, section: suggestedSectionIndex)
+                    ) as? IdeaCells {
+                        cell.updateLikeUI()
+                    }
                 }
-
+                
             } catch {
                 print("❌ Like toggle failed:", error)
             }
         }
     }
-    }
+}
 
 
 
