@@ -48,12 +48,12 @@ class AudienceChartCell: UICollectionViewCell {
 
         if change >= 0 {
             followersChangeLabel.text =
-                "+\(Int(change))"
+                "+\(Int(change))%"
             followersChangeLabel.textColor =
                 .systemGreen
         } else {
             followersChangeLabel.text =
-                "\(Int(change))"
+                "\(Int(change))%"
             followersChangeLabel.textColor =
                 .systemRed
         }
@@ -82,10 +82,15 @@ class AudienceChartCell: UICollectionViewCell {
         
         if let existingController = hostingController {
             existingController.rootView = chartView
+            existingController.view.backgroundColor = .clear
+            existingController.view.isOpaque = false
         } else {
             
             let controller =
             UIHostingController(rootView: chartView)
+            
+            controller.view.backgroundColor = .clear
+            controller.view.isOpaque = false
             
             chartContainer.addSubview(controller.view)
             

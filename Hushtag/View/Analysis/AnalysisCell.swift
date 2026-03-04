@@ -1,10 +1,3 @@
-//
-//  AnalysisCell.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 08/12/25.
-//
-
 import UIKit
 
 class AnalysisCell: UICollectionViewCell {
@@ -31,24 +24,29 @@ class AnalysisCell: UICollectionViewCell {
 
         case .views:
             title = "Views"
-            sfSymbol.image =
-                UIImage(systemName: "eye.fill")
+            //sfSymbol.image =
+              //  UIImage(systemName: "eye.fill")
 
         case .likes:
             title = "Likes"
-            sfSymbol.image =
-                UIImage(systemName: "hand.thumbsup.fill")
+            //sfSymbol.image =
+               // UIImage(systemName: "hand.thumbsup.fill")
 
         case .watchTime:
             title = "Watch Time"
-            sfSymbol.image =
-                UIImage(systemName: "clock.fill")
+            //sfSymbol.image =
+               // UIImage(systemName: "clock.fill")
+            
+        case .subscribers:
+            title = "Subscribers"
+            //sfSymbol.image =
+               // UIImage(systemName: "clock.fill")
         }
-
+        
         analysisType.text = title
 
         //  No comparison data yet
-        changeLabel.text = "--"
+        changeLabel.text = ""
         changeLabel.textColor = .secondaryLabel
     }
     

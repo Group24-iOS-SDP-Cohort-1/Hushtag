@@ -1,11 +1,3 @@
-//
-//  LikedIdeaDB.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 12/02/26.
-//
-//
-
 import Foundation
 
 nonisolated struct LikedIdeaDB: Codable {

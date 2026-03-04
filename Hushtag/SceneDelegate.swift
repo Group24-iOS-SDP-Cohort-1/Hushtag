@@ -36,7 +36,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 let endDate = formatter.string(from: Date())
 
                 let startDate = formatter.string(
-                    from: Calendar.current.date(byAdding: .day, value: -7, to: Date())!
+                    from: Calendar.current.date(byAdding: .day, value: -30, to: Date())!
                 )
 
                 await YouTubeController.shared.restoreYouTubeConnectionIfNeeded(

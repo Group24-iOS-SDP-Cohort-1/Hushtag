@@ -1,10 +1,3 @@
-//
-//  ModelOne.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 24/11/25.
-//
-
 import Foundation
 import CryptoKit
 
@@ -116,11 +109,6 @@ extension Int {
                 .replacingOccurrences(of: ".0", with: "")
         }
     }
-}
-
-struct TimePayload: Codable {
-    let hour: Int
-    let minute: Int
 }
 
 nonisolated struct ClusterIdeaAPIResponse: Codable {
