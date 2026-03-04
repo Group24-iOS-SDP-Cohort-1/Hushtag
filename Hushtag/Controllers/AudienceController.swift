@@ -2,7 +2,7 @@ import Foundation
 import Supabase
 
 final class AudienceController {
-
+    
     private let client = SupabaseConfig.client
     
     func fetchAudienceMetrics() async throws -> [AudienceMetrics] {

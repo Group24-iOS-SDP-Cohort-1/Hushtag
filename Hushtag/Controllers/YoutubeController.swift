@@ -16,8 +16,6 @@ struct AnalyticsRequestPayload: Codable {
     let endDate: String
 }
 
-
-
 // MARK: - YouTube Controller
 
 final class YouTubeController {

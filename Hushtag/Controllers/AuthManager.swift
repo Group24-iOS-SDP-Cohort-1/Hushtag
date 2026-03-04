@@ -1,15 +1,6 @@
-//
-//  AuthManager.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 23/01/26.
-//
-
 import Foundation
 import Supabase
 internal import _Helpers
-
-
 
 struct AppUser{
     let uid: String

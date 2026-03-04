@@ -19,7 +19,7 @@ final class ScheduleItemController {
             $0.id == updatedDeal.id ? updatedDeal : $0
         }
     }
-
+    
     
     func load() async throws {
         async let dealsTask = dealsController.fetchDeals()

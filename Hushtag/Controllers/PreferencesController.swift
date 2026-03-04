@@ -1,10 +1,3 @@
-//
-//  PreferencesController.swift
-//  Hushtag
-//
-//  Created by Dhruav Mathur on 28/01/26.
-//
-
 import Foundation
 import Supabase
 

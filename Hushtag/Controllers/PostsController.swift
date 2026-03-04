@@ -74,7 +74,7 @@ final class PostsController {
     
     func deletePost(postId: UUID) async throws {
         let session = try await client.auth.session
-
+        
         try await client.database
             .from("posts")
             .delete()
@@ -82,7 +82,7 @@ final class PostsController {
             .eq("user_id", value: session.user.id)
             .execute()
     }
-
+    
     
     func updatePost(_ post: Post) async throws -> Post {
         

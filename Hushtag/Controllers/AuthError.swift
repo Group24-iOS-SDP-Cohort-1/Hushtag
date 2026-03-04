@@ -1,10 +1,3 @@
-//
-//  AuthError.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 24/01/26.
-//
-
 import Foundation
 
 enum AuthError: LocalizedError {
