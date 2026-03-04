@@ -25,11 +25,6 @@ struct LikedIds {
 }
 
 
-//struct YouTubeAuthPayload: Encodable {
-//    let user_id: String
-//    let auth_code: String
-//}
-
 extension Date {
     
     private static let dayOnlyFormatter: DateFormatter = {
@@ -123,22 +118,10 @@ extension Int {
     }
 }
 
-
-struct AnalysisDateData: Codable, Identifiable {
-    let id = UUID()
-    let date: Date
-    let audienceEngagementRate: String
-}
-
 struct TimePayload: Codable {
     let hour: Int
     let minute: Int
 }
-
-enum PlatformType:String{
-    case youtube,instagram,facebook
-}
-
 
 nonisolated struct ClusterIdeaAPIResponse: Codable {
     let mode: String

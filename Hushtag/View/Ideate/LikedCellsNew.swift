@@ -65,7 +65,7 @@ class LikedCellsNew: UICollectionViewCell {
         }
 
     @IBAction func likeTapped(_ sender: UIButton) {
-        guard var idea = idea else { return }
+        guard let idea = idea else { return }
         delegate?.didToggleLike(for: idea.ideaKey ?? "")
     }
     

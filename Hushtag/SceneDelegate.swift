@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                willConnectTo session: UISceneSession,
                options connectionOptions: UIScene.ConnectionOptions) {
 
-        // 🔥 ADD THIS BLOCK
+        // ADD THIS BLOCK
         GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
             if let error = error {
                 print("❌ Google restore failed:", error)
@@ -25,13 +25,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
 
-        // 🔥 YOUR EXISTING CODE (UNCHANGED)
         _Concurrency.Task {
             do {
                 let _ = try await AuthManager.shared.getCurrentSession()
 
                 await SessionManager.shared.restoreSession()
-                await YouTubeController.shared.restoreYouTubeConnectionIfNeeded()
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd"
+
+                let endDate = formatter.string(from: Date())
+
+                let startDate = formatter.string(
+                    from: Calendar.current.date(byAdding: .day, value: -7, to: Date())!
+                )
+
+                await YouTubeController.shared.restoreYouTubeConnectionIfNeeded(
+                    startDate: startDate,
+                    endDate: endDate
+                )
 
                 let isComplete = await AuthManager.shared.hasCompletedOnboarding()
 
