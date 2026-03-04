@@ -42,3 +42,71 @@ class LoadingOverlay {
         activityIndicator = nil
     }
 }
+
+class OpaqueLoadingScreen {
+    static let shared = OpaqueLoadingScreen()
+    
+    private var overlayView: UIView?
+    private var activityIndicator: UIActivityIndicatorView?
+    private var messageLabel: UILabel?
+    
+    private init() {}
+    
+    @MainActor
+    func show(message: String = "Finding the best ideas...") {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first(where: { $0.isKeyWindow }) else {
+            return
+        }
+        
+        if overlayView != nil { return } // Already showing
+        
+        let overlay = UIView(frame: window.bounds)
+        // using systemBackground so it looks completely seamlessly opaque and adapts to light/dark mode
+        overlay.backgroundColor = UIColor.systemBackground
+        overlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        let container = UIStackView()
+        container.axis = .vertical
+        container.alignment = .center
+        container.spacing = 20
+        container.translatesAutoresizingMaskIntoConstraints = false
+        
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = .accent
+        indicator.startAnimating()
+        
+        let label = UILabel()
+        label.text = message
+        label.textColor = .label
+        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+        
+        container.addArrangedSubview(indicator)
+        container.addArrangedSubview(label)
+        
+        overlay.addSubview(container)
+        window.addSubview(overlay)
+        
+        NSLayoutConstraint.activate([
+            container.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
+            container.centerYAnchor.constraint(equalTo: overlay.centerYAnchor)
+        ])
+        
+        self.overlayView = overlay
+        self.activityIndicator = indicator
+        self.messageLabel = label
+    }
+    
+    @MainActor
+    func hide() {
+        guard let overlay = overlayView else { return }
+        UIView.animate(withDuration: 0.3, animations: {
+            overlay.alpha = 0
+        }) { _ in
+            overlay.removeFromSuperview()
+            self.overlayView = nil
+            self.activityIndicator = nil
+            self.messageLabel = nil
+        }
+    }
+}

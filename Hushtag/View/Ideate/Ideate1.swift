@@ -488,6 +488,8 @@ extension Ideate1: IdeaSearchDelegate {
         }
         
         self.isSearching = true
+        
+        OpaqueLoadingScreen.shared.show(message: "Searching ideas...")
 
         
         Task {
@@ -527,10 +529,14 @@ extension Ideate1: IdeaSearchDelegate {
                     self.ideas = mappedIdeas
                     print("Ideas Count:", self.ideas.count)
                     self.collectionView.reloadData()
+                    OpaqueLoadingScreen.shared.hide()
                 }
                 
             } catch {
                 print("❌ ERROR:", error)
+                await MainActor.run {
+                    OpaqueLoadingScreen.shared.hide()
+                }
             }
         }
     }
