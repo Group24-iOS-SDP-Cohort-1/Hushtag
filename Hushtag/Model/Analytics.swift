@@ -5,6 +5,7 @@ nonisolated struct AudienceMetrics: Codable {
     let views: Int
     let likes: Int
     let estimated_minutes_watched: Int
+    let subscribers: Int
     let start_date: String
     let end_date: String
 }
@@ -13,6 +14,7 @@ enum AnalysisMetric {
     case views
     case likes
     case watchTime
+    case subscribers
 }
 
 nonisolated struct LatestContent: Codable {
