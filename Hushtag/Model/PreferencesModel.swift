@@ -88,3 +88,107 @@ enum ContentGoal: String, Codable, CustomStringConvertible {
         rawValue
     }
 }
+
+// MARK: - Preferences Content Data
+
+struct PreferenceItem {
+    let id: Int
+    let title: String
+    let subheading: String
+    let sections: [PreferenceSection]
+}
+
+struct PreferenceSection {
+    var title: String = ""
+    var hasTextInput: Bool = false
+    var options: [String] = []
+}
+
+struct PreferencesData {
+    static let items: [PreferenceItem] = [
+        PreferenceItem(
+            id: 1,
+            title: "Pick your niche",
+            subheading: "Choose topics you want to create content about",
+            sections: [
+                PreferenceSection(
+                    title: "",
+                    hasTextInput: false,
+                    options: [
+                        "Lifestyle",
+                        "Skincare",
+                        "Game",
+                        "Food",
+                        "Wellness",
+                        "Finance",
+                        "Music",
+                        "Education",
+                        "Other"
+                    ]
+                )
+            ]
+        ),
+        PreferenceItem(
+            id: 2,
+            title: "Set your content goals",
+            subheading: "Select your main content goals",
+            sections: [
+                PreferenceSection(
+                    title: "",
+                    hasTextInput: false,
+                    options: [
+                        "Grow Audience",
+                        "Boost Engagement",
+                        "Post More Consistently",
+                        "Experiment with Trends",
+                        "Strengthen My Brand"
+                    ]
+                )
+            ]
+        ),
+        PreferenceItem(
+            id: 3,
+            title: "Content Preferences",
+            subheading: "Tone and format preferences",
+            sections: [
+                PreferenceSection(
+                    title: "What best describes your vibe?",
+                    hasTextInput: false,
+                    options: [
+                        "Funny",
+                        "Relatable",
+                        "Casual",
+                        "Motivational",
+                        "Aesthetic",
+                        "Trendy",
+                        "Other"
+                    ]
+                ),
+                PreferenceSection(
+                    title: "What kind of content do you prefer making?",
+                    hasTextInput: false,
+                    options: [
+                        "Short-Form",
+                        "Long-Form"
+                    ]
+                )
+            ]
+        ),
+        PreferenceItem(
+            id: 4,
+            title: "Add your YouTube account",
+            subheading: "Link your YouTube account to get personalized insights on current trends, detailed analysis of your videos and account insights.",
+            sections: [
+                PreferenceSection(
+                    title: "",
+                    hasTextInput: false,
+                    options: [
+                        "Connect YouTube",
+                        "Connect Instagram",
+                        "Connect Facebook"
+                    ]
+                )
+            ]
+        )
+    ]
+}
