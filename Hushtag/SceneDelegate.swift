@@ -30,6 +30,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 let _ = try await AuthManager.shared.getCurrentSession()
 
                 await SessionManager.shared.restoreSession()
+                
                 let formatter = DateFormatter()
                 formatter.dateFormat = "yyyy-MM-dd"
 
@@ -56,6 +57,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
             } catch {
                 print("No active session, staying on Login screen.")
+                // Route to the login screen if the Supabase auth check fails
+                        DispatchQueue.main.async {
+                            self.navigateToLoginScreen()
+                        }
             }
         }
     }
@@ -92,6 +97,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Optional: Add a smooth cross-dissolve animation
             UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
         }
+    }
+    
+    func navigateToLoginScreen() {
+        // 1. Safely unwrap the window directly owned by SceneDelegate
+        guard let window = self.window else { return }
+
+        // 2. Load the Login/Signup Storyboard
+        let storyboard = UIStoryboard(name: "login_signup", bundle: nil)
+            
+        // 3. Instantiate the Navigation Controller
+        guard let loginNav = storyboard.instantiateViewController(withIdentifier: "LoginNavigationController") as? UINavigationController else {
+            print("Error: Could not find LoginNavigationController in Storyboard")
+            return
+        }
+
+        // 4. Swap the root view controller
+        window.rootViewController = loginNav
+            
+        // 5. Add a smooth cross-dissolve animation
+        UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+            
+        // 6. Make it visible
+        window.makeKeyAndVisible()
     }
     
     
