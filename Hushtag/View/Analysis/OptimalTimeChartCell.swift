@@ -1,15 +1,8 @@
-//
-//  OptimalTimeChartCell.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 09/12/25.
-//
-
 import UIKit
 import SwiftUI
 
 class OptimalTimeChartCell: UICollectionViewCell {
-
+    
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var chartContainer: UIView!
     private var hostingController: UIHostingController<OptimalTimeChart>?
@@ -17,40 +10,46 @@ class OptimalTimeChartCell: UICollectionViewCell {
         super.awakeFromNib()
     }
     
-    func configure(with timeData: [AnalysisDateData]) {
+    func configure(with activity: [ViewerActivity]) {
 
-        guard !timeData.isEmpty else {
+        guard !activity.isEmpty else {
             titleLabel.text = "Best time : N/A"
-            setupChart(data: [], topDates: [])
+            setupChart(activity: [])
             return
         }
 
-        // Convert engagement rate safely
-        func engagementValue(_ value: String) -> Double {
-            Double(value.replacingOccurrences(of: "%", with: "")) ?? 0
+        let calendar = Calendar.current
+
+        // Aggregate views by weekday
+        var weekdayViews: [Int: Int] = [:]
+
+        for item in activity {
+            let weekday = calendar.component(.weekday, from: item.day)
+            weekdayViews[weekday, default: 0] += item.views
         }
 
-        // Sort by engagement
-        let sortedData = timeData.sorted {
-            engagementValue($0.audienceEngagementRate) >
-            engagementValue($1.audienceEngagementRate)
+        // Convert to array
+        let orderedWeekdays = [1,2,3,4,5,6,7]
+
+        let weekdayData = orderedWeekdays.map { weekday -> (day: String, views: Int) in
+
+            let name =
+            calendar.shortWeekdaySymbols[weekday - 1]
+
+            let views = weekdayViews[weekday] ?? 0
+
+            return (name, views)
         }
 
-        // Pick top 2
-        let topTwo = Array(sortedData.prefix(2))
+        // Find best 2 days
+        let bestDays = weekdayData
+            .sorted { $0.views > $1.views }
+            .prefix(2)
+            .map { $0.day }
 
-        // Title text
-        let timeStrings = topTwo.map { item -> String in
-            let time = item.date.formatted(date: .omitted, time: .shortened)
-            let day = item.date.formatted(.dateTime.weekday(.abbreviated))
-            return "\(time) \(day)"
-        }
+        titleLabel.text = "Best time : " + bestDays.joined(separator: ", ")
 
-        titleLabel.text = "Best time : " + timeStrings.joined(separator: ", ")
-
-        // Highlight dates
-        let topDates = Set(topTwo.map { $0.date })
-        setupChart(data: timeData, topDates: topDates)
+        setupChart(activity: activity)
 
         // UI styling
         contentView.layer.cornerRadius = 12
@@ -64,32 +63,32 @@ class OptimalTimeChartCell: UICollectionViewCell {
         contentView.backgroundColor = .clear
         chartContainer.backgroundColor = .clear
     }
-
+    
     private func setupChart(
-        data: [AnalysisDateData],
-        topDates: Set<Date>
+        activity: [ViewerActivity]
     ) {
+        
         let chartView = OptimalTimeChart(
-            data: data,
-            topDates: topDates
+            data: activity
         )
-
+        
         if let existingController = hostingController {
             existingController.rootView = chartView
         } else {
+            
             let controller = UIHostingController(rootView: chartView)
             controller.view.backgroundColor = .clear
-
+            
             chartContainer.addSubview(controller.view)
             controller.view.translatesAutoresizingMaskIntoConstraints = false
-
+            
             NSLayoutConstraint.activate([
                 controller.view.topAnchor.constraint(equalTo: chartContainer.topAnchor),
                 controller.view.bottomAnchor.constraint(equalTo: chartContainer.bottomAnchor),
                 controller.view.leadingAnchor.constraint(equalTo: chartContainer.leadingAnchor),
                 controller.view.trailingAnchor.constraint(equalTo: chartContainer.trailingAnchor)
             ])
-
+            
             hostingController = controller
         }
     }

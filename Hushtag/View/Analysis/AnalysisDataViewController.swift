@@ -2,16 +2,14 @@ import UIKit
 
 class AnalysisDataViewController: UIViewController {
     
-    var analysisResponse = AnalysisResponse()
-    var analysisData: Analysis?
     var platform: String = ""
-    var fullAnalysis: [Analysis]?
     let controller = AudienceController()
     var audienceMetrics: [AudienceMetrics] = []
     var latestContent: [LatestContent] = []
     var topVideos: [TopVideo] = []
     var revenueInsight: [RevenueInsight] = []
     var audienceDemographic: [AudienceDemographic] = []
+    var viewerActivity: [ViewerActivity] = []
     
     @IBOutlet weak var analysisCollectionView: UICollectionView!
     @IBOutlet weak var segmentedTimeOutlet: UISegmentedControl!
@@ -19,7 +17,6 @@ class AnalysisDataViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        fullAnalysis = analysisResponse.analysis
         
         Task {
             await loadAudience()
@@ -27,6 +24,7 @@ class AnalysisDataViewController: UIViewController {
             await loadTopVideos()
             await loadRevenueInsights()
             await loadAudienceDemographic()
+            await loadViewerActivity()
         }
         
         analysisCollectionView.register(
@@ -93,15 +91,14 @@ class AnalysisDataViewController: UIViewController {
     //FUNCTION TO LOAD THE DATA FOR THE SELECTED INDEX
     
     func loadDataFor(segmentIndex: Int) {
-        guard
-            let fullAnalysis,
-            segmentIndex < fullAnalysis.count
-        else {
-            print("Data not loaded")
-            return
-        }
+//        guard
+//            let fullAnalysis,
+//            segmentIndex < fullAnalysis.count
+//        else {
+//            print("Data not loaded")
+//            return
+//        }
         
-        analysisData = fullAnalysis[segmentIndex]
         analysisCollectionView.reloadData()
     }
     
@@ -175,12 +172,42 @@ class AnalysisDataViewController: UIViewController {
         }
     }
     
+    func loadViewerActivity() async {
+        do {
+            viewerActivity = try await controller.fetchViewerActivity()
+            print(viewerActivity)
+            
+            await MainActor.run {
+                self.analysisCollectionView.reloadSections(IndexSet(integer: 5))
+            }
+            
+        } catch {
+            print("Error fetching viewer activity:", error)
+        }
+    }
+    
     //FUNCTION TO CHANGE DATA WHEN THE SELECTED SEGMENT CHANGES
     
     @IBAction func segmentChanged(_ sender: UISegmentedControl) {
         loadDataFor(segmentIndex: sender.selectedSegmentIndex)
     }
     
+    func weeklyActivityData() -> [Int] {
+        
+        var week = Array(repeating: 0, count: 7)
+        
+        let calendar = Calendar.current
+        
+        for item in viewerActivity {
+            
+            let weekday =
+            calendar.component(.weekday, from: item.day) - 1
+            
+            week[weekday] += item.views
+        }
+        
+        return week
+    }
 }
 
 extension AnalysisDataViewController: UICollectionViewDataSource {
@@ -293,9 +320,7 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
                 for: indexPath
             ) as! OptimalTimeChartCell
             
-            if let data = analysisData {
-                cell.configure(with: data.optimalTime)
-            }
+            cell.configure(with: viewerActivity)
             return cell
         }
         

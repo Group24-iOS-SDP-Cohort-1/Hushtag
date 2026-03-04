@@ -70,5 +70,18 @@ final class AudienceController {
         return data
     }
     
-    
+    func fetchViewerActivity() async throws -> [ViewerActivity] {
+        
+        let session = try await client.auth.session
+        
+        let data: [ViewerActivity] = try await client.database
+            .from("viewer_activity")
+            .select()
+            .eq("user_id", value: session.user.id)
+            .order("day", ascending: true)
+            .execute()
+            .value
+        
+        return data
+    }
 }
