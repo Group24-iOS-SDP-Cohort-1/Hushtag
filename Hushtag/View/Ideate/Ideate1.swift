@@ -1,10 +1,3 @@
-//
-//  Ideate1.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 17/12/25.
-//
-
 import UIKit
 
 class Ideate1: UIViewController {
@@ -458,6 +451,9 @@ extension Ideate1: IdeaSearchDelegate {
         
         self.isSearching = true
         
+        OpaqueLoadingScreen.shared.show(message: "Searching ideas...")
+
+        
         Task {
             do {
                 let response = try await YouTubeService().search(query: keyword)
@@ -496,10 +492,14 @@ extension Ideate1: IdeaSearchDelegate {
                     self.ideas = mappedIdeas
                     print("Ideas Count:", self.ideas.count)
                     self.collectionView.reloadData()
+                    OpaqueLoadingScreen.shared.hide()
                 }
                 
             } catch {
                 print("❌ ERROR:", error)
+                await MainActor.run {
+                    OpaqueLoadingScreen.shared.hide()
+                }
             }
         }
     }
@@ -558,8 +558,3 @@ extension Ideate1: IdeaCellDelegate {
         }
     }
 }
-
-
-
-
-
