@@ -68,23 +68,23 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         
         generateStack.isHidden = true
         
-        if let text = autoSendMessage {
-            sendAutoMessage(text)
-            autoSendMessage = nil
-        }
-        
-        // ✅ Only create new conversation if none exists
+//        if let text = autoSendMessage {
+//            messages.append(Message(role: "user", content: text))
+//            tableView.reloadData()
+//            scrollToBottom()
+//        }
+
         if conversationID == nil {
             
             conversationID = UUID()
-            print("🆕 New Conversation started:", conversationID!)
+            print("New Conversation started:", conversationID!)
             
             Task {
                 do {
                     _ = try await controller.addConversation(id: conversationID ?? UUID())
-                    print("✅ Conversation created")
+                    print("Conversation created")
                 } catch {
-                    print("❌ Failed to create conversation:", error)
+                    print("Failed to create conversation:", error)
                 }
             }
             
@@ -92,24 +92,16 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             print("📌 Opening existing conversation:", conversationID!)
         }
         
-        Task {
-            do {
-                let convo = try await controller.addConversation(id: conversationID ?? UUID())
-                print("✅ Conversation inserted:", convo)
-            } catch {
-                print("❌ Failed to insert conversation:", error)
-            }
-        }
-        
+
         Task {
             do {
                 let history = try await controller.fetchMessages(for: conversationID ?? UUID())
                 
-                // 1️⃣ Fetch scripted idea for this conversation
+                //Fetch scripted idea for this conversation
                 let allIdeas = try await controller.fetchScript()
                 let idea = allIdeas.first { $0.chat_id == self.conversationID }
                 
-                // 2️⃣ Restore marks
+                // Restore marks
                 let mapped = history.map { chat in
                     
                     var message = Message(
@@ -132,15 +124,23 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     
                     return message
                 }
-                
                 await MainActor.run {
-                    self.messages = mapped
+
+                    if !mapped.isEmpty {
+                        self.messages = mapped
+                    }
+
                     self.tableView.reloadData()
                     self.scrollToBottom()
+
+                    if let text = self.autoSendMessage {
+                        self.sendMessage(text)
+                        self.autoSendMessage = nil
+                    }
                 }
-                
+
             } catch {
-                print("❌ Failed loading conversation:", error)
+                print(" Failed loading conversation:", error)
             }
         }
         
@@ -592,24 +592,12 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         sendMessage(title)
         generateStack.isHidden = true
     }
-    
-    func didTapDraftScript(for idea: Idea) {
-        
-        sendAutoMessage("script")
-        
-        if let lastIndex = messages.indices.last {
-            messages[lastIndex].mark = "script"
-        }
-        
-        generateStack.isHidden = false
-        showScriptSuggestions()
-    }
-    
-    func sendAutoMessage(_ text: String) {
-        messages.append(Message(role: "user", content: text))
-        tableView.reloadData()
-        let indexPath = IndexPath(row: messages.count - 1, section: 0)
-        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-    }
+
+//    func sendAutoMessage(_ text: String) {
+//        messages.append(Message(role: "user", content: text))
+//        tableView.reloadData()
+//        let indexPath = IndexPath(row: messages.count - 1, section: 0)
+//        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+//    }
     
 }
