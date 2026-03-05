@@ -279,7 +279,7 @@ extension DealsInfo: UICollectionViewDataSource {
         let type = sections[section]
 
         switch type {
-        case .details: return 3
+        case .details: return 4
         case .deliverables: return deals.deliverables.count
         case .selectedIdea: return selectedIdea == nil ? 0 : 1
 
@@ -301,19 +301,16 @@ extension DealsInfo: UICollectionViewDataSource {
                 for: indexPath
             ) as! DetailsCell
 
-            let isLast = indexPath.item == 2
+            let isLast = indexPath.item == 3
 
             if indexPath.item == 0 {
-                cell.configure(iconName: "creditcard", text: "Rs \(deals.payment)", isLast: isLast)
+                cell.configure(iconName: "calendar", text: deals.deadline.deadlineFormatted(), isLast: isLast)
             } else if indexPath.item == 1 {
+                cell.configure(iconName: "creditcard", text: "Rs \(deals.payment)", isLast: isLast)
+            } else if indexPath.item == 2 {
                 cell.configure(iconName: "envelope", text: deals.email, isLast: isLast)
             } else {
-                cell
-                    .configure(
-                        iconName: "phone",
-                        text: "\(deals.mobileNumber)",
-                        isLast: isLast
-                    )
+                cell.configure(iconName: "phone", text: "\(deals.mobileNumber)", isLast: isLast)
             }
             return cell
 

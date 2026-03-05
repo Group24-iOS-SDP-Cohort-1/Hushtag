@@ -123,12 +123,15 @@ final class DealsController {
             )
         }
         
-        let insertedDeliverables: [DeliverableDB] = try await client.database
-            .from("deliverables")
-            .insert(deliverablesPayload)
-            .select()
-            .execute()
-            .value
+        var insertedDeliverables: [DeliverableDB] = []
+        if !deliverablesPayload.isEmpty {
+            insertedDeliverables = try await client.database
+                .from("deliverables")
+                .insert(deliverablesPayload)
+                .select()
+                .execute()
+                .value
+        }
         
         return mapToDeal(updatedDeal, insertedDeliverables)
     }
