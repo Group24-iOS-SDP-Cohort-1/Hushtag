@@ -39,9 +39,7 @@ class PreferencesViewController: UIViewController {
     @IBOutlet weak var skipSubmitButton: UIBarButtonItem!
     
     
-    var preferenceResponse = PreferenceResponse()
-    var preferencesData: Preferences = Preferences()
-    var preferenceItems: [PreferenceItem] = []
+    var preferenceItems: [PreferenceItem] = PreferencesData.items
     
     //NEW
     private var completedStates: [Bool] = []
@@ -68,9 +66,6 @@ class PreferencesViewController: UIViewController {
         // Do any additional setup after loading the view.
         
         
-        
-        preferencesData = preferenceResponse.preferences
-        preferenceItems = preferencesData.toPreferenceItems()
         
         
         //NEW
