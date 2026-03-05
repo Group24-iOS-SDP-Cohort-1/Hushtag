@@ -24,34 +24,36 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     }
     
     func configure(with item: ScheduleItem) {
-            switch item {
-            case .post(let post, let task):
-                if let task = task {
-                    // It's a sub-task
-                    titleLabel.text = task.name
-                    timeLabel.text = task.deadline.timeOnly()
-                    // set completed status for task
-                } else {
-                    // It's the MAIN Post
-                    titleLabel.text = "Post: \(post.name)"
-                    timeLabel.text = post.deadline.timeOnly()
-                    // hide complete button or set it to false
-                }
-                
-            case .deal(let deal, let deliverable):
-                if let deliverable = deliverable {
-                    // It's a sub-deliverable
-                    titleLabel.text = deliverable.name
-                    timeLabel.text = deliverable.deadline.timeOnly()
-                    // set completed status for deliverable
-                } else {
-                    // It's the MAIN Deal
-                    titleLabel.text = "Deal: \(deal.name)"
-                    timeLabel.text = deal.deadline.timeOnly()
-                    // set completed status based on deal.isManuallyCompleted
-                }
+        self.item = item
+        dayLabel.text = item.effectiveDeadline.dayOnly()
+        switch item {
+        case .post(let post, let task):
+            if let task = task {
+                // It's a sub-task
+                titleLabel.text = task.name
+                timeLabel.text = task.deadline.timeOnly()
+                // set completed status for task
+            } else {
+                // It's the MAIN Post
+                titleLabel.text = "Post: \(post.name)"
+                timeLabel.text = post.deadline.timeOnly()
+                // hide complete button or set it to false
+            }
+            
+        case .deal(let deal, let deliverable):
+            if let deliverable = deliverable {
+                // It's a sub-deliverable
+                titleLabel.text = deliverable.name
+                timeLabel.text = deliverable.deadline.timeOnly()
+                // set completed status for deliverable
+            } else {
+                // It's the MAIN Deal
+                titleLabel.text = "Deal: \(deal.name)"
+                timeLabel.text = deal.deadline.timeOnly()
+                // set completed status based on deal.isManuallyCompleted
             }
         }
+    }
     
     
     
