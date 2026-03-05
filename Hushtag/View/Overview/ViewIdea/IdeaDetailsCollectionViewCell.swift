@@ -1,10 +1,3 @@
-//
-//  IdeaDetailsCollectionViewCell.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 13/02/26.
-//
-
 import UIKit
 
 class IdeaDetailsCollectionViewCell: UICollectionViewCell {
@@ -17,23 +10,19 @@ class IdeaDetailsCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var badgeStack: UIStackView!
     
     var idea: Idea?
-    
+    let controller = ScriptedIdeasController()
     
     func configure(with idea: Idea) {
+        self.idea = idea
         titleLabel.text = idea.title
         descriptionLabel.text = idea.description
         if let expanded = idea.expandedDescription,
            !expanded.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            
-            // Already expanded → show directly
             descriptionLabel.text = expanded
             
         } else {
-            
-            // Show original first
             descriptionLabel.text = idea.description
             
-            // Call AI only once
             Task {
                 await expandDescriptionWithAI()
             }
@@ -67,47 +56,46 @@ class IdeaDetailsCollectionViewCell: UICollectionViewCell {
     }
     
     func expandDescriptionWithAI() async {
-
+        
         guard let idea = idea else { return }
-
+        
         let prompt = """
         Expand this YouTube idea description into 4–5 engaging lines.
         Keep it natural, simple, and readable.
-
+        
         Original:
         "\(idea.description)"
         """
-
+        
         do {
-            let expanded = try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
-
-            DispatchQueue.main.async {
+            
+            let expanded =
+            try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
+            try await ScriptedIdeasController()
+                .updateExpandedDescription(
+                    ideaID: idea.id,
+                    expandedDescription: expanded
+                )
+            
+            await MainActor.run {
                 self.animateDescriptionUpdate(expanded)
             }
-
+            
         } catch {
             print("Expansion failed:", error.localizedDescription)
         }
     }
-
+    
+    func animateDescriptionUpdate(_ newText: String) {
         
-        func animateDescriptionUpdate(_ newText: String) {
-    
-            UIView.transition(
-                with: descriptionLabel,
-                duration: 0.2,
-                options: .transitionCrossDissolve
-            ) {
-                self.descriptionLabel.text = newText
-                self.descriptionLabel.alpha = 1.0
-                self.idea?.expandedDescription = newText
-            }
+        UIView.transition(
+            with: descriptionLabel,
+            duration: 0.2,
+            options: .transitionCrossDissolve
+        ) {
+            self.descriptionLabel.text = newText
+            self.descriptionLabel.alpha = 1.0
+            self.idea?.expandedDescription = newText
         }
-    
-    
-    
-    
-    //        hashtagLabel.text = idea.hashtags.joined(separator: "   ")
-    //        video = idea.videos ?? []
-    //
+    }
 }

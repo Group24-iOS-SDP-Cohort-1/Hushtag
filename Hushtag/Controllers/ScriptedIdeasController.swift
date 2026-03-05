@@ -51,18 +51,6 @@ final class ScriptedIdeasController {
     }
     
     func fetchConversations() async throws -> [Conversation] {
-        
-        //        let session = try await client.auth.session
-        //
-        //        let result: [Conversation] = try await client.database
-        //            .from("conversations")
-        //            .select()
-        //            .eq("user_id", value: session.user.id.uuidString)
-        //            .order("created_at", ascending: false)
-        //            .execute()
-        //            .value
-        //
-        //        return result
         let session = try await client.auth.session
         
         let result: [Conversation] = try await client.database
@@ -282,4 +270,19 @@ final class ScriptedIdeasController {
             .execute()
     }
     
+    func updateExpandedDescription(
+        ideaID: UUID,
+        expandedDescription: String
+    ) async throws {
+
+        try await client.database
+            .from("ideas")
+            .update([
+                "expanded_description": expandedDescription
+            ])
+            .eq("id", value: ideaID.uuidString)
+            .execute()
+
+        print("✅ Expanded description saved")
+    }
 }
