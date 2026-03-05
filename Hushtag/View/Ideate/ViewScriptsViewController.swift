@@ -431,12 +431,27 @@ extension ViewScriptsViewController: LikedCellDelegate {
     }
 
     func didTapDraftScript(for idea: Idea) {
+
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
+
         guard let vc = storyboard.instantiateViewController(
             withIdentifier: "Chatbot"
         ) as? Chatbot else { return }
 
-   
+        let prompt = """
+        Generate a short engaging social media video script.
+        
+        Idea Title: \(idea.title)
+        
+        Idea Description: \(idea.description)
+        
+        The script should include:
+        - Hook
+        - Main content
+        - Ending CTA
+        """
+
+        vc.autoSendMessage = prompt
 
         navigationController?.pushViewController(vc, animated: true)
     }
