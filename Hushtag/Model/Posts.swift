@@ -46,46 +46,47 @@ nonisolated struct TaskDB: Codable, Sendable {
 }
 
 enum ScheduleItem: Identifiable, Sendable {
-    case deal(deal: Deal, deliverable: Deliverable)
-    case post(post: Post, task: Tasks)
+    // 1. Made task and deliverable optional
+    case deal(deal: Deal, deliverable: Deliverable?)
+    case post(post: Post, task: Tasks?)
     
     var id: UUID {
         switch self {
-        case .deal(_, let deliverable):
-            return deliverable.id
-        case .post(_, let task):
-            return task.id
+        case .deal(let deal, let deliverable):
+            // Fall back to deal's ID if no deliverable
+            return deliverable?.id ?? deal.id
+        case .post(let post, let task):
+            // Fall back to post's ID if no task (provide a default UUID if post.id is nil)
+            return task?.id ?? post.id ?? UUID()
         }
     }
     
     var effectiveDeadline: Date {
         switch self {
-        case .post(_, let task):
-            //            if post.deadline == nil { return task.deadline }
-            //            else if task.deadline == nil { return post.deadline }
-            return task.deadline //?? post.deadline
+        case .post(let post, let task):
+            // Fall back to the main post's deadline
+            return task?.deadline ?? post.deadline
             
-        case .deal(_, let deliverable):
-            return deliverable.deadline //?? deal.deadline
+        case .deal(let deal, let deliverable):
+            // Fall back to the main deal's deadline
+            return deliverable?.deadline ?? deal.deadline
         }
     }
     
     var date: Date {
-        switch self {
-        case .deal(_, let deliverable):
-            return deliverable.deadline
-        case .post(_, let task):
-            return task.deadline
-        }
-    }
-    func matches(post: Post, task: Tasks) -> Bool {
-        guard case .post(let p, let t) = self else { return false }
-        return p.id == post.id && t.id == task.id
+        // This does the exact same thing as effectiveDeadline now
+        return effectiveDeadline
     }
     
-    func matches(deal: Deal, deliverable: Deliverable) -> Bool {
+    // 2. Updated matches functions to handle optional sub-items
+    func matches(post: Post, task: Tasks?) -> Bool {
+        guard case .post(let p, let t) = self else { return false }
+        return p.id == post.id && t?.id == task?.id
+    }
+    
+    func matches(deal: Deal, deliverable: Deliverable?) -> Bool {
         guard case .deal(let d, let del) = self else { return false }
-        return d.id == deal.id && del.id == deliverable.id
+        return d.id == deal.id && del?.id == deliverable?.id
     }
 }
 

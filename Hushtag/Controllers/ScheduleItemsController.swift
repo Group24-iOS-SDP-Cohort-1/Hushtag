@@ -20,7 +20,6 @@ final class ScheduleItemController {
         }
     }
     
-    
     func load() async throws {
         async let dealsTask = dealsController.fetchDeals()
         async let postsTask = postsController.fetchPosts()
@@ -31,34 +30,50 @@ final class ScheduleItemController {
     
     func scheduleItems(on date: Date) -> [ScheduleItem] {
         let calendar = Calendar.current
+        var allItems: [ScheduleItem] = []
         
-        let dealItems = deals.flatMap { deal in
-            deal.deliverables
-                .map { ScheduleItem.deal(deal: deal, deliverable: $0) }
-                .filter {
-                    calendar.isDate($0.effectiveDeadline, inSameDayAs: date)
+        // 1. Process Deals
+        for deal in deals {
+            // Include main deal if deadline matches
+            if calendar.isDate(deal.deadline, inSameDayAs: date) {
+                allItems.append(.deal(deal: deal, deliverable: nil))
+            }
+            
+            // Include individual deliverables if their deadline matches
+            for deliverable in deal.deliverables {
+                if calendar.isDate(deliverable.deadline, inSameDayAs: date) {
+                    allItems.append(.deal(deal: deal, deliverable: deliverable))
                 }
+            }
         }
         
-        let postItems = posts.flatMap { post in
-            post.tasks
-                .map { ScheduleItem.post(post: post, task: $0) }
-                .filter {
-                    calendar.isDate($0.effectiveDeadline, inSameDayAs: date)
+        // 2. Process Posts
+        for post in posts {
+            // Include main post if deadline matches
+            if calendar.isDate(post.deadline, inSameDayAs: date) {
+                allItems.append(.post(post: post, task: nil))
+            }
+            
+            // Include individual tasks if their deadline matches
+            for task in post.tasks {
+                if calendar.isDate(task.deadline, inSameDayAs: date) {
+                    allItems.append(.post(post: post, task: task))
                 }
+            }
         }
         
-        return (dealItems + postItems)
-            .sorted { $0.effectiveDeadline < $1.effectiveDeadline }
+        return allItems.sorted { $0.effectiveDeadline < $1.effectiveDeadline }
     }
     
     func completedScheduleItems(on date: Date) -> [ScheduleItem] {
         scheduleItems(on: date).filter { item in
             switch item {
-            case .deal(_, let deliverable):
-                return deliverable.isCompleted
+            case .deal(let deal, let deliverable):
+                // If it's a deliverable, use its completion status. If it's the main deal, use the deal's completion status.
+                return deliverable?.isCompleted ?? deal.isManuallyCompleted
             case .post(_, let task):
-                return task.isCompleted
+                // If it's a task, use its status. If it's the main post, just return false (unless you add an isCompleted flag to Post)
+                return task?.isCompleted ?? false
             }
         }
     }

@@ -508,12 +508,25 @@ extension Schedule: ScheduleCollectionViewCellDelegate {
             switch item {
                 
             case .post(let post, let task):
-                await handleTaskToggle(post: post, task: task)
+                if let task = task {
+                    // Only toggle if it's an actual task
+                    await handleTaskToggle(post: post, task: task)
+                } else {
+                    // User tapped the complete button on the MAIN post.
+                    // Add logic here if Posts can be marked complete, otherwise do nothing!
+                    print("Main Post tapped")
+                }
                 
             case .deal(let deal, let deliverable):
-                await handleDeliverableToggle(deal: deal, deliverable: deliverable)
+                if let deliverable = deliverable {
+                    // Only toggle if it's an actual deliverable
+                    await handleDeliverableToggle(deal: deal, deliverable: deliverable)
+                } else {
+                    // User tapped the complete button on the MAIN deal.
+                    // Call a Deal completion toggle function here if you want!
+                    print("Main Deal tapped")
+                }
             }
         }
     }
 }
-

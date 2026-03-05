@@ -25,44 +25,50 @@ class Details: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(handleDealsDidChange), name: .dealsDidChange, object: nil)
     }
     
-    @objc private func handlePostsDidChange() {
-        Task {
-            do {
-                let posts = try await postsController.fetchPosts()
-                if case .post(let currentPost, let currentTask) = self.schedule {
-                    if let updatedPost = posts.first(where: { $0.id == currentPost.id }) {
-                        let updatedTask = updatedPost.tasks.first(where: { $0.id == currentTask.id }) ?? updatedPost.tasks.first ?? currentTask
-                        await MainActor.run {
-                            self.schedule = .post(post: updatedPost, task: updatedTask)
-                            self.detailsView.reloadData()
+    // In Details.swift
+        @objc private func handlePostsDidChange() {
+            Task {
+                do {
+                    let posts = try await postsController.fetchPosts()
+                    if case .post(let currentPost, let currentTask) = self.schedule {
+                        if let updatedPost = posts.first(where: { $0.id == currentPost.id }) {
+                            
+                            // CHANGED: Safely handle if currentTask is nil
+                            let updatedTask = currentTask != nil ? (updatedPost.tasks.first(where: { $0.id == currentTask!.id }) ?? currentTask) : nil
+                            
+                            await MainActor.run {
+                                self.schedule = .post(post: updatedPost, task: updatedTask)
+                                self.detailsView.reloadData()
+                            }
                         }
                     }
+                } catch {
+                    print("Failed to fetch posts: \(error)")
                 }
-            } catch {
-                print("Failed to fetch posts: \(error)")
             }
         }
-    }
 
-    @objc private func handleDealsDidChange() {
-        Task {
-            do {
-                let deals = try await dealsController.fetchDeals()
-                if case .deal(let currentDeal, let currentDeliverable) = self.schedule {
-                    if let updatedDeal = deals.first(where: { $0.id == currentDeal.id }) {
-                        let updatedDeliverable = updatedDeal.deliverables.first(where: { $0.id == currentDeliverable.id }) ?? updatedDeal.deliverables.first ?? currentDeliverable
-                        await MainActor.run {
-                            self.schedule = .deal(deal: updatedDeal, deliverable: updatedDeliverable)
-                            self.detailsView.reloadData()
+        @objc private func handleDealsDidChange() {
+            Task {
+                do {
+                    let deals = try await dealsController.fetchDeals()
+                    if case .deal(let currentDeal, let currentDeliverable) = self.schedule {
+                        if let updatedDeal = deals.first(where: { $0.id == currentDeal.id }) {
+                            
+                            // CHANGED: Safely handle if currentDeliverable is nil
+                            let updatedDeliverable = currentDeliverable != nil ? (updatedDeal.deliverables.first(where: { $0.id == currentDeliverable!.id }) ?? currentDeliverable) : nil
+                            
+                            await MainActor.run {
+                                self.schedule = .deal(deal: updatedDeal, deliverable: updatedDeliverable)
+                                self.detailsView.reloadData()
+                            }
                         }
                     }
+                } catch {
+                    print("Failed to fetch deals: \(error)")
                 }
-            } catch {
-                print("Failed to fetch deals: \(error)")
             }
         }
-    }
-
     
     func generateLayout() -> UICollectionViewLayout {
         
@@ -445,8 +451,8 @@ extension Details: AddViewDelegate {
     func addViewController(_ controller: AddViewController, didUpdatePost post: Post, at index: Int) {
         guard case .post(_, let currentTask) = self.schedule else { return }
         
-        // Find the matched task, or fallback to the first task, or keep current
-        let updatedTask = post.tasks.first(where: { $0.id == currentTask.id }) ?? post.tasks.first ?? currentTask
+        // CHANGED: Handle optional task
+        let updatedTask = currentTask != nil ? (post.tasks.first(where: { $0.id == currentTask!.id }) ?? currentTask) : nil
         
         self.schedule = .post(post: post, task: updatedTask)
         self.detailsView.reloadData()
@@ -459,8 +465,8 @@ extension Details: AddDealsDelegate {
     func addDealsViewController(_ controller: AddDealsViewController, didUpdateDeal deal: Deal, at index: Int) {
         guard case .deal(_, let currentDeliverable) = self.schedule else { return }
         
-        // Find the matched deliverable, or fallback to the first, or keep current
-        let updatedDeliverable = deal.deliverables.first(where: { $0.id == currentDeliverable.id }) ?? deal.deliverables.first ?? currentDeliverable
+        // CHANGED: Handle optional deliverable
+        let updatedDeliverable = currentDeliverable != nil ? (deal.deliverables.first(where: { $0.id == currentDeliverable!.id }) ?? currentDeliverable) : nil
         
         self.schedule = .deal(deal: deal, deliverable: updatedDeliverable)
         self.detailsView.reloadData()
