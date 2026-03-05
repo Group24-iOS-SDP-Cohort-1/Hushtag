@@ -64,7 +64,7 @@ class DealsCollectionViewCell: UICollectionViewCell{
             nextDeliverableLabel.isHidden = false
             
             deliverablesValueLabel.text = "\(completed) / \(total)"
-            captionLabel.text = completed == 0 ? "Get started with" : "Next Deliverable"
+            captionLabel.text = completed == 0 && !deal.deliverables.isEmpty ? "Get started with" : "Next Deliverable"
             deadlineValueLabel.text = deal.deadline.deadlineFormatted()
             updateNextDeadline(deal)
         }
@@ -72,7 +72,7 @@ class DealsCollectionViewCell: UICollectionViewCell{
     
     private func updateNextDeadline(_ deal: Deal) {
         if deal.deliverables.isEmpty {
-            nextDeliverableLabel.text = "Main Deliverable"
+            nextDeliverableLabel.text = "-"
             return
         }
         
