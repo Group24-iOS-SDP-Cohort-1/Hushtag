@@ -25,39 +25,36 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     
     func configure(with item: ScheduleItem) {
         self.item = item
-        
-        timeLabel.text = "--:--"
-        titleLabel.text = ""
-        dayLabel.text = ""
-        
+        dayLabel.text = item.effectiveDeadline.dayOnly()
         switch item {
-            
         case .post(let post, let task):
-            
-            timeLabel.text = task.deadline.formatted(
-                date: .omitted,
-                time: .shortened
-            )
-            
-            dayLabel.text = task.deadline.dayOnly()
-            titleLabel.text = task.name.isEmpty ? post.name : task.name
-            
-            // Supabase-driven state
-            updateCompletedButton(isCompleted: task.isCompleted)
+            if let task = task {
+                // It's a sub-task
+                titleLabel.text = task.name
+                timeLabel.text = task.deadline.timeOnly()
+                // set completed status for task
+            } else {
+                // It's the MAIN Post
+                titleLabel.text = "Post: \(post.name)"
+                timeLabel.text = post.deadline.timeOnly()
+                // hide complete button or set it to false
+            }
             
         case .deal(let deal, let deliverable):
-            
-            timeLabel.text = deliverable.deadline.formatted(
-                date: .omitted,
-                time: .shortened
-            )
-            
-            dayLabel.text = deliverable.deadline.dayOnly()
-            titleLabel.text = deliverable.name.isEmpty ? deal.name : deliverable.name
-            
-            updateCompletedButton(isCompleted: deliverable.isCompleted)
+            if let deliverable = deliverable {
+                // It's a sub-deliverable
+                titleLabel.text = deliverable.name
+                timeLabel.text = deliverable.deadline.timeOnly()
+                // set completed status for deliverable
+            } else {
+                // It's the MAIN Deal
+                titleLabel.text = "Deal: \(deal.name)"
+                timeLabel.text = deal.deadline.timeOnly()
+                // set completed status based on deal.isManuallyCompleted
+            }
         }
     }
+    
     
     
     private func updateCompletedButton(isCompleted: Bool) {

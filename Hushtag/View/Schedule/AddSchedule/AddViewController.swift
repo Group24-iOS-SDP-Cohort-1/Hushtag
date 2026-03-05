@@ -99,24 +99,22 @@ class AddViewController: UITableViewController {
     }
     
     private func prefillIfNeeded() {
-        guard let post = editingPost else { return }
+            guard let post = editingPost else { return }
 
-        setText("Post Name", value: post.name)
-        setText("Platform", value: post.platform.map { $0.rawValue.capitalized }.joined(separator: ", "))
+            setText("Post Name", value: post.name)
+            setText("Platform", value: post.platform.map { $0.rawValue.capitalized }.joined(separator: ", "))
 
-        if let deadline = post.tasks.first?.deadline {
-            deadlineDate = deadline
-            setText("Deadline", value: dateFormatter.string(from: deadline))
+            // Prefill using the Post's deadline
+            deadlineDate = post.deadline
+            setText("Deadline", value: dateFormatter.string(from: post.deadline))
+
+            if let reminder = post.reminder?.first {
+                reminderDate = reminder
+                dateFormatter.timeStyle = .short
+                setText("Reminder", value: dateFormatter.string(from: reminder))
+                dateFormatter.timeStyle = .none
+            }
         }
-
-        if let reminder = post.reminder?.first {
-            reminderDate = reminder
-            dateFormatter.timeStyle = .short
-            setText("Reminder", value: dateFormatter.string(from: reminder))
-            dateFormatter.timeStyle = .none
-        }
-
-    }
     
 
     private func buildPost() -> Post? {
@@ -150,42 +148,60 @@ class AddViewController: UITableViewController {
     }
     
     @objc private func doneTapped() {
-        view.endEditing(true)
-        
-        Task {
-            do {
-                guard let post = buildPost() else {
-                    print("❌ Failed to build post")
-                    return
-                }
-                
-                if editingPost != nil {
-                    _ = try await postsController.updatePost(post)
-                    NotificationCenter.default.post(
-                        name: .postsDidChange,
-                        object: nil
-                    )
-                    
-                    if let _ = editingIndex {
-                        // Assuming you have an update delegate method, but since the bug was here, the update logic was missing completely in AddViewController!
-                        // We will post notification and dismiss as the main update method.
+            view.endEditing(true)
+            
+            Task {
+                do {
+                    guard let post = buildPost() else {
+                        print("❌ Failed to build post")
+                        return
                     }
-                    dismiss(animated: true)
-                } else {
-                    let savedPost = try await postsController.addPost(post)
-                    NotificationCenter.default.post(
-                        name: .postsDidChange,
-                        object: nil
-                    )
-                    delegate?.addViewController(self, didCreatePost: savedPost)
-                    dismiss(animated: true)
+                    
+                    if editingPost != nil {
+                        // 1. Capture the updated post
+                        let updatedPost = try await postsController.updatePost(post)
+                        
+                        // 2. Switch to the MainActor for UI/Delegate updates
+                        await MainActor.run {
+                            if let index = editingIndex {
+                                // 3. Call the delegate method
+                                self.delegate?.addViewController(
+                                    self,
+                                    didUpdatePost: updatedPost,
+                                    at: index
+                                )
+                            }
+                            
+                            NotificationCenter.default.post(
+                                name: .postsDidChange,
+                                object: nil
+                            )
+                            self.dismiss(animated: true)
+                        }
+                    } else {
+                        let savedPost = try await postsController.addPost(post)
+                        
+                        await MainActor.run {
+                            NotificationCenter.default.post(
+                                name: .postsDidChange,
+                                object: nil
+                            )
+                            self.delegate?.addViewController(self, didCreatePost: savedPost)
+                            self.dismiss(animated: true)
+                        }
+                    }
+                    
+                } catch {
+                    print("❌ Failed to save post:", error)
+                    // Optional: Add an alert here like you did in Deals to show the user the error
+                    await MainActor.run {
+                        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default))
+                        self.present(alert, animated: true)
+                    }
                 }
-                
-            } catch {
-                print("❌ Failed to save post:", error)
             }
         }
-    }
     
     private func getValue(_ placeholder: String) -> String {
         guard let row = mainPlaceholders.firstIndex(of: placeholder) else { return "" }
