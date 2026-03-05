@@ -222,26 +222,34 @@ class Details: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "editPost" {
-            if let nav = segue.destination as? UINavigationController,
-               let dest = nav.topViewController as? AddViewController,
-               case .post(let post, _) = schedule {
-                dest.editingPost = post
-            } else if let dest = segue.destination as? AddViewController,
-                      case .post(let post, _) = schedule {
-                dest.editingPost = post
-            }
-        } else if segue.identifier == "editDeal" {
-            if let nav = segue.destination as? UINavigationController,
-               let dest = nav.topViewController as? AddDealsViewController,
-               case .deal(let deal, _) = schedule {
-                dest.editingDeal = deal
-            } else if let dest = segue.destination as? AddDealsViewController,
-                      case .deal(let deal, _) = schedule {
-                dest.editingDeal = deal
+            if segue.identifier == "editPost" {
+                if let nav = segue.destination as? UINavigationController,
+                   let dest = nav.topViewController as? AddViewController,
+                   case .post(let post, _) = schedule {
+                    dest.editingPost = post
+                    dest.editingIndex = 0 // Ensures the delegate method triggers
+                    dest.delegate = self
+                } else if let dest = segue.destination as? AddViewController,
+                          case .post(let post, _) = schedule {
+                    dest.editingPost = post
+                    dest.editingIndex = 0
+                    dest.delegate = self
+                }
+            } else if segue.identifier == "editDeal" {
+                if let nav = segue.destination as? UINavigationController,
+                   let dest = nav.topViewController as? AddDealsViewController,
+                   case .deal(let deal, _) = schedule {
+                    dest.editingDeal = deal
+                    dest.editingIndex = 0
+                    dest.delegate = self
+                } else if let dest = segue.destination as? AddDealsViewController,
+                          case .deal(let deal, _) = schedule {
+                    dest.editingDeal = deal
+                    dest.editingIndex = 0
+                    dest.delegate = self
+                }
             }
         }
-    }
     
 }
 
@@ -427,5 +435,34 @@ extension UIViewController {
             return tab.selectedViewController?.topMostViewController ?? tab
         }
         return self
+    }
+}
+
+// MARK: - Delegate Extensions for Instant UI Updates
+extension Details: AddViewDelegate {
+    func addViewController(_ controller: AddViewController, didCreatePost post: Post) { }
+    
+    func addViewController(_ controller: AddViewController, didUpdatePost post: Post, at index: Int) {
+        guard case .post(_, let currentTask) = self.schedule else { return }
+        
+        // Find the matched task, or fallback to the first task, or keep current
+        let updatedTask = post.tasks.first(where: { $0.id == currentTask.id }) ?? post.tasks.first ?? currentTask
+        
+        self.schedule = .post(post: post, task: updatedTask)
+        self.detailsView.reloadData()
+    }
+}
+
+extension Details: AddDealsDelegate {
+    func addDealsViewController(_ controller: AddDealsViewController, didCreateDeal deal: Deal) { }
+    
+    func addDealsViewController(_ controller: AddDealsViewController, didUpdateDeal deal: Deal, at index: Int) {
+        guard case .deal(_, let currentDeliverable) = self.schedule else { return }
+        
+        // Find the matched deliverable, or fallback to the first, or keep current
+        let updatedDeliverable = deal.deliverables.first(where: { $0.id == currentDeliverable.id }) ?? deal.deliverables.first ?? currentDeliverable
+        
+        self.schedule = .deal(deal: deal, deliverable: updatedDeliverable)
+        self.detailsView.reloadData()
     }
 }
