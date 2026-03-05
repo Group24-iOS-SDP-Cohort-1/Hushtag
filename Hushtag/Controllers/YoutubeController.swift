@@ -6,8 +6,7 @@ import Supabase
 /// Payload sent to the 'youtube-auth' function to securely save tokens
 struct YouTubeAuthPayload: Codable {
     let action: String
-    let access_token: String
-    let refresh_token: String
+    let server_auth_code: String
 }
 
 struct AnalyticsRequestPayload: Codable {
@@ -30,17 +29,15 @@ final class YouTubeController {
     
     /// Sends the raw tokens to the backend to be securely encrypted and saved.
     func saveYouTubeTokens(
-        accessToken: String,
-        refreshToken: String
+        serverAuthCode: String
     ) async throws {
         
         let session = try await client.auth.session
         print("🟢 SUPABASE AUTH OK: \(session.user.id)")
         
         let payload = YouTubeAuthPayload(
-            action: "save_tokens",
-            access_token: accessToken,
-            refresh_token: refreshToken
+            action: "exchange_and_save_tokens", // 👈 Updated action name for clarity
+            server_auth_code: serverAuthCode
         )
         
         print("🚀 Sending tokens to unified YouTube function...")
