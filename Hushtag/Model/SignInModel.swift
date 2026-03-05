@@ -109,11 +109,10 @@ class SignInModel {
         
         let user = try await AuthManager.shared.signInWithGoogle(idToken: googleResult.idToken)
         
-        if let accessToken = googleResult.accessToken, let refreshToken = googleResult.refreshToken, !refreshToken.isEmpty {
+        if let serverAuthCode = googleResult.serverAuthCode, !serverAuthCode.isEmpty {
             do {
                 try await YouTubeController.shared.saveYouTubeTokens(
-                    accessToken: accessToken,
-                    refreshToken: refreshToken
+                    serverAuthCode: serverAuthCode
                 )
             } catch {
                 print("Failed to save YouTube tokens during Google Sign-In: \(error)")
@@ -130,9 +129,24 @@ class SignInModel {
         let youtubeResult = try await signInGoogle.startConnectYouTubeFlow()
         
         try await YouTubeController.shared.saveYouTubeTokens(
-            accessToken: youtubeResult.accessToken,
-            refreshToken: youtubeResult.refreshToken
+            serverAuthCode: youtubeResult.serverAuthCode
         )
+    }
+    
+    func disconnectYouTube() {
+        // This tells Google to completely revoke the token tie to this app.
+        // The next time they tap "Connect YouTube", it will force the consent screen
+        // and guarantee your backend gets a fresh refresh_token.
+        GIDSignIn.sharedInstance.disconnect { error in
+            if let error = error {
+                print("Failed to disconnect Google: \(error.localizedDescription)")
+            } else {
+                print("Successfully disconnected from Google")
+            }
+        }
+        
+        // TODO: You should also call a Supabase Edge Function here
+        // to delete their row from the 'youtube_tokens' database table!
     }
 }
 
@@ -143,13 +157,11 @@ class SignInModel {
 
 struct SignInGoogleResult {
     let idToken: String
-    let accessToken: String?
-    let refreshToken: String?
+    let serverAuthCode: String?
 }
 
 struct ConnectYouTubeResult {
-    let accessToken: String
-    let refreshToken: String
+    let serverAuthCode: String
 }
 
 class SignInGoogle {
@@ -197,11 +209,11 @@ class SignInGoogle {
             
             let accessToken = user.accessToken.tokenString
             let refreshToken = user.refreshToken.tokenString
+            let serverAuthCode = signInResult?.serverAuthCode
             
             completion(.success(.init(
                 idToken: idToken.tokenString,
-                accessToken: accessToken,
-                refreshToken: refreshToken
+                serverAuthCode: serverAuthCode
             )))
         }
     }
@@ -246,6 +258,7 @@ class SignInGoogle {
             
             let accessToken = user.accessToken.tokenString
             let refreshToken = user.refreshToken.tokenString
+            let serverAuthCode = signInResult?.serverAuthCode ?? ""
             
 //            guard let refreshToken = user.refreshToken.tokenString else {
 //                let tokenError = NSError(domain: "AuthError", code: -5, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve refresh token for YouTube."])
@@ -254,7 +267,9 @@ class SignInGoogle {
 //                return
 //            }
             
-            completion(.success(.init(accessToken: accessToken, refreshToken: refreshToken)))
+            completion(.success(.init(
+                serverAuthCode: serverAuthCode
+            )))
         }
     }
 }

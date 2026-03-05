@@ -6,12 +6,26 @@
 //
 
 import UIKit
+import GoogleSignIn
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        if let iosClientId = Bundle.main.object(forInfoDictionaryKey: "GIDClientID") as? String {
+            
+            let config = GIDConfiguration(
+                clientID: iosClientId, // Automatically pulls from your Info.plist
+                
+                // 👇 THIS IS THE MISSING PUZZLE PIECE 👇
+                serverClientID: "55478698081-2s20u2tclej3t956shpvbbfn48e6hkeb.apps.googleusercontent.com"
+            )
+            
+            GIDSignIn.sharedInstance.configuration = config
+        }
+        
         return true
     }
 
