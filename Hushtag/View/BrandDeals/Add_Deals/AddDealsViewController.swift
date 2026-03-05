@@ -83,10 +83,8 @@ class AddDealsViewController: UITableViewController {
         setText("Phone number", value: "\(deal.mobileNumber)")
         setText("Email", value: deal.email)
 
-        if let deadline = deal.deliverables.first?.deadline {
-            deadlineDate = deadline
-            setText("Deadline", value: dateFormatter.string(from: deadline))
-        }
+        deadlineDate = deal.deadline
+        setText("Deadline", value: dateFormatter.string(from: deal.deadline))
 
         if let reminder = deal.reminder?.first {
             reminderDate = reminder
