@@ -76,6 +76,9 @@ class DetailsCollectionViewCell: UICollectionViewCell {
                 remindersLabel.isHidden = true
             }
             
+            if statusButton != nil {
+                updateCompletionState(isCompleted: post.isCompleted)
+            }
             
         case .deal(let deal, _):
             
@@ -83,6 +86,10 @@ class DetailsCollectionViewCell: UICollectionViewCell {
             
             platformLabel.text = deal.platform.map(\.rawValue).joined(separator: ", ")
             platformLabel.isHidden = false
+            
+            if statusButton != nil {
+                updateCompletionState(isCompleted: deal.isCompleted)
+            }
         }
     }
     

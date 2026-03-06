@@ -14,7 +14,8 @@ final class PostsController {
             name: post.name,
             deadline: post.deadline,
             platform: post.platform.map(\.rawValue),
-            reminder: post.reminder ?? []
+            reminder: post.reminder ?? [],
+            isCompleted: post.isCompleted
         )
         
         let postDB: PostDB = try await client.database
@@ -97,7 +98,8 @@ final class PostsController {
             name: post.name,
             deadline: post.deadline,
             platform: post.platform.map(\.rawValue),
-            reminder: post.reminder ?? []
+            reminder: post.reminder ?? [],
+            isCompleted: post.isCompleted
         )
         
         let updatedPost: PostDB = try await client.database
@@ -165,7 +167,8 @@ final class PostsController {
                 )
             },
             reminder: post.reminder,
-            deadline: post.deadline
+            deadline: post.deadline,
+            isManuallyCompleted: post.isCompleted
         )
     }
 }

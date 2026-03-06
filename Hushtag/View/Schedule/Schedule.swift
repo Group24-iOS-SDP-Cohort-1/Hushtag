@@ -311,6 +311,89 @@ class Schedule: UIViewController {
             //print("❌ Failed to toggle deliverable:", error)
         }
     }
+    private func handleMainPostToggle(post: Post) async {
+        let optimisticPost: Post = {
+            var copy = post
+            copy.isManuallyCompleted.toggle()
+            let newStatus = copy.isManuallyCompleted
+            copy.tasks = copy.tasks.map {
+                var t = $0
+                t.isCompleted = newStatus
+                return t
+            }
+            return copy
+        }()
+        
+        scheduleController.replacePost(optimisticPost)
+        filterItems(for: selectedDate)
+        
+        await MainActor.run {
+            scheduleView.reloadSections(IndexSet(integer: 1))
+        }
+        
+        do {
+            let savedPost = try await ToggleService.toggleMainPost(
+                post: post,
+                postsController: postsController
+            )
+            
+            scheduleController.replacePost(savedPost)
+            filterItems(for: selectedDate)
+            
+            await MainActor.run {
+                scheduleView.reloadSections(IndexSet(integer: 1))
+            }
+        } catch {
+            scheduleController.replacePost(post)
+            filterItems(for: selectedDate)
+            
+            await MainActor.run {
+                scheduleView.reloadSections(IndexSet(integer: 1))
+            }
+        }
+    }
+    
+    private func handleMainDealToggle(deal: Deal) async {
+        let optimisticDeal: Deal = {
+            var copy = deal
+            copy.isManuallyCompleted.toggle()
+            let newStatus = copy.isManuallyCompleted
+            copy.deliverables = copy.deliverables.map {
+                var d = $0
+                d.isCompleted = newStatus
+                return d
+            }
+            return copy
+        }()
+        
+        scheduleController.replaceDeal(optimisticDeal)
+        filterItems(for: selectedDate)
+        
+        await MainActor.run {
+            scheduleView.reloadSections(IndexSet(integer: 1))
+        }
+        
+        do {
+            let savedDeal = try await ToggleService.toggleMainDeal(
+                deal: deal,
+                dealsController: dealsController
+            )
+            
+            scheduleController.replaceDeal(savedDeal)
+            filterItems(for: selectedDate)
+            
+            await MainActor.run {
+                scheduleView.reloadSections(IndexSet(integer: 1))
+            }
+        } catch {
+            scheduleController.replaceDeal(deal)
+            filterItems(for: selectedDate)
+            
+            await MainActor.run {
+                scheduleView.reloadSections(IndexSet(integer: 1))
+            }
+        }
+    }
     
     
     @objc private func handleDealsDidChange() {
@@ -464,18 +547,40 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
         if segue.identifier == "goToDetails" {
             let vc = segue.destination as! Details
             vc.schedule = selectedScheduleItem
+            
+            // Task Toggle
             vc.onToggleTask = { [weak self, weak vc] post, task in
                 Task {
                     await self?.handleTaskToggle(post: post, task: task)
-                    
-                    if let updated = self?.scheduleController
-                        .scheduleItems(on: self!.selectedDate)
-                        .first(where: { $0.matches(post: post, task: task) }) {
-                        
-                        await MainActor.run {
-                            vc?.schedule = updated
-                            vc?.detailsView.reloadData()
-                        }
+                    if let updatedPost = self?.scheduleController.getPost(id: post.id) {
+                        await MainActor.run { vc?.schedule = .post(post: updatedPost, task: nil); vc?.detailsView.reloadData() }
+                    }
+                }
+            }
+            // Main Post Toggle
+            vc.onToggleMainPost = { [weak self, weak vc] post in
+                Task {
+                    await self?.handleMainPostToggle(post: post)
+                    if let updatedPost = self?.scheduleController.getPost(id: post.id) {
+                        await MainActor.run { vc?.schedule = .post(post: updatedPost, task: nil); vc?.detailsView.reloadData() }
+                    }
+                }
+            }
+            // Deliverable Toggle
+            vc.onToggleDeliverable = { [weak self, weak vc] deal, deliverable in
+                Task {
+                    await self?.handleDeliverableToggle(deal: deal, deliverable: deliverable)
+                    if let updatedDeal = self?.scheduleController.getDeal(id: deal.id) {
+                        await MainActor.run { vc?.schedule = .deal(deal: updatedDeal, deliverable: nil); vc?.detailsView.reloadData() }
+                    }
+                }
+            }
+            // Main Deal Toggle
+            vc.onToggleMainDeal = { [weak self, weak vc] deal in
+                Task {
+                    await self?.handleMainDealToggle(deal: deal)
+                    if let updatedDeal = self?.scheduleController.getDeal(id: deal.id) {
+                        await MainActor.run { vc?.schedule = .deal(deal: updatedDeal, deliverable: nil); vc?.detailsView.reloadData() }
                     }
                 }
             }
@@ -500,19 +605,16 @@ extension Schedule: ScheduleCollectionViewCellDelegate {
                 
             case .post(let post, let task):
                 if let task = task {
-                    
                     await handleTaskToggle(post: post, task: task)
                 } else {
-                    //print("Main Post tapped")
+                    await handleMainPostToggle(post: post)
                 }
                 
             case .deal(let deal, let deliverable):
                 if let deliverable = deliverable {
-                    
                     await handleDeliverableToggle(deal: deal, deliverable: deliverable)
                 } else {
-                    
-                    //print("Main Deal tapped")
+                    await handleMainDealToggle(deal: deal)
                 }
             }
         }

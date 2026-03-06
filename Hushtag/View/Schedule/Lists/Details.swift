@@ -12,7 +12,9 @@ class Details: UIViewController {
     @IBOutlet weak var detailsView: UICollectionView!
     var schedule: ScheduleItem?
     var onToggleTask: ((Post, Tasks) -> Void)?
+    var onToggleMainPost: ((Post) -> Void)?
     var onToggleDeliverable: ((Deal, Deliverable) -> Void)?
+    var onToggleMainDeal: ((Deal) -> Void)?
     private let postsController = PostsController()
     private let dealsController = DealsController()
     
@@ -223,8 +225,16 @@ class Details: UIViewController {
         onToggleTask?(post, task)
     }
     
+    private func handleMainPostToggle(post: Post) async {
+        onToggleMainPost?(post)
+    }
+    
     private func handleDeliverableToggle(deal: Deal, deliverable: Deliverable) async {
         onToggleDeliverable?(deal, deliverable)
+    }
+    
+    private func handleMainDealToggle(deal: Deal) async {
+        onToggleMainDeal?(deal)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -301,6 +311,17 @@ extension Details: UICollectionViewDataSource {
                     withReuseIdentifier: "common_details",
                     for: indexPath
                 ) as! DetailsCollectionViewCell
+                cell.indexPath = indexPath
+                // Add Main Toggle action directly on common_details cell. We can just use the status/circle button if it existed, but usually Section 0 does not have a status button. If it does, here's how to toggle it.
+                cell.onToggleCompletion = { [weak self] _ in
+                    guard let self else { return }
+                    guard case .deal(let deal, _) = self.schedule else { return }
+                    
+                    Task {
+                        await self.handleMainDealToggle(deal: deal)
+                    }
+                }
+                
                 cell.configureCommon(with: schedule)
                 cell.onDeleteTapped = { [weak self] in
                     guard let self else { return }
@@ -345,6 +366,7 @@ extension Details: UICollectionViewDataSource {
             ) as! DetailsCollectionViewCell
             
             let deliverable = deal.deliverables[indexPath.row]
+            cell.indexPath = indexPath
             cell.configureMultiple(with: deliverable)
             cell.onToggleCompletion = { [weak self] indexPath in
                 guard let self else { return }
@@ -371,6 +393,17 @@ extension Details: UICollectionViewDataSource {
                     withReuseIdentifier: "common_details",
                     for: indexPath
                 ) as! DetailsCollectionViewCell
+                cell.indexPath = indexPath
+                // Add Main Toggle action directly on common_details cell for Post.
+                cell.onToggleCompletion = { [weak self] _ in
+                    guard let self else { return }
+                    guard case .post(let post, _) = self.schedule else { return }
+                    
+                    Task {
+                        await self.handleMainPostToggle(post: post)
+                    }
+                }
+                
                 cell.configureCommon(with: schedule)
                 cell.onDeleteTapped = { [weak self] in
                     guard let self else { return }

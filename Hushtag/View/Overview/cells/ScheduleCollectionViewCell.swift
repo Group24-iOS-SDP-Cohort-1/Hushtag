@@ -33,11 +33,13 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
                 titleLabel.text = task.name
                 timeLabel.text = task.deadline.timeOnly()
                 // set completed status for task
+                updateCompletedButton(isCompleted: task.isCompleted)
             } else {
                 // It's the MAIN Post
                 titleLabel.text = "Post: \(post.name)"
                 timeLabel.text = post.deadline.timeOnly()
-                // hide complete button or set it to false
+                // set completed status based on post.isCompleted
+                updateCompletedButton(isCompleted: post.isCompleted)
             }
             
         case .deal(let deal, let deliverable):
@@ -46,11 +48,13 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
                 titleLabel.text = deliverable.name
                 timeLabel.text = deliverable.deadline.timeOnly()
                 // set completed status for deliverable
+                updateCompletedButton(isCompleted: deliverable.isCompleted)
             } else {
                 // It's the MAIN Deal
                 titleLabel.text = "Deal: \(deal.name)"
                 timeLabel.text = deal.deadline.timeOnly()
-                // set completed status based on deal.isManuallyCompleted
+                // set completed status based on deal.isCompleted
+                updateCompletedButton(isCompleted: deal.isCompleted)
             }
         }
     }

@@ -7,8 +7,12 @@ struct Post: Identifiable, Sendable {
     var tasks: [Tasks]
     let reminder: [Date]?
     let deadline: Date
+    var isManuallyCompleted: Bool = false
+    
     var isCompleted: Bool {
-        guard !tasks.isEmpty else { return false }
+        if tasks.isEmpty {
+            return isManuallyCompleted
+        }
         return tasks.allSatisfy { $0.isCompleted }
     }
 }
@@ -35,6 +39,7 @@ nonisolated struct PostInsertPayload: Codable, Sendable {
     let deadline: Date
     let platform: [String]
     let reminder: [Date]
+    let isCompleted: Bool
 }
 
 nonisolated struct TaskDB: Codable, Sendable {
