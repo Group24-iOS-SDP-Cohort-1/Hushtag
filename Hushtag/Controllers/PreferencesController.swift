@@ -29,7 +29,7 @@ final class PreferencesController {
     
     func fetchPreferences() async throws -> UserPreference {
         let session = try await client.auth.session
-        print("FETCH UID:", session.user.id)
+        //print("FETCH UID:", session.user.id)
         
         let preferences: [PreferenceDB] = try await client.database
             .from("user_preferences")

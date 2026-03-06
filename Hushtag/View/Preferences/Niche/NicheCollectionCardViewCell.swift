@@ -1,9 +1,3 @@
-//
-//  NicheCollectionViewCell.swift
-//  Hushtag
-//
-
-
 import UIKit
 
 class NicheCollectionCardViewCell: UICollectionViewCell {

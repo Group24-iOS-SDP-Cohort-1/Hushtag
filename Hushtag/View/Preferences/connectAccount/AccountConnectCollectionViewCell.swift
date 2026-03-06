@@ -1,15 +1,6 @@
-//
-//  TestCollectionViewCell.swift
-//  Hushtag
-//
-
-
 import UIKit
-import SafariServices
-
 
 class AccountConnectCollectionViewCell: UICollectionViewCell {
-    
     
     @IBOutlet weak var headingLabel: UILabel!
     
@@ -17,14 +8,12 @@ class AccountConnectCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var youtubeOutlet: UIButton!
     
-    
     weak var delegate: PreferenceCardSelectionDelegate?
     weak var delegate1: YouTubeConnectDelegate?
     
     var cardIndex: Int = -1
     
     var isConnected: Bool = false
-    
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -35,11 +24,9 @@ class AccountConnectCollectionViewCell: UICollectionViewCell {
         
     }
     
-    
     func setupCardDesign() {
         contentView.applyLiquidGlassEffect()
     }
-    
     
     func configureCell(with item: PreferenceItem){
         headingLabel.text = item.title
@@ -76,12 +63,9 @@ class AccountConnectCollectionViewCell: UICollectionViewCell {
     
     @IBAction func youtubeAction(_ sender: Any) {
         guard !isConnected else { return }
-        print("Youtube tapped")
+        //print("Youtube tapped")
         delegate1?.didTapConnectYouTube(from: self)
         
     }
-    
-    
-    
     
 }

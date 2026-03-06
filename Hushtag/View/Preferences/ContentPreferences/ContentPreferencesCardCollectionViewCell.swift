@@ -1,9 +1,3 @@
-//
-//  ContentPreferencesCardCollectionViewCell.swift
-//  Hushtag
-//
-
-
 import UIKit
 
 class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {

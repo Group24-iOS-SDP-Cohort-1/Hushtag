@@ -2,8 +2,6 @@ import Foundation
 import Supabase
 
 
-
-
 struct YouTubeAuthPayload: Codable {
     let action: String
     let server_auth_code: String
@@ -30,14 +28,14 @@ final class YouTubeController {
     ) async throws {
         
         let session = try await client.auth.session
-        print("🟢 SUPABASE AUTH OK: \(session.user.id)")
+        //print("🟢 SUPABASE AUTH OK: \(session.user.id)")
         
         let payload = YouTubeAuthPayload(
             action: "exchange_and_save_tokens",
             server_auth_code: serverAuthCode
         )
         
-        print("🚀 Sending tokens to unified YouTube function...")
+        //print("🚀 Sending tokens to unified YouTube function...")
         
         try await client.functions.invoke(
             "youtube-auth",
@@ -49,7 +47,7 @@ final class YouTubeController {
             )
         )
         
-        print("✅ Tokens encrypted & saved")
+        //print("✅ Tokens encrypted & saved")
     }
     
     
@@ -96,7 +94,7 @@ final class YouTubeController {
             
             return true
         } catch {
-            print("YouTube connection check Failed or Not Found: \(error)")
+            //print("YouTube connection check Failed or Not Found: \(error)")
             return false
         }
     }
@@ -110,19 +108,19 @@ final class YouTubeController {
             let isConnected = await checkYouTubeConnection()
             
             guard isConnected else {
-                print("⚠️ No YouTube connection found")
+                //print("⚠️ No YouTube connection found")
                 return
             }
             
-            print("✅ YouTube already connected")
+            //print("✅ YouTube already connected")
             
             let data = try await fetchAnalytics(
                 startDate: startDate,
                 endDate: endDate
             )
             
-            print("📊 ANALYTICS RESPONSE:")
-            print(String(data: data, encoding: .utf8) ?? "No data")
+            //print("📊 ANALYTICS RESPONSE:")
+            //print(String(data: data, encoding: .utf8) ?? "No data")
             
             DispatchQueue.main.async {
                 NotificationCenter.default.post(
@@ -132,7 +130,7 @@ final class YouTubeController {
             }
             
         } catch {
-            print("❌ Analytics auto-fetch failed:", error)
+            //print("❌ Analytics auto-fetch failed:", error)
         }
     }
 }

@@ -1,9 +1,3 @@
-//
-//  SignInModel.swift
-//  Hushtag
-//
-
-
 import Foundation
 import GoogleSignIn
 
@@ -51,7 +45,7 @@ class SignInModel {
                 password: password
             )
         } catch {
-            print("DEBUG ERROR: \(error)")
+            //print("DEBUG ERROR: \(error)")
             throw AuthError.invalidCredentials
         }
     }
@@ -70,7 +64,7 @@ class SignInModel {
                     serverAuthCode: serverAuthCode
                 )
             } catch {
-                print("Failed to save YouTube tokens during Google Sign-In: \(error)")
+                //print("Failed to save YouTube tokens during Google Sign-In: \(error)")
             }
         }
         
@@ -91,9 +85,9 @@ class SignInModel {
         
         GIDSignIn.sharedInstance.disconnect { error in
             if let error = error {
-                print("Failed to disconnect Google: \(error.localizedDescription)")
+                //print("Failed to disconnect Google: \(error.localizedDescription)")
             } else {
-                print("Successfully disconnected from Google")
+                //print("Successfully disconnected from Google")
             }
         }
         
@@ -153,7 +147,7 @@ class SignInGoogle {
                 let tokenError = NSError(domain: "AuthError", code: -2, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve Google ID Token."])
                 
                 completion(.failure(tokenError))
-                print("Error signing in: \(error?.localizedDescription ?? "No error description")")
+                //print("Error signing in: \(error?.localizedDescription ?? "No error description")")
                 return
             }
             
@@ -202,7 +196,7 @@ class SignInGoogle {
             guard let user = signInResult?.user else {
                 let tokenError = NSError(domain: "AuthError", code: -3, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve user during YouTube connect."])
                 completion(.failure(tokenError))
-                print("Error connecting YouTube: User not found in result")
+                //print("Error connecting YouTube: User not found in result")
                 return
             }
             

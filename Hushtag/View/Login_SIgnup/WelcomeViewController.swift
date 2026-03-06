@@ -1,7 +1,5 @@
 import UIKit
 
-import UIKit
-
 class WelcomeViewController: UIViewController {
     
     @IBOutlet weak var signUp: UIButton!

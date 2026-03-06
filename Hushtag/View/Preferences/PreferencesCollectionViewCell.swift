@@ -1,9 +1,3 @@
-//
-//  PreferencesCollectionViewCell.swift
-//  Hushtag
-//
-
-
 import UIKit
 
 class PreferencesCollectionViewCell: UICollectionViewCell {
@@ -13,9 +7,6 @@ class PreferencesCollectionViewCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-        
-        
         setupCardDesign()
     }
     

@@ -1,9 +1,3 @@
-//
-//  PreferencesHeaderView.swift
-//  Hushtag
-//
-
-
 import UIKit
 
 class PreferencesHeaderView: UICollectionReusableView {

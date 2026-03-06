@@ -1,9 +1,3 @@
-//
-//  ContentGoalsCollectionViewCell.swift
-//  Hushtag
-//
-
-
 import UIKit
 
 class ContentGoalsCollectionViewCell: UICollectionViewCell {

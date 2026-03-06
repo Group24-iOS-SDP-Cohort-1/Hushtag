@@ -1,9 +1,3 @@
-//
-//  OptionsCollectionViewCell.swift
-//  Hushtag
-//
-
-
 import UIKit
 
 class OptionsCollectionViewCell: UICollectionViewCell {

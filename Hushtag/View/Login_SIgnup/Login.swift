@@ -1,9 +1,3 @@
-//
-//  Login.swift
-//  Hushtag
-//
-
-
 import UIKit
 
 class Login: UIViewController {
@@ -160,7 +154,7 @@ extension UIViewController{
         
         
         guard let loginNav = storyboard.instantiateViewController(withIdentifier: "LoginNavigationController") as? UINavigationController else {
-            print("Error: Could not find LoginNavigationController in Storyboard")
+            //print("Error: Could not find LoginNavigationController in Storyboard")
             return
         }
         
@@ -183,7 +177,7 @@ extension UIViewController{
         let storyboard = UIStoryboard(name: "Preferences", bundle: nil)
         
         guard let preferencesVC = storyboard.instantiateInitialViewController() else {
-            print("Error: Could not find Initial View Controller in Preferences.storyboard")
+            //print("Error: Could not find Initial View Controller in Preferences.storyboard")
             return
         }
         

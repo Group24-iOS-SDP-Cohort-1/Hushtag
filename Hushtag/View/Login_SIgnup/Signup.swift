@@ -1,9 +1,3 @@
-//
-//  Signup.swift
-//  Hushtag
-//
-
-
 import UIKit
 
 class Signup: UIViewController {

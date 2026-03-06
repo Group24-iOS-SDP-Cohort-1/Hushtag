@@ -1,9 +1,3 @@
-//
-//  PreferencesViewController.swift
-//  Hushtag
-//
-
-
 import UIKit
 import GoogleSignIn
 
@@ -109,7 +103,7 @@ class PreferencesViewController: UIViewController {
                 
                 
                 do {
-                    print("⏳ Google Login Complete: Testing proxy fetch for analytics...")
+                    //print("⏳ Google Login Complete: Testing proxy fetch for analytics...")
                     
                     let analyticsData = try await YouTubeController.shared.fetchAnalytics(
                         startDate: "2026-01-01",
@@ -117,11 +111,11 @@ class PreferencesViewController: UIViewController {
                     )
                     
                     if let jsonString = String(data: analyticsData, encoding: .utf8) {
-                        print("📈 GOOGLE SUCCESS - Raw YouTube Data:")
-                        print(jsonString)
+                        //print("📈 GOOGLE SUCCESS - Raw YouTube Data:")
+                        //print(jsonString)
                     }
                 } catch {
-                    print("❌ GOOGLE PROXY FETCH FAILED: \(error)")
+                    //print("❌ GOOGLE PROXY FETCH FAILED: \(error)")
                 }
                 
                 await MainActor.run {
@@ -157,7 +151,7 @@ class PreferencesViewController: UIViewController {
                 self.navigateToHomeScreen()
                 
             } catch {
-                print("Failed to update onboarding status: \(error)")
+                //print("Failed to update onboarding status: \(error)")
                 
                 self.navigateToHomeScreen()
             }
@@ -393,7 +387,7 @@ extension PreferencesViewController: PreferenceCardSelectionDelegate {
     func preferenceCard(at key: String, didUpdateSelection selections: [String]) {
         selectedOptions[key] = selections.map { $0.lowercased() }
         //print(selectedOptions[key])
-        print("\n\n\(selectedOptions)")
+        //print("\n\n\(selectedOptions)")
     }
     
     
@@ -417,7 +411,7 @@ extension PreferencesViewController: YouTubeConnectDelegate {
                 
                 
                 do {
-                    print("⏳ Testing proxy fetch for analytics...")
+                    //print("⏳ Testing proxy fetch for analytics...")
                     
                     let analyticsData = try await YouTubeController.shared.fetchAnalytics(
                         startDate: "2026-01-01",
@@ -426,11 +420,11 @@ extension PreferencesViewController: YouTubeConnectDelegate {
                     
                     
                     if let jsonString = String(data: analyticsData, encoding: .utf8) {
-                        print("📈 PROXY SUCCESS - Raw YouTube Data:")
-                        print(jsonString)
+                        //print("📈 PROXY SUCCESS - Raw YouTube Data:")
+                        //print(jsonString)
                     }
                 } catch {
-                    print("❌ PROXY FETCH FAILED: \(error)")
+                    //print("❌ PROXY FETCH FAILED: \(error)")
                 }
                 
                 await MainActor.run {
@@ -457,7 +451,7 @@ extension PreferencesViewController: YouTubeConnectDelegate {
                     alert.addAction(UIAlertAction(title: "OK", style: .default))
                     self.present(alert, animated: true)
                 }
-                print("❌ YouTube connect failed:", error)
+                //print("❌ YouTube connect failed:", error)
             }
         }
     }

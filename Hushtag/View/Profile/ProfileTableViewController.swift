@@ -1,9 +1,3 @@
-//
-//  ProfileTableViewController.swift
-//  Hushtag
-//
-
-
 import UIKit
 import Supabase
 
@@ -80,7 +74,7 @@ final class ProfileTableViewController: UITableViewController {
                     self.updateUI(with: profile)
                 }
             } catch {
-                print("Failed to fetch profile:", error)
+                //print("Failed to fetch profile:", error)
             }
         }
     }
@@ -167,13 +161,13 @@ final class ProfileTableViewController: UITableViewController {
             do {
                 
                 try await AuthManager.shared.signOut()
-                print("User signed out successfully")
+                //print("User signed out successfully")
                 
                 
                 self.navigateToLoginScreen()
                 
             } catch {
-                print("Error signing out: \(error)")
+                //print("Error signing out: \(error)")
                 self.showAlert(title: "Error", message: "Could not sign out. Please try again.")
             }
         }
@@ -204,9 +198,9 @@ final class ProfileTableViewController: UITableViewController {
         
         let status = SecItemDelete(keychainQuery as CFDictionary)
         if status == errSecSuccess || status == errSecItemNotFound {
-            print("Keychain wiped successfully.")
+            //print("Keychain wiped successfully.")
         } else {
-            print("Keychain wipe returned status: \(status)")
+            //print("Keychain wipe returned status: \(status)")
         }
         
         
@@ -217,7 +211,7 @@ final class ProfileTableViewController: UITableViewController {
             }
         }
         
-        print("Nuclear option executed: Local session data destroyed.")
+        //print("Nuclear option executed: Local session data destroyed.")
     }
     
     func performAccountDeletion() {
@@ -226,19 +220,19 @@ final class ProfileTableViewController: UITableViewController {
             
             do {
                 try await SupabaseConfig.client.database.rpc("delete_user").execute()
-                print("Backend deletion executed.")
+                //print("Backend deletion executed.")
             } catch {
-                print("Backend deletion finished (expected auth error): \(error.localizedDescription)")
+                //print("Backend deletion finished (expected auth error): \(error.localizedDescription)")
             }
             
             
             do {
                 
                 try await SupabaseConfig.client.auth.signOut(scope: .local)
-                print("Graceful local sign out succeeded.")
+                //print("Graceful local sign out succeeded.")
             } catch {
                 
-                print("Graceful sign out failed. Applying manual purge...")
+                //print("Graceful sign out failed. Applying manual purge...")
                 self.forceClearLocalSession()
             }
             

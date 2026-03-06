@@ -1,8 +1,3 @@
-//
-//  EditProfileViewController.swift
-//  Hushtag
-//
-
 import UIKit
 import Supabase
 
@@ -85,7 +80,7 @@ final class EditProfileViewController: UIViewController,
                     
                     let fileName = "\(userId).jpg"
                     let path = "\(fileName)"
-                    print(path)
+                    //print(path)
                     try await SupabaseConfig.client.storage
                         .from("user-avatars")
                         .upload(
@@ -113,7 +108,7 @@ final class EditProfileViewController: UIViewController,
                 }
                 
             } catch {
-                print("❌ PROFILE UPDATE FAILED:", error)
+                //print("❌ PROFILE UPDATE FAILED:", error)
                 await MainActor.run {
                     self.showAlert(
                         title: "Error",

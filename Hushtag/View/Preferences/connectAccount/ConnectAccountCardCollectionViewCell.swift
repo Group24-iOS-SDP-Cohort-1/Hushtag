@@ -1,10 +1,3 @@
-//
-//  ConnectAccountCardCollectionViewCell.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 28/11/25.
-//
-
 import UIKit
 
 class ConnectAccountCardCollectionViewCell: UICollectionViewCell {
@@ -24,14 +17,12 @@ class ConnectAccountCardCollectionViewCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         
         setupCardDesign()
         registerCells()
         
         innerCollectionView.dataSource = self
         
-        //NEW
         innerCollectionView.delegate = self
         
         innerCollectionView.allowsMultipleSelection = true
@@ -42,9 +33,7 @@ class ConnectAccountCardCollectionViewCell: UICollectionViewCell {
         innerCollectionView.bounces = false
     }
     
-    //NEW
     private func notifyCompletionIfNeeded() {
-            // sum selected items across sections
             let selectedCount = innerCollectionView.indexPathsForSelectedItems?.count ?? 0
             let completed = selectedCount > 0
             delegate?.preferenceCard(at: cardIndex, didChangeCompletion: completed)
@@ -52,22 +41,6 @@ class ConnectAccountCardCollectionViewCell: UICollectionViewCell {
     
     
     func setupCardDesign() {
-            // Corner Radius
-//            self.layer.cornerRadius = 15
-//            self.layer.cornerCurve = .continuous // iOS Modern "smooth" corners
-//            
-//            // Background Color (Ensure it's white, or the shadow won't look right)
-//            self.backgroundColor = .white
-//            
-//            // Drop Shadow
-//            self.layer.shadowColor = UIColor.black.cgColor
-//            self.layer.shadowOpacity = 0.15  // 0.0 to 1.0 (0.15 is subtle and nice)
-//            self.layer.shadowOffset = CGSize(width: 0, height: 0) // Vertical shift
-//            self.layer.shadowRadius = 6 // How blurry the shadow is
-//            
-//            // CRITICAL: This must be false for shadows to appear outside the bounds
-//            self.layer.masksToBounds = false
-        
         contentView.applyLiquidGlassEffect()
     }
     
@@ -92,12 +65,10 @@ class ConnectAccountCardCollectionViewCell: UICollectionViewCell {
 
 extension ConnectAccountCardCollectionViewCell: UICollectionViewDataSource{
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // if sections exist, use them; otherwise single section driven by `options`
         return sections.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //return options.count
         let s = sections[section]
         let baseCount = s.options.count
         
@@ -107,7 +78,6 @@ extension ConnectAccountCardCollectionViewCell: UICollectionViewDataSource{
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let s = sections[indexPath.section]
-        //let optionCount = s.options.count
         
         let optionText: String = s.options[indexPath.item]
         
@@ -136,13 +106,11 @@ func generateAccountLayout() -> UICollectionViewLayout{
 
     let section = NSCollectionLayoutSection(group: group)
     
-    //section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0)
-    
     section.contentInsets = NSDirectionalEdgeInsets(
             top: 0,
-            leading: 0.125,   // 12.5% of width
+            leading: 0.125,
             bottom: 20,
-            trailing: 0.125  // 12.5% of width
+            trailing: 0.125
         )
     
     let layout = UICollectionViewCompositionalLayout(section: section)
