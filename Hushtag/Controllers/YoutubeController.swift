@@ -80,7 +80,6 @@ final class YouTubeController {
     }
     
     
-    // A lightweight, private struct just to decode the boolean efficiently
     nonisolated struct ConnectionStatus: Decodable {
         let is_youtube_connected: Bool?
     }

@@ -100,7 +100,7 @@ final class ProfileTableViewController: UITableViewController {
             youtubeStatusDot.backgroundColor = .systemGreen
         } else {
             youtubeStatusLabel.text = "Not Connected"
-            youtubeStatusDot.backgroundColor = .systemRed // or .systemGray
+            youtubeStatusDot.backgroundColor = .systemRed
         }
     }
     
@@ -259,7 +259,6 @@ final class ProfileTableViewController: UITableViewController {
             guard let profile = profile else { return }
             
             if profile.isYouTubeConnected {
-                // 🔴 THEY ARE CONNECTED: SHOW DISCONNECT ALERT
                 let alert = UIAlertController(
                     title: "Disconnect YouTube",
                     message: "Are you sure you want to disconnect your YouTube account? You will stop receiving analytics.",
@@ -274,7 +273,6 @@ final class ProfileTableViewController: UITableViewController {
                 present(alert, animated: true)
                 
             } else {
-                // 🟢 THEY ARE NOT CONNECTED: START CONNECT FLOW
                 Task { @MainActor in
                     do {
                         
@@ -284,11 +282,9 @@ final class ProfileTableViewController: UITableViewController {
                         let signInModel = SignInModel()
                         try await signInModel.connectYouTube()
                         
-                        // Fetch profile again so the dot updates to Green!
                         self.fetchProfile()
                     } catch {
-                        print("Failed to connect YouTube: \(error)")
-                        // Optional: Show an error alert here if you want
+                        //print("Failed to connect YouTube: \(error)")
                         self.fetchProfile()
                     }
                 }
@@ -302,14 +298,11 @@ final class ProfileTableViewController: UITableViewController {
                     self.youtubeStatusLabel.text = "Disconnecting..."
                     self.youtubeStatusDot.backgroundColor = .systemYellow
                     
-                    // 1. Tell backend to delete token (Trigger flips the DB boolean to false)
                     try await YouTubeController.shared.disconnectYouTubeBackend()
                     
-                    // 2. Clear local Google SDK session using your SignInModel function
                     let signInModel = SignInModel()
                     signInModel.disconnectYouTube()
                     
-                    // 3. Re-fetch profile to update the UI (Dot turns Red/Gray)
                     self.fetchProfile()
                     
                 } catch {
