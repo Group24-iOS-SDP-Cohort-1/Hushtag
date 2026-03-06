@@ -5,7 +5,6 @@ final class ProfileController {
     
     private let client = SupabaseConfig.client
     
-    // MARK: - Fetch Profile
     func fetchProfile() async throws -> Profile {
         let session = try await client.auth.session
         
@@ -20,7 +19,6 @@ final class ProfileController {
         return mapToProfile(profileDB)
     }
     
-    // MARK: - Update Profile (FIXED)
     func updateProfile(
         fullName: String,
         avatarURL: String?
@@ -48,7 +46,7 @@ final class ProfileController {
         return mapToProfile(profile)
     }
     
-    // MARK: - Mapper
+    
     private func mapToProfile(_ db: ProfileDB) -> Profile {
         Profile(
             id: db.user_id,

@@ -2,14 +2,12 @@
 //  ContentGoalsCardCollectionViewCell.swift
 //  Hushtag
 //
-//  Created by SDC-USER on 28/11/25.
-//
+
 
 import UIKit
 
 class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
-
-    //NEW
+    
     weak var delegate: PreferenceCardSelectionDelegate?
     var cardIndex: Int = -1
     
@@ -30,11 +28,9 @@ class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         
         innerCollectionView.dataSource = self
         
-        //NEW
         innerCollectionView.delegate = self
         
         registerCells()
@@ -60,45 +56,41 @@ class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
     }
     
     
-    //NEW
     private func notifyCompletionIfNeeded() {
-            let selectedCount = innerCollectionView.indexPathsForSelectedItems?.count ?? 0
-            delegate?.preferenceCard(at: cardIndex, didChangeCompletion: selectedCount > 0)
-        }
+        let selectedCount = innerCollectionView.indexPathsForSelectedItems?.count ?? 0
+        delegate?.preferenceCard(at: cardIndex, didChangeCompletion: selectedCount > 0)
+    }
     
     private func updateSelection() {
-
+        
         let selectedTitles = innerCollectionView.indexPathsForSelectedItems?
             .sorted { $0.item < $1.item }
             .map { sections[$0.section].options[$0.item] } ?? []
-
-        // Convert UI titles → enum rawValues
+        
         let selectedRawValues: [String] = selectedTitles.compactMap { title in
             goalMapping[title]?.rawValue
         }
-
+        
         delegate?.preferenceCard(
             at: "Content Goals",
             didUpdateSelection: selectedRawValues
         )
     }
-
+    
     
     func registerCells(){
         innerCollectionView.register(UINib(nibName: "ContentGoalsCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "contentGoalsCell")
     }
-
+    
 }
 
 
 extension ContentGoalsCardCollectionViewCell: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // if sections exist, use them; otherwise single section driven by `options`
         return sections.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //return options.count
         let s = sections[section]
         let baseCount = s.options.count
         
@@ -124,7 +116,7 @@ func generateGoalsInnerLayout() -> UICollectionViewLayout{
     let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(35))
     
     let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
+    
     let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(35))
     
     let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
@@ -138,7 +130,6 @@ func generateGoalsInnerLayout() -> UICollectionViewLayout{
 
 
 
-//NEW
 extension ContentGoalsCardCollectionViewCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         updateSelection()

@@ -90,7 +90,7 @@ enum ContentGoal: String, Codable, CustomStringConvertible {
     }
 }
 
-// MARK: - Preferences Content Data
+
 
 struct PreferenceItem {
     let id: Int

@@ -1,9 +1,9 @@
 import Foundation
 import Supabase
 
-// MARK: - Edge Function Payloads
 
-/// Payload sent to the 'youtube-auth' function to securely save tokens
+
+
 struct YouTubeAuthPayload: Codable {
     let action: String
     let server_auth_code: String
@@ -15,19 +15,16 @@ struct AnalyticsRequestPayload: Codable {
     let endDate: String
 }
 
-// MARK: - YouTube Controller
+
 
 final class YouTubeController {
     
     static let shared = YouTubeController()
     private init() {}
     
-    // Assuming you have a SupabaseConfig setup in your project
     private let client = SupabaseConfig.client
     
-    // MARK: - 1. Secure Token Storage
     
-    /// Sends the raw tokens to the backend to be securely encrypted and saved.
     func saveYouTubeTokens(
         serverAuthCode: String
     ) async throws {
@@ -36,7 +33,7 @@ final class YouTubeController {
         print("🟢 SUPABASE AUTH OK: \(session.user.id)")
         
         let payload = YouTubeAuthPayload(
-            action: "exchange_and_save_tokens", // 👈 Updated action name for clarity
+            action: "exchange_and_save_tokens",
             server_auth_code: serverAuthCode
         )
         
@@ -55,9 +52,7 @@ final class YouTubeController {
         print("✅ Tokens encrypted & saved")
     }
     
-    // MARK: - 2. Fetch Analytics Data
     
-    /// Calls the proxy Edge Function to get the user's YouTube views
     func fetchAnalytics(
         startDate: String,
         endDate: String
@@ -86,14 +81,11 @@ final class YouTubeController {
         return responseData
     }
     
-    // MARK: - 3. Check Connection State
     
-    /// Checks if the current user has connected their YouTube account by verifying if a token row exists
     func checkYouTubeConnection() async -> Bool {
         do {
             let session = try await client.auth.session
             
-            // Bypass Strict Concurrency Codable struct mismatches with a plain Sendable Dictionary
             let _: [String: String] = try await client.database
                 .from("youtube_tokens")
                 .select("user_id")

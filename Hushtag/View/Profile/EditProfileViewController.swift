@@ -13,26 +13,26 @@ protocol EditProfileDelegate: AnyObject {
 final class EditProfileViewController: UIViewController,
                                        UIImagePickerControllerDelegate,
                                        UINavigationControllerDelegate {
-
+    
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var nameTextField: UITextField!
-
+    
     var profile: Profile?
     weak var delegate: EditProfileDelegate?
-
+    
     private var selectedImage: UIImage?
     private let profileController = ProfileController()
-
-    // MARK: - Lifecycle
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         nameTextField.text = profile?.fullName
         loadAvatar()
         setupImageTap()
     }
-
-    // MARK: - UI Setup
+    
+    
     private func setupImageTap() {
         let tapGesture = UITapGestureRecognizer(
             target: self,
@@ -42,13 +42,13 @@ final class EditProfileViewController: UIViewController,
         profileImageView.addGestureRecognizer(tapGesture)
         applyProfileImageStyling()
     }
-
+    
     private func loadAvatar() {
         guard let urlString = profile?.avatarURL,
               let url = URL(string: urlString) else {
             return
         }
-
+        
         DispatchQueue.global().async {
             if let data = try? Data(contentsOf: url),
                let image = UIImage(data: data) {
@@ -58,81 +58,80 @@ final class EditProfileViewController: UIViewController,
             }
         }
     }
-
-    // MARK: - Actions
+    
+    
     @IBAction func cancelButtonTapped(_ sender: UIBarButtonItem) {
         dismiss(animated: true)
     }
-
+    
     @IBAction func saveButtonTapped(_ sender: UIBarButtonItem) {
         guard let fullName = nameTextField.text, !fullName.isEmpty else {
-                showAlert(title: "Error", message: "Please enter your full name.")
-                return
-            }
+            showAlert(title: "Error", message: "Please enter your full name.")
+            return
+        }
         
         sender.isEnabled = false
-
-            Task {
-                do {
-                    var avatarURLToSave = profile?.avatarURL
-
-                    // ✅ Only upload if user selected a new image
-                    if let selectedImage = selectedImage,
-                       let imageData = selectedImage.jpegData(compressionQuality: 0.8) {
-
-                        let session = try await SupabaseConfig.client.auth.session
-                        let userId = session.user.id.uuidString.lowercased()
-
-                        let fileName = "\(userId).jpg"
-                        let path = "\(fileName)"
-                        print(path)
-                        try await SupabaseConfig.client.storage
-                            .from("user-avatars")
-                            .upload(
-                                path: path,
-                                file: imageData,
-                                options: .init(upsert: true)
-                            )
-
-                        let publicURL = try SupabaseConfig.client.storage
-                            .from("user-avatars")
-                            .getPublicURL(path: path)
-
-                        avatarURLToSave = publicURL.absoluteString
-                    }
-
-                    // ✅ Update profile ONLY AFTER avatar upload succeeds
-                    _ = try await profileController.updateProfile(
-                        fullName: fullName,
-                        avatarURL: avatarURLToSave
-                    )
-
-                    await MainActor.run {
-                        self.delegate?.profileDidUpdate()
-                        self.dismiss(animated: true)
-                    }
-
-                } catch {
-                    print("❌ PROFILE UPDATE FAILED:", error)
-                    await MainActor.run {
-                        self.showAlert(
-                            title: "Error",
-                            message: "Failed to update profile."
+        
+        Task {
+            do {
+                var avatarURLToSave = profile?.avatarURL
+                
+                
+                if let selectedImage = selectedImage,
+                   let imageData = selectedImage.jpegData(compressionQuality: 0.8) {
+                    
+                    let session = try await SupabaseConfig.client.auth.session
+                    let userId = session.user.id.uuidString.lowercased()
+                    
+                    let fileName = "\(userId).jpg"
+                    let path = "\(fileName)"
+                    print(path)
+                    try await SupabaseConfig.client.storage
+                        .from("user-avatars")
+                        .upload(
+                            path: path,
+                            file: imageData,
+                            options: .init(upsert: true)
                         )
-                    }
+                    
+                    let publicURL = try SupabaseConfig.client.storage
+                        .from("user-avatars")
+                        .getPublicURL(path: path)
+                    
+                    avatarURLToSave = publicURL.absoluteString
+                }
+                
+                
+                _ = try await profileController.updateProfile(
+                    fullName: fullName,
+                    avatarURL: avatarURLToSave
+                )
+                
+                await MainActor.run {
+                    self.delegate?.profileDidUpdate()
+                    self.dismiss(animated: true)
+                }
+                
+            } catch {
+                print("❌ PROFILE UPDATE FAILED:", error)
+                await MainActor.run {
+                    self.showAlert(
+                        title: "Error",
+                        message: "Failed to update profile."
+                    )
                 }
             }
+        }
     }
-
+    
     @objc private func profileImageTapped() {
         let picker = UIImagePickerController()
         picker.delegate = self
         picker.sourceType = .photoLibrary
         present(picker, animated: true)
     }
-
-
-    // MARK: - Image Picker
+    
+    
     
     func imagePickerController(
         _ picker: UIImagePickerController,
@@ -144,12 +143,12 @@ final class EditProfileViewController: UIViewController,
         }
         picker.dismiss(animated: true)
     }
-
+    
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
     }
-
-    // MARK: - Styling
+    
+    
     private func applyProfileImageStyling() {
         profileImageView.layer.cornerRadius = profileImageView.frame.width / 2
         profileImageView.clipsToBounds = true

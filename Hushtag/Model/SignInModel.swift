@@ -2,56 +2,11 @@
 //  SignInModel.swift
 //  Hushtag
 //
-//  Created by SDC-USER on 23/01/26.
-//
+
 
 import Foundation
 import GoogleSignIn
 
-//class SignInModel {
-//
-//    func isFormValid(email: String, password: String) -> Bool {
-//        guard email.isValidEmail(), password.count > 7 else {
-//            return false
-//        }
-//        return true
-//    }
-//
-////    func registerNewUserWithEmail(email: String, password: String) async throws -> AppUser {
-////        if isFormValid(email: email, password: password){
-////            return try await AuthManager.shared.registerNewUserWithEmail(email: email, password: password)
-////        } else {
-////            print("Registration Form is invalid")
-////            throw NSError()
-////        }
-////    }
-//
-//
-//
-////    func signInWithEmail(email: String, password: String) async throws -> AppUser {
-////        if isFormValid(email: email, password: password){
-////            return try await AuthManager.shared.signInWithEmail(email: email, password: password)
-////        } else {
-////            print("Sign in Form is invalid")
-////            throw NSError()
-////        }
-////    }
-//
-//    func registerNewUserWithEmail(email: String, password: String) async throws -> AppUser {
-//        guard isFormValid(email: email, password: password) else {
-//            throw AuthError.invalidForm
-//        }
-//        return try await AuthManager.shared.registerNewUserWithEmail(email: email, password: password)
-//    }
-//
-//    func signInWithEmail(email: String, password: String) async throws -> AppUser {
-//        guard isFormValid(email: email, password: password) else {
-//            throw AuthError.invalidForm
-//        }
-//        return try await AuthManager.shared.signInWithEmail(email: email, password: password)
-//    }
-//
-//}
 
 class SignInModel {
     
@@ -122,7 +77,6 @@ class SignInModel {
         return user
     }
     
-    // MARK: - YouTube Connect Flow
     
     func connectYouTube() async throws {
         let signInGoogle = SignInGoogle()
@@ -134,9 +88,7 @@ class SignInModel {
     }
     
     func disconnectYouTube() {
-        // This tells Google to completely revoke the token tie to this app.
-        // The next time they tap "Connect YouTube", it will force the consent screen
-        // and guarantee your backend gets a fresh refresh_token.
+        
         GIDSignIn.sharedInstance.disconnect { error in
             if let error = error {
                 print("Failed to disconnect Google: \(error.localizedDescription)")
@@ -145,8 +97,6 @@ class SignInModel {
             }
         }
         
-        // TODO: You should also call a Supabase Edge Function here
-        // to delete their row from the 'youtube_tokens' database table!
     }
 }
 
@@ -180,7 +130,7 @@ class SignInGoogle {
         
         guard let topVC = UIApplication.topViewController else{
             let error = NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not find the top view controller."])
-            //completion(.failure(NSError()))
+            
             completion(.failure(error))
             return
         }
@@ -199,9 +149,9 @@ class SignInGoogle {
             }
             
             guard let user = signInResult?.user, let idToken = user.idToken else {
-                // Inspect error
+                
                 let tokenError = NSError(domain: "AuthError", code: -2, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve Google ID Token."])
-                //completion(.failure(NSError()))
+                
                 completion(.failure(tokenError))
                 print("Error signing in: \(error?.localizedDescription ?? "No error description")")
                 return
@@ -218,7 +168,7 @@ class SignInGoogle {
         }
     }
     
-    // MARK: - YouTube Connect Flow
+    
     
     @MainActor
     func startConnectYouTubeFlow() async throws -> ConnectYouTubeResult {
@@ -260,12 +210,7 @@ class SignInGoogle {
             let refreshToken = user.refreshToken.tokenString
             let serverAuthCode = signInResult?.serverAuthCode ?? ""
             
-//            guard let refreshToken = user.refreshToken.tokenString else {
-//                let tokenError = NSError(domain: "AuthError", code: -5, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve refresh token for YouTube."])
-//                completion(.failure(tokenError))
-//                print("Error connecting YouTube: Refresh token missing")
-//                return
-//            }
+
             
             completion(.success(.init(
                 serverAuthCode: serverAuthCode
