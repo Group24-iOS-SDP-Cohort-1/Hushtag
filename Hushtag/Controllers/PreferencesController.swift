@@ -31,7 +31,7 @@ final class PreferencesController {
         let session = try await client.auth.session
         print("FETCH UID:", session.user.id)
         
-        let preferences: [PreferenceDB] = try await client.database.from("user_preferences").select().eq("id", value: session.user.id)
+        let preferences: [PreferenceDB] = try await client.database.from("user_preferences").select().eq("user_id", value: session.user.id)
             .execute()
             .value
         
