@@ -1,7 +1,7 @@
 import UIKit
 
 extension UIViewController {
-
+    
     func enableKeyboardDismissOnTap() {
         let tap = UITapGestureRecognizer(
             target: self,
@@ -10,18 +10,17 @@ extension UIViewController {
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
     }
-
+    
     @objc private func hideKeyboard() {
         view.endEditing(true)
     }
 }
 
-
 extension String {
     func toStyledScript() -> NSAttributedString {
         // 1. Define your Design System
-//      let baseFont = UIFont.systemFont(ofSize: 16, weight: .regular)
-//      let boldFont = UIFont.systemFont(ofSize: 16, weight: .bold)
+        //      let baseFont = UIFont.systemFont(ofSize: 16, weight: .regular)
+        //      let boldFont = UIFont.systemFont(ofSize: 16, weight: .bold)
         
         let baseFont = UIFont.preferredFont(forTextStyle: .body)
         let boldDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).withSymbolicTraits(.traitBold)

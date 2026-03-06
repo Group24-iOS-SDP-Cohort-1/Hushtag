@@ -21,11 +21,6 @@ final class YouTubeService {
         let body = YouTubeSearchRequest(
             query: query
         )
-        //        let query: String
-        //        let minViews: Int
-        //        let maxAgeInDays: Int
-        //        let limit: Int
-        
         request.httpBody = try JSONEncoder().encode(body)
         
         let (data, _) = try await URLSession.shared.data(for: request)
