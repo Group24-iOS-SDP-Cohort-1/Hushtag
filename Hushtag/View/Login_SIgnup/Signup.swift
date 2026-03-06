@@ -1,10 +1,3 @@
-//
-//  Signup.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 08/01/26.
-//
-
 import UIKit
 
 class Signup: UIViewController {
@@ -12,7 +5,7 @@ class Signup: UIViewController {
     var viewModel: SignInModel = SignInModel()
     
     var appUser: AppUser?
-
+    
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
@@ -21,7 +14,7 @@ class Signup: UIViewController {
     @IBOutlet weak var googleButton: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         styleSocialButton(googleButton)
         styleSocialButton(facebookButton)
         styleSocialButton(appleButton)
@@ -31,7 +24,6 @@ class Signup: UIViewController {
         
         enableKeyboardDismissOnTap()
         
-        // Programmatically connect the button since IBAction might be missing
         googleButton.addTarget(self, action: #selector(googleSignUpTapped), for: .touchUpInside)
     }
     
@@ -54,51 +46,39 @@ class Signup: UIViewController {
     
     @IBAction func signUpTapped(_ sender: Any) {
         
-//        _Concurrency.Task{
-//            do{
-//                
-//                guard let password = passwordTextField.text, let email = emailTextField.text else {return}
-//                
-//                let appUser = try await viewModel.registerNewUserWithEmail(email: email, password: password)
-//                self.appUser = appUser
-//                print(appUser)
-//            }catch{
-//                print("Issue with Sign In")
-//            }
-//        }
+        
         guard let email = emailTextField.text,
-                  let password = passwordTextField.text,
-                  let confirmPassword = confirmPasswordTextField.text else {
-                showAlert(title: "Error", message: AuthError.emptyFields.localizedDescription)
-                return
-            }
-
-            guard password == confirmPassword else {
-                showAlert(title: "Error", message: AuthError.passwordsDoNotMatch.localizedDescription)
-                return
-            }
-
-        _Concurrency.Task { @MainActor in
+              let password = passwordTextField.text,
+              let confirmPassword = confirmPasswordTextField.text else {
+            showAlert(title: "Error", message: AuthError.emptyFields.localizedDescription)
+            return
+        }
+        
+        guard password == confirmPassword else {
+            showAlert(title: "Error", message: AuthError.passwordsDoNotMatch.localizedDescription)
+            return
+        }
+        
+        Task { @MainActor in
             LoadingOverlay.shared.show()
-                do {
-                    let user = try await viewModel.registerNewUserWithEmail(email: email, password: password)
-
+            do {
+                let user = try await viewModel.registerNewUserWithEmail(email: email, password: password)
                 
-                    self.appUser = user
-                    //self.navigateToHomeScreen()
-                    self.navigateToPreferencesScreen()
-                } catch let error as LocalizedError {
-                    LoadingOverlay.shared.hide()
-                    self.showAlert(title: "Signup Failed", message: error.localizedDescription)
-                } catch {
-                    LoadingOverlay.shared.hide()
-                    self.showAlert(title: "Signup Failed", message: "An unknown error occurred")
-                }
-           }
+                
+                self.appUser = user
+                self.navigateToPreferencesScreen()
+            } catch let error as LocalizedError {
+                LoadingOverlay.shared.hide()
+                self.showAlert(title: "Signup Failed", message: error.localizedDescription)
+            } catch {
+                LoadingOverlay.shared.hide()
+                self.showAlert(title: "Signup Failed", message: "An unknown error occurred")
+            }
+        }
         
     }
-            
-            
+    
+    
     @IBAction func googleSignUpTapped(_ sender: UIButton) {
         Task { @MainActor in
             LoadingOverlay.shared.show()
@@ -106,12 +86,11 @@ class Signup: UIViewController {
             defer { LoadingOverlay.shared.hide() }
             
             do {
-                // Google Sign In handles both Login and Signup
+                
                 let user = try await viewModel.signInWithGoogle()
                 
                 self.appUser = user
                 
-                // Use the shared extension method check onboarding status
                 self.navigateBasedOnOnboardingStatus()
                 
             } catch let error as LocalizedError {

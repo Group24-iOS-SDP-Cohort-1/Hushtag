@@ -1,10 +1,3 @@
-//
-//  PreferencesViewController.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 25/11/25.
-//
-
 import UIKit
 import GoogleSignIn
 
@@ -14,9 +7,9 @@ protocol YouTubeConnectDelegate: AnyObject {
 }
 
 
-//MARK: NEW ADDITION
+
 protocol PreferenceCardSelectionDelegate: AnyObject {
-    /// index: which top-level card (0..n-1). isCompleted: whether the card is considered completed now.
+    
     func preferenceCard(at index: Int, didChangeCompletion isCompleted: Bool)
     func preferenceCard(
         at key: String,
@@ -41,10 +34,10 @@ class PreferencesViewController: UIViewController {
     
     var preferenceItems: [PreferenceItem] = PreferencesData.items
     
-    //NEW
+    
     private var completedStates: [Bool] = []
     
-    //Dictionary of all the preferences
+    
     private var selectedOptions: [String: [String]] = [
         "Niche": [],
         "Content Goals": [],
@@ -56,22 +49,20 @@ class PreferencesViewController: UIViewController {
     
     
     
-    //    var firstItem: PreferenceGroup = PreferenceGroup()
-    //    var secondItem: PreferenceGroup = PreferenceGroup()
-    //    var thirdItem: ContentPreferenceGroup = ContentPreferenceGroup()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
         
         
         
         
-        //NEW
+        
+        
         completedStates = Array(repeating: false, count: preferenceItems.count)
         
-        //selectedOptions = Array(repeating: [], count: preferenceItems.count)
+        
         
         
         registerCells()
@@ -81,24 +72,15 @@ class PreferencesViewController: UIViewController {
         preferencesCollectionView.setCollectionViewLayout(layout, animated: true)
         
         preferencesCollectionView.dataSource = self
-        //preferencesCollectionView.delegate = self
         preferencesCollectionView.clipsToBounds = false
         preferencesCollectionView.isPagingEnabled = false
         
         preferencesCollectionView.alwaysBounceVertical = false
         preferencesCollectionView.bounces = false
         
-        //print(preferenceItems)
-        
-        
-        //        print("preferencesCollectionView:", preferencesCollectionView as Any)
-        //        print("delegate set to:", preferencesCollectionView.delegate as Any)
-        //        print("isScrollEnabled:", preferencesCollectionView.isScrollEnabled)
-        //        print("userInteractionEnabled:", preferencesCollectionView.isUserInteractionEnabled)
         
         
         
-        //updateProgressAndPagination(forIndex: 0)
         pageControlOutlet.numberOfPages = preferenceItems.count
         pageControlOutlet.currentPage = 0
         
@@ -119,30 +101,30 @@ class PreferencesViewController: UIViewController {
             let isConnected = await YouTubeController.shared.checkYouTubeConnection()
             if isConnected {
                 
-                // 👉 Quick test to verify the proxy function works with the new tokens!
+                
                 do {
-                    print("⏳ Google Login Complete: Testing proxy fetch for analytics...")
-                    // Fetching data from the start of the year to today
+                    //print("⏳ Google Login Complete: Testing proxy fetch for analytics...")
+                    
                     let analyticsData = try await YouTubeController.shared.fetchAnalytics(
                         startDate: "2026-01-01",
                         endDate: "2026-02-26"
                     )
                     
                     if let jsonString = String(data: analyticsData, encoding: .utf8) {
-                        print("📈 GOOGLE SUCCESS - Raw YouTube Data:")
-                        print(jsonString)
+                        //print("📈 GOOGLE SUCCESS - Raw YouTube Data:")
+                        //print(jsonString)
                     }
                 } catch {
-                    print("❌ GOOGLE PROXY FETCH FAILED: \(error)")
+                    //print("❌ GOOGLE PROXY FETCH FAILED: \(error)")
                 }
                 
                 await MainActor.run {
-                    // Assuming YouTube connect card is at index 3
+                    
                     if self.completedStates.count > 3 {
                         self.completedStates[3] = true
                         self.updateProgressFromCompletedStates()
                         
-                        // Force a reload so cellForItemAt will pass the updated `isConnected` state to the cell
+                        
                         self.preferencesCollectionView.reloadData()
                     }
                 }
@@ -155,12 +137,12 @@ class PreferencesViewController: UIViewController {
     @IBAction func submitButton(_ sender: Any) {
         _Concurrency.Task { @MainActor in
             do {
-                // This updates the metadata flag to TRUE
+                
                 try await AuthManager.shared.completeOnboarding()
                 
                 let isYoutubeConnected = completedStates.last == true
-
-
+                
+                
                 try await controller.savePreferences(
                     dict: selectedOptions,
                     isYoutubeConnected: isYoutubeConnected
@@ -169,8 +151,8 @@ class PreferencesViewController: UIViewController {
                 self.navigateToHomeScreen()
                 
             } catch {
-                print("Failed to update onboarding status: \(error)")
-                // You might want to let them in anyway, or show an alert
+                //print("Failed to update onboarding status: \(error)")
+                
                 self.navigateToHomeScreen()
             }
         }
@@ -184,7 +166,7 @@ class PreferencesViewController: UIViewController {
     }
     
     
-    //NEW
+    
     func updateProgressFromCompletedStates(animated: Bool = true) {
         let completedCount = completedStates.filter { $0 }.count
         let total = preferenceItems.count
@@ -196,24 +178,9 @@ class PreferencesViewController: UIViewController {
     
     
     func updateProgressAndPagination(forIndex index: Int) {
-        // Update Page Control
+        
         pageControlOutlet.currentPage = index
         
-        /*
-         
-         // Update Progress Bar
-         // We add 1 because index starts at 0, but progress should be non-zero for the first item.
-         // Example: Item 0 of 5 items = 1/5 (0.2) progress.
-         let totalItems = Float(preferenceItems.count)
-         
-         // Prevent division by zero crash
-         if totalItems > 0 {
-         let currentStep = Float(index)
-         let progress = currentStep / totalItems
-         progessBarOutlet.setProgress(progress, animated: true)
-         }
-         
-         */
         
         updateSkipButton(for: index)
     }
@@ -235,7 +202,7 @@ class PreferencesViewController: UIViewController {
     
     
     
-    //MARK: GENERATE LAYOUT FUNCTION
+    
     
     func generateLayout() -> UICollectionViewLayout {
         
@@ -274,36 +241,36 @@ class PreferencesViewController: UIViewController {
         
         
         
-        //PROGRESS BAR AND PAGE CONTROL LOGIC
+        
         
         
         section.visibleItemsInvalidationHandler = { [weak self] (items, offset, env) in
             guard let self = self else { return }
             
-            // compute center X of the visible area
+            
             let containerCenterX = offset.x + (env.container.contentSize.width / 2.0)
             
-            // find the visible item whose center is nearest the container center
+            
             let nearest = items.min { a, b in
                 abs(a.frame.midX - containerCenterX) < abs(b.frame.midX - containerCenterX)
             }
             
-            // fallback to 0 if nothing found
+            
             let page = nearest?.indexPath.item ?? 0
             
             DispatchQueue.main.async {
-                // update page control
+                
                 self.pageControlOutlet.numberOfPages = max(1, self.preferenceItems.count)
                 self.pageControlOutlet.currentPage = page
                 
-                // update skip button without animations (prevents stutter)
+                
                 UIView.performWithoutAnimation {
                     self.updateSkipButton(for: page)
                     self.view.layoutIfNeeded()
                 }
             }
         }
-        // --- THE NEW LOGIC ENDS HERE ---
+        
         
         let layout = UICollectionViewCompositionalLayout(section: section)
         
@@ -324,55 +291,55 @@ extension PreferencesViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = preferenceItems[indexPath.item]
         
-        //print(indexPath.item)
+        
         
         if indexPath.item == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "nicheCard", for: indexPath) as! NicheCollectionCardViewCell
             cell.configureCell(with : item)
             
-            //NEW
+            
             cell.delegate = self
             cell.cardIndex = indexPath.item
             
-            //updateSkipButton(for: indexPath.item)
+            
             
             return cell
         }else if indexPath.item == 1{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "goalsCell", for: indexPath) as! ContentGoalsCardCollectionViewCell
             cell.configureCell(with : item)
             
-            //NEW
+            
             cell.delegate = self
             cell.cardIndex = indexPath.item
             
-            //updateSkipButton(for: indexPath.item)
+            
             
             return cell
         }else if indexPath.item == 2{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "contentPreferencesCell", for: indexPath) as! ContentPreferencesCardCollectionViewCell
             cell.configureCell(with : item)
             
-            //NEW
+            
             cell.delegate = self
             cell.cardIndex = indexPath.item
             
-            //updateSkipButton(for: indexPath.item)
+            
             
             return cell
         }else if indexPath.item == 3{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "accountCell", for: indexPath) as! AccountConnectCollectionViewCell
             
-            // Set the cell's internal connection state before configuring
+            
             cell.isConnected = completedStates[indexPath.item]
             
             cell.configureCell(with : item)
             
-            //NEW
+            
             cell.delegate = self
             cell.delegate1 = self
             cell.cardIndex = indexPath.item
             
-            //updateSkipButton(for: indexPath.item)
+            
             
             return cell
         }
@@ -396,21 +363,21 @@ extension PreferencesViewController: UICollectionViewDataSource {
             skipSubmitButton.title = "Skip"
         }
     }
-
-
-
-
+    
+    
+    
+    
     
 }
 
 
 
-//NEW
+
 extension PreferencesViewController: PreferenceCardSelectionDelegate {
     func preferenceCard(at index: Int, didChangeCompletion isCompleted: Bool) {
         guard index >= 0 && index < completedStates.count else { return }
         
-        // only update UI if state changed (avoids flicker)
+        
         if completedStates[index] != isCompleted {
             completedStates[index] = isCompleted
             updateProgressFromCompletedStates()
@@ -420,7 +387,7 @@ extension PreferencesViewController: PreferenceCardSelectionDelegate {
     func preferenceCard(at key: String, didUpdateSelection selections: [String]) {
         selectedOptions[key] = selections.map { $0.lowercased() }
         //print(selectedOptions[key])
-        print("\n\n\(selectedOptions)")
+        //print("\n\n\(selectedOptions)")
     }
     
     
@@ -433,7 +400,7 @@ extension PreferencesViewController: YouTubeConnectDelegate {
     func didTapConnectYouTube(from cell: AccountConnectCollectionViewCell) {
         connectYouTube(cell: cell)
     }
-
+    
     func connectYouTube(cell: AccountConnectCollectionViewCell) {
         
         let viewModel = SignInModel()
@@ -441,23 +408,23 @@ extension PreferencesViewController: YouTubeConnectDelegate {
         Task {
             do {
                 try await viewModel.connectYouTube()
-
-                // 👉 Quick test to verify the proxy function works!
+                
+                
                 do {
-                    print("⏳ Testing proxy fetch for analytics...")
-                    // Fetching data from the start of the year to today
+                    //print("⏳ Testing proxy fetch for analytics...")
+                    
                     let analyticsData = try await YouTubeController.shared.fetchAnalytics(
                         startDate: "2026-01-01",
                         endDate: "2026-02-26"
                     )
                     
-                    // Convert the raw JSON data to a readable string for the console
+                    
                     if let jsonString = String(data: analyticsData, encoding: .utf8) {
-                        print("📈 PROXY SUCCESS - Raw YouTube Data:")
-                        print(jsonString)
+                        //print("📈 PROXY SUCCESS - Raw YouTube Data:")
+                        //print(jsonString)
                     }
                 } catch {
-                    print("❌ PROXY FETCH FAILED: \(error)")
+                    //print("❌ PROXY FETCH FAILED: \(error)")
                 }
                 
                 await MainActor.run {
@@ -484,7 +451,7 @@ extension PreferencesViewController: YouTubeConnectDelegate {
                     alert.addAction(UIAlertAction(title: "OK", style: .default))
                     self.present(alert, animated: true)
                 }
-                print("❌ YouTube connect failed:", error)
+                //print("❌ YouTube connect failed:", error)
             }
         }
     }
