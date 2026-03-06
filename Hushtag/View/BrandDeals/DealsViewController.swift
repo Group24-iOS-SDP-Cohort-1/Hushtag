@@ -247,7 +247,8 @@ extension DealsViewController: DealsInfoDelegate {
     func dealsInfo(_ controller: DealsInfo, didUpdateDeal deal: Deal, at index: Int) {
         if let idx = deals.firstIndex(where: { $0.id == deal.id }) {
             deals[idx] = deal
-            collectionView.reloadData()
+            // Make sure the view controller refreshes completely, in case a deal switched between ongoing/completed tabs
+            fetchDeals()
         }
     }
     
@@ -279,8 +280,8 @@ extension DealsViewController: AddDealsDelegate {
         
         selectedSegmentIndex = segmentControl.selectedSegmentIndex
         
-        collectionView.collectionViewLayout.invalidateLayout()
-        collectionView.reloadData()
+        // Fetch fresh state from the server to accurately calculate completed/ongoing sections
+        fetchDeals()
     }
     
     func addDealsViewController(

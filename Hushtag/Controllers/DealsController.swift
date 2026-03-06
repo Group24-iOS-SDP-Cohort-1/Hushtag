@@ -34,7 +34,7 @@ final class DealsController {
             let deliverablesPayload = deal.deliverables.map {
                 DeliverableDB(
                     id: UUID(),
-                    deal_id: dealDB.id,
+                    deal_id: dealDB.deal_id,
                     name: $0.name,
                     deadline: $0.deadline,
                     isCompleted: $0.isCompleted
@@ -76,7 +76,7 @@ final class DealsController {
         return deals.map { deal in
             mapToDeal(
                 deal,
-                deliverables.filter { $0.deal_id == deal.id }
+                deliverables.filter { $0.deal_id == deal.deal_id }
             )
         }
     }
@@ -99,7 +99,7 @@ final class DealsController {
         let updatedDeal: DealDB = try await client.database
             .from("brand_deals")
             .update(payload)
-            .eq("id", value: deal.id)
+            .eq("deal_id", value: deal.id)
             .select()
             .single()
             .execute()
@@ -155,7 +155,7 @@ final class DealsController {
         try await client.database
             .from("brand_deals")
             .update(["isCompleted": isCompleted])
-            .eq("id", value: dealId)
+            .eq("deal_id", value: dealId)
             .execute()
     }
     
@@ -172,7 +172,7 @@ final class DealsController {
         try await client.database
             .from("brand_deals")
             .delete()
-            .eq("id", value: dealId)
+            .eq("deal_id", value: dealId)
             .eq("user_id", value: session.user.id)
             .execute()
     }
@@ -184,7 +184,7 @@ final class DealsController {
         _ deliverables: [DeliverableDB]
     ) -> Deal {
         Deal(
-            id: deal.id,
+            id: deal.deal_id,
             name: deal.name,
             payment: deal.payment ?? 0.0,
             mobileNumber: deal.mobileNumber ?? 0,

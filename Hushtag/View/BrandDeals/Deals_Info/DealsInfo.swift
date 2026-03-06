@@ -343,6 +343,13 @@ extension DealsInfo: UICollectionViewDataSource {
                             deliverableId: deliverable.id,
                             isCompleted: deliverable.isCompleted
                         )
+                        
+                        // Check if the entire deal's completion status has changed based on deliverables
+                        let currentDealIsCompleted = self.deals.isCompleted
+                        try await DealsController().updateDealStatus(
+                            dealId: self.deals.id,
+                            isCompleted: currentDealIsCompleted
+                        )
 
                         // notify parent
                         if self.dealIndex >= 0 {
@@ -350,7 +357,7 @@ extension DealsInfo: UICollectionViewDataSource {
                         }
 
                     } catch {
-                        print("❌ Deliverable update failed:", error)
+                        print("❌ Deliverable/Deal update failed:", error)
                     }
                 }
             }
@@ -431,6 +438,7 @@ extension DealsInfo: AddDealsDelegate {
       
         self.deals = deal
         self.title = deal.name
+        self.updateButtonState()
         self.collectionView.reloadData()
 
      

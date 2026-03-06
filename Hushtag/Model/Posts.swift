@@ -20,7 +20,7 @@ struct Tasks: Identifiable, Sendable {
 }
 
 nonisolated struct PostDB: Codable, Sendable {
-    let id: UUID
+    let post_id: UUID
     let user_id: UUID
     let name: String
     let deadline: Date
