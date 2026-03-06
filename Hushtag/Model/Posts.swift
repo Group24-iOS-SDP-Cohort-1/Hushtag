@@ -46,17 +46,17 @@ nonisolated struct TaskDB: Codable, Sendable {
 }
 
 enum ScheduleItem: Identifiable, Sendable {
-    // 1. Made task and deliverable optional
+    
     case deal(deal: Deal, deliverable: Deliverable?)
     case post(post: Post, task: Tasks?)
     
     var id: UUID {
         switch self {
         case .deal(let deal, let deliverable):
-            // Fall back to deal's ID if no deliverable
+           
             return deliverable?.id ?? deal.id
         case .post(let post, let task):
-            // Fall back to post's ID if no task (provide a default UUID if post.id is nil)
+          
             return task?.id ?? post.id ?? UUID()
         }
     }
@@ -64,21 +64,21 @@ enum ScheduleItem: Identifiable, Sendable {
     var effectiveDeadline: Date {
         switch self {
         case .post(let post, let task):
-            // Fall back to the main post's deadline
+         
             return task?.deadline ?? post.deadline
             
         case .deal(let deal, let deliverable):
-            // Fall back to the main deal's deadline
+            
             return deliverable?.deadline ?? deal.deadline
         }
     }
     
     var date: Date {
-        // This does the exact same thing as effectiveDeadline now
+     
         return effectiveDeadline
     }
     
-    // 2. Updated matches functions to handle optional sub-items
+    
     func matches(post: Post, task: Tasks?) -> Bool {
         guard case .post(let p, let t) = self else { return false }
         return p.id == post.id && t?.id == task?.id

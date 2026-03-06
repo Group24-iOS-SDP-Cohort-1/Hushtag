@@ -1,9 +1,3 @@
-//
-//  DetailsCollectionViewCell.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 20/01/26.
-//
 
 import UIKit
 
@@ -55,7 +49,6 @@ class DetailsCollectionViewCell: UICollectionViewCell {
     }
     func configureCommon(with item: ScheduleItem) {
         
-        // Reset / hide everything first
         [
             platformLabel,
             remindersLabel
@@ -144,7 +137,7 @@ class DetailsCollectionViewCell: UICollectionViewCell {
     }
     
     private func deleteTapped() {
-        print("🗑 deleteTapped called")
+        //print("🗑 deleteTapped called")
         onDeleteTapped?()
     }
 }

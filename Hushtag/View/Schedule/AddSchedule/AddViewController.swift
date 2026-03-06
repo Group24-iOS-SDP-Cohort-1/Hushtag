@@ -1,7 +1,5 @@
 import UIKit
 
-
-//sending the create post to parent view controller
 protocol AddViewDelegate: AnyObject {
     func addViewController(_ controller: AddViewController, didCreatePost post: Post)
     func addViewController(_ controller: AddViewController, didUpdatePost post: Post,at index: Int)
@@ -18,7 +16,7 @@ class AddViewController: UITableViewController {
     @IBOutlet weak var deadlinePicker: UIDatePicker!
     @IBOutlet weak var reminderPicker: UIDatePicker!
     private var reminderWasManuallySet = false
-
+    
     private var deadlineDate: Date?
     private var reminderDate: Date?
     
@@ -42,7 +40,7 @@ class AddViewController: UITableViewController {
         "Reminder"
     ]
     
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,7 +69,7 @@ class AddViewController: UITableViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
+        
         tableView.layoutIfNeeded()
         prefillIfNeeded()
     }
@@ -90,7 +88,7 @@ class AddViewController: UITableViewController {
         deadlineDate = sender.date
         setText("Deadline", value: dateFormatter.string(from: sender.date))
     }
-
+    
     
     @objc private func reminderChanged() {
         reminderWasManuallySet = true
@@ -99,44 +97,43 @@ class AddViewController: UITableViewController {
     }
     
     private func prefillIfNeeded() {
-            guard let post = editingPost else { return }
-
-            setText("Post Name", value: post.name)
-            setText("Platform", value: post.platform.map { $0.rawValue.capitalized }.joined(separator: ", "))
-
-            // Prefill using the Post's deadline
-            deadlineDate = post.deadline
-            setText("Deadline", value: dateFormatter.string(from: post.deadline))
-
-            if let reminder = post.reminder?.first {
-                reminderDate = reminder
-                dateFormatter.timeStyle = .short
-                setText("Reminder", value: dateFormatter.string(from: reminder))
-                dateFormatter.timeStyle = .none
-            }
+        guard let post = editingPost else { return }
+        
+        setText("Post Name", value: post.name)
+        setText("Platform", value: post.platform.map { $0.rawValue.capitalized }.joined(separator: ", "))
+        
+        deadlineDate = post.deadline
+        setText("Deadline", value: dateFormatter.string(from: post.deadline))
+        
+        if let reminder = post.reminder?.first {
+            reminderDate = reminder
+            dateFormatter.timeStyle = .short
+            setText("Reminder", value: dateFormatter.string(from: reminder))
+            dateFormatter.timeStyle = .none
         }
+    }
     
-
+    
     private func buildPost() -> Post? {
-
+        
         guard let deadline = deadlineDate else { return nil }
-
+        
         let postId = editingPost?.id ?? UUID()
-
+        
         let name = getValue("Post Name").isEmpty
-            ? "Untitled Post"
-            : getValue("Post Name")
-
+        ? "Untitled Post"
+        : getValue("Post Name")
+        
         let platformRaw = getValue("Platform")
-
+        
         let platforms = platformRaw
             .split(separator: ",")
             .compactMap {
                 Platform(rawValue: $0.trimmingCharacters(in: .whitespaces).lowercased())
             }
-
+        
         let tasks = currentTasks
-
+        
         return Post(
             id: postId,
             name: name,
@@ -148,60 +145,56 @@ class AddViewController: UITableViewController {
     }
     
     @objc private func doneTapped() {
-            view.endEditing(true)
-            
-            Task {
-                do {
-                    guard let post = buildPost() else {
-                        print("❌ Failed to build post")
-                        return
-                    }
+        view.endEditing(true)
+        
+        Task {
+            do {
+                guard let post = buildPost() else {
+                    //print("❌ Failed to build post")
+                    return
+                }
+                
+                if editingPost != nil {
                     
-                    if editingPost != nil {
-                        // 1. Capture the updated post
-                        let updatedPost = try await postsController.updatePost(post)
-                        
-                        // 2. Switch to the MainActor for UI/Delegate updates
-                        await MainActor.run {
-                            if let index = editingIndex {
-                                // 3. Call the delegate method
-                                self.delegate?.addViewController(
-                                    self,
-                                    didUpdatePost: updatedPost,
-                                    at: index
-                                )
-                            }
-                            
-                            NotificationCenter.default.post(
-                                name: .postsDidChange,
-                                object: nil
-                            )
-                            self.dismiss(animated: true)
-                        }
-                    } else {
-                        let savedPost = try await postsController.addPost(post)
-                        
-                        await MainActor.run {
-                            NotificationCenter.default.post(
-                                name: .postsDidChange,
-                                object: nil
-                            )
-                            self.delegate?.addViewController(self, didCreatePost: savedPost)
-                            self.dismiss(animated: true)
-                        }
-                    }
-                    
-                } catch {
-                    print("❌ Failed to save post:", error)
-                    // Optional: Add an alert here like you did in Deals to show the user the error
+                    let updatedPost = try await postsController.updatePost(post)
                     await MainActor.run {
-                        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: .default))
-                        self.present(alert, animated: true)
+                        if let index = editingIndex {
+                            self.delegate?.addViewController(
+                                self,
+                                didUpdatePost: updatedPost,
+                                at: index
+                            )
+                        }
+                        
+                        NotificationCenter.default.post(
+                            name: .postsDidChange,
+                            object: nil
+                        )
+                        self.dismiss(animated: true)
                     }
+                } else {
+                    let savedPost = try await postsController.addPost(post)
+                    
+                    await MainActor.run {
+                        NotificationCenter.default.post(
+                            name: .postsDidChange,
+                            object: nil
+                        )
+                        self.delegate?.addViewController(self, didCreatePost: savedPost)
+                        self.dismiss(animated: true)
+                    }
+                }
+                
+            } catch {
+                //print("❌ Failed to save post:", error)
+                await MainActor.run {
+                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
                 }
             }
         }
+    }
     
     private func getValue(_ placeholder: String) -> String {
         guard let row = mainPlaceholders.firstIndex(of: placeholder) else { return "" }
@@ -212,7 +205,7 @@ class AddViewController: UITableViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
         return Section.allCases.count
     }
-
+    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let sec = Section(rawValue: section) else { return nil }
         
@@ -249,7 +242,7 @@ class AddViewController: UITableViewController {
         label.text = "Post Details"
         return nil
     }
-
+    
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let sec = Section(rawValue: section) else { return nil }
         if sec == .mainFields {
@@ -257,7 +250,7 @@ class AddViewController: UITableViewController {
         }
         return nil
     }
-
+    
     @objc private func addTaskTapped() {
         let newTask = Tasks(id: UUID(), name: "", deadline: Date(), isCompleted: false)
         currentTasks.append(newTask)
@@ -265,7 +258,7 @@ class AddViewController: UITableViewController {
         let indexPath = IndexPath(row: currentTasks.count - 1, section: Section.deliverables.rawValue)
         tableView.insertRows(at: [indexPath], with: .automatic)
     }
-
+    
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if indexPath.section == Section.deliverables.rawValue, editingStyle == .delete {
             currentTasks.remove(at: indexPath.row)
@@ -339,7 +332,7 @@ class AddViewController: UITableViewController {
                 picker.addTarget(self, action: #selector(deadlinePickerChanged(_:)), for: .valueChanged)
                 cell.textField.inputView = picker
                 cell.textField.inputAccessoryView = toolbar
-
+                
                 
             case "Reminder":
                 cell.textField.rightView = nil

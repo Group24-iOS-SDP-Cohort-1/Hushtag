@@ -15,7 +15,7 @@ class LoadingOverlay {
             return
         }
         
-        if overlayView != nil { return } // Already showing
+        if overlayView != nil { return }
         
         let overlay = UIView(frame: window.bounds)
         overlay.backgroundColor = UIColor.black.withAlphaComponent(0.5)
@@ -58,10 +58,9 @@ class OpaqueLoadingScreen {
             return
         }
         
-        if overlayView != nil { return } // Already showing
+        if overlayView != nil { return }
         
         let overlay = UIView(frame: window.bounds)
-        // using systemBackground so it looks completely seamlessly opaque and adapts to light/dark mode
         overlay.backgroundColor = UIColor.systemBackground
         overlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
