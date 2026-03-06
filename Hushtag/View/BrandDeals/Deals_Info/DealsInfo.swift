@@ -438,6 +438,7 @@ extension DealsInfo: AddDealsDelegate {
       
         self.deals = deal
         self.title = deal.name
+        self.updateButtonState()
         self.collectionView.reloadData()
 
      
