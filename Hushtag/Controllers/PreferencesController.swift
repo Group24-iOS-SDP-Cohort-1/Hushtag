@@ -13,7 +13,7 @@ final class PreferencesController {
         let session = try await client.auth.session
         
         let payload = PreferenceInsertPayload(
-            id: session.user.id,
+            user_id: session.user.id,
             niche: dict["Niche"] ?? [],
             content_goals: dict["Content Goals"] ?? [],
             content_length: dict["Content Length"] ?? [],
@@ -31,7 +31,10 @@ final class PreferencesController {
         let session = try await client.auth.session
         print("FETCH UID:", session.user.id)
         
-        let preferences: [PreferenceDB] = try await client.database.from("user_preferences").select().eq("user_id", value: session.user.id)
+        let preferences: [PreferenceDB] = try await client.database
+            .from("user_preferences")
+            .select()
+            .eq("user_id", value: session.user.id)
             .execute()
             .value
         
@@ -44,7 +47,7 @@ final class PreferencesController {
     
     private func mapToPreference(_ preference: PreferenceDB) -> UserPreference {
         UserPreference(
-            id: preference.id,
+            user_id: preference.user_id,
             niche: preference.niche ?? [],
             contentGoals: preference.content_goals  ?? [],
             contentLength: preference.content_length ?? [],

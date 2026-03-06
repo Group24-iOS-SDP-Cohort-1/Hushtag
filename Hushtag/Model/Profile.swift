@@ -9,6 +9,7 @@ struct Profile: Identifiable, Sendable {
 
 nonisolated struct ProfileDB: Codable, Sendable {
     let id: UUID
+    let user_id: UUID
     let full_name: String
     let email: String
     let avatar_url: String?
@@ -21,7 +22,7 @@ nonisolated struct ProfileUpdatePayload: Encodable, Sendable {
 }
 
 nonisolated struct ProfileInsertPayload: Encodable, Sendable {
-    let id: UUID
+    let user_id: UUID
     let full_name: String
     let email: String
     let avatar_url: String?

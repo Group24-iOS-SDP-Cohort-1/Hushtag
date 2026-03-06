@@ -12,7 +12,7 @@ final class ProfileController {
         let profileDB: ProfileDB = try await client.database
             .from("profiles")
             .select()
-            .eq("id", value: session.user.id)
+            .eq("user_id", value: session.user.id)
             .single()
             .execute()
             .value
@@ -36,7 +36,7 @@ final class ProfileController {
         let updated: [ProfileDB] = try await client.database
             .from("profiles")
             .update(payload)
-            .eq("id", value: session.user.id)
+            .eq("user_id", value: session.user.id)
             .select()
             .execute()
             .value
@@ -51,7 +51,7 @@ final class ProfileController {
     // MARK: - Mapper
     private func mapToProfile(_ db: ProfileDB) -> Profile {
         Profile(
-            id: db.id,
+            id: db.user_id,
             fullName: db.full_name,
             email: db.email,
             avatarURL: db.avatar_url
