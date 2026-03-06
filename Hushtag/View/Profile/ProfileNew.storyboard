@@ -210,6 +210,8 @@
                         <outlet property="emailLabel" destination="hfl-w5-CN9" id="XNO-cd-Ryi"/>
                         <outlet property="nameLabel" destination="BgQ-3R-Wpr" id="Tke-Pr-vig"/>
                         <outlet property="profileImageView" destination="QZR-4R-1Ra" id="KqF-UY-774"/>
+                        <outlet property="youtubeStatusDot" destination="UaL-5g-soK" id="y3h-67-Yco"/>
+                        <outlet property="youtubeStatusLabel" destination="Ke5-ob-1rQ" id="gHJ-u1-ek8"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WNQ-6E-3n7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

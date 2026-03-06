@@ -7,6 +7,10 @@ final class ProfileTableViewController: UITableViewController {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var emailLabel: UILabel!
     
+    @IBOutlet weak var youtubeStatusLabel: UILabel!
+    @IBOutlet weak var youtubeStatusDot: UIView!
+    
+    
     private let profileController = ProfileController()
     private var profile: Profile?
     
@@ -68,9 +72,9 @@ final class ProfileTableViewController: UITableViewController {
         Task {
             do {
                 let profile = try await profileController.fetchProfile()
-                self.profile = profile
                 
                 await MainActor.run {
+                    self.profile = profile
                     self.updateUI(with: profile)
                 }
             } catch {
@@ -89,6 +93,14 @@ final class ProfileTableViewController: UITableViewController {
             loadImage(from: url)
         } else {
             setInitialAvatar(from: profile.fullName)
+        }
+        
+        if profile.isYouTubeConnected {
+            youtubeStatusLabel.text = "Connected"
+            youtubeStatusDot.backgroundColor = .systemGreen
+        } else {
+            youtubeStatusLabel.text = "Not Connected"
+            youtubeStatusDot.backgroundColor = .systemRed // or .systemGray
         }
     }
     
@@ -142,13 +154,15 @@ final class ProfileTableViewController: UITableViewController {
         profileImageView.layer.borderColor = UIColor.systemGray4.cgColor
         
         title = "Profile"
+        youtubeStatusDot.layer.cornerRadius = youtubeStatusDot.frame.width / 2
+        youtubeStatusDot.clipsToBounds = true
     }
     
     func signOutTap(){
         let alert = UIAlertController(title: "Sign Out", message: "Are you sure you want to sign out?", preferredStyle: .actionSheet)
         
-        alert.addAction(UIAlertAction(title: "Sign Out", style: .destructive, handler: { _ in
-            self.performSignOut()
+        alert.addAction(UIAlertAction(title: "Sign Out", style: .destructive, handler: {[weak self] _ in
+            self?.performSignOut()
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -180,8 +194,8 @@ final class ProfileTableViewController: UITableViewController {
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in
-            self.performAccountDeletion()
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: {[weak self] _ in
+            self?.performAccountDeletion()
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -241,14 +255,76 @@ final class ProfileTableViewController: UITableViewController {
         }
     }
     
-    override func tableView(
-        _ tableView: UITableView,
-        didSelectRowAt indexPath: IndexPath
-    ) {
+    private func handleYouTubeTap() {
+            guard let profile = profile else { return }
+            
+            if profile.isYouTubeConnected {
+                // 🔴 THEY ARE CONNECTED: SHOW DISCONNECT ALERT
+                let alert = UIAlertController(
+                    title: "Disconnect YouTube",
+                    message: "Are you sure you want to disconnect your YouTube account? You will stop receiving analytics.",
+                    preferredStyle: .alert
+                )
+                
+                alert.addAction(UIAlertAction(title: "Disconnect", style: .destructive, handler: { [weak self] _ in
+                    self?.performYouTubeDisconnect()
+                }))
+                
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                present(alert, animated: true)
+                
+            } else {
+                // 🟢 THEY ARE NOT CONNECTED: START CONNECT FLOW
+                Task { @MainActor in
+                    do {
+                        
+                        self.youtubeStatusLabel.text = "Connecting..."
+                        self.youtubeStatusDot.backgroundColor = .systemYellow
+                        
+                        let signInModel = SignInModel()
+                        try await signInModel.connectYouTube()
+                        
+                        // Fetch profile again so the dot updates to Green!
+                        self.fetchProfile()
+                    } catch {
+                        print("Failed to connect YouTube: \(error)")
+                        // Optional: Show an error alert here if you want
+                        self.fetchProfile()
+                    }
+                }
+            }
+        }
+        
+        private func performYouTubeDisconnect() {
+            Task { @MainActor in
+                do {
+                    
+                    self.youtubeStatusLabel.text = "Disconnecting..."
+                    self.youtubeStatusDot.backgroundColor = .systemYellow
+                    
+                    // 1. Tell backend to delete token (Trigger flips the DB boolean to false)
+                    try await YouTubeController.shared.disconnectYouTubeBackend()
+                    
+                    // 2. Clear local Google SDK session using your SignInModel function
+                    let signInModel = SignInModel()
+                    signInModel.disconnectYouTube()
+                    
+                    // 3. Re-fetch profile to update the UI (Dot turns Red/Gray)
+                    self.fetchProfile()
+                    
+                } catch {
+                    print("Failed to disconnect YouTube backend: \(error)")
+                    self.fetchProfile()
+                }
+            }
+        }
+    
+    override func tableView(_ tableView: UITableView,didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        
-        if indexPath.section == 3 && indexPath.row == 0 {
+        if indexPath.section == 1 && indexPath.row == 0 {
+            handleYouTubeTap()
+        }else if indexPath.section == 3 && indexPath.row == 0 {
             signOutTap()
         }else if indexPath.section == 3 && indexPath.row == 1 {
             deleteAccountTap()

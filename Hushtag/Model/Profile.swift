@@ -5,6 +5,7 @@ struct Profile: Identifiable, Sendable {
     var fullName: String
     var email: String
     var avatarURL: String?
+    var isYouTubeConnected: Bool
 }
 
 nonisolated struct ProfileDB: Codable, Sendable {
@@ -13,6 +14,7 @@ nonisolated struct ProfileDB: Codable, Sendable {
     let full_name: String
     let email: String
     let avatar_url: String?
+    let is_youtube_connected: Bool?
 }
 
 

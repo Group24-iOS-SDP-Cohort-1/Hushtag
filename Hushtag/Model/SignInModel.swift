@@ -84,8 +84,8 @@ class SignInModel {
     func disconnectYouTube() {
         
         GIDSignIn.sharedInstance.disconnect { error in
-            if let error = error {
-                //print("Failed to disconnect Google: \(error.localizedDescription)")
+            if error != nil {
+                //print("Failed to disconnect Google")
             } else {
                 //print("Successfully disconnected from Google")
             }
@@ -151,8 +151,7 @@ class SignInGoogle {
                 return
             }
             
-            let accessToken = user.accessToken.tokenString
-            let refreshToken = user.refreshToken.tokenString
+            
             let serverAuthCode = signInResult?.serverAuthCode
             
             completion(.success(.init(
@@ -185,7 +184,7 @@ class SignInGoogle {
         GIDSignIn.sharedInstance.signIn(
             withPresenting: topVC,
             hint: nil,
-            additionalScopes: ["https://www.googleapis.com/auth/yt-analytics.readonly"]
+            additionalScopes: ["https://www.googleapis.com/auth/yt-analytics.readonly", "https://www.googleapis.com/auth/youtube.readonly"]
         ) { signInResult, error in
             
             if let error = error {
@@ -193,15 +192,14 @@ class SignInGoogle {
                 return
             }
             
-            guard let user = signInResult?.user else {
+            guard (signInResult?.user) != nil else {
                 let tokenError = NSError(domain: "AuthError", code: -3, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve user during YouTube connect."])
                 completion(.failure(tokenError))
                 //print("Error connecting YouTube: User not found in result")
                 return
             }
             
-            let accessToken = user.accessToken.tokenString
-            let refreshToken = user.refreshToken.tokenString
+            
             let serverAuthCode = signInResult?.serverAuthCode ?? ""
             
 
