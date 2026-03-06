@@ -1,10 +1,3 @@
-//
-//  Schedule.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 13/01/26.
-//
-
 import UIKit
 
 class Schedule: UIViewController {
@@ -321,33 +314,33 @@ class Schedule: UIViewController {
         }
     }
     
-  
+    
     @objc private func handleDealsDidChange() {
         Task {
             do {
                 try await scheduleController.load()
-
+                
                 await MainActor.run {
                     self.filterItems(for: self.selectedDate)
                     self.scheduleView.reloadSections(IndexSet(integer: 1))
                 }
-
+                
             } catch {
                 print("❌ Failed to reload deals:", error)
             }
         }
     }
-
+    
     @objc private func handlePostsDidChange() {
         Task {
             do {
                 try await scheduleController.load()
-
+                
                 await MainActor.run {
                     self.filterItems(for: self.selectedDate)
                     self.scheduleView.reloadSections(IndexSet(integer: 1))
                 }
-
+                
             } catch {
                 print("❌ Failed to reload posts:", error)
             }

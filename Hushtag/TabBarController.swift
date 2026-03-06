@@ -1,10 +1,3 @@
-//
-//  TabBarController.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 13/11/25.
-//
-
 import UIKit
 class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
@@ -18,7 +11,7 @@ class MainTabBarController: UITabBarController {
             
             viewControllers[2].tabBarItem.title = "Deals"
             viewControllers[2].tabBarItem.image = UIImage(systemName: "list.bullet")
-
+            
             viewControllers[3].tabBarItem.title = "Schedule"
             viewControllers[3].tabBarItem.image = UIImage(systemName: "calendar")
         }

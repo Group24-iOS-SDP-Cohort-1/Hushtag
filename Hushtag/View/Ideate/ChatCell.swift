@@ -1,14 +1,6 @@
-//
-//  ChatCell.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 09/12/25.
-//
-
 import UIKit
 
 class ChatCell: UITableViewCell {
-    
     
     @IBOutlet weak var chatView: UIView!
     
