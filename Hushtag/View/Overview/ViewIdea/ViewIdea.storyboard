@@ -120,6 +120,28 @@
                                             <outlet property="badgeStack" destination="YFc-sv-IlH" id="pnt-EM-Nv6"/>
                                         </connections>
                                     </collectionViewCell>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="button" id="Vrf-Fh-nyq" customClass="IdeaDetailsCollectionViewCell" customModule="Hushtag" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="414" width="393" height="128"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="5ds-8D-DBA">
+                                            <rect key="frame" x="0.0" y="0.0" width="393" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hqq-SC-bjw">
+                                                    <rect key="frame" x="140.66666666666666" y="47" width="112" height="34.333333333333343"/>
+                                                    <state key="normal" title="Button"/>
+                                                    <buttonConfiguration key="configuration" style="filled" title="Draft Script"/>
+                                                    <connections>
+                                                        <action selector="draftTap:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="La0-A8-icm"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Hqq-SC-bjw" firstAttribute="centerY" secondItem="5ds-8D-DBA" secondAttribute="centerY" id="jYq-9r-P1w"/>
+                                                <constraint firstItem="Hqq-SC-bjw" firstAttribute="centerX" secondItem="5ds-8D-DBA" secondAttribute="centerX" id="rnM-qq-xpM"/>
+                                            </constraints>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
                                 </cells>
                             </collectionView>
                         </subviews>
