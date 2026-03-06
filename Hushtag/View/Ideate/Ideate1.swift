@@ -76,7 +76,6 @@ class Ideate1: UIViewController {
         collectionView.register(UINib(nibName: "HeaderView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "headerCell")
         
         collectionView.register(UINib(nibName: "IdeaSearch", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "IdeaSearch")
-        collectionView.register(UINib(nibName: "SuggestedFYHeader", bundle:nil ),forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "suggestedHeader")
     }
     
     private func setupGlobalKeyboardDismiss() {
@@ -397,10 +396,10 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             // Suggested Header
             let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
-                withReuseIdentifier: "suggestedHeader",
+                withReuseIdentifier: "headerCell",
                 for: indexPath
-            ) as! SuggestedFYHeader
-            
+            ) as! HeaderView
+            header.configureHeader(text: "Suggested For You")
             header.isHidden = isSearching
             return header
         }
