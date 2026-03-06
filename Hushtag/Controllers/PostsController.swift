@@ -32,7 +32,7 @@ final class PostsController {
                 let taskPayload = post.tasks.map {
                     TaskDB(
                         id: UUID(),
-                        post_id: postDB.id,
+                        post_id: postDB.post_id,
                         name: $0.name,
                         deadline: $0.deadline,
                         isCompleted: $0.isCompleted
@@ -72,7 +72,7 @@ final class PostsController {
         return posts.map { post in
             mapToPost(
                 post,
-                tasks.filter { $0.post_id == post.id }
+                tasks.filter { $0.post_id == post.post_id }
             )
         }
     }
@@ -83,7 +83,7 @@ final class PostsController {
         try await client.database
             .from("posts")
             .delete()
-            .eq("id", value: postId)
+            .eq("post_id", value: postId)
             .eq("user_id", value: session.user.id)
             .execute()
     }
@@ -104,7 +104,7 @@ final class PostsController {
             let updatedPost: PostDB = try await client.database
                 .from("posts")
                 .update(payload)
-                .eq("id", value: post.id ?? UUID())
+                .eq("post_id", value: post.id ?? UUID())
                 .select()
                 .single()
                 .execute()
@@ -155,7 +155,7 @@ final class PostsController {
     
     private func mapToPost(_ post: PostDB, _ tasks: [TaskDB]) -> Post {
         Post(
-            id: post.id,
+            id: post.post_id,
             name: post.name,
             platform: post.platform,
             tasks: tasks.map {
