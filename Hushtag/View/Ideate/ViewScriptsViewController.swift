@@ -1,17 +1,10 @@
-//
-//  ViewScriptsViewController.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 08/12/25.
-//
-
 import UIKit
 
 class ViewScriptsViewController: UIViewController {
     //var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
     private let likedIdeasController = LikedIdeasController()
-
+    
     var pageTitle: String = ""
     var cellReuseIdentifier: String = "allScriptsCell"
     
@@ -19,7 +12,7 @@ class ViewScriptsViewController: UIViewController {
     var likedIdeas: [Idea] = []
     var myScripts: [ScriptedIdea] = []
     var chatHistory: [ChatMessageDB] = []
-
+    
     
     let controller = ScriptedIdeasController()
     
@@ -55,28 +48,28 @@ class ViewScriptsViewController: UIViewController {
         scriptsCollectionView.setCollectionViewLayout(layout, animated: true)
         
         if pageTitle == "Chat History" {
-//
-//            Task {
-//                do {
-//                    let history = try await controller.fetchChatHistory()
-//
-//                    await MainActor.run {
-//                        self.chatHistory = history
-//                        self.scriptsCollectionView.reloadData()
-//                    }
-//
-//                } catch {
-//                    print("❌ Error fetching chat history: \(error)")
-//                }
-          //  }
+            //
+            //            Task {
+            //                do {
+            //                    let history = try await controller.fetchChatHistory()
+            //
+            //                    await MainActor.run {
+            //                        self.chatHistory = history
+            //                        self.scriptsCollectionView.reloadData()
+            //                    }
+            //
+            //                } catch {
+            //                    print("❌ Error fetching chat history: \(error)")
+            //                }
+            //  }
         } else {
             // 2. Load Liked Ideas (Existing Logic)
             //ideas = ideaResponse.ideas
-//            likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
-//            NotificationCenter.default.addObserver(self, selector: #selector(syncLikedIdeas), name: .didUpdateLikedStatus, object: nil)
-//            updateEmptyState()
+            //            likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
+            //            NotificationCenter.default.addObserver(self, selector: #selector(syncLikedIdeas), name: .didUpdateLikedStatus, object: nil)
+            //            updateEmptyState()
             syncLikedIdeas()
-      }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -122,44 +115,44 @@ class ViewScriptsViewController: UIViewController {
     }
     
     
-//    func fetchMyScripts() {
-//        Task {
-//            do {
-//                // 1. Fetch fresh data from Supabase (Item is gone here)
-//                let scripts = try await scriptsController.fetchScripts()
-//                
-//                await MainActor.run {
-//                    // 2. Update the main source of truth
-//                    self.myScripts = scripts
-//                    
-//                    // 3. FIX: If we are searching, re-filter the new list immediately.
-//                    // This removes the "ghost" item from the search results.
-//                    if self.isFiltering {
-//                        self.filterContentForSearchText(self.searchController.searchBar.text ?? "")
-//                    } else {
-//                        // Otherwise, just reload normally
-//                        self.scriptsCollectionView.reloadData()
-//                        self.updateEmptyState()
-//                    }
-//                }
-//            } catch {
-//                print("Error fetching scripts: \(error)")
-//            }
-//        }
-//    }
+    //    func fetchMyScripts() {
+    //        Task {
+    //            do {
+    //                // 1. Fetch fresh data from Supabase (Item is gone here)
+    //                let scripts = try await scriptsController.fetchScripts()
+    //
+    //                await MainActor.run {
+    //                    // 2. Update the main source of truth
+    //                    self.myScripts = scripts
+    //
+    //                    // 3. FIX: If we are searching, re-filter the new list immediately.
+    //                    // This removes the "ghost" item from the search results.
+    //                    if self.isFiltering {
+    //                        self.filterContentForSearchText(self.searchController.searchBar.text ?? "")
+    //                    } else {
+    //                        // Otherwise, just reload normally
+    //                        self.scriptsCollectionView.reloadData()
+    //                        self.updateEmptyState()
+    //                    }
+    //                }
+    //            } catch {
+    //                print("Error fetching scripts: \(error)")
+    //            }
+    //        }
+    //    }
     
     
-//    @objc func syncLikedIdeas() {
-//        likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
-//        scriptsCollectionView.reloadData()
-//        updateEmptyState()
-//    }
-
+    //    @objc func syncLikedIdeas() {
+    //        likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
+    //        scriptsCollectionView.reloadData()
+    //        updateEmptyState()
+    //    }
+    
     @objc func syncLikedIdeas() {
         Task {
             do {
                 let ideas = try await likedIdeasController.fetchLikedIdeas()
-
+                
                 await MainActor.run {
                     self.likedIdeas = ideas
                     self.filteredLikedIdeas = ideas
@@ -171,8 +164,8 @@ class ViewScriptsViewController: UIViewController {
             }
         }
     }
-
-
+    
+    
     private func updateEmptyState() {
         
         // Separate Empty State logic for "Your Scripts"
@@ -372,72 +365,72 @@ extension ViewScriptsViewController: UICollectionViewDelegate {
 }
 
 extension ViewScriptsViewController: LikedCellDelegate {
-
+    
     func didToggleLike(for ideaKey: String) {
-
+        
         let sourceArray = isFiltering ? filteredLikedIdeas : likedIdeas
-
+        
         guard let index = sourceArray.firstIndex(where: { $0.ideaKey == ideaKey }) else {
             return
         }
-
+        
         let idea = sourceArray[index]
         let isCurrentlyLiked = LikedIds.likedIdeaIds.contains(ideaKey)
-
+        
         Task {
             do {
                 if isCurrentlyLiked {
                     //  UNLIKE
                     try await likedIdeasController.unlikeIdea(ideaKey: ideaKey)
                     LikedIds.likedIdeaIds.remove(ideaKey)
-
+                    
                     //  UPDATE SESSION MANAGER (THIS FIXES IDEATE)
                     if let smIndex = SessionManager.shared.personalizedIdeas
                         .firstIndex(where: { $0.ideaKey == ideaKey }) {
                         SessionManager.shared.personalizedIdeas[smIndex].liked = false
                     }
-
+                    
                 } else {
                     //  LIKE
                     try await likedIdeasController.likeIdea(idea)
                     LikedIds.likedIdeaIds.insert(ideaKey)
-
+                    
                     if let smIndex = SessionManager.shared.personalizedIdeas
                         .firstIndex(where: { $0.ideaKey == ideaKey }) {
                         SessionManager.shared.personalizedIdeas[smIndex].liked = true
                     }
                 }
-
+                
                 await MainActor.run {
-
+                    
                     // Remove from local lists if unliked
                     if isCurrentlyLiked {
                         self.likedIdeas.removeAll { $0.ideaKey == ideaKey }
                         self.filteredLikedIdeas.removeAll { $0.ideaKey == ideaKey }
                     }
-
+                    
                     NotificationCenter.default.post(
                         name: .didUpdateLikedStatus,
                         object: ideaKey
                     )
-
+                    
                     self.scriptsCollectionView.reloadData()
                 }
-
+                
             } catch {
                 print("❌ Like toggle failed:", error)
             }
         }
     }
-
+    
     func didTapDraftScript(for idea: Idea) {
-
+        
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
-
+        
         guard let vc = storyboard.instantiateViewController(
             withIdentifier: "Chatbot"
         ) as? Chatbot else { return }
-
+        
         let prompt = """
         Generate a short engaging social media video script.
         
@@ -450,9 +443,9 @@ extension ViewScriptsViewController: LikedCellDelegate {
         - Main content
         - Ending CTA
         """
-
+        
         vc.autoSendMessage = prompt
-
+        
         navigationController?.pushViewController(vc, animated: true)
     }
 }

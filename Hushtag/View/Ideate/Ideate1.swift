@@ -36,9 +36,6 @@ class Ideate1: UIViewController {
         scriptButton.layer.borderColor = UIColor.accent.cgColor
         
         setupGlobalKeyboardDismiss()
-        //        Task {
-        //                await loadIdeasFromPreferences()
-        //            }
         
         self.ideas = syncLikedState(SessionManager.shared.personalizedIdeas)
         // Fetch recent scripts
