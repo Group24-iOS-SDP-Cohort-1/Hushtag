@@ -4,11 +4,19 @@ class IdeaDetailsCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var valuesLabel: UILabel!
+
     @IBOutlet weak var categoryLabel: UILabel!
     @IBOutlet weak var gapLabel: UILabel!
     @IBOutlet weak var badgeStack: UIStackView!
-    
+
+
+    @IBOutlet weak var valuesLabel: UILabel!
+
+    @IBOutlet weak var imageView: UIImageView!
+
+    @IBOutlet weak var view: UIView!
+
+
     var idea: Idea?
     let controller = ScriptedIdeasController()
     
@@ -29,34 +37,62 @@ class IdeaDetailsCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func configureStatistic(_ value: Int, _ label: String) {
+    func configureStatistic(_ value: Int, _ symbolName: String) {
         applyLiquidGlassEffect()
         valuesLabel.text = value.formattedCount()
-        categoryLabel.text = label
+        imageView.image = UIImage(systemName: symbolName)
     }
-    
+
     func configureHashtag(_ hashtags: [String]) {
+
+        // Remove old badges
         badgeStack.arrangedSubviews.forEach {
             badgeStack.removeArrangedSubview($0)
             $0.removeFromSuperview()
         }
-        for tag in hashtags {
+
+        badgeStack.axis = .vertical
+        badgeStack.spacing = 8
+        badgeStack.alignment = .leading
+
+        var rowStack: UIStackView?
+
+        for (index, tag) in hashtags.enumerated() {
+
+            // New row every 3 badges
+            if index % 3 == 0 {
+                rowStack = UIStackView()
+                rowStack?.axis = .horizontal
+                rowStack?.spacing = 8
+                rowStack?.alignment = .leading
+                rowStack?.distribution = .fill   // ✅ important fix
+
+                if let row = rowStack {
+                    badgeStack.addArrangedSubview(row)
+                }
+            }
+
             let badge: Badges = Badges.loadFromNib()
-            
+
             badge.configure(
-                text: tag,
+                text: "\(tag)",
                 color: .white,
                 cornerRadius: 12,
-                borderWidth: 0.2,
+                borderWidth: 1.3,
                 backgroundAlpha: 0.10
             )
-            
-            badgeStack.addArrangedSubview(badge)
+
+            badge.backgroundColor = UIColor.accent.withAlphaComponent(0.1)
+            badge.layer.borderColor = UIColor.accent.cgColor
+
+            badge.setContentHuggingPriority(.required, for: .horizontal)
+            badge.setContentCompressionResistancePriority(.required, for: .horizontal)
+
+            rowStack?.addArrangedSubview(badge)
         }
     }
-    
     func expandDescriptionWithAI() async {
-        
+
         guard let idea = idea else { return }
         
         let prompt = """
