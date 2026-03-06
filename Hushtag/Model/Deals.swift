@@ -28,7 +28,7 @@ struct Deliverable: Identifiable, Sendable {
 }
 
 nonisolated struct DealDB: Codable, Sendable {
-    let id: UUID
+    let deal_id: UUID
     let user_id: UUID
     let name: String
     let payment: Double?
