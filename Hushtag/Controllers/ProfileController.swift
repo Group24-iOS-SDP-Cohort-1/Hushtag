@@ -52,7 +52,8 @@ final class ProfileController {
             id: db.user_id,
             fullName: db.full_name,
             email: db.email,
-            avatarURL: db.avatar_url
+            avatarURL: db.avatar_url,
+            isYouTubeConnected: db.is_youtube_connected ?? false
         )
     }
 }

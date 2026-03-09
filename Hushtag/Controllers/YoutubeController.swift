@@ -80,19 +80,25 @@ final class YouTubeController {
     }
     
     
+    nonisolated struct ConnectionStatus: Decodable {
+        let is_youtube_connected: Bool?
+    }
+    
     func checkYouTubeConnection() async -> Bool {
+        
         do {
             let session = try await client.auth.session
             
-            let _: [String: String] = try await client.database
-                .from("youtube_tokens")
-                .select("user_id")
+            let status: ConnectionStatus = try await client.database
+                .from("profiles")
+                .select("is_youtube_connected")
                 .eq("user_id", value: session.user.id)
                 .single()
                 .execute()
                 .value
             
-            return true
+            return status.is_youtube_connected ?? false
+            
         } catch {
             //print("YouTube connection check Failed or Not Found: \(error)")
             return false
@@ -133,6 +139,24 @@ final class YouTubeController {
             //print("❌ Analytics auto-fetch failed:", error)
         }
     }
+    
+    
+    func disconnectYouTubeBackend() async throws {
+            let session = try await client.auth.session
+            
+            let payload = YouTubeAuthPayload(
+                action: "disconnect",
+                server_auth_code: ""
+            )
+            
+            try await client.functions.invoke(
+                "youtube-auth",
+                options: .init(
+                    headers: ["Authorization": "Bearer \(session.accessToken)"],
+                    body: payload
+                )
+            )
+        }
 }
 
 extension Notification.Name {
