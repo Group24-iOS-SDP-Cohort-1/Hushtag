@@ -45,27 +45,31 @@ class IdeaCells: UICollectionViewCell {
         updateLikeUI()
         keywordText2.text = idea.format
     }
-    
-    private func configureHashtags(_ hashtags: [String]) {
+
+    func configureHashtags(_ hashtags: [String]) {
         badgeStack.arrangedSubviews.forEach {
             badgeStack.removeArrangedSubview($0)
             $0.removeFromSuperview()
         }
-        for tag in hashtags.prefix(2) {
+        for tag in hashtags.prefix(2)  {
             let badge: Badges = Badges.loadFromNib()
-            
+
             badge.configure(
                 text: tag,
                 color: .white,
                 cornerRadius: 12,
-                borderWidth: 0.2,
+                borderWidth: 1.3,
                 backgroundAlpha: 0.10
             )
-            
+            badge.backgroundColor = UIColor.accent.withAlphaComponent(0.1)
+            badge.layer.borderColor = UIColor.accent.cgColor
+
+
+
             badgeStack.addArrangedSubview(badge)
         }
     }
-    
+
     @IBAction func likeTapped(_ sender: UIButton) {
         guard let idea = idea else { return }
         delegate?.didToggleLikeFromFeed(for: idea.ideaKey ?? "")

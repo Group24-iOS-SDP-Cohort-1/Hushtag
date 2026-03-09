@@ -60,12 +60,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         textFieldView.layer.shadowRadius = 4
         
         generateStack.isHidden = true
-        
-//        if let text = autoSendMessage {
-//            messages.append(Message(role: "user", content: text))
-//            tableView.reloadData()
-//            scrollToBottom()
-//        }
 
         if conversationID == nil {
             
@@ -89,12 +83,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         Task {
             do {
                 let history = try await controller.fetchMessages(for: conversationID ?? UUID())
-                
-                //Fetch scripted idea for this conversation
                 let allIdeas = try await controller.fetchScript()
                 let idea = allIdeas.first { $0.chat_id == self.conversationID }
                 
-                // Restore marks
                 let mapped = history.map { chat in
                     
                     var message = Message(
@@ -585,12 +576,5 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         sendMessage(title)
         generateStack.isHidden = true
     }
-
-//    func sendAutoMessage(_ text: String) {
-//        messages.append(Message(role: "user", content: text))
-//        tableView.reloadData()
-//        let indexPath = IndexPath(row: messages.count - 1, section: 0)
-//        tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-//    }
     
 }

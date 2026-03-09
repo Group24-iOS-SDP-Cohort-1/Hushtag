@@ -16,6 +16,7 @@ class ViewIdea: UIViewController {
         ideaView.delegate = self
         ideaView.dataSource = self
         ideaView.setCollectionViewLayout(generateLayout(), animated: true)
+        
     }
     
     
@@ -195,12 +196,16 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
                 guard indexPath.row < values.count else { return cell }
 
                 // Labels match values
-                let labels = ["Views", "Likes"]
+                let symbols = ["eye", "hand.thumbsup"]
 
                 let value = values[indexPath.row]
-                let label = labels[indexPath.row]
+                let symbol = symbols[indexPath.row]
 
-                cell.configureStatistic(value, label)
+                cell.configureStatistic(value, symbol)
+                cell.view.layer.cornerRadius = 16
+            cell.view.layer.borderWidth = 0.5
+                cell.view.backgroundColor = UIColor.accent.withAlphaComponent(0.1)
+                cell.view.layer.borderColor = UIColor.accent.withAlphaComponent(1.0).cgColor
             return cell
         } else if indexPath.section == 2 {
             let cell = ideaView.dequeueReusableCell(withReuseIdentifier: "gaps", for: indexPath) as! IdeaDetailsCollectionViewCell
