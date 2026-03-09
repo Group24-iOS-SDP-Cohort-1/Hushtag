@@ -20,6 +20,14 @@ final class ScheduleItemController {
         }
     }
     
+    func getPost(id: UUID?) -> Post? {
+        return posts.first { $0.id == id }
+    }
+    
+    func getDeal(id: UUID) -> Deal? {
+        return deals.first { $0.id == id }
+    }
+    
     func load() async throws {
         async let dealsTask = dealsController.fetchDeals()
         async let postsTask = postsController.fetchPosts()

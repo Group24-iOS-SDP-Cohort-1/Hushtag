@@ -1,9 +1,3 @@
-//
-//  DetailsCollectionViewCell.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 20/01/26.
-//
 
 import UIKit
 
@@ -55,7 +49,6 @@ class DetailsCollectionViewCell: UICollectionViewCell {
     }
     func configureCommon(with item: ScheduleItem) {
         
-        // Reset / hide everything first
         [
             platformLabel,
             remindersLabel
@@ -83,6 +76,9 @@ class DetailsCollectionViewCell: UICollectionViewCell {
                 remindersLabel.isHidden = true
             }
             
+            if statusButton != nil {
+                updateCompletionState(isCompleted: post.isCompleted)
+            }
             
         case .deal(let deal, _):
             
@@ -90,6 +86,10 @@ class DetailsCollectionViewCell: UICollectionViewCell {
             
             platformLabel.text = deal.platform.map(\.rawValue).joined(separator: ", ")
             platformLabel.isHidden = false
+            
+            if statusButton != nil {
+                updateCompletionState(isCompleted: deal.isCompleted)
+            }
         }
     }
     
@@ -144,7 +144,7 @@ class DetailsCollectionViewCell: UICollectionViewCell {
     }
     
     private func deleteTapped() {
-        print("🗑 deleteTapped called")
+        //print("🗑 deleteTapped called")
         onDeleteTapped?()
     }
 }

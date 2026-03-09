@@ -14,11 +14,8 @@ final class CardBackgroundView: UICollectionReusableView {
 
     private func setup() {
 
-        // Base card styling
         backgroundColor = UIColor.white.withAlphaComponent(0.06)
         layer.masksToBounds = true
-
-        // Apply liquid glass blur
         applyLiquidGlassEffect()
     }
 }

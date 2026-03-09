@@ -34,7 +34,7 @@ class Schedule: UIViewController {
                     self.scheduleView.reloadSections(IndexSet(integer: 1))
                 }
             } catch {
-                print("Failed to load schedule items:", error)
+                //print("Failed to load schedule items:", error)
             }
         }
         
@@ -87,7 +87,6 @@ class Schedule: UIViewController {
             forSupplementaryViewOfKind: "headerButton",
             withReuseIdentifier: "header_button")
         
-        // listen for successful insertion of post
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handlePostsDidChange),
@@ -95,7 +94,6 @@ class Schedule: UIViewController {
             object: nil
         )
         
-        // listen for successful update/insertion of deals
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleDealsDidChange),
@@ -123,15 +121,15 @@ class Schedule: UIViewController {
                 
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0 / 7.0), heightDimension: .fractionalHeight(1.0))
                 
-                // create the item
+                
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
                 
-                // create the group
+                
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(70))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 7)
                 
-                //create the section
+                
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
                 section.boundarySupplementaryItems = [headerButton]
@@ -142,15 +140,15 @@ class Schedule: UIViewController {
             
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
             
-            // create the item
+            
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             item.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 7, bottom: 7, trailing: 7)
             
-            // create the group
+            
             let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(110))
             let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, repeatingSubitem: item, count: 1)
             
-            //create the section
+            
             let section = NSCollectionLayoutSection(group: group)
             section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
             section.boundarySupplementaryItems = [headerItem]
@@ -217,7 +215,7 @@ class Schedule: UIViewController {
         task: Tasks
     ) async {
         
-        // 🔄 Optimistic UI
+        
         let optimisticPost: Post = {
             var copy = post
             copy.tasks = post.tasks.map {
@@ -252,7 +250,7 @@ class Schedule: UIViewController {
             }
             
         } catch {
-            // 🔙 rollback
+            
             scheduleController.replacePost(post)
             filterItems(for: selectedDate)
             
@@ -260,7 +258,7 @@ class Schedule: UIViewController {
                 scheduleView.reloadSections(IndexSet(integer: 1))
             }
             
-            print("❌ Failed to toggle task:", error)
+            //print("❌ Failed to toggle task:", error)
         }
     }
     
@@ -310,7 +308,90 @@ class Schedule: UIViewController {
                 scheduleView.reloadSections(IndexSet(integer: 1))
             }
             
-            print("❌ Failed to toggle deliverable:", error)
+            //print("❌ Failed to toggle deliverable:", error)
+        }
+    }
+    private func handleMainPostToggle(post: Post) async {
+        let optimisticPost: Post = {
+            var copy = post
+            copy.isManuallyCompleted.toggle()
+            let newStatus = copy.isManuallyCompleted
+            copy.tasks = copy.tasks.map {
+                var t = $0
+                t.isCompleted = newStatus
+                return t
+            }
+            return copy
+        }()
+        
+        scheduleController.replacePost(optimisticPost)
+        filterItems(for: selectedDate)
+        
+        await MainActor.run {
+            scheduleView.reloadSections(IndexSet(integer: 1))
+        }
+        
+        do {
+            let savedPost = try await ToggleService.toggleMainPost(
+                post: post,
+                postsController: postsController
+            )
+            
+            scheduleController.replacePost(savedPost)
+            filterItems(for: selectedDate)
+            
+            await MainActor.run {
+                scheduleView.reloadSections(IndexSet(integer: 1))
+            }
+        } catch {
+            scheduleController.replacePost(post)
+            filterItems(for: selectedDate)
+            
+            await MainActor.run {
+                scheduleView.reloadSections(IndexSet(integer: 1))
+            }
+        }
+    }
+    
+    private func handleMainDealToggle(deal: Deal) async {
+        let optimisticDeal: Deal = {
+            var copy = deal
+            copy.isManuallyCompleted.toggle()
+            let newStatus = copy.isManuallyCompleted
+            copy.deliverables = copy.deliverables.map {
+                var d = $0
+                d.isCompleted = newStatus
+                return d
+            }
+            return copy
+        }()
+        
+        scheduleController.replaceDeal(optimisticDeal)
+        filterItems(for: selectedDate)
+        
+        await MainActor.run {
+            scheduleView.reloadSections(IndexSet(integer: 1))
+        }
+        
+        do {
+            let savedDeal = try await ToggleService.toggleMainDeal(
+                deal: deal,
+                dealsController: dealsController
+            )
+            
+            scheduleController.replaceDeal(savedDeal)
+            filterItems(for: selectedDate)
+            
+            await MainActor.run {
+                scheduleView.reloadSections(IndexSet(integer: 1))
+            }
+        } catch {
+            scheduleController.replaceDeal(deal)
+            filterItems(for: selectedDate)
+            
+            await MainActor.run {
+                scheduleView.reloadSections(IndexSet(integer: 1))
+            }
         }
     }
     
@@ -326,7 +407,7 @@ class Schedule: UIViewController {
                 }
                 
             } catch {
-                print("❌ Failed to reload deals:", error)
+                //print("❌ Failed to reload deals:", error)
             }
         }
     }
@@ -342,7 +423,7 @@ class Schedule: UIViewController {
                 }
                 
             } catch {
-                print("❌ Failed to reload posts:", error)
+                //print("❌ Failed to reload posts:", error)
             }
         }
     }
@@ -466,18 +547,40 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
         if segue.identifier == "goToDetails" {
             let vc = segue.destination as! Details
             vc.schedule = selectedScheduleItem
+            
+            // Task Toggle
             vc.onToggleTask = { [weak self, weak vc] post, task in
                 Task {
                     await self?.handleTaskToggle(post: post, task: task)
-                    
-                    if let updated = self?.scheduleController
-                        .scheduleItems(on: self!.selectedDate)
-                        .first(where: { $0.matches(post: post, task: task) }) {
-                        
-                        await MainActor.run {
-                            vc?.schedule = updated
-                            vc?.detailsView.reloadData()
-                        }
+                    if let updatedPost = self?.scheduleController.getPost(id: post.id) {
+                        await MainActor.run { vc?.schedule = .post(post: updatedPost, task: nil); vc?.detailsView.reloadData() }
+                    }
+                }
+            }
+            // Main Post Toggle
+            vc.onToggleMainPost = { [weak self, weak vc] post in
+                Task {
+                    await self?.handleMainPostToggle(post: post)
+                    if let updatedPost = self?.scheduleController.getPost(id: post.id) {
+                        await MainActor.run { vc?.schedule = .post(post: updatedPost, task: nil); vc?.detailsView.reloadData() }
+                    }
+                }
+            }
+            // Deliverable Toggle
+            vc.onToggleDeliverable = { [weak self, weak vc] deal, deliverable in
+                Task {
+                    await self?.handleDeliverableToggle(deal: deal, deliverable: deliverable)
+                    if let updatedDeal = self?.scheduleController.getDeal(id: deal.id) {
+                        await MainActor.run { vc?.schedule = .deal(deal: updatedDeal, deliverable: nil); vc?.detailsView.reloadData() }
+                    }
+                }
+            }
+            // Main Deal Toggle
+            vc.onToggleMainDeal = { [weak self, weak vc] deal in
+                Task {
+                    await self?.handleMainDealToggle(deal: deal)
+                    if let updatedDeal = self?.scheduleController.getDeal(id: deal.id) {
+                        await MainActor.run { vc?.schedule = .deal(deal: updatedDeal, deliverable: nil); vc?.detailsView.reloadData() }
                     }
                 }
             }
@@ -502,22 +605,16 @@ extension Schedule: ScheduleCollectionViewCellDelegate {
                 
             case .post(let post, let task):
                 if let task = task {
-                    // Only toggle if it's an actual task
                     await handleTaskToggle(post: post, task: task)
                 } else {
-                    // User tapped the complete button on the MAIN post.
-                    // Add logic here if Posts can be marked complete, otherwise do nothing!
-                    print("Main Post tapped")
+                    await handleMainPostToggle(post: post)
                 }
                 
             case .deal(let deal, let deliverable):
                 if let deliverable = deliverable {
-                    // Only toggle if it's an actual deliverable
                     await handleDeliverableToggle(deal: deal, deliverable: deliverable)
                 } else {
-                    // User tapped the complete button on the MAIN deal.
-                    // Call a Deal completion toggle function here if you want!
-                    print("Main Deal tapped")
+                    await handleMainDealToggle(deal: deal)
                 }
             }
         }

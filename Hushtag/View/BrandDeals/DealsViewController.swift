@@ -1,9 +1,3 @@
-//
-//  DealsViewController.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 25/11/25.
-//
 
 import UIKit
 import PostgREST
@@ -20,7 +14,6 @@ class DealsViewController: UIViewController {
     var deals: [Deal] = []
     private var isSearching = false
     private var searchText = ""
-    
     private let dealsController = DealsController()
     
     var completedDeals: [Deal] {
@@ -57,21 +50,21 @@ class DealsViewController: UIViewController {
         
         registerCell()
         
-        // here we are fetching the deals from the data store
+        
         _Concurrency.Task {
             do {
                 let session = try await SupabaseConfig.client.auth.session
-                print("Logged in UID:", session.user.id)
-                print("SESSION ACCESS TOKEN:", session.accessToken.prefix(20))
+                //print("Logged in UID:", session.user.id)
+                //print("SESSION ACCESS TOKEN:", session.accessToken.prefix(20))
                 
             } catch {
-                print("❌ No auth session:", error)
+                //print("❌ No auth session:", error)
             }
         }
-    
+        
         fetchDeals()
         
-        print(deals.count)
+        //print(deals.count)
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.setCollectionViewLayout(generateLayout(), animated: true)
@@ -80,19 +73,17 @@ class DealsViewController: UIViewController {
         selectedSegmentIndex = 0
         let grayColor = UIColor.darkGray
         
-        // Not selected color appearance
         segmentControl.setTitleTextAttributes([
             .foregroundColor: grayColor,
             .font: UIFont.systemFont(ofSize: 14, weight: .medium)
         ], for: .normal)
         
-        // Selected color appearance
+        
         segmentControl.setTitleTextAttributes([
             .foregroundColor: UIColor.white,
             .font: UIFont.systemFont(ofSize: 14, weight: .semibold)
         ], for: .selected)
         
-        // Listen for successful update/insertion/deletion of deals from anywhere
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleDealsDidChange),
@@ -104,7 +95,6 @@ class DealsViewController: UIViewController {
     @IBAction func segmentedAction(_ sender: UISegmentedControl) {
         selectedSegmentIndex = sender.selectedSegmentIndex
         
-        // set the generateLayout function for the collection view
         collectionView.setCollectionViewLayout(generateLayout(), animated: false)
         
         collectionView.reloadData()
@@ -127,7 +117,7 @@ class DealsViewController: UIViewController {
                 }
                 
             } catch {
-                print("Supabase insert failed:")
+                //print("Supabase insert failed:")
                 dump(error)
             }
             
@@ -145,7 +135,6 @@ class DealsViewController: UIViewController {
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { [weak self] _, _ in
             
-            // 0 = Ongoing, 1 = Completed
             let isCompleted = (self?.selectedSegmentIndex == 1)
             
             let estimatedHeight: CGFloat = isCompleted ? 100 : 200
@@ -197,9 +186,6 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
         ) as! DealsCollectionViewCell
         
         cell.configure(with: deal, isCompleted: isCompletedTab)
-        
-        // on tap is a closure for performing the segue
-        
         cell.onTap = { [weak self] in
             self?.performSegue(withIdentifier: "info_page", sender: deal)
         }
@@ -207,7 +193,6 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
         return cell
     }
     
-    // prepare function for navigation and data passing
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let nav = segue.destination as? UINavigationController,
            let addVC = nav.viewControllers.first as? AddDealsViewController {
@@ -215,39 +200,27 @@ extension DealsViewController: UICollectionViewDataSource ,UICollectionViewDeleg
         } else if let addVC = segue.destination as? AddDealsViewController {
             addVC.delegate = self
         }
-        // this will send the data
+        
         if segue.identifier == "info_page",
            let deal = sender as? Deal,
            let vc = segue.destination as? DealsInfo {
-            
             vc.deals = deal
-            
-            // find index in the current deals array
             if let idx = deals.firstIndex(where: { $0.id == deal.id }) {
                 vc.dealIndex = idx
                 vc.delegate = self
             } else {
                 vc.dealIndex = -1
             }
-            
-            // this is for tag deals stuff
-            //            if let ideaId = deal.selectedIdeaIndex {
-            //                let ideaResponse = IdeaResponse()
-            //                vc.selectedIdea = ideaResponse.ideas.first { $0.id == ideaId }
-            //            } else {
-            //                vc.selectedIdea = nil
-            //            }
         }
     }
 }
 
 
-// this is for if we perform complete operation inside the deals info
+
 extension DealsViewController: DealsInfoDelegate {
     func dealsInfo(_ controller: DealsInfo, didUpdateDeal deal: Deal, at index: Int) {
         if let idx = deals.firstIndex(where: { $0.id == deal.id }) {
             deals[idx] = deal
-            // Make sure the view controller refreshes completely, in case a deal switched between ongoing/completed tabs
             fetchDeals()
         }
     }
@@ -279,8 +252,6 @@ extension DealsViewController: AddDealsDelegate {
         
         
         selectedSegmentIndex = segmentControl.selectedSegmentIndex
-        
-        // Fetch fresh state from the server to accurately calculate completed/ongoing sections
         fetchDeals()
     }
     

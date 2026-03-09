@@ -1,9 +1,3 @@
-//
-//  DealsCollectionViewCell.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 25/11/25.
-//
 
 import UIKit
 
@@ -45,7 +39,7 @@ class DealsCollectionViewCell: UICollectionViewCell{
         
         let total = deal.deliverables.count
         let completed = deal.deliverables.filter { $0.isCompleted }.count
-
+        
         if isCompleted {
             deadlineIconImageView.image = UIImage(systemName: "play.circle")
             bottomStackView.isHidden = true
