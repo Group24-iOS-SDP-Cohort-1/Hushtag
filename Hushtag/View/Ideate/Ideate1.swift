@@ -2,7 +2,6 @@ import UIKit
 
 class Ideate1: UIViewController {
     
-    //  var ideaResponse = IdeaResponse()
     var ideas: [Idea] = []
     var selectedIdea: Idea?
     var selectedIndexPath: IndexPath?

@@ -1,10 +1,3 @@
-//
-//  ScriptedIdeas.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 27/11/25.
-//
-
 import UIKit
 
 extension Notification.Name {
@@ -12,45 +5,74 @@ extension Notification.Name {
 }
 
 class ScriptedIdeas: UIViewController {
-
-    @IBOutlet weak var script: UITextView!
-
-    var idea: ScriptedIdea?
-
-    @IBOutlet weak var descriptionTitle: UILabel!
-    @IBOutlet weak var Description: UILabel!
-    @IBOutlet weak var scriptTitle: UILabel!
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var imageStack: UIStackView!
-    @IBOutlet weak var descriptionStack: UIStackView!
-    @IBOutlet weak var scriptStack: UIStackView!
-    @IBOutlet weak var popupButton: UIButton!
-
-
+    
     @IBOutlet weak var optionsBarButton: UIBarButtonItem!
+    @IBOutlet weak var ideaView: UICollectionView!
+    var isDescriptionExpanded = false
+    var isScriptExpanded = false
     
     private let dbController = ScriptedIdeasController()
+    var idea: ScriptedIdea?
+    var sections: [ScriptSection] {
+        var result: [ScriptSection] = []
+        
+        if let title = idea?.title, !title.isEmpty {
+            result.append(.title)
+        }
+        
+        if let description = idea?.description, !description.isEmpty {
+            result.append(.description)
+        }
+        
+        if let script = idea?.script, !script.isEmpty {
+            result.append(.script)
+        }
+        
+        result.append(.buttons)
+        
+        return result
+    }
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        scriptStack.isHidden = true
-        descriptionStack.isHidden = true
-        imageStack.isHidden = true
+        setupMenu()
+        registerCell()
         
-        guard let idea = idea else {
-            script.text = "No idea received."
+        ideaView.delegate = self
+        ideaView.dataSource = self
+        ideaView.setCollectionViewLayout(generateLayout(), animated: true)
+        guard let _ = idea else {
+            print("No idea received.")
+            return
+        }
+    }
+    
+    @objc func buttonTapped(_ sender: UIButton) {
+        
+        let section = sections[sender.tag]
+        
+        switch section {
+            
+        case .description:
+            isDescriptionExpanded.toggle()
+            
+        case .script:
+            isScriptExpanded.toggle()
+            
+        default:
             return
         }
         
+        ideaView.reloadSections(IndexSet(integer: sender.tag))
+    }
+    
+    func registerCell() {
         
-        setupNavigationTitle(with: idea.title)
-        setupDescription(with: idea.description)
-        setupScriptContent(with: idea.script)
-        setupThumbnail(with: idea.thumbnail)
-        
-        setupMenu()
+        ideaView.register(
+            UINib(nibName: "HeaderView",
+                  bundle: nil),
+            forSupplementaryViewOfKind: "header",
+            withReuseIdentifier: "headerCell")
     }
     
     private func setupMenu() {
@@ -80,7 +102,7 @@ class ScriptedIdeas: UIViewController {
         
         present(alert, animated: true)
     }
-        
+    
     private func performDelete() {
         guard let id = idea?.id else { return }
         
@@ -119,83 +141,158 @@ class ScriptedIdeas: UIViewController {
         self.navigationController?.pushViewController(chatVC, animated: true)
     }
     
-    private func setupNavigationTitle(with title: String?) {
-            let titleText = title ?? "Untitled Script"
-            
-            let titleLabel = UILabel()
-            titleLabel.text = titleText
-            titleLabel.numberOfLines = 3
-            titleLabel.textAlignment = .center
-            titleLabel.lineBreakMode = .byWordWrapping
-            titleLabel.font = .systemFont(ofSize: 17, weight: .semibold)
-            titleLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            self.navigationItem.titleView = titleLabel
-            
-            NSLayoutConstraint.activate([
-                titleLabel.widthAnchor.constraint(lessThanOrEqualToConstant: view.bounds.width - 150)
-            ])
-        }
-        
-        private func setupDescription(with description: String?) {
-            guard let desc = description, !desc.isEmpty else {
-                descriptionStack.isHidden = true
-                return
-            }
-            
-            descriptionStack.isHidden = false
-            descriptionTitle.text = "Description"
-            Description.text = desc
-            Description.numberOfLines = 0 // Allow unlimited lines
-        }
-        
-        private func setupScriptContent(with scriptContent: String?) {
-            // If script is nil or empty, hide the stack
-            guard let content = scriptContent, !content.isEmpty else {
-                scriptStack.isHidden = true
-                return
-            }
-            
-            scriptStack.isHidden = false
-            scriptTitle.text = "Script"
-            
-            // Styling the script text directly
-            script.attributedText = content.toStyledScript()
-            //script.font = UIFont.systemFont(ofSize: 16)
-            script.textColor = .label // Adapts to Dark/Light mode automatically
-            script.isEditable = false
-        }
-        
-        private func setupThumbnail(with urlString: String?) {
-            // Safe check: Is the string valid?
-            guard let imageName = urlString, !imageName.isEmpty else {
-                imageStack.isHidden = true
-                return
-            }
-            
-            // Check if image exists in Assets (Local)
-            if let localImage = UIImage(named: imageName) {
-                imageStack.isHidden = false
-                imageView.image = localImage
-            }
-            // Logic for Remote URL (Placeholder for when you implement image downloading later)
-            else {
-                // print("Image URL found but not in assets: \(imageName)")
-                // Here you would use Kingfisher or URLSession to download the image
-                imageStack.isHidden = true
-            }
-        }
-    
-    
-    
-
     @IBAction func schedule(_ sender: Any) {
         let storyboard = UIStoryboard(name: "AddPostViewController", bundle: nil)
         let modalVC = storyboard.instantiateViewController(withIdentifier: "AddPostNavVC")
         modalVC.modalPresentationStyle = .pageSheet
         modalVC.modalTransitionStyle = .coverVertical
         present(modalVC, animated: true)
-
-
     }
+    
+    func generateLayout() -> UICollectionViewLayout {
+        
+        let layout = UICollectionViewCompositionalLayout { sectionIndex, env in
+            
+            let headerSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(50)
+            )
+            
+            let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: headerSize,
+                elementKind: "header",
+                alignment: .top
+            )
+            
+            // self-sizing item
+            let itemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(100)
+            )
+            
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            
+            // self-sizing group
+            let groupSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(100)
+            )
+            
+            let group = NSCollectionLayoutGroup.horizontal(
+                layoutSize: groupSize,
+                subitems: [item]
+            )
+            
+            let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(
+                top: 0,
+                leading: 20,
+                bottom: 20,
+                trailing: 20
+            )
+            
+            if sectionIndex == 1 || sectionIndex == 2 {
+                section.boundarySupplementaryItems = [headerItem]
+            }
+            return section
+        }
+        return layout
+    }
+}
+
+extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return sections.count
+    }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+        let section = sections[indexPath.section]
+
+        switch section {
+
+        case .title:
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "title",
+                for: indexPath
+            ) as! ViewScriptsCell
+            
+            cell.configureTitle(with: idea?.title ?? "")
+            return cell
+        
+        case .buttons:
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "buttons",
+                for: indexPath
+            ) as! ViewScriptsCell
+            return cell
+
+        default:
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "content",
+                for: indexPath
+            ) as! ViewScriptsCell
+            
+            cell.readMoreButton.tag = indexPath.section
+            cell.readMoreButton.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+
+            switch section {
+
+            case .description:
+                cell.configure(with: idea?.description ?? "")
+                
+                if isDescriptionExpanded {
+                    cell.content.numberOfLines = 0
+                    cell.readMoreButton.setTitle("Show Less", for: .normal)
+                } else {
+                    cell.content.numberOfLines = 8
+                    cell.readMoreButton.setTitle("Read More", for: .normal)
+                }
+
+            case .script:
+                cell.configure(with: idea?.script ?? "")
+                
+                if isScriptExpanded {
+                    cell.content.numberOfLines = 0
+                    cell.readMoreButton.setTitle("Show Less", for: .normal)
+                } else {
+                    cell.content.numberOfLines = 8
+                    cell.readMoreButton.setTitle("Read More", for: .normal)
+                }
+
+            default:
+                break
+            }
+
+            return cell
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        guard kind == "header" else { return UICollectionReusableView() }
+        
+        let headerView = collectionView.dequeueReusableSupplementaryView(
+            ofKind: "header",
+            withReuseIdentifier: "headerCell",
+            for: indexPath
+        ) as! HeaderView
+        
+        let section = sections[indexPath.section]
+        
+        switch section {
+        case .description:
+            headerView.configureHeader(text: "Description")
+        case .script:
+            headerView.configureHeader(text: "Script")
+        default:
+            headerView.configureHeader(text: "")
+        }
+        
+        return headerView
+    }
+    
 }
