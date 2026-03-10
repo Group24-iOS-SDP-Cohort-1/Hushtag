@@ -43,6 +43,13 @@ nonisolated struct ChatMessageDB: Codable, Identifiable {
     let created_at: Date?
 }
 
+enum ScriptSection {
+    case title
+    case description
+    case script
+    case buttons
+}
+
 // 2. Insert Payload (Writing data)
 nonisolated struct ChatMessageInsertPayload: Codable {
     let conversation_id: UUID
