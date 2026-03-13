@@ -69,6 +69,57 @@ class AnalysisDataViewController: UIViewController {
         
         let layout = generateAnalysisLayout()
         analysisCollectionView.setCollectionViewLayout(layout, animated: true)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "calendar"),
+            style: .plain,
+            target: self,
+            action: #selector(openDatePicker)
+        )
+    }
+    
+    @objc func openDatePicker() {
+        let alert = UIAlertController(title: "Select Start Date",
+                                      message: "\n\n\n\n\n\n\n\n",
+                                      preferredStyle: .actionSheet)
+        
+        let datePicker = UIDatePicker(frame: CGRect(x: 0, y: 20, width: 270, height: 200))
+        datePicker.datePickerMode = .date
+        datePicker.preferredDatePickerStyle = .wheels
+        
+        alert.view.addSubview(datePicker)
+        
+        let select = UIAlertAction(title: "Done", style: .default) { _ in
+            let selectedDate = datePicker.date
+                
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd"
+                
+                let startDateString = formatter.string(from: selectedDate)
+                let endDateString = formatter.string(from: Date())
+                
+            Task {
+                print("Calling API")
+
+                await YouTubeController.shared.restoreYouTubeConnectionIfNeeded(
+                    startDate: startDateString,
+                    endDate: endDateString
+                )
+
+                print("Finished API")
+
+                await self.loadAudience()
+                await self.loadLatestContent()
+                await self.loadTopVideos()
+                await self.loadRevenueInsights()
+                await self.loadAudienceDemographic()
+                await self.loadViewerActivity()
+            }
+        }
+        
+        alert.addAction(select)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(alert, animated: true)
     }
     
     func loadAudience() async {
@@ -122,7 +173,6 @@ class AnalysisDataViewController: UIViewController {
     func loadAudienceDemographic() async {
         do {
             audienceDemographic = try await controller.fetchAudienceDemographic()
-            print(audienceDemographic)
             
             await MainActor.run {
                 self.analysisCollectionView.reloadData()
@@ -166,14 +216,12 @@ class AnalysisDataViewController: UIViewController {
     }
 }
 
-
 extension AnalysisDataViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return shouldShowRevenue ? 6 : 5
     }
-    
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         if !shouldShowRevenue {
@@ -293,7 +341,6 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
         }
     }
     
-    
     func collectionView(_ collectionView: UICollectionView,
                         viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
@@ -324,7 +371,6 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
             default: break
             }
         }
-        
         return headerView
     }
     

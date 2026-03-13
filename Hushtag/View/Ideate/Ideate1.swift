@@ -101,18 +101,10 @@ class Ideate1: UIViewController {
         }
     }
     
-    
-    
-    
-    
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
-    //
-    //    @objc func refreshUI() {
-    //        collectionView.reloadData()
-    //    }
-    //
+    
     @IBAction func scriptTap(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "Chatbot")
@@ -162,21 +154,21 @@ class Ideate1: UIViewController {
             if isRecentScriptsSection {
                 // Horizontal Layout for Recent Scripts
                 let itemSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
+                    widthDimension: .fractionalWidth(0.95),
                     heightDimension: .fractionalHeight(1.0)
                 )
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10)
+                //item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10)
                 
                 let groupSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(0.47),
-                    heightDimension: .absolute(140)
+                    heightDimension: .estimated(120)
                 )
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
                 
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
-                section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 0, bottom: 0, trailing: 0)
+                section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 0, bottom: 15, trailing: 0)
                 
                 // Header (using HeaderView)
                 let headerSize = NSCollectionLayoutSize(

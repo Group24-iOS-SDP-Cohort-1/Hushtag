@@ -49,11 +49,9 @@ class DealsViewController: UIViewController {
         super.viewDidLoad()
         
         registerCell()
-        
-        
-        _Concurrency.Task {
+        Task {
             do {
-                let session = try await SupabaseConfig.client.auth.session
+                _ = try await SupabaseConfig.client.auth.session
                 //print("Logged in UID:", session.user.id)
                 //print("SESSION ACCESS TOKEN:", session.accessToken.prefix(20))
                 

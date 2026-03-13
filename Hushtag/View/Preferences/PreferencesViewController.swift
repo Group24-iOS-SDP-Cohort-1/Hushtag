@@ -6,8 +6,6 @@ protocol YouTubeConnectDelegate: AnyObject {
     func didTapConnectYouTube(from cell: AccountConnectCollectionViewCell)
 }
 
-
-
 protocol PreferenceCardSelectionDelegate: AnyObject {
     
     func preferenceCard(at index: Int, didChangeCompletion isCompleted: Bool)
@@ -15,29 +13,17 @@ protocol PreferenceCardSelectionDelegate: AnyObject {
         at key: String,
         didUpdateSelection selections: [String]
     )
-    
 }
-
 
 class PreferencesViewController: UIViewController {
     
-    
-    
     @IBOutlet weak var preferencesCollectionView: UICollectionView!
-    
     @IBOutlet weak var progessBarOutlet: UIProgressView!
-    
     @IBOutlet weak var pageControlOutlet: UIPageControl!
-    
     @IBOutlet weak var skipSubmitButton: UIBarButtonItem!
     
-    
     var preferenceItems: [PreferenceItem] = PreferencesData.items
-    
-    
     private var completedStates: [Bool] = []
-    
-    
     private var selectedOptions: [String: [String]] = [
         "Niche": [],
         "Content Goals": [],
@@ -48,25 +34,11 @@ class PreferencesViewController: UIViewController {
     let controller = PreferencesController()
     
     
-    
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        
-        
-        
-        
-        
+    
         completedStates = Array(repeating: false, count: preferenceItems.count)
-        
-        
-        
-        
         registerCells()
-        
         
         let layout = generateLayout()
         preferencesCollectionView.setCollectionViewLayout(layout, animated: true)
@@ -78,12 +50,8 @@ class PreferencesViewController: UIViewController {
         preferencesCollectionView.alwaysBounceVertical = false
         preferencesCollectionView.bounces = false
         
-        
-        
-        
         pageControlOutlet.numberOfPages = preferenceItems.count
         pageControlOutlet.currentPage = 0
-        
         
         UIView.performWithoutAnimation {
             updateSkipButton(for: 0)
@@ -110,7 +78,7 @@ class PreferencesViewController: UIViewController {
                         endDate: "2026-02-26"
                     )
                     
-                    if let jsonString = String(data: analyticsData, encoding: .utf8) {
+                    if let _ = String(data: analyticsData, encoding: .utf8) {
                         //print("📈 GOOGLE SUCCESS - Raw YouTube Data:")
                         //print(jsonString)
                     }
@@ -200,10 +168,6 @@ class PreferencesViewController: UIViewController {
         preferencesCollectionView.register(UINib(nibName: "AccountConnectCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "accountCell")
     }
     
-    
-    
-    
-    
     func generateLayout() -> UICollectionViewLayout {
         
         
@@ -215,34 +179,24 @@ class PreferencesViewController: UIViewController {
         
         let item = NSCollectionLayoutItem(layoutSize: size)
         
-        
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.95),
             heightDimension: .fractionalHeight(1.0)
         )
-        
         
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: groupSize,
             subitems: [item]
         )
         
-        
         group.interItemSpacing = .fixed(10)
         
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPagingCentered
         
-        
         section.interGroupSpacing = 20
         
-        
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
-        
-        
-        
-        
-        
         
         section.visibleItemsInvalidationHandler = { [weak self] (items, offset, env) in
             guard let self = self else { return }
@@ -277,9 +231,6 @@ class PreferencesViewController: UIViewController {
         return layout
         
     }
-    
-    
-    
     
 }
 
@@ -326,7 +277,7 @@ extension PreferencesViewController: UICollectionViewDataSource {
             
             
             return cell
-        }else if indexPath.item == 3{
+        } else if indexPath.item == 3{
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "accountCell", for: indexPath) as! AccountConnectCollectionViewCell
             
             
@@ -363,15 +314,7 @@ extension PreferencesViewController: UICollectionViewDataSource {
             skipSubmitButton.title = "Skip"
         }
     }
-    
-    
-    
-    
-    
 }
-
-
-
 
 extension PreferencesViewController: PreferenceCardSelectionDelegate {
     func preferenceCard(at index: Int, didChangeCompletion isCompleted: Bool) {
@@ -390,11 +333,7 @@ extension PreferencesViewController: PreferenceCardSelectionDelegate {
         //print("\n\n\(selectedOptions)")
     }
     
-    
 }
-
-
-
 
 extension PreferencesViewController: YouTubeConnectDelegate {
     func didTapConnectYouTube(from cell: AccountConnectCollectionViewCell) {
@@ -409,7 +348,6 @@ extension PreferencesViewController: YouTubeConnectDelegate {
             do {
                 try await viewModel.connectYouTube()
                 
-                
                 do {
                     //print("⏳ Testing proxy fetch for analytics...")
                     
@@ -419,7 +357,7 @@ extension PreferencesViewController: YouTubeConnectDelegate {
                     )
                     
                     
-                    if let jsonString = String(data: analyticsData, encoding: .utf8) {
+                    if let _ = String(data: analyticsData, encoding: .utf8) {
                         //print("📈 PROXY SUCCESS - Raw YouTube Data:")
                         //print(jsonString)
                     }
@@ -436,9 +374,6 @@ extension PreferencesViewController: YouTubeConnectDelegate {
                     
                     self.completedStates[cell.cardIndex] = true
                     self.updateProgressFromCompletedStates()
-                    
-                    
-                    
                     
                     let alert = UIAlertController(title: "Success", message: "Successfully connected YouTube account!", preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: "OK", style: .default))

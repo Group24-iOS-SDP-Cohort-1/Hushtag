@@ -2,24 +2,14 @@ import UIKit
 
 class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
     
-    
     @IBOutlet weak var tableView: UITableView!
-    
     @IBOutlet weak var textView: UIView!
-    
     @IBOutlet weak var textViewHeightConstraint: NSLayoutConstraint!
-    
     @IBOutlet weak var textFieldView: UITextView!
-    
     @IBOutlet weak var textStack: UIStackView!
-    
     @IBOutlet weak var enterbutton: UIButton!
-    
     @IBOutlet weak var generateStack: UIStackView!
-    
     @IBOutlet weak var inputViewBottomConstraint: NSLayoutConstraint!
-    
-    
     @IBOutlet weak var scriptedChats: UIBarButtonItem!
     var latestScript: String?
     var messages: [Message] = []
@@ -378,7 +368,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         }
         
         
-        // 🔹 UI updates on main thread (unchanged)
+        // UI updates on main thread (unchanged)
         DispatchQueue.main.async {
             
             // Remove "Thinking..."

@@ -15,7 +15,6 @@ class ChatHistory: UITableViewController {
             object: nil
         )
         fetchConversationList()
-        
     }
     
     @objc private func handleScriptDeleted(_ notification: Notification) {
@@ -55,9 +54,7 @@ class ChatHistory: UITableViewController {
         return sections[section].items.count
     }
     
-    override func tableView(_ tableView: UITableView,
-                            cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: "ChatHistoryCell",
             for: indexPath
