@@ -65,7 +65,7 @@ class IdeaDetailsCollectionViewCell: UICollectionViewCell {
                 rowStack?.axis = .horizontal
                 rowStack?.spacing = 8
                 rowStack?.alignment = .leading
-                rowStack?.distribution = .fill   // ✅ important fix
+                rowStack?.distribution = .fill   // important fix
 
                 if let row = rowStack {
                     badgeStack.addArrangedSubview(row)
@@ -76,15 +76,15 @@ class IdeaDetailsCollectionViewCell: UICollectionViewCell {
 
             badge.configure(
                 text: "\(tag)",
-                color: .white,
-                cornerRadius: 12,
-                borderWidth: 1.3,
-                backgroundAlpha: 0.10
+                color: UIColor(hex: "#a78bfa"),      // purple text — matches #a78bfa
+                cornerRadius: 12,                    // pill shape to match
+                borderWidth: 1.0,
+                backgroundAlpha: 0.12
             )
 
-            badge.backgroundColor = UIColor.accent.withAlphaComponent(0.1)
-            badge.layer.borderColor = UIColor.accent.cgColor
-
+            badge.backgroundColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.12)
+            badge.layer.borderColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.22).cgColor
+            
             badge.setContentHuggingPriority(.required, for: .horizontal)
             badge.setContentCompressionResistancePriority(.required, for: .horizontal)
 
@@ -133,5 +133,21 @@ class IdeaDetailsCollectionViewCell: UICollectionViewCell {
             self.descriptionLabel.alpha = 1.0
             self.idea?.expandedDescription = newText
         }
+    }
+}
+
+extension UIColor {
+    convenience init(hex: String) {
+        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+        hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
+
+        var rgb: UInt64 = 0
+        Scanner(string: hexSanitized).scanHexInt64(&rgb)
+
+        let r = CGFloat((rgb & 0xFF0000) >> 16) / 255
+        let g = CGFloat((rgb & 0x00FF00) >> 8) / 255
+        let b = CGFloat(rgb & 0x0000FF) / 255
+
+        self.init(red: r, green: g, blue: b, alpha: 1)
     }
 }

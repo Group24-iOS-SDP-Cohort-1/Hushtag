@@ -19,7 +19,6 @@ class ViewIdea: UIViewController {
         
     }
     
-    
         @IBAction func draftTap(_ sender: Any) {
             guard let idea = idea else { return }
             didTapDraftScript(for: idea)
@@ -105,22 +104,30 @@ class ViewIdea: UIViewController {
             }
             
             else if section == 2 {
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-                
-                // create the item
+
+                let itemSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .estimated(70)
+                )
+
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
-                
-                // create the group
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(50))
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 7)
-                
-                //create the section
+
+                let group = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: itemSize,
+                    subitems: [item]
+                )
+
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
-                section.orthogonalScrollingBehavior = .continuous
+
+                section.contentInsets = NSDirectionalEdgeInsets(
+                    top: 0,
+                    leading: 20,
+                    bottom: 0,
+                    trailing: 20
+                )
+
                 section.boundarySupplementaryItems = [headerItem]
-                
+
                 return section
             }
             

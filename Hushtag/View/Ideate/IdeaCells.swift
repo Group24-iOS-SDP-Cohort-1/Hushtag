@@ -55,14 +55,15 @@ class IdeaCells: UICollectionViewCell {
             let badge: Badges = Badges.loadFromNib()
 
             badge.configure(
-                text: tag,
-                color: .white,
-                cornerRadius: 12,
-                borderWidth: 1.3,
-                backgroundAlpha: 0.10
+                text: "\(tag)",
+                color: UIColor(hex: "#a78bfa"),      // purple text — matches #a78bfa
+                cornerRadius: 12,                    // pill shape to match
+                borderWidth: 1.0,
+                backgroundAlpha: 0.12
             )
-            badge.backgroundColor = UIColor.accent.withAlphaComponent(0.1)
-            badge.layer.borderColor = UIColor.accent.cgColor
+
+            badge.backgroundColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.12)
+            badge.layer.borderColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.22).cgColor
 
 
 
