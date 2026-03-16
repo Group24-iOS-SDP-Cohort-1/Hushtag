@@ -283,6 +283,17 @@ final class ScriptedIdeasController {
             .eq("id", value: ideaID.uuidString)
             .execute()
 
-        print("✅ Expanded description saved")
+        print("Expanded description saved")
     }
+
+    func updatePlatform(id: UUID, platform: String) async throws {
+        try await client.database
+            .from("conversations")
+            .update(["platform": platform])
+            .eq("id", value: id.uuidString)
+            .execute()
+    }
+
 }
+
+

@@ -50,7 +50,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         textFieldView.layer.shadowRadius = 4
         
         generateStack.isHidden = true
-
+        tableView.register(
+            UINib(nibName: "PlatformCellTableViewCell", bundle: nil),
+            forCellReuseIdentifier: "PlatformCell"
+        )
         if conversationID == nil {
             
             conversationID = UUID()
@@ -68,7 +71,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         } else {
             print("📌 Opening existing conversation:", conversationID!)
         }
-        
 
         Task {
             do {
@@ -207,6 +209,29 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
+        if indexPath.row == 0 {
+               let cell = tableView.dequeueReusableCell(
+                   withIdentifier: "PlatformCell",
+                   for: indexPath
+               ) as! PlatformCellTableViewCell
+
+               cell.onPlatformSelected = { [weak self] platform in
+                   guard let self = self, let id = self.conversationID else { return }
+                   Task {
+                       do {
+                           try await self.controller.updatePlatform(id: id, platform: platform)
+                           print("✅ Platform saved:", platform)
+                       } catch {
+                           print("❌ Failed to save platform:", error)
+                       }
+                   }
+               }
+
+               return cell
+           }
+
+
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
         cell.configure(with: messages[indexPath.row])
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
