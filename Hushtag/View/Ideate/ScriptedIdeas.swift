@@ -12,7 +12,13 @@ class ScriptedIdeas: UIViewController {
     var isScriptExpanded = false
     
     private let dbController = ScriptedIdeasController()
+    private let dealsController = DealsController()
+    private let brandDealIdeasController = BrandDealIdeasController()
+    
     var idea: ScriptedIdea?
+    var allDeals: [Deal] = []
+    var taggedDealIds: Set<UUID> = []
+    
     var sections: [ScriptSection] {
         var result: [ScriptSection] = []
         
@@ -44,6 +50,27 @@ class ScriptedIdeas: UIViewController {
         guard let _ = idea else {
             print("No idea received.")
             return
+        }
+        
+        fetchDealsData()
+    }
+    
+    private func fetchDealsData() {
+        guard let ideaId = idea?.id else { return }
+        
+        Task {
+            do {
+                let fetchedDeals = try await dealsController.fetchDeals()
+                let mappings = try await brandDealIdeasController.fetchDealsForScript(scriptedIdeaId: ideaId)
+                
+                DispatchQueue.main.async {
+                    self.allDeals = fetchedDeals
+                    self.taggedDealIds = Set(mappings.map { $0.deal_id })
+                    self.ideaView.reloadData() // Reload to update button menu if needed
+                }
+            } catch {
+                print("Failed to fetch deals data: \(error)")
+            }
         }
     }
     
@@ -228,6 +255,9 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
                 withReuseIdentifier: "buttons",
                 for: indexPath
             ) as! ViewScriptsCell
+            
+            setupTagDealMenu(for: cell)
+            
             return cell
 
         default:
@@ -295,4 +325,61 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
         return headerView
     }
     
+    private func setupTagDealMenu(for cell: ViewScriptsCell) {
+        let actions = allDeals.map { deal in
+            let isTagged = taggedDealIds.contains(deal.id)
+            let actionText = deal.name
+            
+            return UIAction(
+                title: actionText,
+                state: isTagged ? .on : .off,
+                handler: { [weak self] _ in
+                    self?.handleTagDealToggled(deal: deal, isCurrentlyTagged: isTagged)
+                }
+            )
+        }
+        
+        let menu = UIMenu(title: "Select Deal", children: actions)
+        cell.tagDealButton.menu = menu
+        cell.tagDealButton.showsMenuAsPrimaryAction = true
+    }
+    
+    private func handleTagDealToggled(deal: Deal, isCurrentlyTagged: Bool) {
+        guard let ideaId = idea?.id else { return }
+        
+        Task {
+            do {
+                if isCurrentlyTagged {
+                    try await brandDealIdeasController.untagDealFromScript(dealId: deal.id, scriptedIdeaId: ideaId)
+                    
+                    DispatchQueue.main.async {
+                        self.taggedDealIds.remove(deal.id)
+                        self.ideaView.reloadSections(IndexSet(integer: self.sections.firstIndex(of: .buttons) ?? 0))
+                        
+                        let alert = UIAlertController(title: "Unmarked", message: "Unmarked from \(deal.name)", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default))
+                        self.present(alert, animated: true)
+                    }
+                } else {
+                    try await brandDealIdeasController.tagDealToScript(dealId: deal.id, scriptedIdeaId: ideaId)
+                    
+                    DispatchQueue.main.async {
+                        self.taggedDealIds.insert(deal.id)
+                        self.ideaView.reloadSections(IndexSet(integer: self.sections.firstIndex(of: .buttons) ?? 0))
+                        
+                        let alert = UIAlertController(title: "Marked", message: "Marked to \(deal.name)", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default))
+                        self.present(alert, animated: true)
+                    }
+                }
+            } catch {
+                print("Error toggling tag deal status: \(error)")
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "Error", message: "Failed to update deal tag. Please try again.", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
+                }
+            }
+        }
+    }
 }
