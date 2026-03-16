@@ -13,8 +13,6 @@ struct AnalyticsRequestPayload: Codable {
     let endDate: String
 }
 
-
-
 final class YouTubeController {
     
     static let shared = YouTubeController()
@@ -36,7 +34,6 @@ final class YouTubeController {
         )
         
         //print("🚀 Sending tokens to unified YouTube function...")
-        
         try await client.functions.invoke(
             "youtube-auth",
             options: .init(
@@ -114,7 +111,7 @@ final class YouTubeController {
             let isConnected = await checkYouTubeConnection()
             
             guard isConnected else {
-                //print("⚠️ No YouTube connection found")
+                print("⚠️ No YouTube connection found")
                 return
             }
             
@@ -125,8 +122,8 @@ final class YouTubeController {
                 endDate: endDate
             )
             
-            //print("📊 ANALYTICS RESPONSE:")
-            //print(String(data: data, encoding: .utf8) ?? "No data")
+            print("📊 ANALYTICS RESPONSE:")
+            print(String(data: data, encoding: .utf8) ?? "No data")
             
             DispatchQueue.main.async {
                 NotificationCenter.default.post(
@@ -136,7 +133,7 @@ final class YouTubeController {
             }
             
         } catch {
-            //print("❌ Analytics auto-fetch failed:", error)
+            print("❌ Analytics auto-fetch failed:", error)
         }
     }
     

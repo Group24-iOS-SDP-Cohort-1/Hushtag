@@ -13,19 +13,23 @@ class AnalysisDataViewController: UIViewController {
     var shouldShowRevenue: Bool {
         return !revenueInsight.isEmpty
     }
+    var startDate: String = ""
+    var endDate: String = ""
     
     @IBOutlet weak var analysisCollectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+
+            endDate = formatter.string(from: Date())
+            startDate = formatter.string(
+                from: Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+            )
+
         Task {
-            await loadAudience()
-            await loadLatestContent()
-            await loadTopVideos()
-            await loadRevenueInsights()
-            await loadAudienceDemographic()
-            await loadViewerActivity()
+            await loadAllData()
         }
         
         analysisCollectionView.register(
@@ -78,125 +82,202 @@ class AnalysisDataViewController: UIViewController {
     }
     
     @objc func openDatePicker() {
-        let alert = UIAlertController(title: "Select Start Date",
-                                      message: "\n\n\n\n\n\n\n\n",
-                                      preferredStyle: .actionSheet)
-        
-        let datePicker = UIDatePicker(frame: CGRect(x: 0, y: 20, width: 270, height: 200))
+
+        let alert = UIAlertController(
+            title: "Select Start Date",
+            message: "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+            preferredStyle: .actionSheet
+        )
+
+        let datePicker = UIDatePicker()
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.datePickerMode = .date
-        datePicker.preferredDatePickerStyle = .wheels
-        
+        datePicker.preferredDatePickerStyle = .inline
+        datePicker.maximumDate = Date()
+
         alert.view.addSubview(datePicker)
-        
+
+        NSLayoutConstraint.activate([
+            datePicker.centerXAnchor.constraint(equalTo: alert.view.centerXAnchor),
+            datePicker.topAnchor.constraint(equalTo: alert.view.topAnchor, constant: 60),
+            datePicker.widthAnchor.constraint(equalToConstant: 320),
+            datePicker.heightAnchor.constraint(equalToConstant: 300)
+        ])
+
         let select = UIAlertAction(title: "Done", style: .default) { _ in
-            let selectedDate = datePicker.date
-                
-                let formatter = DateFormatter()
-                formatter.dateFormat = "yyyy-MM-dd"
-                
-                let startDateString = formatter.string(from: selectedDate)
-                let endDateString = formatter.string(from: Date())
-                
+
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+
+            self.startDate = formatter.string(from: datePicker.date)
+            self.endDate = formatter.string(from: Date())
+
             Task {
-                print("Calling API")
+
+                await MainActor.run {
+                    OpaqueLoadingScreen.shared.show()
+                }
 
                 await YouTubeController.shared.restoreYouTubeConnectionIfNeeded(
-                    startDate: startDateString,
-                    endDate: endDateString
+                    startDate: self.startDate,
+                    endDate: self.endDate
                 )
 
-                print("Finished API")
+                await self.loadAllData()
 
-                await self.loadAudience()
-                await self.loadLatestContent()
-                await self.loadTopVideos()
-                await self.loadRevenueInsights()
-                await self.loadAudienceDemographic()
-                await self.loadViewerActivity()
+                await MainActor.run {
+                    OpaqueLoadingScreen.shared.hide()
+                }
             }
         }
-        
+
         alert.addAction(select)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
+
         present(alert, animated: true)
     }
     
-    func loadAudience() async {
+//    func loadAudience() async {
+//        do {
+//            audienceMetrics = try await controller.fetchAudienceMetrics(
+//                startDate: startDate,
+//                            endDate: endDate
+//            )
+//            await MainActor.run {
+//                self.analysisCollectionView.reloadData()
+//            }
+//            
+//        } catch {
+//            print("Error fetching audience:", error)
+//        }
+//    }
+//    
+//    func loadLatestContent() async {
+//        do {
+//            latestContent = try await controller.fetchLatestContent(
+//                startDate: startDate,
+//                            endDate: endDate
+//            )
+//            await MainActor.run {
+//                self.analysisCollectionView.reloadData()
+//            }
+//            
+//        } catch {
+//            print("Error fetching latest content:", error)
+//        }
+//    }
+//    
+//    func loadTopVideos() async {
+//        do {
+//            topVideos = try await controller.fetchTopVideos(
+//                startDate: startDate,
+//                            endDate: endDate
+//            )
+//            await MainActor.run {
+//                self.analysisCollectionView.reloadData()
+//            }
+//            
+//        } catch {
+//            print("Error fetching top video:", error)
+//        }
+//    }
+//    
+//    func loadRevenueInsights() async {
+//        do {
+//            revenueInsight = try await controller.fetchRevenueInsight(
+//                startDate: startDate,
+//                            endDate: endDate
+//            )
+//            await MainActor.run {
+//                self.analysisCollectionView.reloadData()
+//            }
+//            
+//        } catch {
+//            print("Error fetching revenue insight:", error)
+//        }
+//    }
+//    
+//    func loadAudienceDemographic() async {
+//        do {
+//            async let audienceDemographic = try await controller.fetchAudienceDemographic(
+//                startDate: startDate,
+//                            endDate: endDate
+//            )
+//            
+//            await MainActor.run {
+//                self.analysisCollectionView.reloadData()
+//            }
+//            
+//        } catch {
+//            print("Error fetching revenue insight:", error)
+//        }
+//    }
+//    
+//    func loadViewerActivity() async {
+//        do {
+//            viewerActivity = try await controller.fetchViewerActivity()
+//            print(viewerActivity)
+//            
+//            await MainActor.run {
+//                self.analysisCollectionView.reloadData()
+//            }
+//            
+//        } catch {
+//            print("Error fetching viewer activity:", error)
+//        }
+//    }
+    func loadAllData() async {
+
         do {
-            audienceMetrics = try await controller.fetchAudienceMetrics()
+
+            async let audience = controller.fetchAudienceMetrics(
+                startDate: startDate,
+                endDate: endDate
+            )
+
+            async let latest = controller.fetchLatestContent()
+
+            async let top = controller.fetchTopVideos(
+                startDate: startDate,
+                endDate: endDate
+            )
+
+            async let revenue = controller.fetchRevenueInsight(
+                startDate: startDate,
+                endDate: endDate
+            )
+
+            async let demo = controller.fetchAudienceDemographic(
+                startDate: startDate,
+                endDate: endDate
+            )
+
+            async let activity = controller.fetchViewerActivity(
+                startDate: startDate,
+                endDate: endDate
+            )
+            
+
+            audienceMetrics = try await audience
+            latestContent = try await latest
+            topVideos = try await top
+            revenueInsight = try await revenue
+            audienceDemographic = try await demo
+            viewerActivity = try await activity
+            
+            print(audienceMetrics)
+            print(latestContent)
+            print(topVideos)
+            print(audienceDemographic)
+
             await MainActor.run {
                 self.analysisCollectionView.reloadData()
             }
-            
+
         } catch {
-            print("Error fetching audience:", error)
+            print("Error loading analytics:", error)
         }
     }
-    
-    func loadLatestContent() async {
-        do {
-            latestContent = try await controller.fetchLatestContent()
-            await MainActor.run {
-                self.analysisCollectionView.reloadData()
-            }
-            
-        } catch {
-            print("Error fetching latest content:", error)
-        }
-    }
-    
-    func loadTopVideos() async {
-        do {
-            topVideos = try await controller.fetchTopVideos()
-            await MainActor.run {
-                self.analysisCollectionView.reloadData()
-            }
-            
-        } catch {
-            print("Error fetching top video:", error)
-        }
-    }
-    
-    func loadRevenueInsights() async {
-        do {
-            revenueInsight = try await controller.fetchRevenueInsight()
-            await MainActor.run {
-                self.analysisCollectionView.reloadData()
-            }
-            
-        } catch {
-            print("Error fetching revenue insight:", error)
-        }
-    }
-    
-    func loadAudienceDemographic() async {
-        do {
-            audienceDemographic = try await controller.fetchAudienceDemographic()
-            
-            await MainActor.run {
-                self.analysisCollectionView.reloadData()
-            }
-            
-        } catch {
-            print("Error fetching revenue insight:", error)
-        }
-    }
-    
-    func loadViewerActivity() async {
-        do {
-            viewerActivity = try await controller.fetchViewerActivity()
-            print(viewerActivity)
-            
-            await MainActor.run {
-                self.analysisCollectionView.reloadData()
-            }
-            
-        } catch {
-            print("Error fetching viewer activity:", error)
-        }
-    }
-    
     
     func weeklyActivityData() -> [Int] {
         

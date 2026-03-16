@@ -21,9 +21,6 @@ class AuthManager{
         return AppUser(uid: session.user.id.uuidString, email: session.user.email)
     }
     
-    
-    
-    
     func registerNewUserWithEmail(email: String, password: String) async throws -> AppUser {
         let response = try await client.auth.signUp(email: email, password: password)
         

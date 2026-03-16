@@ -5,26 +5,33 @@ final class AudienceController {
     
     private let client = SupabaseConfig.client
     
-    func fetchAudienceMetrics() async throws -> [AudienceMetrics] {
+    func fetchAudienceMetrics(
+        startDate: String,
+        endDate: String
+    ) async throws -> [AudienceMetrics] {
+
         let session = try await client.auth.session
-        
-        let data: [AudienceMetrics] = try await client.database
+
+        return try await client.database
             .from("audience")
             .select()
             .eq("user_id", value: session.user.id)
+            .eq("start_date", value: startDate)
+            .eq("end_date", value: endDate)
             .execute()
             .value
-        
-        return data
     }
     
-    func fetchTopVideos() async throws -> [TopVideo] {
+    func fetchTopVideos(startDate: String,
+                        endDate: String) async throws -> [TopVideo] {
         let session = try await client.auth.session
         
         let data: [TopVideo] = try await client.database
             .from("top_videos")
             .select()
             .eq("user_id", value: session.user.id)
+            .eq("start_date", value: startDate)
+            .eq("end_date", value: endDate)
             .execute()
             .value
         
@@ -44,33 +51,40 @@ final class AudienceController {
         return data
     }
     
-    func fetchRevenueInsight() async throws -> [RevenueInsight] {
+    func fetchRevenueInsight(startDate: String,
+                             endDate: String) async throws -> [RevenueInsight] {
         let session = try await client.auth.session
         
         let data: [RevenueInsight] = try await client.database
             .from("revenue_insights")
             .select()
             .eq("user_id", value: session.user.id)
+            .eq("start_date", value: startDate)
+            .eq("end_date", value: endDate)
             .execute()
             .value
         
         return data
     }
     
-    func fetchAudienceDemographic() async throws -> [AudienceDemographic] {
+    func fetchAudienceDemographic(startDate: String,
+                                  endDate: String) async throws -> [AudienceDemographic] {
         let session = try await client.auth.session
         
         let data: [AudienceDemographic] = try await client.database
             .from("audience_demographics")
             .select()
             .eq("user_id", value: session.user.id)
+            .eq("start_date", value: startDate)
+            .eq("end_date", value: endDate)
             .execute()
             .value
         
         return data
     }
     
-    func fetchViewerActivity() async throws -> [ViewerActivity] {
+    func fetchViewerActivity(startDate: String,
+                             endDate: String) async throws -> [ViewerActivity] {
         
         let session = try await client.auth.session
         
@@ -78,6 +92,8 @@ final class AudienceController {
             .from("viewer_activity")
             .select()
             .eq("user_id", value: session.user.id)
+            .eq("start_date", value: startDate)
+            .eq("end_date", value: endDate)
             .order("day", ascending: true)
             .execute()
             .value
