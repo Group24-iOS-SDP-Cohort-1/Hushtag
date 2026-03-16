@@ -101,7 +101,7 @@ class AnalysisDataViewController: UIViewController {
             datePicker.centerXAnchor.constraint(equalTo: alert.view.centerXAnchor),
             datePicker.topAnchor.constraint(equalTo: alert.view.topAnchor, constant: 60),
             datePicker.widthAnchor.constraint(equalToConstant: 320),
-            datePicker.heightAnchor.constraint(equalToConstant: 300)
+            datePicker.heightAnchor.constraint(equalToConstant: 250)
         ])
 
         let select = UIAlertAction(title: "Done", style: .default) { _ in
@@ -348,10 +348,10 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
             guard let latest = audienceMetrics.first else { return cell }
             
             switch indexPath.row {
-            case 0: cell.configure(metric: .views, data: latest.views)
-            case 1: cell.configure(metric: .likes, data: latest.likes)
-            case 2: cell.configure(metric: .watchTime, data: latest.estimated_minutes_watched)
-            case 3: cell.configure(metric: .subscribers, data: latest.subscribers)
+            case 0: cell.configure(metric: .views, data: latest.views, audience: latest)
+            case 1: cell.configure(metric: .likes, data: latest.likes, audience: latest)
+            case 2: cell.configure(metric: .watchTime, data: latest.estimated_minutes_watched, audience: latest)
+            case 3: cell.configure(metric: .subscribers, data: latest.subscribers, audience: latest)
             default: break
             }
             

@@ -1,7 +1,7 @@
 import UIKit
 
 class AnalysisCell: UICollectionViewCell {
-
+    
     @IBOutlet weak var analysisValue: UILabel!
     @IBOutlet weak var analysisType: UILabel!
     @IBOutlet weak var changeLabel: UILabel!
@@ -15,40 +15,47 @@ class AnalysisCell: UICollectionViewCell {
     
     func configure(
         metric: AnalysisMetric,
-        data: Int
+        data: Int,
+        audience: AudienceMetrics
     ) {
-
+        
         analysisValue.text = "\(data.formattedCount())"
         var title: String!
+        var change: String!
         switch metric {
-
+            
         case .views:
             title = "Views"
-            //sfSymbol.image =
-              //  UIImage(systemName: "eye.fill")
-
+            change = "\(audience.views_change)%"
+            
         case .likes:
             title = "Likes"
-            //sfSymbol.image =
-               // UIImage(systemName: "hand.thumbsup.fill")
-
+            change = "\(audience.likes_change)%"
+            
         case .watchTime:
             title = "Watch Time"
-            //sfSymbol.image =
-               // UIImage(systemName: "clock.fill")
+            change = "\(audience.watch_time_change)%"
             
         case .subscribers:
             title = "Subscribers"
-            //sfSymbol.image =
-               // UIImage(systemName: "clock.fill")
+            change = "\(audience.subscribers_change)"
         }
         
         analysisType.text = title
-
-        //  No comparison data yet
-        changeLabel.text = ""
-        changeLabel.textColor = .secondaryLabel
+        
+        changeLabel.text = change
+        if change.contains("-") {
+            changeLabel.textColor = .systemRed
+            sfSymbol.image = UIImage(systemName: "arrowshape.down.circle.fill")
+            sfSymbol.tintColor = .systemRed
+            
+            changeLabel.text = change.replacingOccurrences(of: "-", with: "")
+        } else {
+            changeLabel.textColor = .systemGreen
+            sfSymbol.image = UIImage(systemName: "arrowshape.up.circle.fill")
+            sfSymbol.tintColor = .systemGreen
+            
+            changeLabel.text = change
+        }
     }
-    
-    
 }
