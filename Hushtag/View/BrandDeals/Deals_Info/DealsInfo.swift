@@ -6,7 +6,7 @@ protocol DealsInfoDelegate: AnyObject {
     
 }
 
-final class DealsInfo: UIViewController {
+class DealsInfo: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -14,11 +14,14 @@ final class DealsInfo: UIViewController {
     
     var deals: Deal!
     var dealIndex: Int = -1
-    var selectedIdea: ScriptedIdea?
+    var selectedIdeas: [ScriptedIdea] = []
     weak var delegate: DealsInfoDelegate?
     
     
     private let cardBackgroundKind = "card-background"
+    
+    private let brandDealIdeasController = BrandDealIdeasController()
+    private let scriptedIdeasController = ScriptedIdeasController()
     
     @IBOutlet weak var completeButton: UIButton!
     
@@ -34,7 +37,42 @@ final class DealsInfo: UIViewController {
         
         completeButton.layer.cornerRadius = 12
         updateButtonState()
+        
+        fetchLinkedIdeas()
     }
+    
+    private func fetchLinkedIdeas() {
+            // We use Task to run the async network calls
+            Task {
+                do {
+                    // Step A: Get the mappings for this specific deal
+                    let mappings = try await brandDealIdeasController.fetchScriptsForDeal(dealId: deals.id)
+                    
+                    // Extract just the UUIDs from the mappings
+                    let ideaIds = mappings.map { $0.scripted_idea_id }
+                    
+                    // If there are no linked ideas, just reload the empty section and exit
+                    guard !ideaIds.isEmpty else {
+                        self.selectedIdeas = []
+                        await MainActor.run { self.collectionView.reloadData() }
+                        return
+                    }
+                    
+                    // Step B: Fetch the actual ScriptedIdea content using the extracted IDs
+                    let fetchedIdeas = try await scriptedIdeasController.fetchScripts(byIds: ideaIds)
+                    
+                    // Step C: Update the UI on the main thread
+                    await MainActor.run {
+                        self.selectedIdeas = fetchedIdeas
+                        self.collectionView.reloadData()
+                    }
+                    
+                } catch {
+                    print("❌ Failed to fetch linked ideas:", error)
+                    // Optional: Handle the error gracefully in your UI here
+                }
+            }
+        }
     
     private func updateButtonState() {
         if !deals.deliverables.isEmpty {
@@ -139,10 +177,10 @@ extension DealsInfo {
             result.append(.deliverables)
         }
         
-        if selectedIdea != nil {
-            result.append(.selectedIdea)
+        // Check the array instead of a single optional
+        if !selectedIdeas.isEmpty {
+            result.append(.selectedIdeas)
         }
-        
         
         return result
     }
@@ -153,7 +191,7 @@ extension DealsInfo {
     enum Section {
         case details
         case deliverables
-        case selectedIdea
+        case selectedIdeas
         
     }
 }
@@ -189,12 +227,34 @@ extension DealsInfo {
             withReuseIdentifier: "headerCell"
         )
     }
-}
-
-extension DealsInfo {
     
-    private func makeCardSection(estimatedItemHeight: CGFloat) -> NSCollectionLayoutSection {
+    private func configureLayout() {
+        let layout = UICollectionViewCompositionalLayout { sectionIndex, _ in
+            
+            let section = self.sections[sectionIndex]
+            
+            if section == .details {
+                return self.makeCardSection(estimatedItemHeight: 56)
+            }
+            else if section == .deliverables {
+                return self.makeCardSection(estimatedItemHeight: 64)
+            }
+            else {
+                // Apply the modification below
+                return self.makeOrthogonalSection(estimatedItemHeight: 150)
+            }
+        }
         
+        layout.register(
+            CardBackgroundView.self,
+            forDecorationViewOfKind: cardBackgroundKind
+        )
+        
+        collectionView.collectionViewLayout = layout
+    }
+    
+    // Kept for Details and Deliverables sections
+    private func makeCardSection(estimatedItemHeight: CGFloat) -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1),
             heightDimension: .estimated(estimatedItemHeight)
@@ -230,32 +290,46 @@ extension DealsInfo {
         return section
     }
     
-    private func configureLayout() {
-        
-        let layout = UICollectionViewCompositionalLayout { sectionIndex, _ in
+    // UPDATED FUNCTION: Renamed and modified to remove background for ideas
+    private func makeOrthogonalSection(estimatedItemHeight: CGFloat) -> NSCollectionLayoutSection {
             
-            let section = self.sections[sectionIndex]
+            let itemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(1.0)
+            )
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
             
-            if section == .details {
-                return self.makeCardSection(estimatedItemHeight: 56)
-            }
-            else if section == .deliverables {
-                return self.makeCardSection(estimatedItemHeight: 64)
-            }
-            else {
-                return self.makeCardSection(estimatedItemHeight: 150)
-            }
+            // Group is still 85% width so the next card "peeks" in from the right
+            let groupSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(0.85),
+                heightDimension: .estimated(estimatedItemHeight)
+            )
+            let group = NSCollectionLayoutGroup.horizontal(
+                layoutSize: groupSize,
+                subitems: [item]
+            )
+            
+            let section = NSCollectionLayoutSection(group: group)
+            
+            // 1. Change behavior to groupPaging (aligns to leading edge instead of center)
+            section.orthogonalScrollingBehavior = .groupPaging
+            section.interGroupSpacing = 16
+            
+            // 2. Add back the leading margin (16) so it aligns with your headers/other cards
+            section.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+            
+            let header = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(36)),
+                elementKind: UICollectionView.elementKindSectionHeader,
+                alignment: .top
+            )
+            // Adjust header to 0 since the section now handles the 16pt left margin
+            header.contentInsets = .init(top: 0, leading: 0, bottom: 4, trailing: 0)
+            section.boundarySupplementaryItems = [header]
+            
+            return section
         }
-        
-        layout.register(
-            CardBackgroundView.self,
-            forDecorationViewOfKind: cardBackgroundKind
-        )
-        
-        collectionView.collectionViewLayout = layout
-    }
 }
-
 
 extension DealsInfo: UICollectionViewDataSource {
     
@@ -265,16 +339,13 @@ extension DealsInfo: UICollectionViewDataSource {
     
     
     
-    func collectionView(_ collectionView: UICollectionView,
-                        numberOfItemsInSection section: Int) -> Int {
-        
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let type = sections[section]
         
         switch type {
         case .details: return 4
         case .deliverables: return deals.deliverables.count
-        case .selectedIdea: return selectedIdea == nil ? 0 : 1
-            
+        case .selectedIdeas: return selectedIdeas.count // Return the array count
         }
     }
     
@@ -351,15 +422,16 @@ extension DealsInfo: UICollectionViewDataSource {
             return cell
             
             
-        case .selectedIdea:
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "selectedIdeaCell",
-                for: indexPath
-            ) as! ScriptsCell1
-            guard let selectedIdea = self.selectedIdea else { return UICollectionViewCell() }
-            cell.configureCell(with : selectedIdea)
-            return cell
-            
+        case .selectedIdeas:
+                let cell = collectionView.dequeueReusableCell(
+                    withReuseIdentifier: "selectedIdeaCell",
+                    for: indexPath
+                ) as! ScriptsCell1
+                
+                // Grab the idea for this specific index
+                let idea = selectedIdeas[indexPath.item]
+                cell.configureCell(with: idea)
+                return cell
             
         }
     }
@@ -379,7 +451,7 @@ extension DealsInfo: UICollectionViewDataSource {
         switch type {
         case .details: header.configureHeader(text: "Details")
         case .deliverables: header.configureHeader(text: "Deliverables")
-        case .selectedIdea: header.configureHeader(text: "Selected Idea")
+        case .selectedIdeas: header.configureHeader(text: "Selected Ideas")
             
         }
         
