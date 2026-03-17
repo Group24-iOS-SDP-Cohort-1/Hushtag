@@ -321,7 +321,7 @@ extension DealsInfo {
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             
             let groupSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(0.9),
+                widthDimension: .fractionalWidth(0.92),
                 heightDimension: .estimated(estimatedItemHeight)
             )
             let group = NSCollectionLayoutGroup.horizontal(
@@ -333,7 +333,7 @@ extension DealsInfo {
             
             // 1. Change behavior to groupPaging (aligns to leading edge instead of center)
             section.orthogonalScrollingBehavior = .groupPaging
-            section.interGroupSpacing = 16
+            section.interGroupSpacing = 12
             
             // 2. Add back the leading margin (16) so it aligns with your headers/other cards
             section.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
@@ -497,6 +497,7 @@ extension DealsInfo: UICollectionViewDelegate {
             let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
             guard let vc = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas else { return }
             vc.idea = idea
+            vc.isModal = true
             vc.onDealUntagged = { [weak self] in
                 self?.fetchLinkedIdeas()
             }

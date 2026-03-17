@@ -20,6 +20,9 @@ class ScriptedIdeas: UIViewController {
     var allDeals: [Deal] = []
     var taggedDealIds: Set<UUID> = []
     
+    /// Set to true when presented modally (e.g. from DealsInfo). Hides "View Chat History" from the menu.
+    var isModal: Bool = false
+    
     /// Called when a deal is untagged. If set, the modal is dismissed instead of showing an alert.
     var onDealUntagged: (() -> Void)?
     
@@ -137,19 +140,23 @@ class ScriptedIdeas: UIViewController {
     }
     
     private func setupMenu() {
-        // Option 1: View Chat History
-        let chatAction = UIAction(title: "View Chat History", image: UIImage(systemName: "bubble.left.and.bubble.right.fill")) { [weak self] _ in
-            self?.navigateToChat()
-        }
-        
-        // Option 2: Delete Script (Destructive)
         let deleteAction = UIAction(title: "Delete Script", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
             self?.confirmDelete()
         }
         
-        // Attach menu to the bar button
-        let menu = UIMenu(title: "", children: [chatAction, deleteAction])
-        optionsBarButton.menu = menu
+        let menuChildren: [UIMenuElement]
+        if isModal {
+            // Modal (from DealsInfo): only show Delete
+            menuChildren = [deleteAction]
+        } else {
+            // Normal navigation (from Ideate): show both options
+            let chatAction = UIAction(title: "View Chat History", image: UIImage(systemName: "bubble.left.and.bubble.right.fill")) { [weak self] _ in
+                self?.navigateToChat()
+            }
+            menuChildren = [chatAction, deleteAction]
+        }
+        
+        optionsBarButton.menu = UIMenu(title: "", children: menuChildren)
     }
     
     
