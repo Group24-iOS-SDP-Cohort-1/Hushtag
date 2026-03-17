@@ -2,6 +2,7 @@ import UIKit
 
 extension Notification.Name {
     static let scriptDeleted = Notification.Name("scriptDeleted")
+    static let dealTagChanged = Notification.Name("dealTagChanged")
 }
 
 class ScriptedIdeas: UIViewController {
@@ -18,6 +19,9 @@ class ScriptedIdeas: UIViewController {
     var idea: ScriptedIdea?
     var allDeals: [Deal] = []
     var taggedDealIds: Set<UUID> = []
+    
+    /// Called when a deal is untagged. If set, the modal is dismissed instead of showing an alert.
+    var onDealUntagged: (() -> Void)?
     
     var sections: [ScriptSection] {
         var result: [ScriptSection] = []
@@ -53,6 +57,36 @@ class ScriptedIdeas: UIViewController {
         }
         
         fetchDealsData()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDealTagChanged),
+            name: .dealTagChanged,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleScriptDeletedRemotely(_:)),
+            name: .scriptDeleted,
+            object: nil
+        )
+    }
+    
+    @objc private func handleDealTagChanged() {
+        fetchDealsData()
+    }
+    
+    @objc private func handleScriptDeletedRemotely(_ notification: Notification) {
+        guard let deletedID = notification.userInfo?["deletedID"] as? UUID,
+              deletedID == idea?.id else { return }
+        
+        // This instance is showing the deleted idea — navigate away
+        if navigationController?.presentingViewController != nil {
+            navigationController?.dismiss(animated: true)
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
     }
     
     private func fetchDealsData() {
@@ -144,7 +178,11 @@ class ScriptedIdeas: UIViewController {
                 )
                 
                 DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
+                    if self.navigationController?.presentingViewController != nil {
+                        self.navigationController?.dismiss(animated: true)
+                    } else {
+                        self.navigationController?.popViewController(animated: true)
+                    }
                 }
                 
             } catch {
@@ -355,10 +393,15 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
                     DispatchQueue.main.async {
                         self.taggedDealIds.remove(deal.id)
                         self.ideaView.reloadSections(IndexSet(integer: self.sections.firstIndex(of: .buttons) ?? 0))
+                        NotificationCenter.default.post(name: .dealTagChanged, object: nil)
                         
-                        let alert = UIAlertController(title: "Unmarked", message: "Unmarked from \(deal.name)", preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: .default))
-                        self.present(alert, animated: true)
+                        if let onUntagged = self.onDealUntagged {
+                            self.dismiss(animated: true, completion: onUntagged)
+                        } else {
+                            let alert = UIAlertController(title: "Unmarked", message: "Unmarked from \(deal.name)", preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: .default))
+                            self.present(alert, animated: true)
+                        }
                     }
                 } else {
                     try await brandDealIdeasController.tagDealToScript(dealId: deal.id, scriptedIdeaId: ideaId)
@@ -366,6 +409,7 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
                     DispatchQueue.main.async {
                         self.taggedDealIds.insert(deal.id)
                         self.ideaView.reloadSections(IndexSet(integer: self.sections.firstIndex(of: .buttons) ?? 0))
+                        NotificationCenter.default.post(name: .dealTagChanged, object: nil)
                         
                         let alert = UIAlertController(title: "Marked", message: "Marked to \(deal.name)", preferredStyle: .alert)
                         alert.addAction(UIAlertAction(title: "OK", style: .default))

@@ -34,10 +34,31 @@ class DealsInfo: UIViewController {
         configureCollectionView()
         configureLayout()
         
-        
         completeButton.layer.cornerRadius = 12
         updateButtonState()
         
+        fetchLinkedIdeas()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDealTagChanged),
+            name: .dealTagChanged,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleScriptDeleted),
+            name: .scriptDeleted,
+            object: nil
+        )
+    }
+    
+    @objc private func handleDealTagChanged() {
+        fetchLinkedIdeas()
+    }
+    
+    @objc private func handleScriptDeleted() {
         fetchLinkedIdeas()
     }
     
@@ -299,9 +320,8 @@ extension DealsInfo {
             )
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             
-            // Group is still 85% width so the next card "peeks" in from the right
             let groupSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(0.85),
+                widthDimension: .fractionalWidth(0.9),
                 heightDimension: .estimated(estimatedItemHeight)
             )
             let group = NSCollectionLayoutGroup.horizontal(
@@ -463,13 +483,30 @@ extension DealsInfo: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView,
                         shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        sections[indexPath.section] == .deliverables
+        let section = sections[indexPath.section]
+        return section == .deliverables || section == .selectedIdeas
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         
-        guard sections[indexPath.section] == .deliverables else { return }
+        let section = sections[indexPath.section]
+        
+        if section == .selectedIdeas {
+            let idea = selectedIdeas[indexPath.item]
+            let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
+            guard let vc = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas else { return }
+            vc.idea = idea
+            vc.onDealUntagged = { [weak self] in
+                self?.fetchLinkedIdeas()
+            }
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .pageSheet
+            present(nav, animated: true)
+            return
+        }
+        
+        guard section == .deliverables else { return }
         
         deals.deliverables[indexPath.item].isCompleted.toggle()
         collectionView.reloadItems(at: [indexPath])
