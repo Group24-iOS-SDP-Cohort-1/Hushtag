@@ -7,6 +7,8 @@ nonisolated struct LikedIdeaDB: Codable {
     let title: String
     let description: String?
     let hashtags: [String]?
+    let views: Int?
+    let likes: Int?
 }
 
 nonisolated struct LikedIdeaInsertPayload: Codable {
@@ -16,4 +18,6 @@ nonisolated struct LikedIdeaInsertPayload: Codable {
     let title: String
     let description: String?
     let hashtags: [String]?
+    let views: Int?
+    let likes: Int?
 }
