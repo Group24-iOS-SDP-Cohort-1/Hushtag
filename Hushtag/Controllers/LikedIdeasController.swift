@@ -8,6 +8,7 @@ final class LikedIdeasController {
     func likeIdea(_ idea: Idea) async throws {
         
         let session = try await client.auth.session
+        let stats = averageStats(from: idea.videos)
         
         let payload = LikedIdeaInsertPayload(
             id: UUID(),
@@ -15,7 +16,9 @@ final class LikedIdeasController {
             ideaKey: idea.ideaKey ?? "",
             title: idea.title,
             description: idea.description,
-            hashtags: idea.hashtags
+            hashtags: idea.hashtags,
+            views: stats.avgViews,
+            likes: stats.avgLikes
         )
         
         try await client.database
@@ -64,4 +67,31 @@ final class LikedIdeasController {
         )
     }
     
+    private func averageStats(from videos: [Video]?) -> (avgViews: Int, avgLikes: Int) {
+        guard let videos = videos, !videos.isEmpty else {
+            return (0, 0)
+        }
+        
+        let totalViews = videos.reduce(0) { $0 + $1.views }
+        let totalLikes = videos.reduce(0) { $0 + $1.likes }
+        
+        let avgViews = totalViews / videos.count
+        let avgLikes = totalLikes / videos.count
+        
+        return (avgViews, avgLikes)
+    }
+    
+    func attachConvoId(to ideaKey: String, convoId: UUID) async throws {
+        
+        let session = try await client.auth.session
+        
+        try await client.database
+            .from("liked_ideas")
+            .update([
+                "convo_id": convoId.uuidString
+            ])
+            .eq("user_id", value: session.user.id)
+            .eq("ideaKey", value: ideaKey)
+            .execute()
+    }
 }

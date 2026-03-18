@@ -1,19 +1,9 @@
-//
-//  LikedCellsNew.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 07/01/26.
-//
-
 import UIKit
-
 
 protocol LikedCellDelegate: AnyObject {
     func didTapDraftScript(for idea: Idea)
     func didToggleLike(for ideaKey: String)
 }
-
-
 
 class LikedCellsNew: UICollectionViewCell {
     @IBOutlet weak var ideaTitle: UILabel!
@@ -39,7 +29,6 @@ class LikedCellsNew: UICollectionViewCell {
         self.idea = idea
         ideaTitle.text = idea.title
         updateLikeUI()
-        //configureHashtags(idea.hashtag)
     }
     
     private func configureHashtags(_ hashtags: [String]) {
@@ -82,5 +71,3 @@ class LikedCellsNew: UICollectionViewCell {
    }
 
 }
-
-
