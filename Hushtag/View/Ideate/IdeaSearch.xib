@@ -18,7 +18,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="547" height="292"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="F5p-iG-YO8">
-                            <rect key="frame" x="0.0" y="0.0" width="547" height="102.66666666666667"/>
+                            <rect key="frame" x="0.0" y="0.0" width="547" height="102"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Find your next" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tZT-t1-G4Y">
                                     <rect key="frame" x="0.0" y="0.0" width="547" height="37"/>
@@ -34,35 +34,35 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Discover trending ideas tailored to your " textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vR4-ih-Ytj">
-                                    <rect key="frame" x="0.0" y="74" width="547" height="14.333333333333329"/>
-                                    <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="12"/>
+                                    <rect key="frame" x="0.0" y="74" width="547" height="14"/>
+                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="niche instanatly." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HXC-wZ-V8J">
-                                    <rect key="frame" x="0.0" y="88.333333333333329" width="547" height="14.333333333333329"/>
-                                    <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="12"/>
+                                    <rect key="frame" x="0.0" y="88" width="547" height="14"/>
+                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
                         </stackView>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Zy2-Ce-dpI">
-                            <rect key="frame" x="0.0" y="122.66666666666667" width="547" height="169.33333333333331"/>
+                            <rect key="frame" x="0.0" y="122" width="547" height="170"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T9b-3e-pu7">
-                                    <rect key="frame" x="0.0" y="0.0" width="547" height="94.666666666666671"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="547" height="50"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GTO-YD-k72">
-                                            <rect key="frame" x="8" y="5" width="531" height="84.666666666666671"/>
+                                            <rect key="frame" x="8" y="5" width="531" height="40"/>
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter keyword, topic or niche..." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9qh-oQ-3Fh">
-                                                    <rect key="frame" x="0.0" y="0.0" width="481.33333333333331" height="84.666666666666671"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="481.33333333333331" height="40"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0yX-qb-IhQ">
-                                                    <rect key="frame" x="481.33333333333331" y="0.0" width="49.666666666666686" height="84.666666666666671"/>
+                                                    <rect key="frame" x="481.33333333333331" y="0.0" width="49.666666666666686" height="40"/>
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="plain" image="xmark.circle" catalog="system"/>
                                                     <connections>
@@ -81,7 +81,7 @@
                                     </constraints>
                                 </view>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2qw-PG-bjF">
-                                    <rect key="frame" x="0.0" y="104.66666666666666" width="547" height="64.666666666666657"/>
+                                    <rect key="frame" x="0.0" y="60" width="547" height="110"/>
                                     <color key="tintColor" name="AccentColor"/>
                                     <state key="normal" title="Button"/>
                                     <buttonConfiguration key="configuration" style="filled" image="sparkles" catalog="system" title="Get Ideas"/>

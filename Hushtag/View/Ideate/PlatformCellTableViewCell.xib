@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="PlatformCell" rowHeight="137" id="KGk-i7-Jjw" customClass="PlatformCellTableViewCell" customModule="Hushtag" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="399" height="137"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="399" height="137"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="rEy-8J-9fi">
+                        <rect key="frame" x="10" y="10" width="379" height="117"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rbf-uI-Fil">
+                                <rect key="frame" x="0.0" y="0.0" width="344" height="117"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Xtj-A7-lu0">
+                                        <rect key="frame" x="16" y="15" width="312" height="87"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome aboard! To write the perfect script, which platform are you creating for?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aDR-Fs-xSP">
+                                                <rect key="frame" x="0.0" y="0.0" width="312" height="20.333333333333332"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="2rr-S0-lCz">
+                                                <rect key="frame" x="0.0" y="30.333333333333339" width="312" height="56.666666666666657"/>
+                                                <subviews>
+                                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="faR-no-hOE">
+                                                        <rect key="frame" x="0.0" y="0.0" width="100.66666666666667" height="56.666666666666664"/>
+                                                        <state key="normal" title="Button"/>
+                                                        <buttonConfiguration key="configuration" style="gray" title="YouTube">
+                                                            <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </buttonConfiguration>
+                                                    </button>
+                                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bwg-YR-RyB">
+                                                        <rect key="frame" x="105.66666666666666" y="0.0" width="100.66666666666666" height="56.666666666666664"/>
+                                                        <state key="normal" title="Button"/>
+                                                        <buttonConfiguration key="configuration" style="gray" title="Instagram">
+                                                            <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </buttonConfiguration>
+                                                    </button>
+                                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sPU-E8-bBi">
+                                                        <rect key="frame" x="211.33333333333334" y="0.0" width="100.66666666666666" height="56.666666666666664"/>
+                                                        <state key="normal" title="Button"/>
+                                                        <buttonConfiguration key="configuration" style="gray" title="Twitter">
+                                                            <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </buttonConfiguration>
+                                                    </button>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="Xtj-A7-lu0" firstAttribute="leading" secondItem="rbf-uI-Fil" secondAttribute="leading" constant="16" id="Q0o-LW-zBG"/>
+                                    <constraint firstItem="Xtj-A7-lu0" firstAttribute="top" secondItem="rbf-uI-Fil" secondAttribute="top" constant="15" id="jII-FL-hpE"/>
+                                    <constraint firstAttribute="bottom" secondItem="Xtj-A7-lu0" secondAttribute="bottom" constant="15" id="upN-hl-uqY"/>
+                                    <constraint firstAttribute="trailing" secondItem="Xtj-A7-lu0" secondAttribute="trailing" constant="16" id="xwa-hH-dyH"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="s88-cl-vbb">
+                                <rect key="frame" x="349" y="0.0" width="30" height="117"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
+                        </subviews>
+                    </stackView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="rEy-8J-9fi" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="0JS-cm-fjn"/>
+                    <constraint firstAttribute="bottom" secondItem="rEy-8J-9fi" secondAttribute="bottom" constant="10" id="2d7-O2-WK9"/>
+                    <constraint firstItem="rEy-8J-9fi" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="Rr2-66-sd0"/>
+                    <constraint firstAttribute="trailing" secondItem="rEy-8J-9fi" secondAttribute="trailing" constant="10" id="oV0-8Y-t8M"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="instagrambtn" destination="bwg-YR-RyB" id="YZs-Xv-rTg"/>
+                <outlet property="label" destination="aDR-Fs-xSP" id="2X5-36-GuE"/>
+                <outlet property="twitterbtn" destination="sPU-E8-bBi" id="HMt-6j-1Uy"/>
+                <outlet property="view" destination="rbf-uI-Fil" id="2SP-Of-ZLz"/>
+                <outlet property="youtubebtn" destination="faR-no-hOE" id="psl-I3-Eqx"/>
+            </connections>
+            <point key="canvasLocation" x="167.17557251908397" y="186.26760563380282"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
