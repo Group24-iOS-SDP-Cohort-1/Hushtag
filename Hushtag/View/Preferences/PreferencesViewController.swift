@@ -120,6 +120,8 @@ class PreferencesViewController: UIViewController {
     
     
     @IBAction func submitButton(_ sender: Any) {
+        self.skipSubmitButton.isEnabled = false
+        
         _Concurrency.Task { @MainActor in
             do {
                 
@@ -133,20 +135,22 @@ class PreferencesViewController: UIViewController {
                     isYoutubeConnected: isYoutubeConnected
                 )
                 
+                // Only navigate away on success
                 if let nav = self.navigationController, nav.viewControllers.count > 1 {
                     nav.popViewController(animated: true)
                 } else {
                     self.navigateToHomeScreen()
                 }
+                
+                self.skipSubmitButton.isEnabled = true
                 
             } catch {
                 print("Failed to update onboarding status or save preferences: \(error)")
+                self.skipSubmitButton.isEnabled = true
                 
-                if let nav = self.navigationController, nav.viewControllers.count > 1 {
-                    nav.popViewController(animated: true)
-                } else {
-                    self.navigateToHomeScreen()
-                }
+                let alert = UIAlertController(title: "Save Failed", message: "We were unable to save your preferences. Please try again.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
             }
         }
     }
