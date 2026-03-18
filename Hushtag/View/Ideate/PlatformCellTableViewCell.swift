@@ -32,6 +32,9 @@ class PlatformCellTableViewCell: UITableViewCell {
         view.layer.cornerRadius = 16
         allButtons = [youtubebtn, instagrambtn, twitterbtn]
         allButtons.forEach { $0.addTarget(self, action: #selector(platformTapped(_:)), for: .touchUpInside) }
+        youtubebtn.setTitle("YouTube", for: .normal)
+        instagrambtn.setTitle("Instagram", for: .normal)
+        twitterbtn.setTitle("Twitter", for: .normal)
 
     }
 

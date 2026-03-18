@@ -14,6 +14,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     var latestScript: String?
     var messages: [Message] = []
     var autoSendMessage: String?
+    var selectedPlatform: String?
     let controller = ScriptedIdeasController()
     var markedMessages: [String: [Message]] = [
         "script": [],
@@ -218,6 +219,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
                cell.onPlatformSelected = { [weak self] platform in
                    guard let self = self, let id = self.conversationID else { return }
+                   self.selectedPlatform = platform
                    Task {
                        do {
                            try await self.controller.updatePlatform(id: id, platform: platform)
@@ -314,18 +316,20 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             
             let intent = await AIResponseRouter.shared.classifyIntent(
                 message: userText,
-                conversationID: conversationID
+                conversationID: conversationID,
+                platform: selectedPlatform
             )
             
             print(intent)
-            
+            let platform = selectedPlatform ?? "general"
+
             switch intent {
                 
             case .generateScript:
                 print("routing to gemini")
                 
                 GeminiManager.shared.generateContent(
-                    prompt: userText,
+                    prompt: "\(userText)\nWrite this for \(selectedPlatform ?? "general") audience.",
                     conversationID: conversationID ?? UUID()
                 ) { reply in
                     self.latestScript = reply
@@ -335,7 +339,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             case .generateTitle:
                 let reply = await generateTitleWithApple(
                     script: self.latestScript,
-                    userPrompt: userText,
+                    userPrompt: "\(userText)\nPlatform: \(platform). Write a title optimized for \(platform).",
                     conversationID: conversationID
                 )
                 
@@ -344,7 +348,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             case .generateDescription:
                 let reply = await generateDescriptionWithApple(
                     script: self.latestScript,
-                    userPrompt: userText,
+                    userPrompt: "\(userText)\nPlatform: \(platform). Write a description optimized for \(platform).",
                     conversationID: conversationID
                 )
                 
@@ -352,8 +356,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 
             case .chat:
                 let prompt = """
-                You are a friendly, casual AI assistant.
-                You are allowed to chat freely.
+                    You are a friendly, casual AI assistant helping create content for \(platform).
+                    Keep responses relevant to \(platform) where applicable.
                 
                 User message:
                 \(userText)
