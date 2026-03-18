@@ -41,16 +41,22 @@ class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
     
     
     func configureCell(with item: PreferenceItem){
+        let isFirstLoad = sections.isEmpty
+        
         headingLabel.text = item.title
         subheadingLabel.text = item.subheading
         
         sections = item.sections
         
-        innerCollectionView.collectionViewLayout = generateGoalsInnerLayout()
-        innerCollectionView.reloadData()
+        if isFirstLoad {
+            innerCollectionView.collectionViewLayout = generateGoalsInnerLayout()
+            innerCollectionView.reloadData()
+        }
     }
     
     func preselectOptions(selected: [String]) {
+        innerCollectionView.layoutIfNeeded()
+        
         for indexPath in innerCollectionView.indexPathsForSelectedItems ?? [] {
             innerCollectionView.deselectItem(at: indexPath, animated: false)
         }

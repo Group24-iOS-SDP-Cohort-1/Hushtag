@@ -75,6 +75,8 @@ class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
     
     
     func configureCell(with item: PreferenceItem){
+        let isFirstLoad = sections.isEmpty
+        
         headingLabel.text = item.title
         subheadingLabel.text = item.subheading
         
@@ -83,12 +85,13 @@ class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
         vibeSection = sections[0]
         lengthSection = sections[1]
         
-        firstInnerCollectionView.collectionViewLayout = generateContentPreferencesLayout()
-        
-        secondInnerCollectionView.collectionViewLayout = generateContentPreferencesLayout()
-        
-        firstInnerCollectionView.reloadData()
-        secondInnerCollectionView.reloadData()
+        if isFirstLoad {
+            firstInnerCollectionView.collectionViewLayout = generateContentPreferencesLayout()
+            secondInnerCollectionView.collectionViewLayout = generateContentPreferencesLayout()
+            
+            firstInnerCollectionView.reloadData()
+            secondInnerCollectionView.reloadData()
+        }
         
         textFieldOutlet.text = ""
         textFieldOutlet.isEnabled = false
@@ -97,6 +100,9 @@ class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
     }
     
     func preselectOptions(vibeSelected: [String], lengthSelected: [String]) {
+        firstInnerCollectionView.layoutIfNeeded()
+        secondInnerCollectionView.layoutIfNeeded()
+        
         for indexPath in firstInnerCollectionView.indexPathsForSelectedItems ?? [] {
             firstInnerCollectionView.deselectItem(at: indexPath, animated: false)
         }

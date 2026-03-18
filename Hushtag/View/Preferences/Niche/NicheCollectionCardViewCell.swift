@@ -114,13 +114,17 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
     
     
     func configureCell(with item: PreferenceItem){
+        let isFirstLoad = sections.isEmpty
+        
         headingLabel.text = item.title
         subheadingLabel.text = item.subheading
         preferenceID = item.id
         sections = item.sections
         
-        innerCollectionView.collectionViewLayout = generateNicheLayout()
-        innerCollectionView.reloadData()
+        if isFirstLoad {
+            innerCollectionView.collectionViewLayout = generateNicheLayout()
+            innerCollectionView.reloadData()
+        }
         
         textFieldOutlet.text = ""
         textFieldOutlet.isEnabled = false
@@ -129,6 +133,8 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
     }
     
     func preselectOptions(selected: [String]) {
+        innerCollectionView.layoutIfNeeded()
+        
         // Clear existing selections just in case
         for indexPath in innerCollectionView.indexPathsForSelectedItems ?? [] {
             innerCollectionView.deselectItem(at: indexPath, animated: false)
