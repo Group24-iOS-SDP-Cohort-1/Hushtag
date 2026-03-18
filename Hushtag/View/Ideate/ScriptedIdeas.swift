@@ -2,6 +2,7 @@ import UIKit
 
 extension Notification.Name {
     static let scriptDeleted = Notification.Name("scriptDeleted")
+    static let dealTagChanged = Notification.Name("dealTagChanged")
 }
 
 class ScriptedIdeas: UIViewController {
@@ -12,7 +13,20 @@ class ScriptedIdeas: UIViewController {
     var isScriptExpanded = false
     
     private let dbController = ScriptedIdeasController()
+    private let dealsController = DealsController()
+    private let brandDealIdeasController = BrandDealIdeasController()
+    
     var idea: ScriptedIdea?
+    var allDeals: [Deal] = []
+    var taggedDealIds: Set<UUID> = []
+    var orderedTaggedDealIds: [UUID] = []
+    
+    /// Set to true when presented modally (e.g. from DealsInfo). Hides "View Chat History" from the menu.
+    var isModal: Bool = false
+    
+    /// Called when a deal is untagged. If set, the modal is dismissed instead of showing an alert.
+    var onDealUntagged: (() -> Void)?
+    
     var sections: [ScriptSection] {
         var result: [ScriptSection] = []
         
@@ -45,6 +59,59 @@ class ScriptedIdeas: UIViewController {
             print("No idea received.")
             return
         }
+        
+        fetchDealsData()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDealTagChanged),
+            name: .dealTagChanged,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleScriptDeletedRemotely(_:)),
+            name: .scriptDeleted,
+            object: nil
+        )
+    }
+    
+    @objc private func handleDealTagChanged() {
+        fetchDealsData()
+    }
+    
+    @objc private func handleScriptDeletedRemotely(_ notification: Notification) {
+        guard let deletedID = notification.userInfo?["deletedID"] as? UUID,
+              deletedID == idea?.id else { return }
+        
+        // This instance is showing the deleted idea — navigate away
+        if navigationController?.presentingViewController != nil {
+            navigationController?.dismiss(animated: true)
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
+    }
+    
+    private func fetchDealsData() {
+        guard let ideaId = idea?.id else { return }
+        
+        Task {
+            do {
+                let fetchedDeals = try await dealsController.fetchDeals()
+                let mappings = try await brandDealIdeasController.fetchDealsForScript(scriptedIdeaId: ideaId)
+                
+                DispatchQueue.main.async {
+                    self.allDeals = fetchedDeals
+                    let ids = mappings.map { $0.deal_id }
+                    self.taggedDealIds = Set(ids)
+                    self.orderedTaggedDealIds = ids
+                    self.ideaView.reloadData() // Reload to update button menu if needed
+                }
+            } catch {
+                print("Failed to fetch deals data: \(error)")
+            }
+        }
     }
     
     @objc func buttonTapped(_ sender: UIButton) {
@@ -76,19 +143,23 @@ class ScriptedIdeas: UIViewController {
     }
     
     private func setupMenu() {
-        // Option 1: View Chat History
-        let chatAction = UIAction(title: "View Chat History", image: UIImage(systemName: "bubble.left.and.bubble.right.fill")) { [weak self] _ in
-            self?.navigateToChat()
-        }
-        
-        // Option 2: Delete Script (Destructive)
         let deleteAction = UIAction(title: "Delete Script", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
             self?.confirmDelete()
         }
         
-        // Attach menu to the bar button
-        let menu = UIMenu(title: "", children: [chatAction, deleteAction])
-        optionsBarButton.menu = menu
+        let menuChildren: [UIMenuElement]
+        if isModal {
+            // Modal (from DealsInfo): only show Delete
+            menuChildren = [deleteAction]
+        } else {
+            // Normal navigation (from Ideate): show both options
+            let chatAction = UIAction(title: "View Chat History", image: UIImage(systemName: "bubble.left.and.bubble.right.fill")) { [weak self] _ in
+                self?.navigateToChat()
+            }
+            menuChildren = [chatAction, deleteAction]
+        }
+        
+        optionsBarButton.menu = UIMenu(title: "", children: menuChildren)
     }
     
     
@@ -117,7 +188,11 @@ class ScriptedIdeas: UIViewController {
                 )
                 
                 DispatchQueue.main.async {
-                    self.navigationController?.popViewController(animated: true)
+                    if self.navigationController?.presentingViewController != nil {
+                        self.navigationController?.dismiss(animated: true)
+                    } else {
+                        self.navigationController?.popViewController(animated: true)
+                    }
                 }
                 
             } catch {
@@ -228,6 +303,9 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
                 withReuseIdentifier: "buttons",
                 for: indexPath
             ) as! ViewScriptsCell
+            
+            setupTagDealMenu(for: cell)
+            
             return cell
 
         default:
@@ -295,4 +373,75 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
         return headerView
     }
     
+    private func setupTagDealMenu(for cell: ViewScriptsCell) {
+        let actions = allDeals.map { deal in
+            let isTagged = taggedDealIds.contains(deal.id)
+            let actionText = deal.name
+            
+            return UIAction(
+                title: actionText,
+                state: isTagged ? .on : .off,
+                handler: { [weak self] _ in
+                    self?.handleTagDealToggled(deal: deal, isCurrentlyTagged: isTagged)
+                }
+            )
+        }
+        
+        let menu = UIMenu(title: "Select Deal", children: actions)
+        cell.tagDealButton.menu = menu
+        cell.tagDealButton.showsMenuAsPrimaryAction = true
+        
+        if let lastId = orderedTaggedDealIds.last, let deal = allDeals.first(where: { $0.id == lastId }) {
+            cell.tagDealButton.setTitle(deal.name, for: .normal)
+        } else {
+            cell.tagDealButton.setTitle("Tag Deal", for: .normal)
+        }
+    }
+    
+    private func handleTagDealToggled(deal: Deal, isCurrentlyTagged: Bool) {
+        guard let ideaId = idea?.id else { return }
+        
+        Task {
+            do {
+                if isCurrentlyTagged {
+                    try await brandDealIdeasController.untagDealFromScript(dealId: deal.id, scriptedIdeaId: ideaId)
+                    
+                    DispatchQueue.main.async {
+                        self.taggedDealIds.remove(deal.id)
+                        self.orderedTaggedDealIds.removeAll { $0 == deal.id }
+                        self.ideaView.reloadSections(IndexSet(integer: self.sections.firstIndex(of: .buttons) ?? 0))
+                        NotificationCenter.default.post(name: .dealTagChanged, object: nil)
+                        
+                        if let onUntagged = self.onDealUntagged {
+                            self.dismiss(animated: true, completion: onUntagged)
+                        } else {
+                            let alert = UIAlertController(title: "Unmarked", message: "Unmarked from \(deal.name)", preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "OK", style: .default))
+                            self.present(alert, animated: true)
+                        }
+                    }
+                } else {
+                    try await brandDealIdeasController.tagDealToScript(dealId: deal.id, scriptedIdeaId: ideaId)
+                    
+                    DispatchQueue.main.async {
+                        self.taggedDealIds.insert(deal.id)
+                        self.orderedTaggedDealIds.append(deal.id)
+                        self.ideaView.reloadSections(IndexSet(integer: self.sections.firstIndex(of: .buttons) ?? 0))
+                        NotificationCenter.default.post(name: .dealTagChanged, object: nil)
+                        
+                        let alert = UIAlertController(title: "Marked", message: "Marked to \(deal.name)", preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default))
+                        self.present(alert, animated: true)
+                    }
+                }
+            } catch {
+                print("Error toggling tag deal status: \(error)")
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "Error", message: "Failed to update deal tag. Please try again.", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
+                }
+            }
+        }
+    }
 }

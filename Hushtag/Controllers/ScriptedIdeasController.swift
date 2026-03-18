@@ -134,6 +134,21 @@ final class ScriptedIdeasController {
         return result
     }
     
+    /// Fetches specific scripted ideas by their IDs.
+    func fetchScripts(byIds ids: [UUID]) async throws -> [ScriptedIdea] {
+        // Supabase .in() expects an array of strings
+        let stringIds = ids.map { $0.uuidString }
+        
+        let result: [ScriptedIdea] = try await client.database
+            .from("scripted_ideas")
+            .select()
+            .in("id", value: stringIds) 
+            .execute()
+            .value
+            
+        return result
+    }
+    
     func generateConversationTitleWithApple(
         messages: [ChatMessageDB]
     ) async throws -> String {

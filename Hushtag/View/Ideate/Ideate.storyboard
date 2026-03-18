@@ -208,6 +208,9 @@
                                                 <constraint firstItem="qf0-ME-UoA" firstAttribute="leading" secondItem="V9d-3X-VfP" secondAttribute="leading" constant="15" id="qb6-Ap-7HS"/>
                                             </constraints>
                                         </collectionViewCellContentView>
+                                        <connections>
+                                            <outlet property="tagDealButton" destination="BjO-dB-iY7" id="1zT-hA-pB0"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
