@@ -227,58 +227,39 @@ class AnalysisDataViewController: UIViewController {
 //        }
 //    }
     func loadAllData() async {
-
         do {
-
-            async let audience = controller.fetchAudienceMetrics(
+            // Decode audience metrics directly from Edge Function
+            let data = try await YouTubeController.shared.fetchAnalytics(
                 startDate: startDate,
                 endDate: endDate
             )
+            let decoded = try JSONDecoder().decode(AudienceMetrics.self, from: data)
+            audienceMetrics = [decoded]
 
+            // Fetch everything else from Supabase
             async let latest = controller.fetchLatestContent()
+            async let top = controller.fetchTopVideos(startDate: startDate, endDate: endDate)
+            async let revenue = controller.fetchRevenueInsight(startDate: startDate, endDate: endDate)
+            async let demo = controller.fetchAudienceDemographic(startDate: startDate, endDate: endDate)
+            async let activity = controller.fetchViewerActivity(startDate: startDate, endDate: endDate)
 
-            async let top = controller.fetchTopVideos(
-                startDate: startDate,
-                endDate: endDate
-            )
-
-            async let revenue = controller.fetchRevenueInsight(
-                startDate: startDate,
-                endDate: endDate
-            )
-
-            async let demo = controller.fetchAudienceDemographic(
-                startDate: startDate,
-                endDate: endDate
-            )
-
-            async let activity = controller.fetchViewerActivity(
-                startDate: startDate,
-                endDate: endDate
-            )
-            
-
-            audienceMetrics = try await audience
             latestContent = try await latest
             topVideos = try await top
             revenueInsight = try await revenue
             audienceDemographic = try await demo
             viewerActivity = try await activity
-            
+
             print(audienceMetrics)
-            print(latestContent)
-            print(topVideos)
-            print(audienceDemographic)
 
             await MainActor.run {
                 self.analysisCollectionView.reloadData()
             }
 
         } catch {
-            print("Error loading analytics:", error)
+            print("❌ Error loading analytics:", error)
         }
     }
-    
+
     func weeklyActivityData() -> [Int] {
         
         var week = Array(repeating: 0, count: 7)

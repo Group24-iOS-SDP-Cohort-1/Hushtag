@@ -106,7 +106,10 @@ final class YouTubeController {
         startDate: String,
         endDate: String
     ) async {
-        
+
+        print("📅 Start date being sent:", startDate)
+        print("📅 End date being sent:", endDate)
+
         do {
             let isConnected = await checkYouTubeConnection()
             
