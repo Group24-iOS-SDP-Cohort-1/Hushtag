@@ -19,6 +19,7 @@ class ScriptedIdeas: UIViewController {
     var idea: ScriptedIdea?
     var allDeals: [Deal] = []
     var taggedDealIds: Set<UUID> = []
+    var orderedTaggedDealIds: [UUID] = []
     
     /// Set to true when presented modally (e.g. from DealsInfo). Hides "View Chat History" from the menu.
     var isModal: Bool = false
@@ -102,7 +103,9 @@ class ScriptedIdeas: UIViewController {
                 
                 DispatchQueue.main.async {
                     self.allDeals = fetchedDeals
-                    self.taggedDealIds = Set(mappings.map { $0.deal_id })
+                    let ids = mappings.map { $0.deal_id }
+                    self.taggedDealIds = Set(ids)
+                    self.orderedTaggedDealIds = ids
                     self.ideaView.reloadData() // Reload to update button menu if needed
                 }
             } catch {
@@ -387,6 +390,12 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
         let menu = UIMenu(title: "Select Deal", children: actions)
         cell.tagDealButton.menu = menu
         cell.tagDealButton.showsMenuAsPrimaryAction = true
+        
+        if let lastId = orderedTaggedDealIds.last, let deal = allDeals.first(where: { $0.id == lastId }) {
+            cell.tagDealButton.setTitle(deal.name, for: .normal)
+        } else {
+            cell.tagDealButton.setTitle("Tag Deal", for: .normal)
+        }
     }
     
     private func handleTagDealToggled(deal: Deal, isCurrentlyTagged: Bool) {
@@ -399,6 +408,7 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
                     
                     DispatchQueue.main.async {
                         self.taggedDealIds.remove(deal.id)
+                        self.orderedTaggedDealIds.removeAll { $0 == deal.id }
                         self.ideaView.reloadSections(IndexSet(integer: self.sections.firstIndex(of: .buttons) ?? 0))
                         NotificationCenter.default.post(name: .dealTagChanged, object: nil)
                         
@@ -415,6 +425,7 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
                     
                     DispatchQueue.main.async {
                         self.taggedDealIds.insert(deal.id)
+                        self.orderedTaggedDealIds.append(deal.id)
                         self.ideaView.reloadSections(IndexSet(integer: self.sections.firstIndex(of: .buttons) ?? 0))
                         NotificationCenter.default.post(name: .dealTagChanged, object: nil)
                         
