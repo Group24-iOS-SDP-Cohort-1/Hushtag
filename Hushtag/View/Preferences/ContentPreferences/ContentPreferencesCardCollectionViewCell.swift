@@ -96,6 +96,48 @@ class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
         
     }
     
+    func preselectOptions(vibeSelected: [String], lengthSelected: [String]) {
+        for indexPath in firstInnerCollectionView.indexPathsForSelectedItems ?? [] {
+            firstInnerCollectionView.deselectItem(at: indexPath, animated: false)
+        }
+        for indexPath in secondInnerCollectionView.indexPathsForSelectedItems ?? [] {
+            secondInnerCollectionView.deselectItem(at: indexPath, animated: false)
+        }
+        
+        var otherItems: [String] = []
+        
+        if let vibeOptions = vibeSection?.options {
+            for (itemIndex, option) in vibeOptions.enumerated() {
+                if option != otherOptionKey && vibeSelected.contains(option.lowercased()) {
+                    let indexPath = IndexPath(item: itemIndex, section: 0)
+                    firstInnerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                }
+            }
+            
+            let allVibesLowercased = vibeOptions.map { $0.lowercased() }
+            otherItems = vibeSelected.filter { !allVibesLowercased.contains($0) }
+            
+            if !otherItems.isEmpty {
+                if let itemIndex = vibeOptions.firstIndex(of: otherOptionKey) {
+                    let indexPath = IndexPath(item: itemIndex, section: 0)
+                    firstInnerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                    
+                    toggleTextField(active: true)
+                    textFieldOutlet.text = otherItems.joined(separator: ", ")
+                }
+            }
+        }
+        
+        if let lengthOptions = lengthSection?.options {
+            for (itemIndex, option) in lengthOptions.enumerated() {
+                if lengthSelected.contains(option.lowercased()) {
+                    let indexPath = IndexPath(item: itemIndex, section: 0)
+                    secondInnerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                }
+            }
+        }
+    }
+    
     
     private func notifyCompletionIfNeeded() {
         let firstSelected = firstInnerCollectionView.indexPathsForSelectedItems?.count ?? 0
@@ -212,6 +254,13 @@ extension ContentPreferencesCardCollectionViewCell: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "optionsCell", for: indexPath) as! OptionsCollectionViewCell
         
         cell.configureCell(with: optionText)
+        
+        // Force the visual update for pre-selected cells
+        if let selectedPaths = collectionView.indexPathsForSelectedItems, selectedPaths.contains(indexPath) {
+            cell.isSelected = true
+        } else {
+            cell.isSelected = false
+        }
         
         return cell
     }

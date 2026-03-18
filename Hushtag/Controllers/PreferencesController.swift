@@ -23,7 +23,7 @@ final class PreferencesController {
         
         try await client.database
             .from("user_preferences")
-            .insert(payload)
+            .upsert(payload, onConflict: "user_id")
             .execute()
     }
     

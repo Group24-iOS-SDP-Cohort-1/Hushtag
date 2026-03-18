@@ -16,8 +16,8 @@ class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
         "Grow Audience": .growth,
         "Boost Engagement": .engagement,
         "Post More Consistently": .consistency,
-        "Try New Content Ideas": .creativity,
-        "Build My Personal Brand": .branding
+        "Experiment with Trends": .creativity,
+        "Strengthen My Brand": .branding
     ]
     
     override func awakeFromNib() {
@@ -47,6 +47,23 @@ class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
         sections = item.sections
         
         innerCollectionView.collectionViewLayout = generateGoalsInnerLayout()
+        innerCollectionView.reloadData()
+    }
+    
+    func preselectOptions(selected: [String]) {
+        for indexPath in innerCollectionView.indexPathsForSelectedItems ?? [] {
+            innerCollectionView.deselectItem(at: indexPath, animated: false)
+        }
+        
+        for (sectionIndex, section) in sections.enumerated() {
+            for (itemIndex, optionTitle) in section.options.enumerated() {
+                if let rawValue = goalMapping[optionTitle]?.rawValue,
+                   selected.contains(rawValue.lowercased()) {
+                    let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
+                    innerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                }
+            }
+        }
     }
     
     
@@ -99,6 +116,14 @@ extension ContentGoalsCardCollectionViewCell: UICollectionViewDataSource {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "contentGoalsCell", for: indexPath) as! ContentGoalsCollectionViewCell
         cell.configureCell(with: optionText)
+        
+        // Force the visual update for pre-selected cells
+        if let selectedPaths = collectionView.indexPathsForSelectedItems, selectedPaths.contains(indexPath) {
+            cell.isSelected = true
+        } else {
+            cell.isSelected = false
+        }
+        
         return cell
     }
     
