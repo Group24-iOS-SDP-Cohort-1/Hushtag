@@ -72,7 +72,7 @@ nonisolated struct GeminiResponse: Codable {
     let content: String
 }
 
-nonisolated struct Conversation: Codable {
+nonisolated struct Conversation: Codable, Sendable {
     let id: UUID
     let user_id: UUID
     let title: String?

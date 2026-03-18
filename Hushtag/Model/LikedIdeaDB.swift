@@ -21,3 +21,7 @@ nonisolated struct LikedIdeaInsertPayload: Codable {
     let views: Int?
     let likes: Int?
 }
+
+nonisolated struct ConvoResponse: Codable {
+    let convo_id: UUID?
+}

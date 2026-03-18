@@ -88,10 +88,26 @@ final class LikedIdeasController {
         try await client.database
             .from("liked_ideas")
             .update([
-                "convo_id": convoId.uuidString
+                "convo_id": convoId
             ])
             .eq("user_id", value: session.user.id)
             .eq("ideaKey", value: ideaKey)
             .execute()
+    }
+    
+    func fetchConvoId(for ideaKey: String) async throws -> UUID? {
+        
+        let session = try await client.auth.session
+        
+        let response: [ConvoResponse] = try await client.database
+            .from("liked_ideas")
+            .select("convo_id")
+            .eq("user_id", value: session.user.id)
+            .eq("ideaKey", value: ideaKey)
+            .limit(1)
+            .execute()
+            .value
+        
+        return response.first?.convo_id
     }
 }
