@@ -257,7 +257,7 @@ class AddDealsViewController: UITableViewController {
             
             let addButton = UIButton(type: .system)
             addButton.setTitle("+ Add Deliverable", for: .normal)
-            addButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
+            addButton.titleLabel?.font = .systemFont(ofSize: 16)
             addButton.translatesAutoresizingMaskIntoConstraints = false
             addButton.addTarget(self, action: #selector(addDeliverableTapped), for: .touchUpInside)
             headerView.addSubview(addButton)
