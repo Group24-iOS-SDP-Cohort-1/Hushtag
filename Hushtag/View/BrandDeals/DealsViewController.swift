@@ -16,6 +16,32 @@ class DealsViewController: UIViewController {
     private var searchText = ""
     private let dealsController = DealsController()
     
+    private let noDealsStackView: UIStackView = {
+        let stackview = UIStackView()
+        stackview.axis = .vertical
+        stackview.alignment = .center
+        stackview.spacing = 15
+        stackview.isHidden = true
+        return stackview
+    }()
+    
+    private let noDealsImageView: UIImageView = {
+        let iv = UIImageView()
+        iv.image = UIImage(systemName: "tag.fill")
+        iv.tintColor = .systemGray4
+        iv.contentMode = .scaleAspectFit
+        return iv
+    }()
+    
+    private let noDealsLabel: UILabel = {
+        let label = UILabel()
+        label.text = "No deals added"
+        label.textAlignment = .center
+        label.textColor = .systemGray
+        label.font = .systemFont(ofSize: 22, weight: .semibold)
+        return label
+    }()
+    
     var completedDeals: [Deal] {
         deals.filter { $0.isCompleted }
     }
@@ -49,6 +75,7 @@ class DealsViewController: UIViewController {
         super.viewDidLoad()
         
         registerCell()
+        setupNoDealsLabel()
         Task {
             do {
                 _ = try await SupabaseConfig.client.auth.session
@@ -96,6 +123,7 @@ class DealsViewController: UIViewController {
         collectionView.setCollectionViewLayout(generateLayout(), animated: false)
         
         collectionView.reloadData()
+        updateEmptyState()
     }
     
     @objc private func handleDealsDidChange() {
@@ -112,6 +140,7 @@ class DealsViewController: UIViewController {
                     self.selectedSegmentIndex = self.segmentControl.selectedSegmentIndex
                     self.collectionView.collectionViewLayout.invalidateLayout()
                     self.collectionView.reloadData()
+                    self.updateEmptyState()
                 }
                 
             } catch {
@@ -162,6 +191,27 @@ class DealsViewController: UIViewController {
             )
             return section
         }
+    }
+    
+    private func setupNoDealsLabel() {
+        view.addSubview(noDealsStackView)
+        noDealsStackView.addArrangedSubview(noDealsImageView)
+        noDealsStackView.addArrangedSubview(noDealsLabel)
+        
+        noDealsStackView.translatesAutoresizingMaskIntoConstraints = false
+        noDealsImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            noDealsStackView.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
+            noDealsStackView.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor),
+            
+            noDealsImageView.widthAnchor.constraint(equalToConstant: 80),
+            noDealsImageView.heightAnchor.constraint(equalToConstant: 80)
+        ])
+    }
+    
+    private func updateEmptyState() {
+        noDealsStackView.isHidden = !displayedDeals.isEmpty
     }
 }
 
@@ -231,6 +281,7 @@ extension DealsViewController: DealsInfoDelegate {
         
         collectionView.collectionViewLayout.invalidateLayout()
         collectionView.reloadData()
+        updateEmptyState()
     }
     
 }
@@ -267,6 +318,7 @@ extension DealsViewController: UISearchBarDelegate {
         self.searchText = searchText
         isSearching = !searchText.isEmpty
         collectionView.reloadData()
+        updateEmptyState()
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -274,6 +326,7 @@ extension DealsViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
         isSearching = false
         collectionView.reloadData()
+        updateEmptyState()
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {

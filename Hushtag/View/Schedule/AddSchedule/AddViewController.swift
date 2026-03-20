@@ -48,6 +48,9 @@ class AddViewController: UITableViewController {
         tableView.backgroundColor = .systemGroupedBackground
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 56
+        if #available(iOS 15.0, *) {
+            tableView.sectionHeaderTopPadding = 0
+        }
         
         deadlineDate = deadlinePicker.date
         reminderDate = reminderPicker.date
@@ -206,48 +209,64 @@ class AddViewController: UITableViewController {
         return Section.allCases.count
     }
     
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 70
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.1
+    }
+    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let sec = Section(rawValue: section) else { return nil }
         
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 44))
+        headerView.backgroundColor = .clear
+        
+        let titleLabel = UILabel()
+        titleLabel.font = .systemFont(ofSize: 22, weight: .bold)
+        titleLabel.textColor = .label
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        headerView.addSubview(titleLabel)
+        
         if sec == .deliverables {
-            let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 44))
-            headerView.backgroundColor = .clear
-            
-            let titleLabel = UILabel()
             titleLabel.text = "Tasks"
-            titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
-            titleLabel.textColor = .secondaryLabel
-            titleLabel.translatesAutoresizingMaskIntoConstraints = false
-            headerView.addSubview(titleLabel)
             
             let addButton = UIButton(type: .system)
             addButton.setTitle("+ Add Task", for: .normal)
-            addButton.titleLabel?.font = .systemFont(ofSize: 13, weight: .semibold)
+            addButton.titleLabel?.font = .systemFont(ofSize: 16)
             addButton.translatesAutoresizingMaskIntoConstraints = false
             addButton.addTarget(self, action: #selector(addTaskTapped), for: .touchUpInside)
             headerView.addSubview(addButton)
             
             NSLayoutConstraint.activate([
                 titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
-                titleLabel.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -8),
+                titleLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 24),
+                titleLabel.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -12),
                 
                 addButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -16),
-                addButton.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -8)
+                addButton.lastBaselineAnchor.constraint(equalTo: titleLabel.lastBaselineAnchor)
             ])
             
             return headerView
         }
         
-        let label = UILabel()
-        label.text = "Post Details"
+        if sec == .mainFields {
+            titleLabel.text = "Post Details"
+            
+            NSLayoutConstraint.activate([
+                titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+                titleLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 24),
+                titleLabel.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -12)
+            ])
+            
+            return headerView
+        }
+        
         return nil
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let sec = Section(rawValue: section) else { return nil }
-        if sec == .mainFields {
-            return "Post Details"
-        }
         return nil
     }
     
