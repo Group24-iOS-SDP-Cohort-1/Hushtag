@@ -24,6 +24,9 @@ class PreferencesViewController: UIViewController {
     
     var preferenceItems: [PreferenceItem] = PreferencesData.items
     private var completedStates: [Bool] = []
+    var initialPreference: UserPreference? // Optional passed from Profile
+    
+    // Store user's selected string options here.
     private var selectedOptions: [String: [String]] = [
         "Niche": [],
         "Content Goals": [],
@@ -38,6 +41,20 @@ class PreferencesViewController: UIViewController {
         super.viewDidLoad()
     
         completedStates = Array(repeating: false, count: preferenceItems.count)
+        
+        // If initial preferences are passed, prefill the options dictionary and completion states
+        if let prefs = initialPreference {
+            selectedOptions["Niche"] = prefs.niche.map { $0.rawValue }
+            selectedOptions["Content Goals"] = prefs.contentGoals.map { $0.rawValue }
+            selectedOptions["Content Tone"] = prefs.contentType.map { $0.rawValue }
+            selectedOptions["Content Length"] = prefs.contentLength.map { $0.rawValue }
+            
+            completedStates[0] = !prefs.niche.isEmpty
+            completedStates[1] = !prefs.contentGoals.isEmpty
+            completedStates[2] = !prefs.contentType.isEmpty || !prefs.contentLength.isEmpty
+            completedStates[3] = prefs.isYoutubeConnected
+        }
+        
         registerCells()
         
         let layout = generateLayout()
@@ -103,6 +120,8 @@ class PreferencesViewController: UIViewController {
     
     
     @IBAction func submitButton(_ sender: Any) {
+        self.skipSubmitButton.isEnabled = false
+        
         _Concurrency.Task { @MainActor in
             do {
                 
@@ -116,16 +135,27 @@ class PreferencesViewController: UIViewController {
                     isYoutubeConnected: isYoutubeConnected
                 )
                 
-                self.navigateToHomeScreen()
+                // Only navigate away on success
+                if let nav = self.navigationController, nav.viewControllers.count > 1 {
+                    nav.popViewController(animated: true)
+                } else {
+                    self.navigateToHomeScreen()
+                }
+                
+                self.skipSubmitButton.isEnabled = true
                 
             } catch {
-                //print("Failed to update onboarding status: \(error)")
+                print("Failed to update onboarding status or save preferences: \(error)")
+                self.skipSubmitButton.isEnabled = true
                 
-                self.navigateToHomeScreen()
+                let alert = UIAlertController(title: "Save Failed", message: "We were unable to save your preferences. Please try again.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
             }
         }
     }
     
+
     
     @IBAction func pageSelectorAction(_ sender: UIPageControl) {
         let page = sender.currentPage
@@ -248,6 +278,10 @@ extension PreferencesViewController: UICollectionViewDataSource {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "nicheCard", for: indexPath) as! NicheCollectionCardViewCell
             cell.configureCell(with : item)
             
+            // Preselect based on our fetched data
+            if let selections = selectedOptions["Niche"] {
+                cell.preselectOptions(selected: selections)
+            }
             
             cell.delegate = self
             cell.cardIndex = indexPath.item
@@ -259,6 +293,10 @@ extension PreferencesViewController: UICollectionViewDataSource {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "goalsCell", for: indexPath) as! ContentGoalsCardCollectionViewCell
             cell.configureCell(with : item)
             
+            // Preselect based on our fetched data
+            if let selections = selectedOptions["Content Goals"] {
+                cell.preselectOptions(selected: selections)
+            }
             
             cell.delegate = self
             cell.cardIndex = indexPath.item
@@ -270,6 +308,10 @@ extension PreferencesViewController: UICollectionViewDataSource {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "contentPreferencesCell", for: indexPath) as! ContentPreferencesCardCollectionViewCell
             cell.configureCell(with : item)
             
+            // Preselect based on our fetched data
+            let vibeSelections = selectedOptions["Content Tone"] ?? []
+            let lengthSelections = selectedOptions["Content Length"] ?? []
+            cell.preselectOptions(vibeSelected: vibeSelections, lengthSelected: lengthSelections)
             
             cell.delegate = self
             cell.cardIndex = indexPath.item

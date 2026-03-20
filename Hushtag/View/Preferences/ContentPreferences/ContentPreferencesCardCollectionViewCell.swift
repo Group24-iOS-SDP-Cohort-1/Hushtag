@@ -75,6 +75,8 @@ class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
     
     
     func configureCell(with item: PreferenceItem){
+        let isFirstLoad = sections.isEmpty
+        
         headingLabel.text = item.title
         subheadingLabel.text = item.subheading
         
@@ -83,17 +85,63 @@ class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
         vibeSection = sections[0]
         lengthSection = sections[1]
         
-        firstInnerCollectionView.collectionViewLayout = generateContentPreferencesLayout()
-        
-        secondInnerCollectionView.collectionViewLayout = generateContentPreferencesLayout()
-        
-        firstInnerCollectionView.reloadData()
-        secondInnerCollectionView.reloadData()
+        if isFirstLoad {
+            firstInnerCollectionView.collectionViewLayout = generateContentPreferencesLayout()
+            secondInnerCollectionView.collectionViewLayout = generateContentPreferencesLayout()
+            
+            firstInnerCollectionView.reloadData()
+            secondInnerCollectionView.reloadData()
+        }
         
         textFieldOutlet.text = ""
         textFieldOutlet.isEnabled = false
         textFieldOutlet.alpha = 0.5
         
+    }
+    
+    func preselectOptions(vibeSelected: [String], lengthSelected: [String]) {
+        firstInnerCollectionView.layoutIfNeeded()
+        secondInnerCollectionView.layoutIfNeeded()
+        
+        for indexPath in firstInnerCollectionView.indexPathsForSelectedItems ?? [] {
+            firstInnerCollectionView.deselectItem(at: indexPath, animated: false)
+        }
+        for indexPath in secondInnerCollectionView.indexPathsForSelectedItems ?? [] {
+            secondInnerCollectionView.deselectItem(at: indexPath, animated: false)
+        }
+        
+        var otherItems: [String] = []
+        
+        if let vibeOptions = vibeSection?.options {
+            for (itemIndex, option) in vibeOptions.enumerated() {
+                if option != otherOptionKey && vibeSelected.contains(option.lowercased()) {
+                    let indexPath = IndexPath(item: itemIndex, section: 0)
+                    firstInnerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                }
+            }
+            
+            let allVibesLowercased = vibeOptions.map { $0.lowercased() }
+            otherItems = vibeSelected.filter { !allVibesLowercased.contains($0) }
+            
+            if !otherItems.isEmpty {
+                if let itemIndex = vibeOptions.firstIndex(of: otherOptionKey) {
+                    let indexPath = IndexPath(item: itemIndex, section: 0)
+                    firstInnerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                    
+                    toggleTextField(active: true)
+                    textFieldOutlet.text = otherItems.joined(separator: ", ")
+                }
+            }
+        }
+        
+        if let lengthOptions = lengthSection?.options {
+            for (itemIndex, option) in lengthOptions.enumerated() {
+                if lengthSelected.contains(option.lowercased()) {
+                    let indexPath = IndexPath(item: itemIndex, section: 0)
+                    secondInnerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                }
+            }
+        }
     }
     
     
@@ -212,6 +260,13 @@ extension ContentPreferencesCardCollectionViewCell: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "optionsCell", for: indexPath) as! OptionsCollectionViewCell
         
         cell.configureCell(with: optionText)
+        
+        // Force the visual update for pre-selected cells
+        if let selectedPaths = collectionView.indexPathsForSelectedItems, selectedPaths.contains(indexPath) {
+            cell.isSelected = true
+        } else {
+            cell.isSelected = false
+        }
         
         return cell
     }

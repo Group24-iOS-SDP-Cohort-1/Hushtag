@@ -312,11 +312,37 @@ final class ProfileTableViewController: UITableViewController {
             }
         }
     
+    func prepareAndNavigateToPreferences() {
+        Task { @MainActor in
+            do {
+                let preferencesController = PreferencesController()
+                let preferences = try await preferencesController.fetchPreferences()
+                
+                navigateToPreferences(with: preferences)
+            } catch {
+                // If no preferences found or error, just navigate with nil
+                navigateToPreferences(with: nil)
+            }
+        }
+    }
+    
+    private func navigateToPreferences(with preferences: UserPreference?) {
+        let storyboard = UIStoryboard(name: "Preferences", bundle: nil)
+        if let preferencesVC = storyboard.instantiateViewController(withIdentifier: "PreferenceVC") as? PreferencesViewController {
+            preferencesVC.initialPreference = preferences
+            navigationController?.pushViewController(preferencesVC, animated: true)
+        }
+    }
+
     override func tableView(_ tableView: UITableView,didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
         if indexPath.section == 1 && indexPath.row == 0 {
             handleYouTubeTap()
+        }else if indexPath.section == 2 && indexPath.row == 0 {
+            // Settings
+        }else if indexPath.section == 2 && indexPath.row == 1 {
+            prepareAndNavigateToPreferences()
         }else if indexPath.section == 3 && indexPath.row == 0 {
             signOutTap()
         }else if indexPath.section == 3 && indexPath.row == 1 {

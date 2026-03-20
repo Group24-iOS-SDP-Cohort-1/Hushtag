@@ -114,13 +114,17 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
     
     
     func configureCell(with item: PreferenceItem){
+        let isFirstLoad = sections.isEmpty
+        
         headingLabel.text = item.title
         subheadingLabel.text = item.subheading
         preferenceID = item.id
         sections = item.sections
         
-        innerCollectionView.collectionViewLayout = generateNicheLayout()
-        innerCollectionView.reloadData()
+        if isFirstLoad {
+            innerCollectionView.collectionViewLayout = generateNicheLayout()
+            innerCollectionView.reloadData()
+        }
         
         textFieldOutlet.text = ""
         textFieldOutlet.isEnabled = false
@@ -128,6 +132,42 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
         
     }
     
+    func preselectOptions(selected: [String]) {
+        innerCollectionView.layoutIfNeeded()
+        
+        // Clear existing selections just in case
+        for indexPath in innerCollectionView.indexPathsForSelectedItems ?? [] {
+            innerCollectionView.deselectItem(at: indexPath, animated: false)
+        }
+        
+        var otherItems: [String] = []
+        
+        for (sectionIndex, section) in sections.enumerated() {
+            for (itemIndex, option) in section.options.enumerated() {
+                // If it's the "Other" option in the UI, we handle it below if there are unmatched strings
+                if option != otherOptionKey && selected.contains(option.lowercased()) {
+                    let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
+                    innerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                }
+            }
+        }
+        
+        // Find items that don't match standard options
+        let allOptionsLowercased = sections.flatMap { $0.options }.map { $0.lowercased() }
+        otherItems = selected.filter { !allOptionsLowercased.contains($0) }
+        
+        if !otherItems.isEmpty {
+            // Find "Other" index to select it
+            if let sectionIndex = sections.firstIndex(where: { $0.options.contains(otherOptionKey) }),
+               let itemIndex = sections[sectionIndex].options.firstIndex(of: otherOptionKey) {
+                let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
+                innerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                
+                toggleTextField(active: true)
+                textFieldOutlet.text = otherItems.joined(separator: ", ")
+            }
+        }
+    }
     
     
     func registerCells(){
@@ -157,6 +197,14 @@ extension NicheCollectionCardViewCell: UICollectionViewDataSource{
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "optionsCell", for: indexPath) as! OptionsCollectionViewCell
         cell.configureCell(with: optionText)
+        
+        // Force the visual update for pre-selected cells
+        if let selectedPaths = collectionView.indexPathsForSelectedItems, selectedPaths.contains(indexPath) {
+            cell.isSelected = true
+        } else {
+            cell.isSelected = false
+        }
+        
         return cell
     }
     
