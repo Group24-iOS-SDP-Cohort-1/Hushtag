@@ -30,12 +30,7 @@ class ViewScriptsViewController: UIViewController {
         super.viewDidLoad()
         
         setupSearchController()
-        
-        //scriptsCollectionView.keyboardDismissMode = .onDrag
-        setupTapToDismiss()         //CHECK IF WE REALLY NEED TAP TO DISMIS, because collection view is taking the full screen space
-        
-        //        ideas = ideaResponse.ideas
-        //        likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
+        setupTapToDismiss()
         navigationItem.title = pageTitle
         scriptsCollectionView.dataSource = self
         scriptsCollectionView.delegate = self
@@ -425,28 +420,61 @@ extension ViewScriptsViewController: LikedCellDelegate {
     
     func didTapDraftScript(for idea: Idea) {
         
-        let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
-        
-        guard let vc = storyboard.instantiateViewController(
-            withIdentifier: "Chatbot"
-        ) as? Chatbot else { return }
-        
-        let prompt = """
-        Generate a short engaging social media video script.
-        
-        Idea Title: \(idea.title)
-        
-        Idea Description: \(idea.description)
-        
-        The script should include:
-        - Hook
-        - Main content
-        - Ending CTA
-        """
-        
-        vc.autoSendMessage = prompt
-        
-        navigationController?.pushViewController(vc, animated: true)
+        Task {
+            do {
+                guard let ideaKey = idea.ideaKey else { return }
+                
+                var convoId = try await likedIdeasController.fetchConvoId(for: ideaKey)
+                var isNew = false
+                
+                if convoId == nil {
+                    let newConvoId = UUID()
+                    
+                    try await ScriptedIdeasController().addConversation(id: newConvoId)
+                    
+                    try await likedIdeasController.attachConvoId(
+                        to: ideaKey,
+                        convoId: newConvoId
+                    )
+                    
+                    convoId = newConvoId
+                    isNew = true
+                }
+                
+                guard let finalConvoId = convoId else { return }
+                
+                await MainActor.run {
+                    
+                    let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
+                    
+                    guard let vc = storyboard.instantiateViewController(
+                        withIdentifier: "Chatbot"
+                    ) as? Chatbot else { return }
+                    
+                    vc.conversationID = finalConvoId
+                    
+                    if isNew {
+                        vc.autoSendMessage = """
+                        Generate a short engaging social media video script.
+                        
+                        Idea Title: \(idea.title)
+                        
+                        Idea Description: \(idea.description)
+                        
+                        The script should include:
+                        - Hook
+                        - Main content
+                        - Ending CTA
+                        """
+                    }
+                    
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+                
+            } catch {
+                print("❌ Failed to handle convo_id:", error)
+            }
+        }
     }
 }
 
