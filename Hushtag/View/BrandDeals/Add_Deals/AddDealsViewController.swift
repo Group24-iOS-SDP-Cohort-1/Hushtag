@@ -45,6 +45,9 @@ class AddDealsViewController: UITableViewController {
         
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 56
+        if #available(iOS 15.0, *) {
+            tableView.sectionHeaderTopPadding = 0
+        }
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeTapped))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneTapped))
@@ -229,48 +232,64 @@ class AddDealsViewController: UITableViewController {
         return 2
     }
     
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 70
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.1
+    }
+    
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let sec = Section(rawValue: section) else { return nil }
         
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 44))
+        headerView.backgroundColor = .clear
+        
+        let titleLabel = UILabel()
+        titleLabel.font = .systemFont(ofSize: 22, weight: .bold)
+        titleLabel.textColor = .label
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        headerView.addSubview(titleLabel)
+        
         if sec == .deliverables {
-            let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 44))
-            headerView.backgroundColor = .clear
-            
-            let titleLabel = UILabel()
             titleLabel.text = "Deliverables"
-            titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
-            titleLabel.textColor = .secondaryLabel
-            titleLabel.translatesAutoresizingMaskIntoConstraints = false
-            headerView.addSubview(titleLabel)
             
             let addButton = UIButton(type: .system)
             addButton.setTitle("+ Add Deliverable", for: .normal)
-            addButton.titleLabel?.font = .systemFont(ofSize: 13, weight: .semibold)
+            addButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
             addButton.translatesAutoresizingMaskIntoConstraints = false
             addButton.addTarget(self, action: #selector(addDeliverableTapped), for: .touchUpInside)
             headerView.addSubview(addButton)
             
             NSLayoutConstraint.activate([
                 titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
-                titleLabel.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -8),
+                titleLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 24),
+                titleLabel.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -12),
                 
                 addButton.trailingAnchor.constraint(equalTo: headerView.trailingAnchor, constant: -16),
-                addButton.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -8)
+                addButton.lastBaselineAnchor.constraint(equalTo: titleLabel.lastBaselineAnchor)
             ])
             
             return headerView
         }
         
-        let label = UILabel()
-        label.text = "Deal Details"
+        if sec == .mainFields {
+            titleLabel.text = "Deal Details"
+            
+            NSLayoutConstraint.activate([
+                titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+                titleLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 32),
+                titleLabel.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -12)
+            ])
+            
+            return headerView
+        }
+        
         return nil
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let sec = Section(rawValue: section) else { return nil }
-        if sec == .mainFields {
-            return "Deal Details"
-        }
         return nil
     }
     
