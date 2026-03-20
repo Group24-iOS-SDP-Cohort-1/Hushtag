@@ -149,6 +149,19 @@ final class ScriptedIdeasController {
         return result
     }
     
+    func fetchScriptById(id: UUID) async throws -> ScriptedIdea {
+        
+        let result: ScriptedIdea = try await client.database
+            .from("scripted_ideas")
+            .select()
+            .eq("id", value: id.uuidString)
+            .single()
+            .execute()
+            .value
+        
+        return result
+    }
+    
     func generateConversationTitleWithApple(
         messages: [ChatMessageDB]
     ) async throws -> String {
@@ -264,7 +277,7 @@ final class ScriptedIdeasController {
     func upsertScriptField(
         chatID: UUID,
         field: String,
-        value: String
+        value: String?
     ) async throws {
         
         let session = try await client.auth.session

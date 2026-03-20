@@ -118,15 +118,15 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="title" id="NG3-ep-xlA" customClass="ViewScriptsCell" customModule="Hushtag" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="9.3333333333333339" width="84" height="66"/>
+                                        <rect key="frame" x="0.0" y="12.333333333333334" width="75" height="60.000000000000007"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="DVE-nE-HIB">
-                                            <rect key="frame" x="0.0" y="0.0" width="84" height="66"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="75" height="60.000000000000007"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EwN-cM-D1v">
-                                                    <rect key="frame" x="15" y="15" width="54" height="36"/>
-                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="30"/>
+                                                    <rect key="frame" x="15" y="15" width="45" height="30"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="25"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>

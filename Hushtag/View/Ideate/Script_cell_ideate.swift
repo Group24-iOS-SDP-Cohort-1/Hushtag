@@ -1,10 +1,3 @@
-//
-//  Script_cell_ideate.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 18/02/26.
-//
-
 import UIKit
 
 class Script_cell_ideate: UICollectionViewCell {
@@ -31,7 +24,7 @@ class Script_cell_ideate: UICollectionViewCell {
         }
         
         // 2. Calculate Progress
-        let totalCriteria: Float = 4.0
+        let totalCriteria: Float = 3.0
         var filledCriteria: Float = 0.0
             
         // Check if Title exists AND is not empty
@@ -46,11 +39,6 @@ class Script_cell_ideate: UICollectionViewCell {
             
         // Check if Script body exists AND is not empty
         if let s = script.script, !s.isEmpty {
-            filledCriteria += 1
-        }
-            
-        // Check if Thumbnail URL exists AND is not empty
-        if let th = script.thumbnail, !th.isEmpty {
             filledCriteria += 1
         }
             
