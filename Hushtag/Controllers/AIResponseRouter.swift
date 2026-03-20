@@ -1,4 +1,5 @@
 import Foundation
+
 final class AIResponseRouter {
     
     static let shared = AIResponseRouter()
