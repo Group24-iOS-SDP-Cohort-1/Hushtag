@@ -15,6 +15,9 @@ class AnalysisDataViewController: UIViewController {
     }
     var startDate: String = ""
     var endDate: String = ""
+    var isYouTubeConnected: Bool = true
+    
+    private var emptyStateView: UIView?
     
     @IBOutlet weak var analysisCollectionView: UICollectionView!
     
@@ -79,6 +82,132 @@ class AnalysisDataViewController: UIViewController {
             target: self,
             action: #selector(openDatePicker)
         )
+        
+        checkConnectionStatus()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        checkConnectionStatus()
+    }
+    
+    private func checkConnectionStatus() {
+        Task {
+            let connected = await YouTubeController.shared.checkYouTubeConnection()
+            await MainActor.run {
+                self.isYouTubeConnected = connected
+                self.updateUIForConnectionStatus()
+                if connected {
+                    Task {
+                        await loadAllData()
+                    }
+                }
+            }
+        }
+    }
+    
+    private func updateUIForConnectionStatus() {
+        if isYouTubeConnected {
+            emptyStateView?.removeFromSuperview()
+            emptyStateView = nil
+            analysisCollectionView.isHidden = false
+        } else {
+            showConnectYouTubePrompt()
+            analysisCollectionView.isHidden = true
+        }
+    }
+    
+    private func showConnectYouTubePrompt() {
+        if emptyStateView != nil { return }
+        
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(container)
+        self.emptyStateView = container
+        
+        NSLayoutConstraint.activate([
+            container.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            container.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50),
+            container.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
+            container.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
+        ])
+        
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 20
+        stackView.alignment = .center
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(stackView)
+        
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: container.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+        ])
+        
+        let imageView = UIImageView(image: UIImage(systemName: "play.rectangle.fill"))
+        imageView.tintColor = UIColor(red: 0.545, green: 0.361, blue: 0.965, alpha: 1.0)
+        imageView.contentMode = .scaleAspectFit
+        imageView.preferredSymbolConfiguration = .init(pointSize: 60)
+        
+        let titleLabel = UILabel()
+        titleLabel.text = "Connect YouTube Account"
+        titleLabel.font = .systemFont(ofSize: 22, weight: .bold)
+        titleLabel.textColor = .white
+        
+        let descLabel = UILabel()
+        descLabel.text = "Connect your account to see your channel analytics and insights."
+        descLabel.font = .systemFont(ofSize: 16)
+        descLabel.textColor = .secondaryLabel
+        descLabel.textAlignment = .center
+        descLabel.numberOfLines = 0
+        
+        let connectButton = UIButton(type: .system)
+        connectButton.setTitle("Connect Now", for: .normal)
+        connectButton.backgroundColor = UIColor(red: 0.545, green: 0.361, blue: 0.965, alpha: 1.0)
+        connectButton.setTitleColor(.white, for: .normal)
+        connectButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
+        connectButton.layer.cornerRadius = 25
+        connectButton.translatesAutoresizingMaskIntoConstraints = false
+        connectButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        connectButton.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        connectButton.addTarget(self, action: #selector(didTapConnectYouTube), for: .touchUpInside)
+        
+        stackView.addArrangedSubview(imageView)
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(descLabel)
+        stackView.addArrangedSubview(connectButton)
+    }
+    
+    @objc private func didTapConnectYouTube() {
+        let viewModel = SignInModel()
+        Task {
+            do {
+                try await viewModel.connectYouTube()
+                
+                // Fetch initial analytics to verify
+                _ = try await YouTubeController.shared.fetchAnalytics(
+                    startDate: self.startDate,
+                    endDate: self.endDate
+                )
+                
+                await MainActor.run {
+                    CapsuleNotification.show(message: "YouTube Connected!", iconName: "checkmark.circle.fill")
+                    self.isYouTubeConnected = true
+                    self.updateUIForConnectionStatus()
+                    Task {
+                        await self.loadAllData()
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    let alert = UIAlertController(title: "Connection Failed", message: error.localizedDescription, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
+                }
+            }
+        }
     }
     
     @objc func openDatePicker() {
@@ -146,12 +275,12 @@ class AnalysisDataViewController: UIViewController {
 //            await MainActor.run {
 //                self.analysisCollectionView.reloadData()
 //            }
-//            
+//
 //        } catch {
 //            print("Error fetching audience:", error)
 //        }
 //    }
-//    
+//
 //    func loadLatestContent() async {
 //        do {
 //            latestContent = try await controller.fetchLatestContent(
@@ -161,12 +290,12 @@ class AnalysisDataViewController: UIViewController {
 //            await MainActor.run {
 //                self.analysisCollectionView.reloadData()
 //            }
-//            
+//
 //        } catch {
 //            print("Error fetching latest content:", error)
 //        }
 //    }
-//    
+//
 //    func loadTopVideos() async {
 //        do {
 //            topVideos = try await controller.fetchTopVideos(
@@ -176,12 +305,12 @@ class AnalysisDataViewController: UIViewController {
 //            await MainActor.run {
 //                self.analysisCollectionView.reloadData()
 //            }
-//            
+//
 //        } catch {
 //            print("Error fetching top video:", error)
 //        }
 //    }
-//    
+//
 //    func loadRevenueInsights() async {
 //        do {
 //            revenueInsight = try await controller.fetchRevenueInsight(
@@ -191,75 +320,96 @@ class AnalysisDataViewController: UIViewController {
 //            await MainActor.run {
 //                self.analysisCollectionView.reloadData()
 //            }
-//            
+//
 //        } catch {
 //            print("Error fetching revenue insight:", error)
 //        }
 //    }
-//    
+//
 //    func loadAudienceDemographic() async {
 //        do {
 //            async let audienceDemographic = try await controller.fetchAudienceDemographic(
 //                startDate: startDate,
 //                            endDate: endDate
 //            )
-//            
+//
 //            await MainActor.run {
 //                self.analysisCollectionView.reloadData()
 //            }
-//            
+//
 //        } catch {
 //            print("Error fetching revenue insight:", error)
 //        }
 //    }
-//    
+//
 //    func loadViewerActivity() async {
 //        do {
 //            viewerActivity = try await controller.fetchViewerActivity()
 //            print(viewerActivity)
-//            
+//
 //            await MainActor.run {
 //                self.analysisCollectionView.reloadData()
 //            }
-//            
+//
 //        } catch {
 //            print("Error fetching viewer activity:", error)
 //        }
 //    }
     func loadAllData() async {
+        
+        guard isYouTubeConnected else { return }
+
         do {
-            // Decode audience metrics directly from Edge Function
-            let data = try await YouTubeController.shared.fetchAnalytics(
+
+            async let audience = controller.fetchAudienceMetrics(
                 startDate: startDate,
                 endDate: endDate
             )
-            let decoded = try JSONDecoder().decode(AudienceMetrics.self, from: data)
-            audienceMetrics = [decoded]
 
-            // Fetch everything else from Supabase
             async let latest = controller.fetchLatestContent()
-            async let top = controller.fetchTopVideos(startDate: startDate, endDate: endDate)
-            async let revenue = controller.fetchRevenueInsight(startDate: startDate, endDate: endDate)
-            async let demo = controller.fetchAudienceDemographic(startDate: startDate, endDate: endDate)
-            async let activity = controller.fetchViewerActivity(startDate: startDate, endDate: endDate)
 
+            async let top = controller.fetchTopVideos(
+                startDate: startDate,
+                endDate: endDate
+            )
+
+            async let revenue = controller.fetchRevenueInsight(
+                startDate: startDate,
+                endDate: endDate
+            )
+
+            async let demo = controller.fetchAudienceDemographic(
+                startDate: startDate,
+                endDate: endDate
+            )
+
+            async let activity = controller.fetchViewerActivity(
+                startDate: startDate,
+                endDate: endDate
+            )
+            
+
+            audienceMetrics = try await audience
             latestContent = try await latest
             topVideos = try await top
             revenueInsight = try await revenue
             audienceDemographic = try await demo
             viewerActivity = try await activity
-
+            
             print(audienceMetrics)
+            print(latestContent)
+            print(topVideos)
+            print(audienceDemographic)
 
             await MainActor.run {
                 self.analysisCollectionView.reloadData()
             }
 
         } catch {
-            print("❌ Error loading analytics:", error)
+            print("Error loading analytics:", error)
         }
     }
-
+    
     func weeklyActivityData() -> [Int] {
         
         var week = Array(repeating: 0, count: 7)
