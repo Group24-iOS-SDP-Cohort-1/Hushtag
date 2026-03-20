@@ -49,6 +49,7 @@ class ScriptedIdeas: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        ideaView.reloadData()
         setupMenu()
         registerCell()
         
@@ -75,6 +76,28 @@ class ScriptedIdeas: UIViewController {
             name: .scriptDeleted,
             object: nil
         )
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        refreshIdeaData()
+    }
+    
+    func refreshIdeaData() {
+        guard let ideaId = idea?.id else { return }
+        
+        Task {
+            do {
+                let updatedIdea = try await ScriptedIdeasController().fetchScriptById(id: ideaId)
+                
+                DispatchQueue.main.async {
+                    self.idea = updatedIdea
+                    self.ideaView.reloadData()
+                }
+            } catch {
+                print("❌ Failed to refresh idea:", error)
+            }
+        }
     }
     
     @objc private func handleDealTagChanged() {

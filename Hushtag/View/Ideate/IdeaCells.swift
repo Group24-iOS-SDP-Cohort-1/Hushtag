@@ -1,10 +1,3 @@
-//
-//  IdeaCells.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 18/12/25.
-//
-
 import UIKit
 
 struct EngagementStyle {
@@ -56,8 +49,8 @@ class IdeaCells: UICollectionViewCell {
 
             badge.configure(
                 text: "\(tag)",
-                color: UIColor(hex: "#a78bfa"),      // purple text — matches #a78bfa
-                cornerRadius: 12,                    // pill shape to match
+                color: UIColor(hex: "#a78bfa"),
+                cornerRadius: 12,          
                 borderWidth: 1.0,
                 backgroundAlpha: 0.12
             )

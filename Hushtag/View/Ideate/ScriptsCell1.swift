@@ -50,7 +50,7 @@ class ScriptsCell1: UICollectionViewCell {
         configureHashtags(script.tags ?? [])
         
         // 2. Calculate Progress
-        let totalCriteria: Float = 4.0
+        let totalCriteria: Float = 3.0
         var filledCriteria: Float = 0.0
             
         // Check if Title exists AND is not empty
@@ -65,11 +65,6 @@ class ScriptsCell1: UICollectionViewCell {
             
         // Check if Script body exists AND is not empty
         if let scriptContent = script.script, !scriptContent.isEmpty {
-            filledCriteria += 1
-        }
-            
-        // Check if Thumbnail URL exists AND is not empty
-        if let thumb = script.thumbnail, !thumb.isEmpty {
             filledCriteria += 1
         }
             

@@ -26,7 +26,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     let maxLines: CGFloat = 10
     let minLines: CGFloat = 3
     let lineHeight: CGFloat = 100
-    let requiredMarkTypes = ["script", "title", "description", "thumbnail"]
+    let requiredMarkTypes = ["script", "title", "description"]
     var didShowFinalReadyMessage = false
     var conversationID: UUID?
     
@@ -72,7 +72,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         } else {
             print("📌 Opening existing conversation:", conversationID!)
         }
-
+        
         Task {
             do {
                 let history = try await controller.fetchMessages(for: conversationID ?? UUID())
@@ -95,27 +95,25 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                         message.mark = "title"
                     } else if chat.content == idea.description {
                         message.mark = "description"
-                    } else if chat.content == idea.thumbnail {
-                        message.mark = "thumbnail"
                     }
                     
                     return message
                 }
                 await MainActor.run {
-
+                    
                     if !mapped.isEmpty {
                         self.messages = mapped
                     }
-
+                    
                     self.tableView.reloadData()
                     self.scrollToBottom()
-
+                    
                     if let text = self.autoSendMessage {
                         self.sendMessage(text)
                         self.autoSendMessage = nil
                     }
                 }
-
+                
             } catch {
                 print(" Failed loading conversation:", error)
             }
@@ -210,30 +208,30 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
+        
         if indexPath.row == 0 {
-               let cell = tableView.dequeueReusableCell(
-                   withIdentifier: "PlatformCell",
-                   for: indexPath
-               ) as! PlatformCellTableViewCell
-
-               cell.onPlatformSelected = { [weak self] platform in
-                   guard let self = self, let id = self.conversationID else { return }
-                   self.selectedPlatform = platform
-                   Task {
-                       do {
-                           try await self.controller.updatePlatform(id: id, platform: platform)
-                           print("✅ Platform saved:", platform)
-                       } catch {
-                           print("❌ Failed to save platform:", error)
-                       }
-                   }
-               }
-
-               return cell
-           }
-
-
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: "PlatformCell",
+                for: indexPath
+            ) as! PlatformCellTableViewCell
+            
+            cell.onPlatformSelected = { [weak self] platform in
+                guard let self = self, let id = self.conversationID else { return }
+                self.selectedPlatform = platform
+                Task {
+                    do {
+                        try await self.controller.updatePlatform(id: id, platform: platform)
+                        print("✅ Platform saved:", platform)
+                    } catch {
+                        print("❌ Failed to save platform:", error)
+                    }
+                }
+            }
+            
+            return cell
+        }
+        
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
         cell.configure(with: messages[indexPath.row])
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
@@ -322,7 +320,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             
             print(intent)
             let platform = selectedPlatform ?? "general"
-
+            
             switch intent {
                 
             case .generateScript:
@@ -458,8 +456,21 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     self.markedMessages[type]?.removeAll {
                         $0.content == message.content
                     }
-                    self.didShowFinalReadyMessage = false
-                    self.showScriptSuggestions()
+                    
+                    if let chatID = self.conversationID {
+                        Task {
+                            do {
+                                try await self.controller.upsertScriptField(
+                                    chatID: chatID,
+                                    field: type,
+                                    value: ""
+                                )
+                                print("🗑️ Removed \(type) from scripted_ideas")
+                            } catch {
+                                print("❌ Failed to remove \(type):", error)
+                            }
+                        }
+                    }
                     
                 } else {
                     if let oldType = message.mark {
@@ -525,7 +536,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             })
         }
         
-        ["script", "title", "description", "thumbnail"].forEach { addMarkAction(type: $0) }
+        ["script", "title", "description"].forEach { addMarkAction(type: $0) }
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         self.present(alert, animated: true)
@@ -565,8 +576,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 buttonTitle = "Generate Title"
             case "description":
                 buttonTitle = "Generate Description"
-            case "thumbnail":
-                buttonTitle = "Generate Thumbnail"
             default:
                 continue
             }

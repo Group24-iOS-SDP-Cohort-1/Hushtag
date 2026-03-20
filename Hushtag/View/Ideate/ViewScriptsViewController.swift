@@ -430,7 +430,7 @@ extension ViewScriptsViewController: LikedCellDelegate {
                 if convoId == nil {
                     let newConvoId = UUID()
                     
-                    try await ScriptedIdeasController().addConversation(id: newConvoId)
+                    _ = try await ScriptedIdeasController().addConversation(id: newConvoId)
                     
                     try await likedIdeasController.attachConvoId(
                         to: ideaKey,
@@ -495,12 +495,6 @@ extension ViewScriptsViewController: UISearchResultsUpdating {
             // Check Title (User defined)
             let titleMatch = script.title?.lowercased().contains(searchText.lowercased()) ?? false
             
-            // Check Mock Title (AI Generated)
-            //let mockTitleMatch = script.mockTitle?.lowercased().contains(searchText.lowercased()) ?? false
-            
-            // Check Tags (Array of strings)
-            // Note: Ensure your ScriptedIdea model has a 'tags' property.
-            // If it doesn't, remove this line or map it to a relevant property.
             let tagsMatch = script.tags?.contains { tag in
                 tag.lowercased().contains(searchText.lowercased())
             } ?? false
