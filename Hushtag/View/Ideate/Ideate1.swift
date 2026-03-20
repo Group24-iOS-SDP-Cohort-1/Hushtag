@@ -49,12 +49,28 @@ class Ideate1: UIViewController {
     private func fetchRecentScripts() {
         Task {
             do {
-                let allScripts = try await scriptsController.fetchScript()
-                // Take top 5
-                let top5 = Array(allScripts.prefix(5))
+                // Fetch conversations to get sorted scripted ideas
+                let conversations = try await scriptsController.fetchConversations()
+                
+                // Extract scripts from conversations that have them
+                let allScripts = conversations.compactMap { conversation -> ScriptedIdea? in
+                    guard let dbScript = conversation.scripted_ideas else { return nil }
+                    return ScriptedIdea(
+                        id: dbScript.id,
+                        chat_id: dbScript.chat_id,
+                        title: dbScript.title,
+                        description: dbScript.description,
+                        script: dbScript.script,
+                        thumbnail: dbScript.thumbnail,
+                        tags: dbScript.tags
+                    )
+                }
+                
+                // Take top 4 (already sorted by created_at in fetchConversations)
+                let top4 = Array(allScripts.prefix(4))
                 
                 await MainActor.run {
-                    self.recentScripts = top5
+                    self.recentScripts = top4
                     self.collectionView.reloadData()
                 }
             } catch {
@@ -378,6 +394,16 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
                 for: indexPath
             ) as! HeaderView
             header.configureHeader(text: "Recent Script")
+            header.showChevron(true)
+            
+            header.didTapChevron = { [weak self] in
+                let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
+                guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
+                guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
+                destinationVC.pageTitle = "Your Scripts"
+                self?.navigationController?.pushViewController(destinationVC, animated: true)
+            }
+            
             return header
             
         } else {
@@ -388,6 +414,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
                 for: indexPath
             ) as! HeaderView
             header.configureHeader(text: "Suggested For You")
+            header.showChevron(false) // No chevron for suggested
             header.isHidden = isSearching
             return header
         }

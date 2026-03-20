@@ -42,27 +42,9 @@ class ViewScriptsViewController: UIViewController {
         let layout = generateScriptsLayout(title: pageTitle)
         scriptsCollectionView.setCollectionViewLayout(layout, animated: true)
         
-        if pageTitle == "Chat History" {
-            //
-            //            Task {
-            //                do {
-            //                    let history = try await controller.fetchChatHistory()
-            //
-            //                    await MainActor.run {
-            //                        self.chatHistory = history
-            //                        self.scriptsCollectionView.reloadData()
-            //                    }
-            //
-            //                } catch {
-            //                    print("❌ Error fetching chat history: \(error)")
-            //                }
-            //  }
+        if pageTitle == "Chat History" || pageTitle == "Your Scripts" {
+            fetchMyScripts()
         } else {
-            // 2. Load Liked Ideas (Existing Logic)
-            //ideas = ideaResponse.ideas
-            //            likedIdeas = ideas.filter { LikedIds.likedIdeaIds.contains($0.id) }
-            //            NotificationCenter.default.addObserver(self, selector: #selector(syncLikedIdeas), name: .didUpdateLikedStatus, object: nil)
-            //            updateEmptyState()
             syncLikedIdeas()
         }
     }
@@ -71,8 +53,8 @@ class ViewScriptsViewController: UIViewController {
         super.viewWillAppear(animated)
         
         // Refresh the list every time the view appears
-        if pageTitle == "Your Scripts" {
-            //fetchMyScripts()
+        if pageTitle == "Your Scripts" || pageTitle == "Chat History" {
+            fetchMyScripts()
         }
     }
     
@@ -110,31 +92,42 @@ class ViewScriptsViewController: UIViewController {
     }
     
     
-    //    func fetchMyScripts() {
-    //        Task {
-    //            do {
-    //                // 1. Fetch fresh data from Supabase (Item is gone here)
-    //                let scripts = try await scriptsController.fetchScripts()
-    //
-    //                await MainActor.run {
-    //                    // 2. Update the main source of truth
-    //                    self.myScripts = scripts
-    //
-    //                    // 3. FIX: If we are searching, re-filter the new list immediately.
-    //                    // This removes the "ghost" item from the search results.
-    //                    if self.isFiltering {
-    //                        self.filterContentForSearchText(self.searchController.searchBar.text ?? "")
-    //                    } else {
-    //                        // Otherwise, just reload normally
-    //                        self.scriptsCollectionView.reloadData()
-    //                        self.updateEmptyState()
-    //                    }
-    //                }
-    //            } catch {
-    //                print("Error fetching scripts: \(error)")
-    //            }
-    //        }
-    //    }
+    func fetchMyScripts() {
+        Task {
+            do {
+                // Fetch conversations to get sorted scripted ideas
+                let conversations = try await controller.fetchConversations()
+                
+                // Extract scripts from conversations that have them
+                let scripts = conversations.compactMap { conversation -> ScriptedIdea? in
+                    guard let dbScript = conversation.scripted_ideas else { return nil }
+                    return ScriptedIdea(
+                        id: dbScript.id,
+                        chat_id: dbScript.chat_id,
+                        title: dbScript.title,
+                        description: dbScript.description,
+                        script: dbScript.script,
+                        thumbnail: dbScript.thumbnail,
+                        tags: dbScript.tags
+                    )
+                }
+
+                await MainActor.run {
+                    self.myScripts = scripts
+                    self.filteredMyScripts = scripts
+                    
+                    if self.isFiltering {
+                        self.filterContentForSearchText(self.searchController.searchBar.text ?? "")
+                    } else {
+                        self.scriptsCollectionView.reloadData()
+                        self.updateEmptyState()
+                    }
+                }
+            } catch {
+                print("Error fetching scripts: \(error)")
+            }
+        }
+    }
     
     
     //    @objc func syncLikedIdeas() {
@@ -164,7 +157,7 @@ class ViewScriptsViewController: UIViewController {
     private func updateEmptyState() {
         
         // Separate Empty State logic for "Your Scripts"
-        if pageTitle == "Chat History" {
+        if pageTitle == "Chat History" || pageTitle == "Your Scripts" {
             if myScripts.isEmpty {
                 showEmptyView(message: "No scripts yet", iconName: "doc.text")
                 scriptsCollectionView.backgroundView?.isHidden = false
@@ -219,7 +212,7 @@ class ViewScriptsViewController: UIViewController {
 extension ViewScriptsViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if pageTitle == "Chat History" {
+        if pageTitle == "Chat History" || pageTitle == "Your Scripts" {
             // If searching, use filtered list. Else, use full list.
             return isFiltering ? filteredMyScripts.count : myScripts.count
         } else {
@@ -229,7 +222,7 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        if pageTitle == "Chat History" {
+        if pageTitle == "Chat History" || pageTitle == "Your Scripts" {
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "scriptedIdeas",
                 for: indexPath
@@ -272,7 +265,7 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
 }
 
 func generateScriptsLayout(title: String) -> UICollectionViewLayout{
-    if title == "Chat History"{
+    if title == "Chat History" || title == "Your Scripts" {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .fractionalHeight(1.0)
@@ -338,7 +331,7 @@ extension ViewScriptsViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        if pageTitle == "Chat History" {
+        if pageTitle == "Chat History" || pageTitle == "Your Scripts" {
             
             // Get the correct script based on search state
             let script: ScriptedIdea
@@ -512,7 +505,7 @@ extension ViewScriptsViewController: UISearchResultsUpdating {
         
         // Update empty state based on search results if searching
         if isFiltering {
-            if pageTitle == "Chat History" && filteredMyScripts.isEmpty {
+            if (pageTitle == "Chat History" || pageTitle == "Your Scripts") && filteredMyScripts.isEmpty {
                 showEmptyView(message: "No results found", iconName: "magnifyingglass")
                 scriptsCollectionView.backgroundView?.isHidden = false
             } else if pageTitle != "Chat History" && filteredLikedIdeas.isEmpty {
