@@ -1,7 +1,20 @@
 import Foundation
 
+//nonisolated struct AudienceMetrics: Codable {
+//    let user_id: UUID
+//    let views: Int
+//    let views_change: Float
+//    let likes: Int
+//    let likes_change: Float
+//    let estimated_minutes_watched: Int
+//    let watch_time_change: Float
+//    let subscribers: Int
+//    let subscribers_change: Float
+//    let start_date: String
+//    let end_date: String
+//}
+//
 nonisolated struct AudienceMetrics: Codable {
-    let user_id: UUID
     let views: Int
     let views_change: Float
     let likes: Int
@@ -10,8 +23,6 @@ nonisolated struct AudienceMetrics: Codable {
     let watch_time_change: Float
     let subscribers: Int
     let subscribers_change: Float
-    let start_date: String
-    let end_date: String
 }
 
 enum AnalysisMetric {
