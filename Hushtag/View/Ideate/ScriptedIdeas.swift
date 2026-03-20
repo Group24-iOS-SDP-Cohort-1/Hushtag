@@ -415,9 +415,7 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
                         if let onUntagged = self.onDealUntagged {
                             self.dismiss(animated: true, completion: onUntagged)
                         } else {
-                            let alert = UIAlertController(title: "Unmarked", message: "Unmarked from \(deal.name)", preferredStyle: .alert)
-                            alert.addAction(UIAlertAction(title: "OK", style: .default))
-                            self.present(alert, animated: true)
+                            CapsuleNotification.show(message: "Unmarked from \(deal.name)", iconName: "bookmark.slash.fill")
                         }
                     }
                 } else {
@@ -429,9 +427,7 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
                         self.ideaView.reloadSections(IndexSet(integer: self.sections.firstIndex(of: .buttons) ?? 0))
                         NotificationCenter.default.post(name: .dealTagChanged, object: nil)
                         
-                        let alert = UIAlertController(title: "Marked", message: "Marked to \(deal.name)", preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: "OK", style: .default))
-                        self.present(alert, animated: true)
+                        CapsuleNotification.show(message: "Marked to \(deal.name)", iconName: "bookmark.fill")
                     }
                 }
             } catch {
