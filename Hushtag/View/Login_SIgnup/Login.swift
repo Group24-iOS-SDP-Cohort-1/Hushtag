@@ -22,7 +22,6 @@ class Login: UIViewController {
         styleTextField(passwordTextField)
         
         enableKeyboardDismissOnTap()
-        
     }
     
     func styleSocialButton(_ button: UIButton) {
@@ -58,6 +57,7 @@ class Login: UIViewController {
                 self.appUser = user
                 
                 self.navigateBasedOnOnboardingStatus()
+                
                 
             } catch let error as LocalizedError {
                 LoadingOverlay.shared.hide()
@@ -99,15 +99,7 @@ class Login: UIViewController {
             }
         }
     }
-    
-    
-    
 }
-
-
-
-
-
 
 extension UIViewController{
     func showAlert(title: String, message: String) {

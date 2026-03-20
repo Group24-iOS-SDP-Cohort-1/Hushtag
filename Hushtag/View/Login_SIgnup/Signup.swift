@@ -67,6 +67,7 @@ class Signup: UIViewController {
                 
                 self.appUser = user
                 self.navigateToPreferencesScreen()
+                await SessionManager.shared.restoreSession()
             } catch let error as LocalizedError {
                 LoadingOverlay.shared.hide()
                 self.showAlert(title: "Signup Failed", message: error.localizedDescription)
