@@ -137,8 +137,44 @@ class PreferencesViewController: UIViewController {
                 
                 // Only navigate away on success
                 if let nav = self.navigationController, nav.viewControllers.count > 1 {
+                    OpaqueLoadingScreen.shared
+                        .show(message: "Loading...")
+                    await SessionManager.shared.restoreSession()
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "yyyy-MM-dd"
+
+                    let endDate = formatter.string(from: Date())
+
+                    let startDate = formatter.string(
+                        from: Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+                    )
+
+                    await YouTubeController.shared.restoreYouTubeConnectionIfNeeded(
+                        startDate: startDate,
+                        endDate: endDate
+                    )
+                    OpaqueLoadingScreen.shared
+                        .hide()
                     nav.popViewController(animated: true)
                 } else {
+                    OpaqueLoadingScreen.shared
+                        .show(message: "Loading...")
+                    await SessionManager.shared.restoreSession()
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "yyyy-MM-dd"
+
+                    let endDate = formatter.string(from: Date())
+
+                    let startDate = formatter.string(
+                        from: Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+                    )
+
+                    await YouTubeController.shared.restoreYouTubeConnectionIfNeeded(
+                        startDate: startDate,
+                        endDate: endDate
+                    )
+                    OpaqueLoadingScreen.shared
+                        .hide()
                     self.navigateToHomeScreen()
                 }
                 

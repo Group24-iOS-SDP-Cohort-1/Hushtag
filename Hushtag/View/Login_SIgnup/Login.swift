@@ -189,7 +189,24 @@ extension UIViewController{
             
             
             if isComplete {
+                OpaqueLoadingScreen.shared
+                    .show(message: "Loading...")
                 await SessionManager.shared.restoreSession()
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd"
+
+                let endDate = formatter.string(from: Date())
+
+                let startDate = formatter.string(
+                    from: Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+                )
+
+                await YouTubeController.shared.restoreYouTubeConnectionIfNeeded(
+                    startDate: startDate,
+                    endDate: endDate
+                )
+                OpaqueLoadingScreen.shared
+                    .hide()
                 self.navigateToHomeScreen()
             } else {
                 self.navigateToPreferencesScreen()

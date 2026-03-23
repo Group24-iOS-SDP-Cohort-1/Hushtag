@@ -244,7 +244,8 @@ class AnalysisDataViewController: UIViewController {
             Task {
 
                 await MainActor.run {
-                    OpaqueLoadingScreen.shared.show()
+                    OpaqueLoadingScreen.shared
+                        .show(message: "Fetching your channel analytics...")
                 }
 
                 await YouTubeController.shared.restoreYouTubeConnectionIfNeeded(
