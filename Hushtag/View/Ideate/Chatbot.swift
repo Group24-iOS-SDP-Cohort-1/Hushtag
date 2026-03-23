@@ -204,7 +204,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return messages.count
+        return messages.count + 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -214,7 +214,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 withIdentifier: "PlatformCell",
                 for: indexPath
             ) as! PlatformCellTableViewCell
-            
             cell.onPlatformSelected = { [weak self] platform in
                 guard let self = self, let id = self.conversationID else { return }
                 self.selectedPlatform = platform
@@ -232,12 +231,16 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         }
         
         
+        let messageIndex = indexPath.row - 1
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
-        cell.configure(with: messages[indexPath.row])
+        cell.configure(with: messages[messageIndex])
+        
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         longPress.minimumPressDuration = 0.5
         cell.contentView.addGestureRecognizer(longPress)
-        cell.contentView.tag = indexPath.row
+        cell.contentView.tag = messageIndex
+        
         return cell
         
     }

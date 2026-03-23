@@ -1,10 +1,3 @@
-//
-//  PlatformCellTableViewCell.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 16/03/26.
-//
-
 import UIKit
 
 class PlatformCellTableViewCell: UITableViewCell {
@@ -49,5 +42,25 @@ class PlatformCellTableViewCell: UITableViewCell {
         selectedButton = sender
         let platform = sender.currentTitle ?? ""
         onPlatformSelected?(platform)
+    }
+    
+    func configure(selectedPlatform: String?) {
+        
+        // reset all
+        youtubebtn.backgroundColor = .gray
+        instagrambtn.backgroundColor = .gray
+        twitterbtn.backgroundColor = .gray
+        
+        // highlight selected
+        switch selectedPlatform {
+        case "YouTube":
+            youtubebtn.backgroundColor = .systemPurple
+        case "Instagram":
+            instagrambtn.backgroundColor = .systemPurple
+        case "Twitter":
+            twitterbtn.backgroundColor = .systemPurple
+        default:
+            break
+        }
     }
 }

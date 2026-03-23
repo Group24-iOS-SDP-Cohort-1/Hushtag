@@ -71,7 +71,7 @@ extension AIResponseRouter {
         platform: String? = nil
     ) async -> Intent {
 
-        let platformContext = platform.map { "Platform: \($0)" } ?? ""
+        let _ = platform.map { "Platform: \($0)" } ?? ""
 
         let prompt = """
         You are an intent classifier for a content creation app.
