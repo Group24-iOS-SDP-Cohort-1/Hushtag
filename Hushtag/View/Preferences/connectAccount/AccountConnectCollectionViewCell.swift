@@ -9,7 +9,6 @@ class AccountConnectCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var youtubeOutlet: UIButton!
     
     weak var delegate: PreferenceCardSelectionDelegate?
-    weak var delegate1: YouTubeConnectDelegate?
     
     var cardIndex: Int = -1
     
@@ -64,7 +63,7 @@ class AccountConnectCollectionViewCell: UICollectionViewCell {
     @IBAction func youtubeAction(_ sender: Any) {
         guard !isConnected else { return }
         //print("Youtube tapped")
-        delegate1?.didTapConnectYouTube(from: self)
+        //delegate1?.didTapConnectYouTube(from: self)
         
     }
     

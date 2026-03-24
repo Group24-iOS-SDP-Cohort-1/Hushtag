@@ -2,10 +2,6 @@ import UIKit
 import GoogleSignIn
 
 
-protocol YouTubeConnectDelegate: AnyObject {
-    func didTapConnectYouTube(from cell: AccountConnectCollectionViewCell)
-}
-
 protocol PreferenceCardSelectionDelegate: AnyObject {
     
     func preferenceCard(at index: Int, didChangeCompletion isCompleted: Bool)
@@ -29,9 +25,7 @@ class PreferencesViewController: UIViewController {
     // Store user's selected string options here.
     private var selectedOptions: [String: [String]] = [
         "Niche": [],
-        "Content Goals": [],
-        "Content Tone": [],
-        "Content Length": []
+        "Platform": []
     ]
     
     let controller = PreferencesController()
@@ -45,14 +39,14 @@ class PreferencesViewController: UIViewController {
         // If initial preferences are passed, prefill the options dictionary and completion states
         if let prefs = initialPreference {
             selectedOptions["Niche"] = prefs.niche.map { $0.rawValue }
-            selectedOptions["Content Goals"] = prefs.contentGoals.map { $0.rawValue }
-            selectedOptions["Content Tone"] = prefs.contentType.map { $0.rawValue }
-            selectedOptions["Content Length"] = prefs.contentLength.map { $0.rawValue }
+            selectedOptions["Platform"] = prefs.platform.map {
+                $0 == .x ? "x (twitter)" : $0.rawValue
+            }
             
-            completedStates[0] = !prefs.niche.isEmpty
-            completedStates[1] = !prefs.contentGoals.isEmpty
-            completedStates[2] = !prefs.contentType.isEmpty || !prefs.contentLength.isEmpty
-            completedStates[3] = prefs.isYoutubeConnected
+            if completedStates.count > 0 {
+                completedStates[0] = !prefs.niche.isEmpty
+                completedStates[1] = !prefs.platform.isEmpty
+            }
         }
         
         registerCells()
@@ -77,44 +71,6 @@ class PreferencesViewController: UIViewController {
         
         updateProgressFromCompletedStates(animated: false)
         
-        checkExistingYouTubeConnection()
-        
-    }
-    
-    private func checkExistingYouTubeConnection() {
-        Task {
-            let isConnected = await YouTubeController.shared.checkYouTubeConnection()
-            if isConnected {
-                
-                
-                do {
-                    //print("⏳ Google Login Complete: Testing proxy fetch for analytics...")
-                    
-                    let analyticsData = try await YouTubeController.shared.fetchAnalytics(
-                        startDate: "2026-01-01",
-                        endDate: "2026-02-26"
-                    )
-                    
-                    if let _ = String(data: analyticsData, encoding: .utf8) {
-                        //print("📈 GOOGLE SUCCESS - Raw YouTube Data:")
-                        //print(jsonString)
-                    }
-                } catch {
-                    //print("❌ GOOGLE PROXY FETCH FAILED: \(error)")
-                }
-                
-                await MainActor.run {
-                    
-                    if self.completedStates.count > 3 {
-                        self.completedStates[3] = true
-                        self.updateProgressFromCompletedStates()
-                        
-                        
-                        self.preferencesCollectionView.reloadData()
-                    }
-                }
-            }
-        }
     }
     
     
@@ -127,12 +83,8 @@ class PreferencesViewController: UIViewController {
                 
                 try await AuthManager.shared.completeOnboarding()
                 
-                let isYoutubeConnected = completedStates.last == true
-                
-                
                 try await controller.savePreferences(
-                    dict: selectedOptions,
-                    isYoutubeConnected: isYoutubeConnected
+                    dict: selectedOptions
                 )
                 
                 // Only navigate away on success
@@ -221,17 +173,8 @@ class PreferencesViewController: UIViewController {
     
     
     func registerCells(){
-        
-        
         preferencesCollectionView.register(UINib(nibName: "NicheCollectionCardViewCell", bundle: nil), forCellWithReuseIdentifier: "nicheCard")
-        
-        preferencesCollectionView.register(UINib(nibName: "ContentGoalsCardCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "goalsCell")
-        
-        preferencesCollectionView.register(UINib(nibName: "ContentPreferencesCardCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "contentPreferencesCell")
-        
-        preferencesCollectionView.register(UINib(nibName: "ConnectAccountCardCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "connectAccountCell")
-        
-        preferencesCollectionView.register(UINib(nibName: "AccountConnectCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "accountCell")
+        preferencesCollectionView.register(UINib(nibName: "ChoosePlatformCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "platformCard")
     }
     
     func generateLayout() -> UICollectionViewLayout {
@@ -308,75 +251,32 @@ extension PreferencesViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = preferenceItems[indexPath.item]
         
-        
-        
-        if indexPath.item == 0 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "nicheCard", for: indexPath) as! NicheCollectionCardViewCell
-            cell.configureCell(with : item)
+        if indexPath.item == 1 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "platformCard", for: indexPath) as! ChoosePlatformCollectionViewCell
+            cell.configureCell(with: item)
             
             // Preselect based on our fetched data
-            if let selections = selectedOptions["Niche"] {
+            if let selections = selectedOptions["Platform"] {
                 cell.preselectOptions(selected: selections)
             }
             
             cell.delegate = self
             cell.cardIndex = indexPath.item
-            
-            
-            
-            return cell
-        }else if indexPath.item == 1{
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "goalsCell", for: indexPath) as! ContentGoalsCardCollectionViewCell
-            cell.configureCell(with : item)
-            
-            // Preselect based on our fetched data
-            if let selections = selectedOptions["Content Goals"] {
-                cell.preselectOptions(selected: selections)
-            }
-            
-            cell.delegate = self
-            cell.cardIndex = indexPath.item
-            
-            
-            
-            return cell
-        }else if indexPath.item == 2{
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "contentPreferencesCell", for: indexPath) as! ContentPreferencesCardCollectionViewCell
-            cell.configureCell(with : item)
-            
-            // Preselect based on our fetched data
-            let vibeSelections = selectedOptions["Content Tone"] ?? []
-            let lengthSelections = selectedOptions["Content Length"] ?? []
-            cell.preselectOptions(vibeSelected: vibeSelections, lengthSelected: lengthSelections)
-            
-            cell.delegate = self
-            cell.cardIndex = indexPath.item
-            
-            
-            
-            return cell
-        } else if indexPath.item == 3{
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "accountCell", for: indexPath) as! AccountConnectCollectionViewCell
-            
-            
-            cell.isConnected = completedStates[indexPath.item]
-            
-            cell.configureCell(with : item)
-            
-            
-            cell.delegate = self
-            cell.delegate1 = self
-            cell.cardIndex = indexPath.item
-            
-            
             
             return cell
         }
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "nicheCard", for: indexPath) as! NicheCollectionCardViewCell
         cell.configureCell(with : item)
+        
+        // Preselect based on our fetched data
+        if let selections = selectedOptions["Niche"] {
+            cell.preselectOptions(selected: selections)
+        }
+        
         cell.delegate = self
         cell.cardIndex = indexPath.item
+        
         return cell
     }
     
@@ -413,59 +313,3 @@ extension PreferencesViewController: PreferenceCardSelectionDelegate {
     
 }
 
-extension PreferencesViewController: YouTubeConnectDelegate {
-    func didTapConnectYouTube(from cell: AccountConnectCollectionViewCell) {
-        connectYouTube(cell: cell)
-    }
-    
-    func connectYouTube(cell: AccountConnectCollectionViewCell) {
-        
-        let viewModel = SignInModel()
-        
-        Task {
-            do {
-                try await viewModel.connectYouTube()
-                
-                do {
-                    //print("⏳ Testing proxy fetch for analytics...")
-                    
-                    let analyticsData = try await YouTubeController.shared.fetchAnalytics(
-                        startDate: "2026-01-01",
-                        endDate: "2026-02-26"
-                    )
-                    
-                    
-                    if let _ = String(data: analyticsData, encoding: .utf8) {
-                        //print("📈 PROXY SUCCESS - Raw YouTube Data:")
-                        //print(jsonString)
-                    }
-                } catch {
-                    //print("❌ PROXY FETCH FAILED: \(error)")
-                }
-                
-                await MainActor.run {
-                    cell.isConnected = true
-                    cell.updateButtonAppearance(
-                        cell.youtubeOutlet,
-                        isSelected: true
-                    )
-                    
-                    self.completedStates[cell.cardIndex] = true
-                    self.updateProgressFromCompletedStates()
-                    
-                    let alert = UIAlertController(title: "Success", message: "Successfully connected YouTube account!", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .default))
-                    self.present(alert, animated: true)
-                }
-                
-            } catch {
-                await MainActor.run {
-                    let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .default))
-                    self.present(alert, animated: true)
-                }
-                //print("❌ YouTube connect failed:", error)
-            }
-        }
-    }
-}

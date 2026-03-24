@@ -12,14 +12,15 @@ class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var innerCollectionView: UICollectionView!
     
     var sections: [PreferenceSection] = []
-    let goalMapping: [String: ContentGoal] = [
-        "Grow Audience": .growth,
-        "Boost Engagement": .engagement,
-        "Post More Consistently": .consistency,
-        "Experiment with Trends": .creativity,
-        "Strengthen My Brand": .branding
-    ]
     
+//    let goalMapping: [String: ContentGoal] = [
+//        "Grow Audience": .growth,
+//        "Boost Engagement": .engagement,
+//        "Post More Consistently": .consistency,
+//        "Experiment with Trends": .creativity,
+//        "Strengthen My Brand": .branding
+//    ]
+
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -61,15 +62,15 @@ class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
             innerCollectionView.deselectItem(at: indexPath, animated: false)
         }
         
-        for (sectionIndex, section) in sections.enumerated() {
-            for (itemIndex, optionTitle) in section.options.enumerated() {
-                if let rawValue = goalMapping[optionTitle]?.rawValue,
-                   selected.contains(rawValue.lowercased()) {
-                    let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
-                    innerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
-                }
-            }
-        }
+//        for (sectionIndex, section) in sections.enumerated() {
+//            for (itemIndex, optionTitle) in section.options.enumerated() {
+//                if let rawValue = goalMapping[optionTitle]?.rawValue,
+//                   selected.contains(rawValue.lowercased()) {
+//                    let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
+//                    innerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+//                }
+//            }
+//        }
     }
     
     
@@ -84,14 +85,14 @@ class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
             .sorted { $0.item < $1.item }
             .map { sections[$0.section].options[$0.item] } ?? []
         
-        let selectedRawValues: [String] = selectedTitles.compactMap { title in
-            goalMapping[title]?.rawValue
-        }
+//        let selectedRawValues: [String] = selectedTitles.compactMap { title in
+//            goalMapping[title]?.rawValue
+//        }
         
-        delegate?.preferenceCard(
-            at: "Content Goals",
-            didUpdateSelection: selectedRawValues
-        )
+//        delegate?.preferenceCard(
+//            at: "Content Goals",
+//            didUpdateSelection: selectedRawValues
+//        )
     }
     
     

@@ -10,19 +10,13 @@ import Foundation
 nonisolated struct PreferenceInsertPayload: Codable {
     let user_id: UUID
     let niche: [String]
-    let content_goals: [String]
-    let content_length: [String]
-    let content_type: [String]
-    let youtube_connection: Bool
+    let platform: [String]
 }
 
 struct UserPreference {
     let user_id: UUID
     let niche: [Niche]
-    let contentGoals: [ContentGoal]
-    let contentLength: [ContentLength]
-    let contentType: [ContentType]
-    let isYoutubeConnected: Bool
+    let platform: [Platforms]
 }
 
 nonisolated struct PreferenceDB: Codable, Sendable {
@@ -30,12 +24,17 @@ nonisolated struct PreferenceDB: Codable, Sendable {
     let user_id: UUID
     let created_at: Date
     let niche: [Niche]?
-    let content_goals: [ContentGoal]?
-    let content_length: [ContentLength]?
-    let content_type: [ContentType]?
-    let youtube_connection: Bool?
+    let platform: [Platforms]?
 }
 
+enum Platforms: String, Codable, CustomStringConvertible{
+    case youtube
+    case instagram
+    case x
+    var description: String {
+        rawValue
+    }
+}
 
 enum Niche: String, Codable, CustomStringConvertible {
     case beauty
@@ -55,40 +54,7 @@ enum Niche: String, Codable, CustomStringConvertible {
     }
 }
 
-enum ContentType: String, Codable, CustomStringConvertible {
-    case funny
-    case relatable
-    case casual
-    case aesthetic
-    case trendy
-    case motivational
-    case lowkey
-    case sciFi = "sci-fi"
-    case other
-    
-    var description: String {
-        rawValue
-    }
-}
 
-enum ContentLength: String, Codable, CustomStringConvertible {
-    case shortForm = "short-form"
-    case longForm = "long-form"
-    var description: String {
-        rawValue
-    }
-}
-
-enum ContentGoal: String, Codable, CustomStringConvertible {
-    case growth
-    case engagement
-    case consistency
-    case creativity
-    case branding
-    var description: String {
-        rawValue
-    }
-}
 
 
 
@@ -131,62 +97,16 @@ struct PreferencesData {
         ),
         PreferenceItem(
             id: 2,
-            title: "Set your content goals",
-            subheading: "Select your main content goals",
+            title: "Choose Platform",
+            subheading: "Pick your preferred platform",
             sections: [
                 PreferenceSection(
                     title: "",
                     hasTextInput: false,
                     options: [
-                        "Grow Audience",
-                        "Boost Engagement",
-                        "Post More Consistently",
-                        "Experiment with Trends",
-                        "Strengthen My Brand"
-                    ]
-                )
-            ]
-        ),
-        PreferenceItem(
-            id: 3,
-            title: "Content Preferences",
-            subheading: "Tone and format preferences",
-            sections: [
-                PreferenceSection(
-                    title: "What best describes your vibe?",
-                    hasTextInput: false,
-                    options: [
-                        "Funny",
-                        "Relatable",
-                        "Casual",
-                        "Motivational",
-                        "Aesthetic",
-                        "Trendy",
-                        "Other"
-                    ]
-                ),
-                PreferenceSection(
-                    title: "What kind of content do you prefer making?",
-                    hasTextInput: false,
-                    options: [
-                        "Short-Form",
-                        "Long-Form"
-                    ]
-                )
-            ]
-        ),
-        PreferenceItem(
-            id: 4,
-            title: "Add your YouTube account",
-            subheading: "Link your YouTube account to get personalized insights on current trends, detailed analysis of your videos and account insights.",
-            sections: [
-                PreferenceSection(
-                    title: "",
-                    hasTextInput: false,
-                    options: [
-                        "Connect YouTube",
-                        "Connect Instagram",
-                        "Connect Facebook"
+                        "Youtube",
+                        "Instagram",
+                        "X (Twitter)"
                     ]
                 )
             ]

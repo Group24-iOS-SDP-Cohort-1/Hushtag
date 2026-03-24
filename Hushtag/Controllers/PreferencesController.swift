@@ -6,19 +6,19 @@ final class PreferencesController {
     private let client = SupabaseConfig.client
     
     func savePreferences(
-        dict: [String: [String]],
-        isYoutubeConnected: Bool
+        dict: [String: [String]]
     ) async throws {
         
         let session = try await client.auth.session
         
+        let platformMapped = (dict["Platform"] ?? []).map {
+            $0 == "x (twitter)" ? "x" : $0
+        }
+        
         let payload = PreferenceInsertPayload(
             user_id: session.user.id,
             niche: dict["Niche"] ?? [],
-            content_goals: dict["Content Goals"] ?? [],
-            content_length: dict["Content Length"] ?? [],
-            content_type: dict["Content Tone"] ?? [],
-            youtube_connection: isYoutubeConnected
+            platform: platformMapped
         )
         
         try await client.database
@@ -49,10 +49,7 @@ final class PreferencesController {
         UserPreference(
             user_id: preference.user_id,
             niche: preference.niche ?? [],
-            contentGoals: preference.content_goals  ?? [],
-            contentLength: preference.content_length ?? [],
-            contentType: preference.content_type ?? [],
-            isYoutubeConnected: preference.youtube_connection ?? false
+            platform: preference.platform ?? []
         )
     }
 }
