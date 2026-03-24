@@ -14,9 +14,6 @@ class IdeaCells: UICollectionViewCell {
     @IBOutlet weak var ideaTitle: UILabel!
     @IBOutlet weak var ideaView: UIView!
     @IBOutlet weak var badgeStack: UIStackView!
-    @IBOutlet weak var keywordImage2: UIImageView!
-    @IBOutlet weak var keywordText2: UILabel!
-    
     @IBOutlet weak var likeButton: UIButton!
     weak var delegate: IdeaCellDelegate?
     private var ideaKey: String?
@@ -36,7 +33,6 @@ class IdeaCells: UICollectionViewCell {
         ideaTitle.text = idea.title
         configureHashtags(idea.hashtags)
         updateLikeUI()
-        keywordText2.text = idea.format
     }
 
     func configureHashtags(_ hashtags: [String]) {

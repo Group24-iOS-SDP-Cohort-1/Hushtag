@@ -135,11 +135,43 @@
                     <connections>
                         <outlet property="collectionView" destination="Mxq-Iu-w0r" id="YeI-Ho-aaB"/>
                         <segue destination="Yb8-13-5gt" kind="show" identifier="goToScript" animates="NO" id="rsD-Te-pVV"/>
+                        <segue destination="EIE-es-Oql" kind="show" id="ndu-bI-26X"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3209.9236641221373" y="409.85915492957747"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="QWX-XP-l6H">
+            <objects>
+                <viewController id="EIE-es-Oql" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="OGz-EZ-DzP">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="uf0-Do-8eL">
+                            <size key="itemSize" width="128" height="128"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="vRx-bG-XEh">
+                                <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="faE-AA-O0X">
+                                    <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </collectionViewCellContentView>
+                            </collectionViewCell>
+                        </cells>
+                    </collectionView>
+                    <navigationItem key="navigationItem" id="IaK-iF-727"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Atu-pn-tAY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4088" y="792"/>
         </scene>
         <!--Scripted Ideas-->
         <scene sceneID="rvD-Ad-AbP">
@@ -276,7 +308,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DED-8J-sZv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4136.6412213740459" y="409.85915492957747"/>
+            <point key="canvasLocation" x="4088" y="129"/>
         </scene>
         <!--AddPostViewController-->
         <scene sceneID="ujL-zp-sMc">
@@ -286,7 +318,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PGh-Qw-ceZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4744" y="415"/>
+            <point key="canvasLocation" x="4797" y="129"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="cEe-f7-hTo">

@@ -33,7 +33,7 @@
                                 <rect key="frame" x="379.66666666666669" y="194" width="103.33333333333331" height="32"/>
                                 <color key="tintColor" name="AccentColor"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="tinted" title="Draft Script">
+                                <buttonConfiguration key="configuration" style="gray" title="Draft Script">
                                     <fontDescription key="titleFontDescription" style="UICTFontTextStyleSubhead"/>
                                 </buttonConfiguration>
                             </button>

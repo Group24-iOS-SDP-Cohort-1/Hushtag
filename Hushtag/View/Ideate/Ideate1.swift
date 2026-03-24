@@ -12,8 +12,30 @@ class Ideate1: UIViewController {
     var recentScripts: [ScriptedIdea] = []
     var likedIdeas: [Idea] = []
     private let scriptsController = ScriptedIdeasController()
-    
     @IBOutlet weak var collectionView: UICollectionView!
+    
+    enum SectionType {
+        case search
+        case chatbot
+        case liked
+        case recent
+        case suggested
+    }
+    var sections: [SectionType] {
+        var result: [SectionType] = [.search, .chatbot]
+        
+        if !likedIdeas.isEmpty {
+            result.append(.liked)
+        }
+        
+        if !recentScripts.isEmpty && !isSearching {
+            result.append(.recent)
+        }
+        
+        result.append(.suggested)
+        
+        return result
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -123,7 +145,7 @@ class Ideate1: UIViewController {
         ideas[index].liked = LikedIds.likedIdeaIds.contains(ideaKey)
         
         // Dynamic section adjustment
-        let suggestedSectionIndex = (recentScripts.isEmpty || isSearching) ? 3 : 4
+        let suggestedSectionIndex = sections.firstIndex(of: .suggested) ?? 0
         
         if let cell = collectionView.cellForItem(
             at: IndexPath(row: index, section: suggestedSectionIndex)
@@ -148,159 +170,145 @@ class Ideate1: UIViewController {
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, environment in
             
-            // Section 0: Search Header
-            if sectionIndex == 0 {
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(1))
-                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            let sectionType = self.sections[sectionIndex]
+            
+            switch sectionType {
                 
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(1))
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-                
-                let section = NSCollectionLayoutSection(group: group)
-                let headerSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(370)
-                )
-                let header = NSCollectionLayoutBoundarySupplementaryItem(
-                    layoutSize: headerSize,
-                    elementKind: UICollectionView.elementKindSectionHeader,
-                    alignment: .top
-                )
-                section.boundarySupplementaryItems = [header]
-                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 15, trailing: 0)
-                
-                return section
-            } else if sectionIndex == 1 {
+            case .search:
                 let itemSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .estimated(116)
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .estimated(1)
                 )
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 
-                let groupSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(170)
-                )
                 let group = NSCollectionLayoutGroup.horizontal(
-                    layoutSize: groupSize,
+                    layoutSize: itemSize,
                     subitems: [item]
                 )
                 
                 let section = NSCollectionLayoutSection(group: group)
                 
-                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 15, trailing: 0)
-                
-                return section
-                
-            } else if sectionIndex == 2 {
-                let itemSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(0.95),
-                    heightDimension: .fractionalHeight(1.0)
-                )
-                let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                //item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10)
-                
-                let groupSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(0.65),
-                    heightDimension: .estimated(120)
-                )
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-                
-                let section = NSCollectionLayoutSection(group: group)
-                section.orthogonalScrollingBehavior = .continuous
-                section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 0, bottom: 15, trailing: 0)
-                
-                // Header (using HeaderView)
-                let headerSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(self.isSearching ? 0 : 50)
-                )
                 let header = NSCollectionLayoutBoundarySupplementaryItem(
-                    layoutSize: headerSize,
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1.0),
+                        heightDimension: .estimated(370)
+                    ),
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .top
                 )
-                header.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+                
                 section.boundarySupplementaryItems = [header]
                 
                 return section
-            }
-            
-            // Determine if Section 1 is "Recent Scripts" or "Suggested"
-            let isRecentScriptsSection = !self.recentScripts.isEmpty && !self.isSearching && sectionIndex == 3
-            
-            if isRecentScriptsSection {
-                // Horizontal Layout for Recent Scripts
-                let itemSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(0.95),
-                    heightDimension: .fractionalHeight(1.0)
-                )
-                let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                //item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10)
                 
-                let groupSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(0.65),
-                    heightDimension: .estimated(120)
+            case .chatbot:
+                let itemSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(116)
                 )
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+                
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                
+                let group = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: itemSize,
+                    subitems: [item]
+                )
                 
                 let section = NSCollectionLayoutSection(group: group)
-                section.orthogonalScrollingBehavior = .continuous
-                section.contentInsets = NSDirectionalEdgeInsets(top: 15, leading: 0, bottom: 15, trailing: 0)
-                
-                // Header (using HeaderView)
-                let headerSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(self.isSearching ? 0 : 50)
+                section.contentInsets = NSDirectionalEdgeInsets(
+                    top: 20,
+                    leading: 0,
+                    bottom: 20,
+                    trailing: 0
                 )
+                return section
+                
+            case .liked:
+                return self.horizontalScrollingSection()
+                
+            case .recent:
+                return self.horizontalScrollingSection()
+                
+            case .suggested:
+                let itemSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(116)
+                )
+                
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                
+                let group = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: itemSize,
+                    subitems: [item]
+                )
+                
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = NSDirectionalEdgeInsets(
+                    top: 20,
+                    leading: 0,
+                    bottom: 20,
+                    trailing: 0
+                )
+                
                 let header = NSCollectionLayoutBoundarySupplementaryItem(
-                    layoutSize: headerSize,
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1.0),
+                        heightDimension: .estimated(50)
+                    ),
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .top
                 )
-                header.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+                
                 section.boundarySupplementaryItems = [header]
+                section.interGroupSpacing = 15
                 
                 return section
             }
-            
-            // Section 2 (or 1): Suggested Ideas (Vertical List)
-            let itemSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1),
-                heightDimension: .estimated(116)
-            )
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            
-            let groupSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .estimated(170)
-            )
-            let group = NSCollectionLayoutGroup.horizontal(
-                layoutSize: groupSize,
-                subitems: [item]
-            )
-            
-            let section = NSCollectionLayoutSection(group: group)
-            
-            let headerSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .estimated(50)
-            )
-            let header = NSCollectionLayoutBoundarySupplementaryItem(
-                layoutSize: headerSize,
-                elementKind: UICollectionView.elementKindSectionHeader,
-                alignment: .top
-            )
-            header.contentInsets = NSDirectionalEdgeInsets(top: -5, leading: 0, bottom: 0, trailing: 0)
-            
-            section.boundarySupplementaryItems = [header]
-            section.interGroupSpacing = 15
-            let sectionTopInset: CGFloat = self.isSearching ? 0 : 5
-            section.contentInsets = NSDirectionalEdgeInsets(top: sectionTopInset, leading: 0, bottom: 0, trailing: 0)
-            
-            return section
         }
     }
+    func horizontalScrollingSection() -> NSCollectionLayoutSection {
+        
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(0.95),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(0.65),
+            heightDimension: .estimated(120)
+        )
+        
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: groupSize,
+            subitems: [item]
+        )
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .continuous
+        
+        
+        let header = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(50)
+            ),
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+        )
+        
+        section.boundarySupplementaryItems = [header]
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: 20,
+            leading: 0,
+            bottom: 20,
+            trailing: 0
+        )
+        
+        return section
+    }
+    
     
     private func syncLikedState(_ ideas: [Idea]) -> [Idea] {
         let likedKeys = LikedIds.likedIdeaIds
@@ -321,38 +329,38 @@ class Ideate1: UIViewController {
 
 extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return (recentScripts.isEmpty || isSearching) ? 4 : 5
+        return sections.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0 {
+        let sectionType = sections[section]
+        
+        switch sectionType {
+        case .search:
             return 0
-        } else if section == 1 {
+        case .chatbot:
             return 1
-        } else if section == 2 {
+        case .liked:
             return likedIdeas.count
-        } else if !recentScripts.isEmpty && !isSearching && section == 3 {
+        case .recent:
             return recentScripts.count
+        case .suggested:
+            return ideas.count
         }
-        return ideas.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        // Recent Scripts Section
-        if !recentScripts.isEmpty && !isSearching && indexPath.section == 3 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scriptCellIdeate", for: indexPath) as! Script_cell_ideate
-            let script = recentScripts[indexPath.row]
-            cell.configureCell(with: script)
-            return cell
-        } else if indexPath.section == 1 {
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "chatbotAssistant",
-                for: indexPath
-            )
+        let sectionType = sections[indexPath.section]
+        
+        switch sectionType {
+            
+        case .chatbot:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "chatbotAssistant", for: indexPath)
             cell.applyLiquidGlassEffect()
             return cell
-        } else if indexPath.section == 2 {
+            
+        case .liked:
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "likedCellsNew",
                 for: indexPath
@@ -361,16 +369,24 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             let idea: Idea
             idea = likedIdeas[indexPath.row]
             cell.configureCell(idea: idea)
+            cell.likeButton.setImage(UIImage(systemName: "bookmark.fill"), for: .normal)
+            
             return cell
+            
+        case .recent:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scriptCellIdeate", for: indexPath) as! Script_cell_ideate
+            cell.configureCell(with: recentScripts[indexPath.row])
+            return cell
+            
+        case .suggested:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideaCell", for: indexPath) as! IdeaCells
+            cell.configure(idea: ideas[indexPath.row])
+            cell.delegate = self
+            return cell
+            
+        default:
+            return UICollectionViewCell()
         }
-        
-        // Suggested Ideas Section (Fallback for other sections)
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideaCell",for: indexPath) as! IdeaCells
-        
-        let idea = ideas[indexPath.row]
-        cell.configure(idea: idea)
-        cell.delegate = self
-        return cell
     }
     
     func collectionView( _ collectionView: UICollectionView,viewForSupplementaryElementOfKind kind: String,at indexPath: IndexPath
@@ -380,38 +396,79 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             return UICollectionReusableView()
         }
         
-        if indexPath.section == 0 {
+        
+        //        } else if indexPath.section == 2 {
+        //            // Recent Scripts Header using HeaderView
+        //            let header = collectionView.dequeueReusableSupplementaryView(
+        //                ofKind: kind,
+        //                withReuseIdentifier: "headerCell",
+        //                for: indexPath
+        //            ) as! HeaderView
+        //            header.configureHeader(text: "Saved Ideas")
+        //            header.showChevron(true)
+        //
+        //            header.didTapChevron = { [weak self] in
+        //                let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
+        //                guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
+        //                guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
+        //                destinationVC.pageTitle = "Liked Ideas"
+        //                self?.navigationController?.pushViewController(destinationVC, animated: true)
+        //            }
+        //
+        //            return header
+        //
+        //        } else if !recentScripts.isEmpty && !isSearching && indexPath.section == 3 {
+        //            // Recent Scripts Header using HeaderView
+        //            let header = collectionView.dequeueReusableSupplementaryView(
+        //                ofKind: kind,
+        //                withReuseIdentifier: "headerCell",
+        //                for: indexPath
+        //            ) as! HeaderView
+        //            header.configureHeader(text: "Generated Posts")
+        //            header.showChevron(true)
+        //
+        //            header.didTapChevron = { [weak self] in
+        //                let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
+        //                guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
+        //                guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
+        //                destinationVC.pageTitle = "Your Scripts"
+        //                self?.navigationController?.pushViewController(destinationVC, animated: true)
+        //            }
+        
+        let sectionType = sections[indexPath.section]
+        
+        switch sectionType {
+            
+        case .search:
             let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: "IdeaSearch",
                 for: indexPath
             ) as! IdeaSearch
-            
             header.delegate = self
             return header
             
-        } else if indexPath.section == 2 {
-            // Recent Scripts Header using HeaderView
+        case .liked:
             let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: "headerCell",
                 for: indexPath
             ) as! HeaderView
+            
             header.configureHeader(text: "Saved Ideas")
             header.showChevron(true)
             
             header.didTapChevron = { [weak self] in
                 let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
-                guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
-                guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
+                guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else { return }
+                guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else { return }
                 destinationVC.pageTitle = "Liked Ideas"
                 self?.navigationController?.pushViewController(destinationVC, animated: true)
             }
             
             return header
             
-        } else if !recentScripts.isEmpty && !isSearching && indexPath.section == 3 {
-            // Recent Scripts Header using HeaderView
+        case .recent:
             let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: "headerCell",
@@ -427,56 +484,54 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
                 destinationVC.pageTitle = "Your Scripts"
                 self?.navigationController?.pushViewController(destinationVC, animated: true)
             }
-            
             return header
             
-        }
-        else {
-            // Suggested Header
+        case .suggested:
             let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: "headerCell",
                 for: indexPath
             ) as! HeaderView
             header.configureHeader(text: "Suggested For You")
-            header.showChevron(false) // No chevron for suggested
+            header.showChevron(false)
             header.isHidden = isSearching
             return header
+            
+        default:
+            return UICollectionReusableView()
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        // Handle Tap on Recent Script
-        if !recentScripts.isEmpty && !isSearching && indexPath.section == 3 {
+        let sectionType = sections[indexPath.section]
+
+        switch sectionType {
+
+        case .chatbot:
+            let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
+            guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController,
+                  let chatbotVC = navVC.topViewController as? Chatbot else { return }
+            self.navigationController?.pushViewController(chatbotVC, animated: true)
+
+        case .recent:
             let script = recentScripts[indexPath.row]
             let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
             if let destinationVC = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas {
                 destinationVC.idea = script
                 self.navigationController?.pushViewController(destinationVC, animated: true)
             }
-            return
-        }
-        
-        if indexPath.section == 1 {
-            let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
-            
-            guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController,
-                  let chatbotVC = navVC.topViewController as? Chatbot else { return }
-            
-            self.navigationController?.pushViewController(chatbotVC, animated: true)
-        }
-        
-        // Handle Tap on Suggested Idea (correct section index)
-        let suggestedSectionIndex = (recentScripts.isEmpty || isSearching) ? 3 : 4
-        
-        if indexPath.section == suggestedSectionIndex {
+
+        case .suggested:
             let idea = ideas[indexPath.row]
             let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
-            guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
-            guard let destinationVC = navVC.topViewController as? ViewIdea else {return}
+            guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else { return }
+            guard let destinationVC = navVC.topViewController as? ViewIdea else { return }
             destinationVC.idea = idea
             self.navigationController?.pushViewController(destinationVC, animated: true)
+
+        default:
+            break
         }
     }
 }
@@ -534,7 +589,6 @@ extension Ideate1: IdeaSearchDelegate {
                     }
                 }
                 
-                
                 await MainActor.run {
                     self.ideas = mappedIdeas
                     print("Ideas Count:", self.ideas.count)
@@ -585,13 +639,14 @@ extension Ideate1: IdeaCellDelegate {
                         SessionManager.shared.personalizedIdeas[smIndex].liked = !isCurrentlyLiked
                     }
                     if isCurrentlyLiked {
+                        // UNLIKE → add back to suggested
                         likedIdeas.removeAll { $0.ideaKey == ideaKey }
+                        ideas.insert(idea, at: 0)
                     } else {
+                        // LIKE → move from suggested → liked
                         likedIdeas.insert(idea, at: 0)
+                        ideas.removeAll { $0.ideaKey == ideaKey }
                     }
-                    
-                    // Reload liked section
-                    
                     
                     // Notify other screens
                     NotificationCenter.default.post(
@@ -599,19 +654,32 @@ extension Ideate1: IdeaCellDelegate {
                         object: ideaKey
                     )
                     
-                    let suggestedSectionIndex = (recentScripts.isEmpty || self.isSearching) ? 3 : 4
+                    guard let suggestedSectionIndex = sections.firstIndex(of: .suggested) else { return }
                     
                     if let cell = collectionView.cellForItem(
                         at: IndexPath(row: index, section: suggestedSectionIndex)
                     ) as? IdeaCells {
                         cell.updateLikeUI()
                     }
-                    collectionView.reloadSections(IndexSet(integer: 2))
+                        collectionView.reloadData()
                 }
                 
             } catch {
                 print("❌ Like toggle failed:", error)
             }
         }
+    }
+}
+
+extension Ideate1: LikedCellDelegate {
+    
+    func didTapDraftScript(for idea: Idea) {
+        print("Draft tapped:", idea.title)
+        // you already handle this elsewhere probably
+    }
+
+    func didToggleLike(for ideaKey: String) {
+        // reuse SAME logic as suggested toggle
+        didToggleLikeFromFeed(for: ideaKey)
     }
 }
