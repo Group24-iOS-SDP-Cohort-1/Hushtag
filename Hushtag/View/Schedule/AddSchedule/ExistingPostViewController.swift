@@ -113,7 +113,21 @@ extension ExistingPostViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        // For now, just dismiss the modal when a script is selected
-        dismiss(animated: true)
+        let script = scripts[indexPath.row]
+        
+        let storyboard = UIStoryboard(name: "CreatePost", bundle: nil)
+        if let nav = storyboard.instantiateViewController(withIdentifier: "NavCreatePost") as? UINavigationController,
+           let createVC = nav.topViewController as? CreatePostViewController {
+            
+            createVC.prefill(title: script.title, description: script.description)
+            
+            // Dismiss current selector then present create post
+            self.dismiss(animated: true) {
+                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let rootVC = windowScene.windows.first?.rootViewController {
+                    rootVC.present(nav, animated: true)
+                }
+            }
+        }
     }
 }

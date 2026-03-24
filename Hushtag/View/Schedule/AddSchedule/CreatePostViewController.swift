@@ -6,6 +6,7 @@ class CreatePostViewController: UIViewController {
 
     // MARK: - Data
     private var selectedVideoURL: URL?
+    private var selectedThumbnailURL: URL?
     private var selectedCategory: YouTubeCategory = .filmAndAnimation
     private var selectedPrivacy: String = "Public"
 
@@ -53,6 +54,8 @@ class CreatePostViewController: UIViewController {
     // Shared references to input fields from cells
     private weak var uploadVideoButton: UIButton?
     private weak var videoPreviewLabel: UILabel?
+    private weak var uploadThumbnailButton: UIButton?
+    private weak var thumbnailPreviewLabel: UILabel?
     private let titleTextView = UITextView()
     private let titlePlaceholder = UILabel()
     private let titleContainer = UIView()
@@ -97,6 +100,18 @@ class CreatePostViewController: UIViewController {
         buildLayout()
         setupNavigationBar()
         setupKeyboardHandling()
+    }
+    
+    func prefill(title: String?, description: String?) {
+        if let title = title {
+            titleTextView.text = title
+            titlePlaceholder.isHidden = !title.isEmpty
+        }
+        
+        if let description = description {
+            descriptionTextView.text = description
+            descriptionPlaceholder.isHidden = !description.isEmpty
+        }
     }
 
     // MARK: - Layout & Navigation
@@ -241,6 +256,28 @@ class CreatePostViewController: UIViewController {
         present(picker, animated: true)
     }
 
+    @objc private func removeVideoTapped() {
+        selectedVideoURL = nil
+        tableView.reloadSections(IndexSet(integer: Section.media.rawValue), with: .automatic)
+    }
+
+    @objc private func uploadThumbnailTapped() {
+        var config = PHPickerConfiguration()
+        config.filter = .images
+        config.selectionLimit = 1
+
+        let picker = PHPickerViewController(configuration: config)
+        picker.delegate = self
+        // Tag the picker if needed to distinguish? Or just check filter in delegate.
+        // PHPicker doesn't have a tag easily, but we can check hasItemConformingToTypeIdentifier.
+        present(picker, animated: true)
+    }
+
+    @objc private func removeThumbnailTapped() {
+        selectedThumbnailURL = nil
+        tableView.reloadSections(IndexSet(integer: Section.media.rawValue), with: .automatic)
+    }
+
     @objc private func closeTapped() {
         dismiss(animated: true)
     }
@@ -338,18 +375,41 @@ extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
         switch sec {
         case .media:
             let cell = tableView.dequeueReusableCell(withIdentifier: "PostMediaCell", for: indexPath) as! PostMediaCell
+            
+            // Video Config
             cell.uploadButton.addTarget(self, action: #selector(uploadVideoTapped), for: .touchUpInside)
+            cell.removeButton.addTarget(self, action: #selector(removeVideoTapped), for: .touchUpInside)
             self.uploadVideoButton = cell.uploadButton
             self.videoPreviewLabel = cell.previewLabel
             
             if let url = selectedVideoURL {
                 self.videoPreviewLabel?.text = "📹 \(url.lastPathComponent)"
                 self.videoPreviewLabel?.isHidden = false
+                cell.removeButton.isHidden = false
                 self.uploadVideoButton?.setTitle("  Change Video", for: .normal)
             } else {
                 self.videoPreviewLabel?.isHidden = true
+                cell.removeButton.isHidden = true
                 self.uploadVideoButton?.setTitle("  Upload Video", for: .normal)
             }
+            
+            // Thumbnail Config
+            cell.thumbnailUploadButton.addTarget(self, action: #selector(uploadThumbnailTapped), for: .touchUpInside)
+            cell.thumbnailRemoveButton.addTarget(self, action: #selector(removeThumbnailTapped), for: .touchUpInside)
+            self.uploadThumbnailButton = cell.thumbnailUploadButton
+            self.thumbnailPreviewLabel = cell.thumbnailPreviewLabel
+            
+            if let url = selectedThumbnailURL {
+                self.thumbnailPreviewLabel?.text = "🖼️ \(url.lastPathComponent)"
+                self.thumbnailPreviewLabel?.isHidden = false
+                cell.thumbnailRemoveButton.isHidden = false
+                self.uploadThumbnailButton?.setTitle("  Change Thumbnail", for: .normal)
+            } else {
+                self.thumbnailPreviewLabel?.isHidden = true
+                cell.thumbnailRemoveButton.isHidden = true
+                self.uploadThumbnailButton?.setTitle("  Upload Thumbnail", for: .normal)
+            }
+            
             return cell
             
         case .postDetails:
@@ -473,17 +533,30 @@ extension CreatePostViewController: PHPickerViewControllerDelegate {
         picker.dismiss(animated: true)
         guard let result = results.first else { return }
 
-        let typeIdentifier = UTType.movie.identifier
-        if result.itemProvider.hasItemConformingToTypeIdentifier(typeIdentifier) {
-            result.itemProvider.loadFileRepresentation(forTypeIdentifier: typeIdentifier) { [weak self] url, error in
+        let videoType = UTType.movie.identifier
+        let imageType = UTType.image.identifier
+        
+        if result.itemProvider.hasItemConformingToTypeIdentifier(videoType) {
+            result.itemProvider.loadFileRepresentation(forTypeIdentifier: videoType) { [weak self] url, error in
                 guard let url = url, error == nil else { return }
-                
                 let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(url.lastPathComponent)
-                try? FileManager.default.removeItem(at: tempURL) // Remove if already exists
+                try? FileManager.default.removeItem(at: tempURL)
                 try? FileManager.default.copyItem(at: url, to: tempURL)
 
                 DispatchQueue.main.async {
                     self?.selectedVideoURL = tempURL
+                    self?.tableView.reloadSections(IndexSet(integer: Section.media.rawValue), with: .automatic)
+                }
+            }
+        } else if result.itemProvider.hasItemConformingToTypeIdentifier(imageType) {
+            result.itemProvider.loadFileRepresentation(forTypeIdentifier: imageType) { [weak self] url, error in
+                guard let url = url, error == nil else { return }
+                let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(url.lastPathComponent)
+                try? FileManager.default.removeItem(at: tempURL)
+                try? FileManager.default.copyItem(at: url, to: tempURL)
+
+                DispatchQueue.main.async {
+                    self?.selectedThumbnailURL = tempURL
                     self?.tableView.reloadSections(IndexSet(integer: Section.media.rawValue), with: .automatic)
                 }
             }
@@ -599,9 +672,13 @@ private class PostFieldCell: UITableViewCell {
 }
 
 private class PostMediaCell: UITableViewCell {
-
     let uploadButton = UIButton(type: .system)
+    let removeButton = UIButton(type: .system)
     let previewLabel = UILabel()
+    
+    let thumbnailUploadButton = UIButton(type: .system)
+    let thumbnailRemoveButton = UIButton(type: .system)
+    let thumbnailPreviewLabel = UILabel()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -621,12 +698,58 @@ private class PostMediaCell: UITableViewCell {
         uploadButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         uploadButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
+        // infoStack for label + remove button
+        let infoStack = UIStackView()
+        infoStack.axis = .horizontal
+        infoStack.spacing = 8
+        infoStack.alignment = .center
+        infoStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        removeButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        removeButton.tintColor = .systemRed
+        removeButton.isHidden = true
+        removeButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        removeButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
         previewLabel.font = .systemFont(ofSize: 14)
         previewLabel.textColor = .secondaryLabel
         previewLabel.isHidden = true
         
+        infoStack.addArrangedSubview(previewLabel)
+        infoStack.addArrangedSubview(removeButton)
+        
         container.addArrangedSubview(uploadButton)
-        container.addArrangedSubview(previewLabel)
+        container.addArrangedSubview(infoStack)
+        
+        // Thumbnail UI setup
+        thumbnailUploadButton.setImage(UIImage(systemName: "photo.badge.plus"), for: .normal)
+        thumbnailUploadButton.backgroundColor = .secondarySystemFill
+        thumbnailUploadButton.layer.cornerRadius = 12
+        thumbnailUploadButton.layer.masksToBounds = true
+        thumbnailUploadButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+        thumbnailUploadButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        
+        let thumbInfoStack = UIStackView()
+        thumbInfoStack.axis = .horizontal
+        thumbInfoStack.spacing = 8
+        thumbInfoStack.alignment = .center
+        thumbInfoStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        thumbnailRemoveButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        thumbnailRemoveButton.tintColor = .systemRed
+        thumbnailRemoveButton.isHidden = true
+        thumbnailRemoveButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
+        thumbnailRemoveButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        
+        thumbnailPreviewLabel.font = .systemFont(ofSize: 14)
+        thumbnailPreviewLabel.textColor = .secondaryLabel
+        thumbnailPreviewLabel.isHidden = true
+        
+        thumbInfoStack.addArrangedSubview(thumbnailPreviewLabel)
+        thumbInfoStack.addArrangedSubview(thumbnailRemoveButton)
+        
+        container.addArrangedSubview(thumbnailUploadButton)
+        container.addArrangedSubview(thumbInfoStack)
         
         NSLayoutConstraint.activate([
             container.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
