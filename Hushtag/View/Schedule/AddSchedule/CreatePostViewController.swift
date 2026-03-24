@@ -286,11 +286,25 @@ class CreatePostViewController: UIViewController {
         view.endEditing(true)
 
         let title = titleTextView.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        var missingFields = [String]()
+        
+        if title.isEmpty { missingFields.append("Title") }
+        if selectedVideoURL == nil { missingFields.append("Video") }
+        
+        if !missingFields.isEmpty {
+            let message = "Please provide the following mandatory fields: \(missingFields.joined(separator: ", "))"
+            let alert = UIAlertController(title: "Missing Fields", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(alert, animated: true)
+            return
+        }
+
         let description = descriptionTextView.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let rawTags = tagsTextView.text ?? ""
         let parsedTags = rawTags.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
 
         print("📹 Video: \(String(describing: selectedVideoURL))")
+        print("🖼️ Thumbnail: \(String(describing: selectedThumbnailURL))")
         print("📝 Title: \(title)")
         print("📄 Description: \(description)")
         print("🏷️ Tags: \(parsedTags)")
