@@ -12,10 +12,14 @@ class Schedule: UIViewController {
     private var selectedDate: Date = Date()
     private var weekDates: [Date] = []
     private var selectedScheduleItem: ScheduleItem?
+    private var isYouTubeConnected: Bool = true
+    private var emptyStateView: UIView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        
+        checkConnectionStatus()
         
         scheduleView.delegate = self
         scheduleView.dataSource = self
@@ -52,6 +56,128 @@ class Schedule: UIViewController {
             name: .calendarSwipeRight,
             object: nil
         )
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        checkConnectionStatus()
+    }
+    
+    private func checkConnectionStatus() {
+        Task {
+            let connected = await YouTubeController.shared.checkYouTubeConnection()
+            await MainActor.run {
+                self.isYouTubeConnected = connected
+                self.updateUIForConnectionStatus()
+            }
+        }
+    }
+    
+    private func updateUIForConnectionStatus() {
+        if isYouTubeConnected {
+            emptyStateView?.removeFromSuperview()
+            emptyStateView = nil
+            scheduleView.isHidden = false
+        } else {
+            showConnectYouTubePrompt()
+            scheduleView.isHidden = true
+        }
+    }
+    
+    private func showConnectYouTubePrompt() {
+        if emptyStateView != nil { return }
+        
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(container)
+        self.emptyStateView = container
+        
+        NSLayoutConstraint.activate([
+            container.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            container.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50),
+            container.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
+            container.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
+        ])
+        
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 20
+        stackView.alignment = .center
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(stackView)
+        
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: container.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+        ])
+        
+        let imageView = UIImageView(image: UIImage(systemName: "play.rectangle.fill"))
+        imageView.tintColor = UIColor(red: 0.545, green: 0.361, blue: 0.965, alpha: 1.0)
+        imageView.contentMode = .scaleAspectFit
+        imageView.preferredSymbolConfiguration = .init(pointSize: 60)
+        
+        let titleLabel = UILabel()
+        titleLabel.text = "Connect YouTube Account"
+        titleLabel.font = .systemFont(ofSize: 22, weight: .bold)
+        titleLabel.textColor = .white
+        
+        let descLabel = UILabel()
+        descLabel.text = "Connect your account to manage your schedule and see automated tasks."
+        descLabel.font = .systemFont(ofSize: 16)
+        descLabel.textColor = .secondaryLabel
+        descLabel.textAlignment = .center
+        descLabel.numberOfLines = 0
+        
+        let connectButton = UIButton(type: .system)
+        connectButton.setTitle("Connect Now", for: .normal)
+        connectButton.backgroundColor = UIColor(red: 0.545, green: 0.361, blue: 0.965, alpha: 1.0)
+        connectButton.setTitleColor(.white, for: .normal)
+        connectButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
+        connectButton.layer.cornerRadius = 25
+        connectButton.translatesAutoresizingMaskIntoConstraints = false
+        connectButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        connectButton.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        connectButton.addTarget(self, action: #selector(didTapConnectYouTube), for: .touchUpInside)
+        
+        stackView.addArrangedSubview(imageView)
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(descLabel)
+        stackView.addArrangedSubview(connectButton)
+    }
+    
+    @objc private func didTapConnectYouTube() {
+        let viewModel = SignInModel()
+        Task {
+            do {
+                try await viewModel.connectYouTube()
+                
+                await MainActor.run {
+                    CapsuleNotification.show(message: "YouTube Connected!", iconName: "checkmark.circle.fill")
+                    self.isYouTubeConnected = true
+                    self.updateUIForConnectionStatus()
+                    
+                    Task {
+                        do {
+                            try await self.scheduleController.load()
+                            await MainActor.run {
+                                self.filterItems(for: self.selectedDate)
+                                self.scheduleView.reloadSections(IndexSet(integer: 1))
+                            }
+                        } catch {
+                            //print("Failed to load schedule items after connection:", error)
+                        }
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    let alert = UIAlertController(title: "Connection Failed", message: error.localizedDescription, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
+                }
+            }
+        }
     }
     
     func registerCell() {
