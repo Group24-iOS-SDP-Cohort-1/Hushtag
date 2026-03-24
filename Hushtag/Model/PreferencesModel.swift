@@ -61,14 +61,7 @@ enum Niche: String, Codable, CustomStringConvertible {
 struct PreferenceItem {
     let id: Int
     let title: String
-    let subheading: String
-    let sections: [PreferenceSection]
-}
-
-struct PreferenceSection {
-    var title: String = ""
-    var hasTextInput: Bool = false
-    var options: [String] = []
+    let options: [String]
 }
 
 struct PreferencesData {
@@ -76,39 +69,25 @@ struct PreferencesData {
         PreferenceItem(
             id: 1,
             title: "Pick your niche",
-            subheading: "Choose topics you want to create content about",
-            sections: [
-                PreferenceSection(
-                    title: "",
-                    hasTextInput: false,
-                    options: [
-                        "Lifestyle",
-                        "Skincare",
-                        "Game",
-                        "Food",
-                        "Wellness",
-                        "Finance",
-                        "Music",
-                        "Education",
-                        "Other"
-                    ]
-                )
+            options: [
+                "Lifestyle",
+                "Skincare",
+                "Game",
+                "Food",
+                "Wellness",
+                "Finance",
+                "Music",
+                "Education",
+                "Other"
             ]
         ),
         PreferenceItem(
             id: 2,
             title: "Choose Platform",
-            subheading: "Pick your preferred platform",
-            sections: [
-                PreferenceSection(
-                    title: "",
-                    hasTextInput: false,
-                    options: [
-                        "Youtube",
-                        "Instagram",
-                        "X (Twitter)"
-                    ]
-                )
+            options: [
+                "Youtube",
+                "Instagram",
+                "X (Twitter)"
             ]
         )
     ]

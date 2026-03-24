@@ -30,9 +30,4 @@ class PreferencesCollectionViewCell: UICollectionViewCell {
     
     
     
-    func configureCell(with item : PreferenceItem) {
-        Heading.text = item.title
-        Subheading.text = item.subheading
-        
-    }
 }

@@ -81,11 +81,11 @@ class PreferencesViewController: UIViewController {
         _Concurrency.Task { @MainActor in
             do {
                 
-                try await AuthManager.shared.completeOnboarding()
-                
                 try await controller.savePreferences(
                     dict: selectedOptions
                 )
+                
+                try await AuthManager.shared.completeOnboarding()
                 
                 // Only navigate away on success
                 if let nav = self.navigationController, nav.viewControllers.count > 1 {

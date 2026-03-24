@@ -46,13 +46,8 @@ class ChoosePlatformCollectionViewCell: UICollectionViewCell {
     func configureCell(with item: PreferenceItem) {
         let isFirstLoad = platformOptions.isEmpty
         
-        headingLabel.text = item.title
-        subheadingLabel.text = item.subheading
         preferenceID = item.id
-        
-        if let firstSection = item.sections.first {
-            platformOptions = firstSection.options
-        }
+        platformOptions = item.options
         
         if isFirstLoad {
             innerCollectionView.collectionViewLayout = generatePlatformLayout()
