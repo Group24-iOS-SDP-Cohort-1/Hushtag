@@ -40,6 +40,7 @@ class ExistingPostViewController: UIViewController {
                 await MainActor.run {
                     self.scripts = fetchedScripts
                     self.tableView.reloadData()
+                    self.updateEmptyState()
                 }
             } catch {
                 print("Error loading scripts for existing post: \(error)")
@@ -49,6 +50,49 @@ class ExistingPostViewController: UIViewController {
     
     @IBAction func closeTapped(_ sender: Any) {
         dismiss(animated: true)
+    }
+    
+    private func updateEmptyState() {
+        if scripts.isEmpty {
+            showEmptyView(message: "No existing post", iconName: "doc.text.magnifyingglass")
+        } else {
+            tableView.backgroundView = nil
+        }
+    }
+    
+    private func showEmptyView(message: String, iconName: String) {
+        let emptyView = UIView(frame: tableView.bounds)
+        
+        let imageView = UIImageView(image: UIImage(systemName: iconName))
+        imageView.tintColor = .tertiaryLabel
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let label = UILabel()
+        label.text = message
+        label.textColor = .secondaryLabel
+        label.font = .systemFont(ofSize: 20, weight: .medium)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        let stack = UIStackView(arrangedSubviews: [imageView, label])
+        stack.axis = .vertical
+        stack.spacing = 16
+        stack.alignment = .center
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        
+        emptyView.addSubview(stack)
+        
+        NSLayoutConstraint.activate([
+            stack.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
+            stack.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor, constant: -20),
+            stack.leadingAnchor.constraint(equalTo: emptyView.leadingAnchor, constant: 40),
+            stack.trailingAnchor.constraint(equalTo: emptyView.trailingAnchor, constant: -40),
+            imageView.heightAnchor.constraint(equalToConstant: 44),
+            imageView.widthAnchor.constraint(equalToConstant: 44)
+        ])
+        
+        tableView.backgroundView = emptyView
     }
 }
 

@@ -1,11 +1,13 @@
 import UIKit
 import PhotosUI
+import UniformTypeIdentifiers
 
 class CreatePostViewController: UIViewController {
 
     // MARK: - Data
     private var selectedVideoURL: URL?
     private var selectedCategory: YouTubeCategory = .filmAndAnimation
+    private var selectedPrivacy: String = "Public"
 
     enum YouTubeCategory: String, CaseIterable {
         case filmAndAnimation   = "Film & Animation"
@@ -45,266 +47,190 @@ class CreatePostViewController: UIViewController {
         }
     }
 
-    // MARK: - UI
-    private let scrollView = UIScrollView()
-    private let contentStack = UIStackView()
-    private let buttonBar = UIView()
-
-    private let uploadVideoButton = UIButton(type: .system)
-    private let videoPreviewLabel = UILabel()
-    private let titleTextField = UITextField()
+    // MARK: - UI Components
+    private let tableView = UITableView(frame: .zero, style: .insetGrouped)
+    
+    // Shared references to input fields from cells
+    private weak var uploadVideoButton: UIButton?
+    private weak var videoPreviewLabel: UILabel?
+    private let titleTextView = UITextView()
+    private let titlePlaceholder = UILabel()
+    private let titleContainer = UIView()
     private let descriptionTextView = UITextView()
     private let descriptionPlaceholder = UILabel()
-    private let tagsTextField = UITextField()
-    private let categoryButton = UIButton(type: .system)
-    private let privacySegmentedControl = UISegmentedControl(items: ["Public", "Private", "Unlisted"])
+    private let descriptionContainer = UIView()
+    private let tagsTextView = UITextView()
+    private let tagsPlaceholder = UILabel()
+    private let tagsContainer = UIView()
+    private let privacyTextField = UITextField()
     private let publishAtDatePicker = UIDatePicker()
-    private let reminderDatePicker = UIDatePicker()
-    private let cancelButton = UIButton(type: .system)
-    private let createPostButton = UIButton(type: .system)
+    
+    private let dateFormatter = DateFormatter()
+    
+    enum Section: Int, CaseIterable {
+        case media
+        case postDetails
+    }
+    
+    var currentFields = [
+        "Title",
+        "Description",
+        "Tags",
+        "Category",
+        "Privacy Status",
+        "Publish At"
+    ]
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemGroupedBackground
         title = "New Post"
+        
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .short
+        
+        publishAtDatePicker.datePickerMode = .dateAndTime
+        publishAtDatePicker.preferredDatePickerStyle = .wheels
+        publishAtDatePicker.minimumDate = Date()
+
         buildLayout()
-        setupActions()
+        setupNavigationBar()
         setupKeyboardHandling()
     }
 
-    // MARK: - Layout
-    private func buildLayout() {
-        // Scroll view
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.alwaysBounceVertical = true
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(scrollView)
-
-        // Button bar
-        buttonBar.backgroundColor = .secondarySystemBackground
-        buttonBar.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(buttonBar)
-
-        // Content stack
-        contentStack.axis = .vertical
-        contentStack.spacing = 28
-        contentStack.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.addSubview(contentStack)
-
-        // Anchor button bar at bottom
-        NSLayoutConstraint.activate([
-            buttonBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            buttonBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            buttonBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            buttonBar.heightAnchor.constraint(equalToConstant: 72),
-
-            // Scroll view fills space above button bar
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: buttonBar.topAnchor),
-
-            // Content stack inside scroll view
-            contentStack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 24),
-            contentStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
-            contentStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
-            contentStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -24),
-            contentStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -40)
-        ])
-
-        // Build all sections
-        contentStack.addArrangedSubview(makeVideoSection())
-        contentStack.addArrangedSubview(makeField(label: "Title", field: titleTextField, placeholder: "Enter post title"))
-        contentStack.addArrangedSubview(makeDescriptionSection())
-        contentStack.addArrangedSubview(makeField(label: "Tags", field: tagsTextField, placeholder: "Add tags separated by commas"))
-        contentStack.addArrangedSubview(makeCategorySection())
-        contentStack.addArrangedSubview(makePrivacySection())
-        contentStack.addArrangedSubview(makeDatePickerSection(label: "Publish At", picker: publishAtDatePicker))
-        contentStack.addArrangedSubview(makeDatePickerSection(label: "Reminder", picker: reminderDatePicker))
-
-        // Buttons inside button bar
-        cancelButton.setTitle("Cancel", for: .normal)
-        cancelButton.titleLabel?.font = .systemFont(ofSize: 17)
-        cancelButton.translatesAutoresizingMaskIntoConstraints = false
-
-        var createConfig = UIButton.Configuration.filled()
-        createConfig.title = "Create Post"
-        createConfig.cornerStyle = .large
-        createPostButton.configuration = createConfig
-        createPostButton.translatesAutoresizingMaskIntoConstraints = false
-
-        buttonBar.addSubview(cancelButton)
-        buttonBar.addSubview(createPostButton)
-
-        NSLayoutConstraint.activate([
-            cancelButton.leadingAnchor.constraint(equalTo: buttonBar.leadingAnchor, constant: 24),
-            cancelButton.centerYAnchor.constraint(equalTo: buttonBar.centerYAnchor),
-
-            createPostButton.trailingAnchor.constraint(equalTo: buttonBar.trailingAnchor, constant: -24),
-            createPostButton.centerYAnchor.constraint(equalTo: buttonBar.centerYAnchor),
-            createPostButton.heightAnchor.constraint(equalToConstant: 44)
-        ])
+    // MARK: - Layout & Navigation
+    private func setupNavigationBar() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeTapped))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(doneTapped))
     }
 
-    // MARK: - Section Builders
-    private func makeVideoSection() -> UIView {
-        let container = UIStackView()
-        container.axis = .vertical
-        container.spacing = 12
-
-        let label = sectionLabel("Video")
-        container.addArrangedSubview(label)
-
-        // Upload area
-        uploadVideoButton.setTitle("  Upload Video", for: .normal)
-        uploadVideoButton.setImage(UIImage(systemName: "video.badge.plus"), for: .normal)
-        uploadVideoButton.backgroundColor = .secondarySystemFill
-        uploadVideoButton.layer.cornerRadius = 12
-        uploadVideoButton.layer.masksToBounds = true
-        uploadVideoButton.titleLabel?.font = .systemFont(ofSize: 17)
-        uploadVideoButton.heightAnchor.constraint(equalToConstant: 80).isActive = true
-        container.addArrangedSubview(uploadVideoButton)
-
-        videoPreviewLabel.text = ""
-        videoPreviewLabel.font = .systemFont(ofSize: 14)
-        videoPreviewLabel.textColor = .secondaryLabel
-        videoPreviewLabel.isHidden = true
-        container.addArrangedSubview(videoPreviewLabel)
-
-        return container
-    }
-
-    private func makeField(label text: String, field: UITextField, placeholder: String) -> UIView {
-        let container = UIStackView()
-        container.axis = .vertical
-        container.spacing = 8
-
-        container.addArrangedSubview(sectionLabel(text))
-
-        field.placeholder = placeholder
-        field.borderStyle = .roundedRect
-        field.font = .systemFont(ofSize: 16)
-        field.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        container.addArrangedSubview(field)
-
-        return container
-    }
-
-    private func makeDescriptionSection() -> UIView {
-        let container = UIStackView()
-        container.axis = .vertical
-        container.spacing = 8
-
-        container.addArrangedSubview(sectionLabel("Description"))
-
-        let tvWrapper = UIView()
-        tvWrapper.layer.cornerRadius = 10
-        tvWrapper.layer.borderWidth = 0.5
-        tvWrapper.layer.borderColor = UIColor.separator.cgColor
-        tvWrapper.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        tvWrapper.layer.masksToBounds = true
-        tvWrapper.backgroundColor = .secondarySystemBackground
-
+    private func setupDescriptionView() {
+        descriptionContainer.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        
         descriptionTextView.backgroundColor = .clear
         descriptionTextView.font = .systemFont(ofSize: 16)
-        descriptionTextView.textContainerInset = UIEdgeInsets(top: 10, left: 8, bottom: 10, right: 8)
+        descriptionTextView.textContainerInset = UIEdgeInsets(top: 8, left: -4, bottom: 8, right: 0)
         descriptionTextView.delegate = self
         descriptionTextView.translatesAutoresizingMaskIntoConstraints = false
-        tvWrapper.addSubview(descriptionTextView)
-
+        
         descriptionPlaceholder.text = "Enter post description..."
         descriptionPlaceholder.font = .systemFont(ofSize: 16)
         descriptionPlaceholder.textColor = .placeholderText
         descriptionPlaceholder.translatesAutoresizingMaskIntoConstraints = false
-        tvWrapper.addSubview(descriptionPlaceholder)
-
+        
+        descriptionContainer.addSubview(descriptionTextView)
+        descriptionContainer.addSubview(descriptionPlaceholder)
+        
         NSLayoutConstraint.activate([
-            descriptionTextView.topAnchor.constraint(equalTo: tvWrapper.topAnchor),
-            descriptionTextView.leadingAnchor.constraint(equalTo: tvWrapper.leadingAnchor),
-            descriptionTextView.trailingAnchor.constraint(equalTo: tvWrapper.trailingAnchor),
-            descriptionTextView.bottomAnchor.constraint(equalTo: tvWrapper.bottomAnchor),
-            descriptionPlaceholder.topAnchor.constraint(equalTo: tvWrapper.topAnchor, constant: 14),
-            descriptionPlaceholder.leadingAnchor.constraint(equalTo: tvWrapper.leadingAnchor, constant: 16)
+            descriptionTextView.topAnchor.constraint(equalTo: descriptionContainer.topAnchor),
+            descriptionTextView.leadingAnchor.constraint(equalTo: descriptionContainer.leadingAnchor),
+            descriptionTextView.trailingAnchor.constraint(equalTo: descriptionContainer.trailingAnchor),
+            descriptionTextView.bottomAnchor.constraint(equalTo: descriptionContainer.bottomAnchor),
+            descriptionPlaceholder.topAnchor.constraint(equalTo: descriptionContainer.topAnchor, constant: 8),
+            descriptionPlaceholder.leadingAnchor.constraint(equalTo: descriptionContainer.leadingAnchor, constant: 0)
         ])
-
-        container.addArrangedSubview(tvWrapper)
-        return container
     }
 
-    private func makeCategorySection() -> UIView {
-        let container = UIStackView()
-        container.axis = .vertical
-        container.spacing = 8
+    private func setupTitleView() {
+        titleContainer.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        
+        titleTextView.backgroundColor = .clear
+        titleTextView.font = .systemFont(ofSize: 16)
+        titleTextView.textContainerInset = UIEdgeInsets(top: 8, left: -4, bottom: 8, right: 0)
+        titleTextView.delegate = self
+        titleTextView.translatesAutoresizingMaskIntoConstraints = false
+        
+        titlePlaceholder.text = "Enter post title"
+        titlePlaceholder.font = .systemFont(ofSize: 16)
+        titlePlaceholder.textColor = .placeholderText
+        titlePlaceholder.translatesAutoresizingMaskIntoConstraints = false
+        
+        titleContainer.addSubview(titleTextView)
+        titleContainer.addSubview(titlePlaceholder)
+        
+        NSLayoutConstraint.activate([
+            titleTextView.topAnchor.constraint(equalTo: titleContainer.topAnchor),
+            titleTextView.leadingAnchor.constraint(equalTo: titleContainer.leadingAnchor),
+            titleTextView.trailingAnchor.constraint(equalTo: titleContainer.trailingAnchor),
+            titleTextView.bottomAnchor.constraint(equalTo: titleContainer.bottomAnchor),
+            titlePlaceholder.topAnchor.constraint(equalTo: titleContainer.topAnchor, constant: 8),
+            titlePlaceholder.leadingAnchor.constraint(equalTo: titleContainer.leadingAnchor, constant: 0)
+        ])
+    }
 
-        container.addArrangedSubview(sectionLabel("Category"))
+    private func setupTagsView() {
+        tagsContainer.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        
+        tagsTextView.backgroundColor = .clear
+        tagsTextView.font = .systemFont(ofSize: 16)
+        tagsTextView.textContainerInset = UIEdgeInsets(top: 8, left: -4, bottom: 8, right: 0)
+        tagsTextView.delegate = self
+        tagsTextView.translatesAutoresizingMaskIntoConstraints = false
+        
+        tagsPlaceholder.text = "Add tags separated by commas"
+        tagsPlaceholder.font = .systemFont(ofSize: 16)
+        tagsPlaceholder.textColor = .placeholderText
+        tagsPlaceholder.translatesAutoresizingMaskIntoConstraints = false
+        
+        tagsContainer.addSubview(tagsTextView)
+        tagsContainer.addSubview(tagsPlaceholder)
+        
+        NSLayoutConstraint.activate([
+            tagsTextView.topAnchor.constraint(equalTo: tagsContainer.topAnchor),
+            tagsTextView.leadingAnchor.constraint(equalTo: tagsContainer.leadingAnchor),
+            tagsTextView.trailingAnchor.constraint(equalTo: tagsContainer.trailingAnchor),
+            tagsTextView.bottomAnchor.constraint(equalTo: tagsContainer.bottomAnchor),
+            tagsPlaceholder.topAnchor.constraint(equalTo: tagsContainer.topAnchor, constant: 8),
+            tagsPlaceholder.leadingAnchor.constraint(equalTo: tagsContainer.leadingAnchor, constant: 0)
+        ])
+    }
 
-        var config = UIButton.Configuration.tinted()
-        config.title = selectedCategory.rawValue
-        config.image = UIImage(systemName: "chevron.down")
-        config.imagePlacement = .trailing
-        config.imagePadding = 8
-        config.cornerStyle = .large
-        categoryButton.configuration = config
-        categoryButton.contentHorizontalAlignment = .leading
-
-        let actions = YouTubeCategory.allCases.map { category in
-            UIAction(title: category.rawValue) { [weak self] _ in
-                self?.selectedCategory = category
-                var c = self?.categoryButton.configuration
-                c?.title = category.rawValue
-                self?.categoryButton.configuration = c
+    private func updateFieldsBasedOnPrivacy() {
+        let shouldShowPublishAt = (selectedPrivacy == "Public")
+        let hasPublishAt = currentFields.contains("Publish At")
+        
+        if shouldShowPublishAt && !hasPublishAt {
+            currentFields.append("Publish At")
+            if let index = currentFields.firstIndex(of: "Publish At") {
+                tableView.insertRows(at: [IndexPath(row: index, section: Section.postDetails.rawValue)], with: .automatic)
+            }
+        } else if !shouldShowPublishAt && hasPublishAt {
+            if let index = currentFields.firstIndex(of: "Publish At") {
+                currentFields.remove(at: index)
+                tableView.deleteRows(at: [IndexPath(row: index, section: Section.postDetails.rawValue)], with: .automatic)
             }
         }
-        categoryButton.menu = UIMenu(title: "Select Category", children: actions)
-        categoryButton.showsMenuAsPrimaryAction = true
-        categoryButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
-
-        container.addArrangedSubview(categoryButton)
-        return container
     }
 
-    private func makePrivacySection() -> UIView {
-        let container = UIStackView()
-        container.axis = .vertical
-        container.spacing = 8
-
-        container.addArrangedSubview(sectionLabel("Privacy Status"))
-
-        privacySegmentedControl.selectedSegmentIndex = 0
-        container.addArrangedSubview(privacySegmentedControl)
-
-        return container
-    }
-
-    private func makeDatePickerSection(label text: String, picker: UIDatePicker) -> UIView {
-        let container = UIStackView()
-        container.axis = .vertical
-        container.spacing = 8
-
-        container.addArrangedSubview(sectionLabel(text))
-
-        picker.datePickerMode = .dateAndTime
-        picker.preferredDatePickerStyle = .compact
-        container.addArrangedSubview(picker)
-
-        return container
-    }
-
-    private func sectionLabel(_ text: String) -> UILabel {
-        let label = UILabel()
-        label.text = text
-        label.font = .systemFont(ofSize: 16, weight: .semibold)
-        return label
+    private func buildLayout() {
+        setupTitleView()
+        setupDescriptionView()
+        setupTagsView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .systemGroupedBackground
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 56
+        if #available(iOS 15.0, *) {
+            tableView.sectionHeaderTopPadding = 0
+        }
+        
+        tableView.register(PostFieldCell.self, forCellReuseIdentifier: "PostFieldCell")
+        tableView.register(PostMediaCell.self, forCellReuseIdentifier: "PostMediaCell")
+        
+        view.addSubview(tableView)
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 
     // MARK: - Actions
-    private func setupActions() {
-        uploadVideoButton.addTarget(self, action: #selector(uploadVideoTapped), for: .touchUpInside)
-        cancelButton.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
-        createPostButton.addTarget(self, action: #selector(createPostTapped), for: .touchUpInside)
-    }
-
     @objc private func uploadVideoTapped() {
         var config = PHPickerConfiguration()
         config.filter = .videos
@@ -315,31 +241,25 @@ class CreatePostViewController: UIViewController {
         present(picker, animated: true)
     }
 
-    @objc private func cancelTapped() {
+    @objc private func closeTapped() {
         dismiss(animated: true)
     }
 
-    @objc private func createPostTapped() {
+    @objc private func doneTapped() {
         view.endEditing(true)
 
-        let title = titleTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let title = titleTextView.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let description = descriptionTextView.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let rawTags = tagsTextField.text ?? ""
+        let rawTags = tagsTextView.text ?? ""
         let parsedTags = rawTags.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
-
-        let privacyOptions = ["public", "private", "unlisted"]
-        let privacyStatus = privacySegmentedControl.selectedSegmentIndex >= 0
-            ? privacyOptions[privacySegmentedControl.selectedSegmentIndex]
-            : "public"
 
         print("📹 Video: \(String(describing: selectedVideoURL))")
         print("📝 Title: \(title)")
         print("📄 Description: \(description)")
         print("🏷️ Tags: \(parsedTags)")
         print("📂 Category: \(selectedCategory.categoryId)")
-        print("🔒 Privacy: \(privacyStatus)")
+        print("🔒 Privacy: \(selectedPrivacy.lowercased())")
         print("📅 Publish At: \(publishAtDatePicker.date)")
-        print("🔔 Reminder: \(reminderDatePicker.date)")
 
         dismiss(animated: true)
     }
@@ -349,29 +269,201 @@ class CreatePostViewController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
-
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
     @objc private func dismissKeyboard() { view.endEditing(true) }
-
-    @objc private func keyboardWillShow(_ n: Notification) {
-        guard let frame = (n.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
-        scrollView.contentInset.bottom = frame.height + 20
+    
+    @objc func dismissPicker() {
+        view.endEditing(true)
     }
+}
 
-    @objc private func keyboardWillHide() {
-        scrollView.contentInset.bottom = 0
+// MARK: - UITableViewDataSource & Delegate
+extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return Section.allCases.count
     }
-
-    deinit { NotificationCenter.default.removeObserver(self) }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let sec = Section(rawValue: section) else { return 0 }
+        switch sec {
+        case .media: return 1
+        case .postDetails: return currentFields.count
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 44
+    }
+    
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        guard let sec = Section(rawValue: section) else { return nil }
+        if sec == .postDetails {
+            return "We will remind you 1 hr before"
+        }
+        return nil
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let sec = Section(rawValue: section) else { return nil }
+        let headerView = UIView()
+        headerView.backgroundColor = .clear
+        
+        let titleLabel = UILabel()
+        titleLabel.font = .systemFont(ofSize: 16, weight: .semibold)
+        titleLabel.textColor = .label
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        headerView.addSubview(titleLabel)
+        
+        switch sec {
+        case .media:
+            titleLabel.text = "Media"
+        case .postDetails:
+            titleLabel.text = "Post Details"
+        }
+        
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+            titleLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 12),
+            titleLabel.bottomAnchor.constraint(equalTo: headerView.bottomAnchor, constant: -8)
+        ])
+        
+        return headerView
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let sec = Section(rawValue: indexPath.section) else { return UITableViewCell() }
+        
+        switch sec {
+        case .media:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "PostMediaCell", for: indexPath) as! PostMediaCell
+            cell.uploadButton.addTarget(self, action: #selector(uploadVideoTapped), for: .touchUpInside)
+            self.uploadVideoButton = cell.uploadButton
+            self.videoPreviewLabel = cell.previewLabel
+            
+            if let url = selectedVideoURL {
+                self.videoPreviewLabel?.text = "📹 \(url.lastPathComponent)"
+                self.videoPreviewLabel?.isHidden = false
+                self.uploadVideoButton?.setTitle("  Change Video", for: .normal)
+            } else {
+                self.videoPreviewLabel?.isHidden = true
+                self.uploadVideoButton?.setTitle("  Upload Video", for: .normal)
+            }
+            return cell
+            
+        case .postDetails:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "PostFieldCell", for: indexPath) as! PostFieldCell
+            let placeholder = currentFields[indexPath.row]
+            
+            cell.resetAccessory()
+            
+            let toolbar = UIToolbar()
+            toolbar.sizeToFit()
+            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissPicker))
+            toolbar.setItems([doneButton], animated: true)
+            
+            switch placeholder {
+            case "Title":
+                cell.install(view: titleContainer)
+            case "Description":
+                cell.install(view: descriptionContainer)
+            case "Tags":
+                cell.install(view: tagsContainer)
+            case "Category":
+                cell.textField.textAlignment = .left
+                cell.textField.text = selectedCategory.rawValue
+                
+                let button = UIButton(type: .system)
+                button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+                
+                let actions = YouTubeCategory.allCases.map { category in
+                    UIAction(title: category.rawValue) { [weak self, weak cell] _ in
+                        self?.selectedCategory = category
+                        cell?.textField.text = category.rawValue
+                    }
+                }
+                
+                let menu = UIMenu(children: actions)
+                button.menu = menu
+                button.showsMenuAsPrimaryAction = true
+                
+                cell.textField.rightView = button
+                cell.textField.rightViewMode = .always
+                cell.textField.isUserInteractionEnabled = true
+                
+                let overlayButton = UIButton(type: .custom)
+                overlayButton.menu = menu
+                overlayButton.showsMenuAsPrimaryAction = true
+                cell.addOverlay(overlayButton)
+                
+            case "Privacy Status":
+                privacyTextField.placeholder = "Privacy Status"
+                privacyTextField.text = selectedPrivacy
+                privacyTextField.textAlignment = .left
+                cell.install(textField: privacyTextField, title: nil)
+                
+                let button = UIButton(type: .system)
+                button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+                
+                let privacyOptions = ["Public", "Private", "Unlisted"]
+                let actions = privacyOptions.map { option in
+                    UIAction(title: option) { [weak self] _ in
+                        guard let self = self else { return }
+                        self.selectedPrivacy = option
+                        self.privacyTextField.text = option
+                        self.updateFieldsBasedOnPrivacy()
+                    }
+                }
+                
+                let menu = UIMenu(children: actions)
+                button.menu = menu
+                button.showsMenuAsPrimaryAction = true
+                
+                privacyTextField.rightView = button
+                privacyTextField.rightViewMode = .always
+                privacyTextField.isUserInteractionEnabled = true
+                
+                let overlayButton = UIButton(type: .custom)
+                overlayButton.menu = menu
+                overlayButton.showsMenuAsPrimaryAction = true
+                cell.addOverlay(overlayButton)
+                
+            case "Publish At":
+                cell.textField.textAlignment = .right
+                cell.textField.text = dateFormatter.string(from: publishAtDatePicker.date)
+                cell.textField.inputView = publishAtDatePicker
+                cell.textField.inputAccessoryView = toolbar
+                cell.setTitle("Publish At")
+                publishAtDatePicker.addTarget(self, action: #selector(publishDateChanged), for: .valueChanged)
+            default:
+                break
+            }
+            
+            return cell
+        }
+    }
+    
+    @objc func publishDateChanged() {
+        if let index = currentFields.firstIndex(of: "Publish At") {
+            let indexPath = IndexPath(row: index, section: Section.postDetails.rawValue)
+            if let cell = tableView.cellForRow(at: indexPath) as? PostFieldCell {
+                cell.textField.text = dateFormatter.string(from: publishAtDatePicker.date)
+            }
+        }
+    }
 }
 
 // MARK: - UITextViewDelegate
 extension CreatePostViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
-        descriptionPlaceholder.isHidden = !textView.text.isEmpty
+        if textView === titleTextView {
+            titlePlaceholder.isHidden = !textView.text.isEmpty
+        } else if textView === descriptionTextView {
+            descriptionPlaceholder.isHidden = !textView.text.isEmpty
+        } else if textView === tagsTextView {
+            tagsPlaceholder.isHidden = !textView.text.isEmpty
+        }
     }
 }
 
@@ -381,17 +473,170 @@ extension CreatePostViewController: PHPickerViewControllerDelegate {
         picker.dismiss(animated: true)
         guard let result = results.first else { return }
 
-        result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.movie") { [weak self] url, _ in
-            guard let url = url else { return }
-            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(url.lastPathComponent)
-            try? FileManager.default.copyItem(at: url, to: tempURL)
+        let typeIdentifier = UTType.movie.identifier
+        if result.itemProvider.hasItemConformingToTypeIdentifier(typeIdentifier) {
+            result.itemProvider.loadFileRepresentation(forTypeIdentifier: typeIdentifier) { [weak self] url, error in
+                guard let url = url, error == nil else { return }
+                
+                let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(url.lastPathComponent)
+                try? FileManager.default.removeItem(at: tempURL) // Remove if already exists
+                try? FileManager.default.copyItem(at: url, to: tempURL)
 
-            DispatchQueue.main.async {
-                self?.selectedVideoURL = tempURL
-                self?.videoPreviewLabel.text = "📹 \(tempURL.lastPathComponent)"
-                self?.videoPreviewLabel.isHidden = false
-                self?.uploadVideoButton.setTitle("  Change Video", for: .normal)
+                DispatchQueue.main.async {
+                    self?.selectedVideoURL = tempURL
+                    self?.tableView.reloadSections(IndexSet(integer: Section.media.rawValue), with: .automatic)
+                }
             }
         }
     }
 }
+
+// MARK: - Custom Cells
+private class PostFieldCell: UITableViewCell {
+    
+    let textField = UITextField()
+    private let titleLabel = UILabel()
+    private var sharedTextField: UITextField?
+    private var customView: UIView?
+    private var overlayMenuButton: UIButton?
+    
+    private let stackView = UIStackView()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
+        backgroundColor = .secondarySystemGroupedBackground
+        
+        stackView.axis = .horizontal
+        stackView.spacing = 16
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(stackView)
+        
+        titleLabel.font = .systemFont(ofSize: 16)
+        titleLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        titleLabel.isHidden = true
+        
+        textField.borderStyle = .none
+        textField.backgroundColor = .clear
+        textField.font = .systemFont(ofSize: 16)
+        
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(textField)
+        
+        NSLayoutConstraint.activate([
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 14),
+            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -14),
+            stackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 24)
+        ])
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    
+    func resetAccessory() {
+        textField.rightView = nil
+        textField.rightViewMode = .never
+        textField.inputView = nil
+        textField.inputAccessoryView = nil
+        textField.text = ""
+        textField.isHidden = false
+        textField.textAlignment = .left
+        
+        titleLabel.isHidden = true
+        titleLabel.text = nil
+        
+        customView?.removeFromSuperview()
+        customView = nil
+        
+        sharedTextField?.removeFromSuperview()
+        sharedTextField = nil
+        
+        overlayMenuButton?.removeFromSuperview()
+        overlayMenuButton = nil
+    }
+    
+    func setTitle(_ text: String?) {
+        if let text = text {
+            titleLabel.text = text
+            titleLabel.isHidden = false
+        } else {
+            titleLabel.isHidden = true
+        }
+    }
+    
+    func install(textField shared: UITextField, title: String?) {
+        self.textField.isHidden = true
+        self.sharedTextField = shared
+        shared.borderStyle = .none
+        shared.backgroundColor = .clear
+        shared.font = .systemFont(ofSize: 16)
+        
+        stackView.addArrangedSubview(shared)
+        setTitle(title)
+        
+        // Remove previous shared text fields if they were left inside accidentally?
+        // Since we remove them in `resetAccessory`, the new one is safely added.
+    }
+    
+    func install(view: UIView) {
+        self.textField.isHidden = true
+        self.customView = view
+        stackView.addArrangedSubview(view)
+    }
+    
+    func addOverlay(_ button: UIButton) {
+        self.overlayMenuButton = button
+        button.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(button)
+        NSLayoutConstraint.activate([
+            button.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            button.topAnchor.constraint(equalTo: contentView.topAnchor),
+            button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        ])
+    }
+}
+
+private class PostMediaCell: UITableViewCell {
+
+    let uploadButton = UIButton(type: .system)
+    let previewLabel = UILabel()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
+        backgroundColor = .clear
+        
+        let container = UIStackView()
+        container.axis = .vertical
+        container.spacing = 12
+        container.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(container)
+        
+        uploadButton.setImage(UIImage(systemName: "video.badge.plus"), for: .normal)
+        uploadButton.backgroundColor = .secondarySystemFill
+        uploadButton.layer.cornerRadius = 12
+        uploadButton.layer.masksToBounds = true
+        uploadButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+        uploadButton.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        
+        previewLabel.font = .systemFont(ofSize: 14)
+        previewLabel.textColor = .secondaryLabel
+        previewLabel.isHidden = true
+        
+        container.addArrangedSubview(uploadButton)
+        container.addArrangedSubview(previewLabel)
+        
+        NSLayoutConstraint.activate([
+            container.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            container.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            container.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            container.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
+        ])
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+}
+
+

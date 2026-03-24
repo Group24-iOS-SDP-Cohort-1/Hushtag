@@ -28,6 +28,7 @@ class Schedule: UIViewController {
         registerCell()
         generateWeek(for: selectedDate)
         filterItems(for: selectedDate)
+        updateEmptyState()
         scheduleView.reloadSections(IndexSet(integer: 1))
         
         Task {
@@ -36,6 +37,7 @@ class Schedule: UIViewController {
                 
                 await MainActor.run {
                     self.filterItems(for: self.selectedDate)
+                    self.updateEmptyState()
                     self.scheduleView.reloadSections(IndexSet(integer: 1))
                 }
             } catch {
@@ -79,9 +81,11 @@ class Schedule: UIViewController {
             emptyStateView?.removeFromSuperview()
             emptyStateView = nil
             scheduleView.isHidden = false
+            setupRightBarButton()
         } else {
             showConnectYouTubePrompt()
             scheduleView.isHidden = true
+            navigationItem.rightBarButtonItem = nil
         }
     }
     
@@ -558,6 +562,7 @@ class Schedule: UIViewController {
                 
                 await MainActor.run {
                     self.filterItems(for: self.selectedDate)
+                    self.updateEmptyState()
                     self.scheduleView.reloadSections(IndexSet(integer: 1))
                 }
                 
@@ -574,6 +579,7 @@ class Schedule: UIViewController {
                 
                 await MainActor.run {
                     self.filterItems(for: self.selectedDate)
+                    self.updateEmptyState()
                     self.scheduleView.reloadSections(IndexSet(integer: 1))
                 }
                 
@@ -582,7 +588,54 @@ class Schedule: UIViewController {
             }
         }
     }
+    
+    private func updateEmptyState() {
+        if todayItems.isEmpty {
+            showEmptyStateInCollection(message: "No activities scheduled", iconName: "calendar.badge.exclamationmark")
+        } else {
+            // Check if we didn't show the YouTube prompt
+            if isYouTubeConnected {
+                scheduleView.backgroundView = nil
+            }
+        }
+    }
+    
+    private func showEmptyStateInCollection(message: String, iconName: String) {
+        let emptyView = UIView(frame: scheduleView.bounds)
+        
+        let imageView = UIImageView(image: UIImage(systemName: iconName))
+        imageView.tintColor = .tertiaryLabel
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let label = UILabel()
+        label.text = message
+        label.textColor = .secondaryLabel
+        label.font = .systemFont(ofSize: 18, weight: .medium)
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        
+        let stack = UIStackView(arrangedSubviews: [imageView, label])
+        stack.axis = .vertical
+        stack.spacing = 16
+        stack.alignment = .center
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        
+        emptyView.addSubview(stack)
+        
+        NSLayoutConstraint.activate([
+            stack.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
+            stack.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor, constant: 50),
+            stack.leadingAnchor.constraint(equalTo: emptyView.leadingAnchor, constant: 40),
+            stack.trailingAnchor.constraint(equalTo: emptyView.trailingAnchor, constant: -40),
+            imageView.heightAnchor.constraint(equalToConstant: 40),
+            imageView.widthAnchor.constraint(equalToConstant: 40)
+        ])
+        
+        scheduleView.backgroundView = emptyView
+    }
 }
+
 
 extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -593,7 +646,7 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
         if section == 0 {
             return weekDates.count
         }
-        return todayItems.isEmpty ? 1 : todayItems.count
+        return todayItems.count
     }
     
     
@@ -629,11 +682,7 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
         }
         
         if todayItems.isEmpty {
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "blankCell",
-                for: indexPath
-            )
-            return cell
+            return UICollectionViewCell()
         }
         
         let cell = collectionView.dequeueReusableCell(
@@ -687,6 +736,7 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
             
             collectionView.performBatchUpdates {
                 collectionView.reloadSections(IndexSet([0, 1]))
+                self.updateEmptyState()
             }
             return
         }
