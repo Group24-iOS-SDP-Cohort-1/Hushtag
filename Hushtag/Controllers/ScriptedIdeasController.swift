@@ -24,15 +24,15 @@ final class ScriptedIdeasController {
         return result
     }
     
-    func addConversation(id: UUID) async throws -> Conversation {
-        
+    func addConversation(id: UUID, ideaId: UUID? = nil) async throws -> Conversation {
         let session = try await client.auth.session
-        
+
         let payload = ConversationInsertPayload(
             id: id,
-            user_id: session.user.id
+            user_id: session.user.id,
+            idea_id: ideaId
         )
-        
+
         let result: Conversation = try await client.database
             .from("conversations")
             .insert(payload)
@@ -40,10 +40,10 @@ final class ScriptedIdeasController {
             .single()
             .execute()
             .value
-        
+
         return result
     }
-    
+
     func getBotMessage() async throws -> ChatMessageDB {
         let chats: ChatMessageDB = try await client.database.from("chat_history").select().eq("role", value: "bot").execute().value
         
@@ -77,7 +77,32 @@ final class ScriptedIdeasController {
         
         return result
     }
-    
+
+    func fetchConversation(for ideaId: UUID) async throws -> Conversation? {
+        let result: [Conversation] = try await client.database
+            .from("conversations")
+            .select("""
+                id,
+                user_id,
+                title,
+                created_at,
+                scripted_ideas (
+                    id,
+                    chat_id,
+                    title,
+                    description,
+                    script,
+                    thumbnail
+                )
+            """)
+            .eq("idea_id", value: ideaId.uuidString)
+            .limit(1)
+            .execute()
+            .value
+
+        return result.first
+    }
+
     
     func updateScript() {
         
@@ -160,6 +185,18 @@ final class ScriptedIdeasController {
             .value
         
         return result
+    }
+
+    func fetchScriptByIdeaId(ideaId: UUID) async throws -> ScriptedIdea? {
+        let result: [ScriptedIdea] = try await client.database
+            .from("scripted_ideas")
+            .select("*, conversations!inner(idea_id)")
+            .eq("conversations.idea_id", value: ideaId.uuidString)
+            .limit(1)
+            .execute()
+            .value
+
+        return result.first
     }
     
     func generateConversationTitleWithApple(

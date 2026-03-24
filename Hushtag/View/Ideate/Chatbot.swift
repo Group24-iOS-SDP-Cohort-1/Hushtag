@@ -15,6 +15,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     var messages: [Message] = []
     var autoSendMessage: String?
     var selectedPlatform: String?
+    var ideaId: UUID?
     let controller = ScriptedIdeasController()
     var markedMessages: [String: [Message]] = [
         "script": [],
@@ -62,7 +63,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             
             Task {
                 do {
-                    _ = try await controller.addConversation(id: conversationID ?? UUID())
+                    _ = try await controller.addConversation(id: conversationID ?? UUID(), ideaId: ideaId)
                     print("Conversation created")
                 } catch {
                     print("Failed to create conversation:", error)

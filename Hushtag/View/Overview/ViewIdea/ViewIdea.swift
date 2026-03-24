@@ -9,7 +9,8 @@ class ViewIdea: UIViewController {
     
     var idea: Idea?
     var video: [Video] = []
-    
+    var hasExistingScript: Bool = false
+    var ideaMilestone: Int = 0
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
@@ -18,7 +19,27 @@ class ViewIdea: UIViewController {
         ideaView.setCollectionViewLayout(generateLayout(), animated: true)
         
     }
-    
+    func checkForExistingScript() {
+        guard let idea = idea else { return }
+        Task {
+            async let existing = ScriptedIdeasController().fetchScriptByIdeaId(ideaId: idea.id)
+            async let conversation = ScriptedIdeasController().fetchConversation(for: idea.id)
+
+            let (script, convo) = try await (existing, conversation)
+
+            DispatchQueue.main.async {
+                self.hasExistingScript = script != nil
+                self.ideaMilestone = convo?.milestoneCount ?? 0
+                self.ideaView.reloadSections(IndexSet(integer: 0))
+            }
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        checkForExistingScript()
+    }
+
         @IBAction func draftTap(_ sender: Any) {
             guard let idea = idea else { return }
             didTapDraftScript(for: idea)
@@ -30,6 +51,7 @@ class ViewIdea: UIViewController {
             guard let chatVC = storyboard.instantiateViewController(
                 withIdentifier: "Chatbot"
             ) as? Chatbot else { return }
+            chatVC.ideaId = idea.id
             chatVC.autoSendMessage = """
     Create a short creator-style script for this video idea:
     
@@ -47,14 +69,47 @@ class ViewIdea: UIViewController {
     """
             navigationController?.pushViewController(chatVC, animated: true)
         }
-    
+
+    func handleDraftScriptTap(for idea: Idea) {
+        Task {
+            do {
+                let existing = try await ScriptedIdeasController()
+                    .fetchScriptByIdeaId(ideaId: idea.id)
+
+                DispatchQueue.main.async {
+                    if let existingScript = existing {
+                        // Script exists — go straight to it
+                        let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
+                        guard let vc = storyboard.instantiateViewController(
+                            withIdentifier: "scriptedIdea"
+                        ) as? ScriptedIdeas else { return }
+                        vc.idea = existingScript
+                        self.navigationController?.pushViewController(vc, animated: true)
+                    } else {
+                        // No script yet — go to chatbot
+                        self.didTapDraftScript(for: idea)
+                    }
+                }
+            } catch {
+                // Fallback to chatbot if fetch fails
+                DispatchQueue.main.async { self.didTapDraftScript(for: idea) }
+            }
+        }
+    }
+
     func registerCell() {
         
         ideaView.register(
             UINib(nibName: "HeaderView",
                   bundle: nil),
             forSupplementaryViewOfKind: "header",
-            withReuseIdentifier: "headerCell")
+            withReuseIdentifier: "headerCell");
+
+        ideaView.register(
+            UINib(nibName: "IdeaProgressCollectionViewCell", bundle: nil), 
+            forCellWithReuseIdentifier: "cell"
+        )
+
     }
     
     func generateLayout() -> UICollectionViewLayout {
@@ -63,8 +118,23 @@ class ViewIdea: UIViewController {
             let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
             
             let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "header", alignment: .top)
-            
-            if section == 0 {
+          if section == 0 {
+                let itemSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .estimated(120)  // enough for bar + button
+                )
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                let group = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: itemSize,
+                    subitems: [item]
+                )
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = NSDirectionalEdgeInsets(
+                    top: 8, leading: 20, bottom: 15, trailing: 20
+                )
+                return section
+            }
+            if section == 1 {
 
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
@@ -96,8 +166,8 @@ class ViewIdea: UIViewController {
                 return section
             }
             
-            else if section == 1 {
-                
+            else if section == 2 {
+
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
                 
                 // create the item
@@ -117,7 +187,7 @@ class ViewIdea: UIViewController {
                 return section
             }
             
-            else if section == 2 {
+            else if section == 3 {
 
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
@@ -144,7 +214,8 @@ class ViewIdea: UIViewController {
 
                 return section
             }
-            
+
+
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
             
             // create the item
@@ -186,17 +257,35 @@ class ViewIdea: UIViewController {
 
 extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 4
+        return 5
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 1 {
+        if section == 2 {
             return 2
         }
         return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
         if indexPath.section == 0 {
+            let cell = ideaView.dequeueReusableCell(
+                withReuseIdentifier: "cell",
+                for: indexPath
+            ) as! IdeaProgressCollectionViewCell
+
+            cell.configure(
+                currentMilestone: ideaMilestone - 1,  
+                buttonTitle: hasExistingScript ? "View Your Draft" : "Draft Script"
+            )
+
+            cell.onButtonTapped = { [weak self] in
+                guard let self = self, let idea = self.idea else { return }
+                self.handleDraftScriptTap(for: idea)
+            }
+            return cell
+        }
+        else if indexPath.section == 1 {
             let cell = ideaView.dequeueReusableCell(withReuseIdentifier: "basicInfo", for: indexPath) as! IdeaDetailsCollectionViewCell
             if let idea = idea {
                 cell.configure(with: idea)
@@ -212,7 +301,7 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
             return cell
         }
         
-        else if indexPath.section == 1 {
+        else if indexPath.section == 2 {
             let cell = ideaView.dequeueReusableCell(withReuseIdentifier: "statistics", for: indexPath) as! IdeaDetailsCollectionViewCell
             
             guard let idea = idea else { return cell }
@@ -231,23 +320,26 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
 
                 cell.configureStatistic(value, symbol)
                 cell.view.layer.cornerRadius = 16
-            cell.view.layer.borderWidth = 0.5
+                cell.view.layer.borderWidth = 0.5
                 cell.view.backgroundColor = UIColor.accent.withAlphaComponent(0.1)
                 cell.view.layer.borderColor = UIColor.accent.withAlphaComponent(1.0).cgColor
             return cell
-        } else if indexPath.section == 2 {
+        } else if indexPath.section == 3 {
             let cell = ideaView.dequeueReusableCell(withReuseIdentifier: "gaps", for: indexPath) as! IdeaDetailsCollectionViewCell
             
             cell.configureHashtag(idea?.hashtags ?? [])
             return cell
         }
+
+
+
         let cell = ideaView.dequeueReusableCell(withReuseIdentifier: "button", for: indexPath) as! IdeaDetailsCollectionViewCell
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
-        if kind == "header", indexPath.section == 1 {
+        if kind == "header", indexPath.section == 2 {
             let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: "header",
                 withReuseIdentifier: "headerCell",
@@ -257,7 +349,7 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
             headerView.configureHeader(text: "Performance Statistics")
             return headerView
         }
-        else if kind == "header", indexPath.section == 2 {
+        else if kind == "header", indexPath.section == 3 {
             let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: "header",
                 withReuseIdentifier: "headerCell",

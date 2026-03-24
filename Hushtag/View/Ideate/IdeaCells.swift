@@ -9,7 +9,6 @@ protocol IdeaCellDelegate: AnyObject {
     func didToggleLikeFromFeed(for ideaKey: String)
 }
 
-
 class IdeaCells: UICollectionViewCell {
     @IBOutlet weak var ideaTitle: UILabel!
     @IBOutlet weak var ideaView: UIView!

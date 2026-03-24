@@ -20,7 +20,7 @@ final class AIResponseRouter {
         
         switch intent {
             
-            // 🌐 Heavy creative work → Gemini ONLY
+            
         case .generateScript:
             return await callGemini(
                 prompt: prompt,

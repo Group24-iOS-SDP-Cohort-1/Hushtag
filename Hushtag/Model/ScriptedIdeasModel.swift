@@ -89,9 +89,21 @@ nonisolated struct Conversation: Codable, Sendable {
     }
 }
 
+extension Conversation {
+    var milestoneCount: Int {
+        guard let idea = scripted_ideas else { return 0 }
+        var count = 0
+        if idea.script != nil      { count += 1 }
+        if idea.title != nil       { count += 1 }
+        if idea.description != nil { count += 1 }
+        return count
+    }
+}
+
 nonisolated struct ConversationInsertPayload: Codable {
     let id: UUID
     let user_id: UUID
+    let idea_id: UUID?
 }
 
 enum Role: String, Codable {

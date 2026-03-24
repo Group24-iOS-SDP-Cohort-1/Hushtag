@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="cell" id="gTV-IL-0wX" customClass="IdeaProgressCollectionViewCell" customModule="Hushtag" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="483" height="219"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="483" height="219"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5m1-2d-Vzg">
+                        <rect key="frame" x="0.0" y="0.0" width="483" height="219"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hZC-DV-4Jf">
+                                <rect key="frame" x="15" y="25" width="453" height="108"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="D33-Fy-PeJ">
+                                <rect key="frame" x="170" y="155" width="143" height="35"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="tinted" title="View Your Draft"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="hZC-DV-4Jf" firstAttribute="leading" secondItem="5m1-2d-Vzg" secondAttribute="leading" constant="15" id="Bg3-8s-CCD"/>
+                            <constraint firstItem="D33-Fy-PeJ" firstAttribute="centerX" secondItem="5m1-2d-Vzg" secondAttribute="centerX" id="kqj-FU-TUi"/>
+                            <constraint firstItem="D33-Fy-PeJ" firstAttribute="top" secondItem="hZC-DV-4Jf" secondAttribute="bottom" constant="43" id="qwe-Eo-DWU"/>
+                            <constraint firstItem="hZC-DV-4Jf" firstAttribute="top" secondItem="5m1-2d-Vzg" secondAttribute="top" constant="25" id="wDd-CY-j8a"/>
+                            <constraint firstAttribute="trailing" secondItem="hZC-DV-4Jf" secondAttribute="trailing" constant="15" id="xNj-sj-DVn"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="5m1-2d-Vzg" secondAttribute="trailing" id="0d2-c9-slg"/>
+                <constraint firstItem="5m1-2d-Vzg" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="IFq-V8-haG"/>
+                <constraint firstAttribute="bottom" secondItem="5m1-2d-Vzg" secondAttribute="bottom" id="JBJ-bU-z9v"/>
+                <constraint firstItem="5m1-2d-Vzg" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="LjX-he-vPS"/>
+            </constraints>
+            <size key="customSize" width="483" height="219"/>
+            <connections>
+                <outlet property="progressBarContainer" destination="hZC-DV-4Jf" id="Q7u-fa-eWB"/>
+                <outlet property="view" destination="5m1-2d-Vzg" id="Q3q-Us-zcP"/>
+                <outlet property="viewYourDraft" destination="D33-Fy-PeJ" id="U9B-ga-wZN"/>
+            </connections>
+            <point key="canvasLocation" x="-480.15267175572518" y="181.33802816901408"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
