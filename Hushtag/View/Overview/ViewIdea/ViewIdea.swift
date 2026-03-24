@@ -1,6 +1,5 @@
 import UIKit
 import SwiftUI
-import SafariServices
 import Charts
 
 class ViewIdea: UIViewController {

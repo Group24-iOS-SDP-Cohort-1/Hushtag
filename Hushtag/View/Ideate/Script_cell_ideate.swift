@@ -6,12 +6,14 @@ class Script_cell_ideate: UICollectionViewCell {
     
     @IBOutlet weak var title: UILabel!
     
+    @IBOutlet weak var badgeStack: UIStackView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         self.layer.cornerRadius = 12
         applyLiquidGlassEffect()
         title.numberOfLines = 2
+        configureHashtags("Chatbot")
     }
 
     func configureCell(with script: ScriptedIdea) {
@@ -46,5 +48,27 @@ class Script_cell_ideate: UICollectionViewCell {
         let progress = filledCriteria / totalCriteria
         progressView.setProgress(value: progress)
     }
+    
+    func configureHashtags(_ hashtag: String) {
+        
+        badgeStack.arrangedSubviews.forEach {
+            badgeStack.removeArrangedSubview($0)
+            $0.removeFromSuperview()
+        }
+        
+        let badge: Badges = Badges.loadFromNib()
+        
+        badge.configure(
+            text: hashtag,
+            color: UIColor(hex: "#a78bfa"),
+            cornerRadius: 12,
+            borderWidth: 1.0,
+            backgroundAlpha: 0.12
+        )
 
+        badge.backgroundColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.12)
+        badge.layer.borderColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.22).cgColor
+
+        badgeStack.addArrangedSubview(badge)
+    }
 }

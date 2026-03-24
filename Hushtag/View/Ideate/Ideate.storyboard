@@ -3,7 +3,6 @@
     <device id="retina6_12" orientation="portrait" appearance="dark"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
-        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -45,28 +44,78 @@
                                             </subviews>
                                         </collectionViewCellContentView>
                                     </collectionViewCell>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="16a-dF-ET3">
+                                        <rect key="frame" x="231" y="0.0" width="128" height="128"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="mwK-Zx-hCB">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="cgT-Dh-svL">
+                                        <rect key="frame" x="0.0" y="138" width="128" height="128"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Ouy-Bn-s7u">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="y0r-BG-X2S">
+                                        <rect key="frame" x="231" y="138" width="128" height="128"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="5sn-nq-g4r">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="chatbotAssistant" id="qYN-JM-HEi">
+                                        <rect key="frame" x="0.0" y="276" width="359" height="128"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="gJc-rK-BMr">
+                                            <rect key="frame" x="0.0" y="0.0" width="359" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="wand.and.sparkles" catalog="system" highlightedImage="wand.and.rays" translatesAutoresizingMaskIntoConstraints="NO" id="Mp3-g9-atB">
+                                                    <rect key="frame" x="15" y="15.333333333333332" width="50" height="48.333333333333343"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="50" id="EVn-m5-4gy"/>
+                                                        <constraint firstAttribute="height" constant="50" id="s0G-aV-RFh"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="An AI-powered assistant that helps you generate, refine, and optimize your posts to boost your content’s reach and engagement." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cce-oJ-AQp">
+                                                    <rect key="frame" x="80" y="41.666666666666657" width="264" height="46.333333333333343"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                    <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AI chatbot assistant" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tIX-X2-76c">
+                                                    <rect key="frame" x="80" y="15.000000000000002" width="181" height="21.666666666666671"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="19"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Mp3-g9-atB" firstAttribute="top" secondItem="gJc-rK-BMr" secondAttribute="top" constant="15" id="0ve-6n-sk7"/>
+                                                <constraint firstAttribute="trailing" secondItem="cce-oJ-AQp" secondAttribute="trailing" constant="15" id="Gh3-L6-Vkj"/>
+                                                <constraint firstItem="Mp3-g9-atB" firstAttribute="leading" secondItem="gJc-rK-BMr" secondAttribute="leading" constant="15" id="I8x-CN-P9n"/>
+                                                <constraint firstItem="cce-oJ-AQp" firstAttribute="top" secondItem="tIX-X2-76c" secondAttribute="bottom" constant="5" id="gWs-tg-jH5"/>
+                                                <constraint firstItem="tIX-X2-76c" firstAttribute="top" secondItem="gJc-rK-BMr" secondAttribute="top" constant="15" id="gtv-D5-Y5f"/>
+                                                <constraint firstItem="tIX-X2-76c" firstAttribute="leading" secondItem="Mp3-g9-atB" secondAttribute="trailing" constant="15" id="nGV-WM-vQE"/>
+                                                <constraint firstItem="cce-oJ-AQp" firstAttribute="leading" secondItem="Mp3-g9-atB" secondAttribute="trailing" constant="15" id="nnr-QS-WtA"/>
+                                            </constraints>
+                                        </collectionViewCellContentView>
+                                        <size key="customSize" width="359" height="128"/>
+                                    </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oGG-eh-lG7">
-                                <rect key="frame" x="248.33333333333334" y="729" width="124.66666666666666" height="35"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Script with AI">
-                                    <color key="baseForegroundColor" systemColor="labelColor"/>
-                                    <color key="baseBackgroundColor" name="AccentColor"/>
-                                </buttonConfiguration>
-                                <connections>
-                                    <action selector="scriptTap:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="bHB-Xx-Qxh"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="oGG-eh-lG7" secondAttribute="bottom" constant="20" id="2iX-tH-yTE"/>
                             <constraint firstAttribute="bottom" secondItem="Mxq-Iu-w0r" secondAttribute="bottom" id="VD8-Qq-KbX"/>
                             <constraint firstItem="Mxq-Iu-w0r" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="Xaf-sN-vZI"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Mxq-Iu-w0r" secondAttribute="trailing" constant="17" id="iit-Dw-olB"/>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="oGG-eh-lG7" secondAttribute="trailing" constant="20" id="qSq-lr-gX1"/>
                             <constraint firstItem="Mxq-Iu-w0r" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="17" id="u6g-MN-j8G"/>
                         </constraints>
                     </view>
@@ -82,22 +131,15 @@
                                 </connections>
                             </button>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="heart" catalog="system" id="QpP-54-ASd">
-                            <color key="tintColor" name="AccentColor"/>
-                            <connections>
-                                <action selector="viewLikedTap:" destination="Y6W-OH-hqX" id="7hx-Fr-qfZ"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="Mxq-Iu-w0r" id="YeI-Ho-aaB"/>
-                        <outlet property="scriptButton" destination="oGG-eh-lG7" id="9QI-78-BeC"/>
                         <segue destination="Yb8-13-5gt" kind="show" identifier="goToScript" animates="NO" id="rsD-Te-pVV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3210" y="410"/>
+            <point key="canvasLocation" x="3209.9236641221373" y="409.85915492957747"/>
         </scene>
         <!--Scripted Ideas-->
         <scene sceneID="rvD-Ad-AbP">
@@ -272,19 +314,14 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2Bv-n8-kuT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3210" y="861"/>
+            <point key="canvasLocation" x="2877" y="867"/>
         </scene>
     </scenes>
     <resources>
         <image name="ellipsis.circle" catalog="system" width="128" height="123"/>
-        <image name="heart" catalog="system" width="128" height="107"/>
         <image name="person.2.circle" catalog="system" width="128" height="123"/>
-        <namedColor name="AccentColor">
-            <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <systemColor name="labelColor">
-            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
+        <image name="wand.and.rays" catalog="system" width="128" height="123"/>
+        <image name="wand.and.sparkles" catalog="system" width="128" height="112"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

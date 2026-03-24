@@ -73,11 +73,7 @@ class IdeaCells: UICollectionViewCell {
     func updateLikeUI() {
             guard let idea = idea else { return }
             let isLiked = idea.liked == true
-            let imageName = isLiked ? "heart.fill" : "heart"
+            let imageName = isLiked ? "bookmark.fill" : "bookmark"
             likeButton.setImage(UIImage(systemName: imageName), for: .normal)
         }
-
-
-    
-    
 }

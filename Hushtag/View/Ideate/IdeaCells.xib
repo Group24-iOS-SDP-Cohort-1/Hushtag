@@ -27,10 +27,14 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f9h-1Q-D93">
-                                <rect key="frame" x="504.33333333333331" y="10" width="50.666666666666686" height="34.333333333333336"/>
+                                <rect key="frame" x="525" y="10" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="4H9-6M-Ldc"/>
+                                    <constraint firstAttribute="height" constant="30" id="rkt-rb-lkB"/>
+                                </constraints>
                                 <color key="tintColor" name="AccentColor"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="heart" catalog="system"/>
+                                <buttonConfiguration key="configuration" style="plain" image="bookmark" catalog="system"/>
                                 <connections>
                                     <action selector="likeTapped:" destination="gTV-IL-0wX" eventType="touchUpInside" id="5tb-ZM-2ur"/>
                                 </connections>
@@ -91,7 +95,7 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="heart" catalog="system" width="128" height="107"/>
+        <image name="bookmark" catalog="system" width="110" height="128"/>
         <image name="lightbulb.min" catalog="system" width="115" height="128"/>
         <namedColor name="AccentColor">
             <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

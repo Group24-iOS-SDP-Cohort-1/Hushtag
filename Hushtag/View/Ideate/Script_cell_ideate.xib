@@ -18,7 +18,7 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rq0-kN-oAu" customClass="CircularProgressView" customModule="Hushtag" customModuleProvider="target">
-                        <rect key="frame" x="10" y="10" width="40" height="35"/>
+                        <rect key="frame" x="172" y="15" width="40" height="35"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="40" id="iPj-Bu-iTe"/>
@@ -26,23 +26,29 @@
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CAW-dL-gC2">
-                        <rect key="frame" x="10" y="55" width="207" height="18"/>
+                        <rect key="frame" x="10" y="15" width="152" height="18"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Uzc-kK-0UA">
+                        <rect key="frame" x="11" y="75" width="110" height="17"/>
+                    </stackView>
                 </subviews>
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
-                <constraint firstItem="Rq0-kN-oAu" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="10" id="9pn-uB-IdV"/>
+                <constraint firstAttribute="bottom" secondItem="Uzc-kK-0UA" secondAttribute="bottom" constant="15" id="9je-kh-ULA"/>
+                <constraint firstItem="Rq0-kN-oAu" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="15" id="9pn-uB-IdV"/>
                 <constraint firstItem="CAW-dL-gC2" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="Gc3-Ha-Kvd"/>
-                <constraint firstAttribute="trailing" secondItem="CAW-dL-gC2" secondAttribute="trailing" constant="10" id="OSy-jZ-7eH"/>
-                <constraint firstItem="Rq0-kN-oAu" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="g1H-uI-pid"/>
-                <constraint firstItem="CAW-dL-gC2" firstAttribute="top" secondItem="Rq0-kN-oAu" secondAttribute="bottom" constant="10" id="y2n-Lm-SnL"/>
+                <constraint firstAttribute="trailing" secondItem="Rq0-kN-oAu" secondAttribute="trailing" constant="15" id="Yjk-fU-1uk"/>
+                <constraint firstItem="CAW-dL-gC2" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="15" id="hTH-wp-ehc"/>
+                <constraint firstItem="Uzc-kK-0UA" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="l0m-0F-XB0"/>
+                <constraint firstItem="Rq0-kN-oAu" firstAttribute="leading" secondItem="CAW-dL-gC2" secondAttribute="trailing" constant="10" id="v7N-eK-rWr"/>
             </constraints>
             <size key="customSize" width="227" height="138"/>
             <connections>
+                <outlet property="badgeStack" destination="Uzc-kK-0UA" id="rVS-lU-VAl"/>
                 <outlet property="progressView" destination="Rq0-kN-oAu" id="j7z-V5-ZQc"/>
                 <outlet property="title" destination="CAW-dL-gC2" id="6hL-WW-XeZ"/>
             </connections>

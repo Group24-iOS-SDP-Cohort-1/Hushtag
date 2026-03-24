@@ -1,10 +1,3 @@
-//
-//  IdeaSearch.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 17/12/25.
-//
-
 import UIKit
 
 protocol IdeaSearchDelegate: AnyObject {

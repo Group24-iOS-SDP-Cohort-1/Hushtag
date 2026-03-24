@@ -27,10 +27,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="bGd-45-3DE">
-                                <rect key="frame" x="10" y="46" width="288" height="177"/>
+                                <rect key="frame" x="10" y="46" width="288" height="328"/>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L4m-GT-525">
-                                <rect key="frame" x="379.66666666666669" y="186" width="103.33333333333331" height="32"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L4m-GT-525">
+                                <rect key="frame" x="379.66666666666669" y="194" width="103.33333333333331" height="32"/>
                                 <color key="tintColor" name="AccentColor"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="tinted" title="Draft Script">
@@ -38,10 +38,10 @@
                                 </buttonConfiguration>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rx7-IM-twc">
-                                <rect key="frame" x="437.33333333333331" y="10" width="50.666666666666686" height="34.333333333333336"/>
+                                <rect key="frame" x="441.66666666666669" y="10" width="46.333333333333314" height="34.333333333333336"/>
                                 <color key="tintColor" name="AccentColor"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="heart.fill" catalog="system"/>
+                                <buttonConfiguration key="configuration" style="plain" image="bookmark.fill" catalog="system"/>
                                 <connections>
                                     <action selector="likeTapped:" destination="gTV-IL-0wX" eventType="touchUpInside" id="804-NJ-KRG"/>
                                 </connections>
@@ -53,6 +53,7 @@
                             <constraint firstItem="bGd-45-3DE" firstAttribute="leading" secondItem="G7P-PU-Cdu" secondAttribute="leading" constant="10" id="Ma0-RT-xB0"/>
                             <constraint firstAttribute="trailing" secondItem="Y67-7t-W9c" secondAttribute="trailing" constant="100" id="O6F-Gs-d64"/>
                             <constraint firstAttribute="trailing" secondItem="Rx7-IM-twc" secondAttribute="trailing" constant="5" id="S4N-px-Oqh"/>
+                            <constraint firstAttribute="bottom" secondItem="L4m-GT-525" secondAttribute="bottom" constant="10" id="SbK-la-QD4"/>
                             <constraint firstItem="Y67-7t-W9c" firstAttribute="top" secondItem="G7P-PU-Cdu" secondAttribute="top" constant="15" id="Vqo-lc-p8n"/>
                             <constraint firstItem="bGd-45-3DE" firstAttribute="top" secondItem="Y67-7t-W9c" secondAttribute="bottom" constant="13" id="iE2-1h-Dcu"/>
                             <constraint firstItem="Y67-7t-W9c" firstAttribute="leading" secondItem="G7P-PU-Cdu" secondAttribute="leading" constant="10" id="rTL-5Y-ibl"/>
@@ -80,7 +81,7 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="heart.fill" catalog="system" width="128" height="107"/>
+        <image name="bookmark.fill" catalog="system" width="110" height="128"/>
         <namedColor name="AccentColor">
             <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
