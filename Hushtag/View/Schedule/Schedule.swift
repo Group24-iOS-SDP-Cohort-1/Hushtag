@@ -20,6 +20,7 @@ class Schedule: UIViewController {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         
         checkConnectionStatus()
+        setupRightBarButton()
         
         scheduleView.delegate = self
         scheduleView.dataSource = self
@@ -177,6 +178,34 @@ class Schedule: UIViewController {
                     self.present(alert, animated: true)
                 }
             }
+        }
+    }
+    
+    private func setupRightBarButton() {
+        let existingPostAction = UIAction(title: "Existing Post", image: UIImage(systemName: "doc.text")) { [weak self] _ in
+            self?.handleExistingPost()
+        }
+        
+        let newPostAction = UIAction(title: "New Post", image: UIImage(systemName: "plus.app")) { [weak self] _ in
+            self?.handleNewPost()
+        }
+        
+        let menu = UIMenu(title: "", children: [existingPostAction, newPostAction])
+        let rightBarButton = UIBarButtonItem(systemItem: .add, menu: menu)
+        navigationItem.rightBarButtonItem = rightBarButton
+    }
+    
+    private func handleExistingPost() {
+        let storyboard = UIStoryboard(name: "ExistingPost", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "NavExistingPost") as? UINavigationController {
+            present(vc, animated: true)
+        }
+    }
+    
+    private func handleNewPost() {
+        let storyboard = UIStoryboard(name: "CreatePost", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "NavCreatePost") as? UINavigationController {
+            present(vc, animated: true)
         }
     }
     
@@ -746,3 +775,4 @@ extension Schedule: ScheduleCollectionViewCellDelegate {
         }
     }
 }
+

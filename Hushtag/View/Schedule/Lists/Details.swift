@@ -238,20 +238,7 @@ class Details: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-            if segue.identifier == "editPost" {
-                if let nav = segue.destination as? UINavigationController,
-                   let dest = nav.topViewController as? AddViewController,
-                   case .post(let post, _) = schedule {
-                    dest.editingPost = post
-                    dest.editingIndex = 0 // Ensures the delegate method triggers
-                    dest.delegate = self
-                } else if let dest = segue.destination as? AddViewController,
-                          case .post(let post, _) = schedule {
-                    dest.editingPost = post
-                    dest.editingIndex = 0
-                    dest.delegate = self
-                }
-            } else if segue.identifier == "editDeal" {
+            if segue.identifier == "editDeal" {
                 if let nav = segue.destination as? UINavigationController,
                    let dest = nav.topViewController as? AddDealsViewController,
                    case .deal(let deal, _) = schedule {
@@ -477,20 +464,6 @@ extension UIViewController {
     }
 }
 
-// MARK: - Delegate Extensions for Instant UI Updates
-extension Details: AddViewDelegate {
-    func addViewController(_ controller: AddViewController, didCreatePost post: Post) { }
-    
-    func addViewController(_ controller: AddViewController, didUpdatePost post: Post, at index: Int) {
-        guard case .post(_, let currentTask) = self.schedule else { return }
-        
-        // CHANGED: Handle optional task
-        let updatedTask = currentTask != nil ? (post.tasks.first(where: { $0.id == currentTask!.id }) ?? currentTask) : nil
-        
-        self.schedule = .post(post: post, task: updatedTask)
-        self.detailsView.reloadData()
-    }
-}
 
 extension Details: AddDealsDelegate {
     func addDealsViewController(_ controller: AddDealsViewController, didCreateDeal deal: Deal) { }
