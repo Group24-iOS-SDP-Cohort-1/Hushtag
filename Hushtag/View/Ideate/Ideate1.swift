@@ -445,6 +445,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
                 withReuseIdentifier: "IdeaSearch",
                 for: indexPath
             ) as! IdeaSearch
+            header.configure(state: .ideateMain)
             header.delegate = self
             return header
             
@@ -551,57 +552,62 @@ extension Ideate1: IdeaSearchDelegate {
             return
         }
         
-        self.isSearching = true
+//        self.isSearching = true
+//        
+//        OpaqueLoadingScreen.shared.show(message: "Searching ideas...")
+//        
+//        
+//        Task {
+//            do {
+//                let response = try await YouTubeService().search(query: keyword)
+//                
+//                // NEW FLOW
+//                let clusterIdeas = response.clusterIdeas
+//                collectionView.setCollectionViewLayout(generateLayout(), animated: false)
+//                
+//                // Flatten clusterIdeas → Idea objects
+//                let mappedIdeas: [Idea] = clusterIdeas.flatMap { cluster in
+//                    cluster.ideas.map { geminiIdea in
+//                        
+//                        let key = makeIdeaKey(
+//                            title: geminiIdea.title,
+//                            description: geminiIdea.description,
+//                            format: geminiIdea.format,
+//                            hashtags: geminiIdea.hashtags
+//                        )
+//                        
+//                        return Idea(
+//                            id: UUID(),
+//                            ideaKey: key,
+//                            title: geminiIdea.title,
+//                            description: geminiIdea.description,
+//                            format: geminiIdea.format,
+//                            hashtags: geminiIdea.hashtags,
+//                            noveltyScore: geminiIdea.noveltyScore,
+//                            videos: (cluster.videos).map { $0.toVideo() },
+//                            liked: false
+//                        )
+//                    }
+//                }
+//                
+//                await MainActor.run {
+//                    self.ideas = mappedIdeas
+//                    print("Ideas Count:", self.ideas.count)
+//                    self.collectionView.reloadData()
+//                    OpaqueLoadingScreen.shared.hide()
+//                }
+//                
+//            } catch {
+//                print("❌ ERROR:", error)
+//                await MainActor.run {
+//                    OpaqueLoadingScreen.shared.hide()
+//                }
+//            }
         
-        OpaqueLoadingScreen.shared.show(message: "Searching ideas...")
-        
-        
-        Task {
-            do {
-                let response = try await YouTubeService().search(query: keyword)
-                
-                // NEW FLOW
-                let clusterIdeas = response.clusterIdeas
-                collectionView.setCollectionViewLayout(generateLayout(), animated: false)
-                
-                // Flatten clusterIdeas → Idea objects
-                let mappedIdeas: [Idea] = clusterIdeas.flatMap { cluster in
-                    cluster.ideas.map { geminiIdea in
-                        
-                        let key = makeIdeaKey(
-                            title: geminiIdea.title,
-                            description: geminiIdea.description,
-                            format: geminiIdea.format,
-                            hashtags: geminiIdea.hashtags
-                        )
-                        
-                        return Idea(
-                            id: UUID(),
-                            ideaKey: key,
-                            title: geminiIdea.title,
-                            description: geminiIdea.description,
-                            format: geminiIdea.format,
-                            hashtags: geminiIdea.hashtags,
-                            noveltyScore: geminiIdea.noveltyScore,
-                            videos: (cluster.videos).map { $0.toVideo() },
-                            liked: false
-                        )
-                    }
-                }
-                
-                await MainActor.run {
-                    self.ideas = mappedIdeas
-                    print("Ideas Count:", self.ideas.count)
-                    self.collectionView.reloadData()
-                    OpaqueLoadingScreen.shared.hide()
-                }
-                
-            } catch {
-                print("❌ ERROR:", error)
-                await MainActor.run {
-                    OpaqueLoadingScreen.shared.hide()
-                }
-            }
+        let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
+        if let searchVC = storyboard.instantiateViewController(withIdentifier: "AfterSearchIdeasViewController") as? AfterSearchIdeasViewController {
+            searchVC.keyword = keyword
+            self.navigationController?.pushViewController(searchVC, animated: true)
         }
     }
 }

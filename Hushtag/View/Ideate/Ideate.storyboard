@@ -142,10 +142,10 @@
             </objects>
             <point key="canvasLocation" x="3209.9236641221373" y="409.85915492957747"/>
         </scene>
-        <!--View Controller-->
+        <!--Search Idea-->
         <scene sceneID="QWX-XP-l6H">
             <objects>
-                <viewController id="EIE-es-Oql" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AfterSearchIdeasViewController" id="EIE-es-Oql" customClass="AfterSearchIdeasViewController" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="OGz-EZ-DzP">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -167,7 +167,10 @@
                             </collectionViewCell>
                         </cells>
                     </collectionView>
-                    <navigationItem key="navigationItem" id="IaK-iF-727"/>
+                    <navigationItem key="navigationItem" title="Search Idea" id="IaK-iF-727"/>
+                    <connections>
+                        <outlet property="collectionView" destination="OGz-EZ-DzP" id="yuF-Ej-qZy"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Atu-pn-tAY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

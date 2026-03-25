@@ -113,7 +113,9 @@
             </constraints>
             <connections>
                 <outlet property="crossButton" destination="0yX-qb-IhQ" id="nAZ-Ge-GHs"/>
+                <outlet property="mainHeadingStack" destination="eCU-Wc-yoN" id="Knm-0C-a3J"/>
                 <outlet property="searchButton" destination="2qw-PG-bjF" id="dlF-eE-0Z1"/>
+                <outlet property="subheadingStack" destination="Qlu-Zf-chP" id="dJs-yD-xSN"/>
                 <outlet property="textLabel" destination="9qh-oQ-3Fh" id="Qwl-yf-Gra"/>
                 <outlet property="textStack" destination="F5p-iG-YO8" id="70p-US-7kJ"/>
                 <outlet property="textView" destination="T9b-3e-pu7" id="a7R-8M-y7M"/>
