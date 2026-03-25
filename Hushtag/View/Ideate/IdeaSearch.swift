@@ -9,17 +9,47 @@ class IdeaSearch: UICollectionReusableView {
     @IBOutlet weak var textLabel: UITextField!
     @IBOutlet weak var searchButton: UIButton!
     @IBOutlet weak var textStack: UIStackView!
+    
+    @IBOutlet weak var mainHeadingStack: UIStackView!
+    
+    @IBOutlet weak var subheadingStack: UIStackView!
+    
+    
     @IBOutlet weak var crossButton: UIButton!
     weak var delegate: IdeaSearchDelegate?
+
+    enum SearchState {
+        case ideateMain
+        case afterSearch(showCross: Bool)
+    }
 
     override func awakeFromNib() {
         super.awakeFromNib()
         textView.layer.borderColor = UIColor.accent.cgColor
         textView.layer.borderWidth = 1
         textView.layer.cornerRadius = 8
-        crossButton.isHidden = true
         
+        // Initial defaults setup appropriately
+        configure(state: .ideateMain)
         setupKeyboardDismissGesture()
+    }
+    
+    func configure(state: SearchState) {
+        // textStack contains all 3 headings, it MUST stay visible
+        textStack.isHidden = false
+        
+        switch state {
+        case .ideateMain:
+            mainHeadingStack.isHidden = false
+            subheadingStack.isHidden = false
+            crossButton.isHidden = true
+            
+        case .afterSearch(let showCross):
+//            mainHeadingStack.isHidden = true
+//            subheadingStack.isHidden = true
+            textStack.isHidden = true
+            crossButton.isHidden = !showCross
+        }
     }
     
     private func setupKeyboardDismissGesture() {
@@ -41,20 +71,15 @@ class IdeaSearch: UICollectionReusableView {
         guard !keyword.isEmpty else {
                return   
            }
-        textStack.isHidden = true
-        crossButton.isHidden = false
         textLabel.resignFirstResponder()
         delegate?.didTapSearch(with: keyword)
     }
     
     @IBAction func crossTap(_ sender: UIButton) {
         textLabel.text = ""
-        textStack.isHidden = false
-        crossButton.isHidden = true
         textLabel.resignFirstResponder()
         delegate?.didTapSearch(with: "")
     }
-    
 }
     
     
