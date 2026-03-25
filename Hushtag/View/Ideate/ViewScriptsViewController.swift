@@ -255,11 +255,7 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
         
         cell.configureCell(idea: idea)
         cell.delegate = self
-        
-        // ... (Keep your existing Like Toggle logic here) ...
-        // Note: Be careful deleting items while searching.
-        // Ideally, delete from both 'likedIdeas' AND 'filteredLikedIdeas'
-        
+
         return cell
     }
 }
@@ -320,9 +316,6 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout{
     )
     
     let layout = UICollectionViewCompositionalLayout(section: section)
-    
-    print("Liked ideas")
-    
     return layout
     
 }

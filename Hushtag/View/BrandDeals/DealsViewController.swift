@@ -6,8 +6,6 @@ class DealsViewController: UIViewController {
     
     @IBOutlet weak var segmentControl: UISegmentedControl!
     @IBOutlet weak var collectionView: UICollectionView!
-    
-    
     @IBOutlet weak var searchBar: UISearchBar!
     
     var selected_Deal : Deal?
