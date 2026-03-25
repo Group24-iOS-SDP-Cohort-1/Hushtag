@@ -121,7 +121,7 @@ class ViewIdea: UIViewController {
           if section == 0 {
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(120)  // enough for bar + button
+                    heightDimension: .estimated(140)
                 )
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 let group = NSCollectionLayoutGroup.horizontal(
@@ -276,7 +276,7 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
 
             cell.configure(
                 currentMilestone: ideaMilestone - 1,  
-                buttonTitle: hasExistingScript ? "View Your Draft" : "Draft Script"
+                buttonTitle: hasExistingScript ? "View Draft" : "Draft Script"
             )
 
             cell.onButtonTapped = { [weak self] in
