@@ -15,8 +15,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     var messages: [Message] = []
     var autoSendMessage: String?
     var selectedPlatform: String?
+    var ideaMilestone: Int = 0
     var ideaId: UUID?
     let controller = ScriptedIdeasController()
+    private var progressHeader: ProgressCell?
     var markedMessages: [String: [Message]] = [
         "script": [],
         "title": [],
@@ -50,12 +52,29 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         textFieldView.layer.shadowOpacity = 0.2
         textFieldView.layer.shadowOffset = CGSize(width: 0, height: 2)
         textFieldView.layer.shadowRadius = 4
-        
+        tableView.contentInset = UIEdgeInsets(top: 100, left: 0, bottom: 0, right: 0)
+        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 100, left: 0, bottom: 0, right: 0)
         generateStack.isHidden = true
         tableView.register(
             UINib(nibName: "PlatformCellTableViewCell", bundle: nil),
             forCellReuseIdentifier: "PlatformCell"
         )
+
+        tableView.sectionHeaderTopPadding = 0
+        let header = ProgressCell()
+        header.configure(currentMilestone: ideaMilestone)
+        header.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(header)
+        progressHeader = header
+
+        NSLayoutConstraint.activate([
+            header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
+            header.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+            header.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+            header.heightAnchor.constraint(equalToConstant: 80),
+        ])
+
         if conversationID == nil {
             
             conversationID = UUID()
@@ -199,20 +218,22 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     
     func scrollToBottom() {
         if messages.count > 0 {
-            let indexPath = IndexPath(row: messages.count - 1, section: 0)
+            let indexPath = IndexPath(row: messages.count, section: 0)
             tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
         }
     }
-    
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages.count + 1
     }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
+
         if indexPath.row == 0 {
-            let cell = tableView.dequeueReusableCell(
-                withIdentifier: "PlatformCell",
+                let cell = tableView.dequeueReusableCell(
+                    withIdentifier: "PlatformCell",
                 for: indexPath
             ) as! PlatformCellTableViewCell
             cell.onPlatformSelected = { [weak self] platform in
@@ -221,19 +242,19 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 Task {
                     do {
                         try await self.controller.updatePlatform(id: id, platform: platform)
-                        print("✅ Platform saved:", platform)
+                        print("Platform saved:", platform)
                     } catch {
-                        print("❌ Failed to save platform:", error)
+                        print("Failed to save platform:", error)
                     }
                 }
             }
-            
             return cell
         }
         
         
         let messageIndex = indexPath.row - 1
-        
+
+
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
         cell.configure(with: messages[messageIndex])
         
@@ -245,7 +266,15 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         return cell
         
     }
-    
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return .leastNormalMagnitude
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return .leastNormalMagnitude
+    }
+
     func textViewDidChange(_ textView: UITextView) {
         
         guard textView.font != nil else { return }
@@ -484,7 +513,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     self.generateStack.isHidden = false
                     message.mark = type
                     self.markedMessages[type]?.append(message)
-                    
+                    self.updateProgressHeader()
                     if let chatID = self.conversationID {
                         Task {
                             do {
@@ -501,25 +530,22 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     }
                     
                     if self.isAllContentMarked() && !self.didShowFinalReadyMessage {
-                        
+
                         self.didShowFinalReadyMessage = true
-                        
+
                         let finalMessage = Message(
                             role: "bot",
                             content: "less goo your post is ready"
                         )
-                        
+
                         self.messages.append(finalMessage)
-                        
-                        let indexPath = IndexPath(
-                            row: self.messages.count - 1,
-                            section: 0
-                        )
-                        
+
+                        let indexPath = IndexPath(row: self.messages.count, section: 0)
+
                         self.tableView.insertRows(at: [indexPath], with: .fade)
                         self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
                     }
-                    
+
                     
                     switch type {
                     case "script":
@@ -536,7 +562,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     }
                 }
                 self.messages[row] = message
-                self.tableView.reloadRows(at: [IndexPath(row: row, section: 0)], with: .none)
+                self.tableView.reloadRows(at: [IndexPath(row: row + 1, section: 0)], with: .none)
             })
         }
         
@@ -608,5 +634,16 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         sendMessage(title)
         generateStack.isHidden = true
     }
-    
+
+    private func updateProgressHeader() {
+        let completedCount = requiredMarkTypes.filter {
+            !(markedMessages[$0]?.isEmpty ?? true)
+        }.count
+
+        ideaMilestone = completedCount - 1
+
+        progressHeader?.configure(currentMilestone: ideaMilestone)
+    }
+
 }
+
