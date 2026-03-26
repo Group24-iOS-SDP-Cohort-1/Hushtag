@@ -21,15 +21,24 @@ class ViewIdea: UIViewController {
     func checkForExistingScript() {
         guard let idea = idea else { return }
         Task {
-            async let existing = ScriptedIdeasController().fetchScriptByIdeaId(ideaId: idea.id)
-            async let conversation = ScriptedIdeasController().fetchConversation(for: idea.id)
+            do {
+                let script = try await ScriptedIdeasController().fetchScriptByIdeaId(ideaId: idea.id)
 
-            let (script, convo) = try await (existing, conversation)
+                DispatchQueue.main.async {
+                    self.hasExistingScript = script != nil
 
-            DispatchQueue.main.async {
-                self.hasExistingScript = script != nil
-                self.ideaMilestone = convo?.milestoneCount ?? 0
-                self.ideaView.reloadSections(IndexSet(integer: 0))
+                    if let script = script {
+                        self.ideaMilestone = [script.script, script.title, script.description]
+                            .filter { $0 != nil && !($0?.isEmpty ?? true) }
+                            .count
+                    } else {
+                        self.ideaMilestone = 0
+                    }
+
+                    self.ideaView.reloadSections(IndexSet(integer: 0))
+                }
+            } catch {
+                print("Failed to fetch script:", error)
             }
         }
     }

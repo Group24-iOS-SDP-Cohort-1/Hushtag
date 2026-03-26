@@ -120,20 +120,34 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     return message
                 }
                 await MainActor.run {
-                    
+
                     if !mapped.isEmpty {
                         self.messages = mapped
                     }
-                    
+
+                    if let idea = idea {
+                        if let script = idea.script, !script.isEmpty {
+                            self.markedMessages["script"] = [Message(role: "bot", content: script, mark: "script")]
+                        }
+                        if let title = idea.title, !title.isEmpty {
+                            self.markedMessages["title"] = [Message(role: "bot", content: title, mark: "title")]
+                        }
+                        if let description = idea.description, !description.isEmpty {
+                            self.markedMessages["description"] = [Message(role: "bot", content: description, mark: "description")]
+                        }
+
+                        self.updateProgressHeader()
+                    }
+
                     self.tableView.reloadData()
                     self.scrollToBottom()
-                    
+
                     if let text = self.autoSendMessage {
                         self.sendMessage(text)
                         self.autoSendMessage = nil
                     }
                 }
-                
+
             } catch {
                 print(" Failed loading conversation:", error)
             }
@@ -488,8 +502,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     message.mark = nil
                     self.markedMessages[type]?.removeAll {
                         $0.content == message.content
+
                     }
-                    
+                    self.updateProgressHeader()
                     if let chatID = self.conversationID {
                         Task {
                             do {

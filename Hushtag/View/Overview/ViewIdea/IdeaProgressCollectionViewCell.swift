@@ -150,9 +150,7 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
             case milestones.count - 1:
                 dot.trailingAnchor.constraint(equalTo: progressBarContainer.trailingAnchor, constant: -horizontalInset).isActive = true
             default:
-                let centerX = dot.centerXAnchor.constraint(equalTo: progressBarContainer.leadingAnchor, constant: 0)
-                centerX.isActive = true
-                middleDotCenterXConstraints.append(centerX)
+                dot.centerXAnchor.constraint(equalTo: progressBarContainer.centerXAnchor).isActive = true
             }
         }
     }
