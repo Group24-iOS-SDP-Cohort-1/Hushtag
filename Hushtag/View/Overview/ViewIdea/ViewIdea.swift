@@ -8,6 +8,7 @@ class ViewIdea: UIViewController {
     
     var idea: Idea?
     var video: [Video] = []
+    var ideaId: UUID?
     var hasExistingScript: Bool = false
     var ideaMilestone: Int = 0
     var completedScriptTypes: Set<String> = []
@@ -17,8 +18,10 @@ class ViewIdea: UIViewController {
         ideaView.delegate = self
         ideaView.dataSource = self
         ideaView.setCollectionViewLayout(generateLayout(), animated: true)
-        
-    }
+        if idea == nil, let ideaId = ideaId {
+            self.idea = SessionManager.shared.personalizedIdeas.first(where: { $0.id == ideaId })
+        }
+}
     func checkForExistingScript() {
         guard let idea = idea else { return }
         Task {
@@ -47,6 +50,7 @@ class ViewIdea: UIViewController {
             }
         }
     }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         checkForExistingScript()

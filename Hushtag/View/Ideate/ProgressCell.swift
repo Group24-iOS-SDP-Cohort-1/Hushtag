@@ -2,78 +2,64 @@ import UIKit
 
 class ProgressCell: UIView {
 
-    private var milestones: [String] = []
-    private var currentMilestone: Int = -1
+    
+    @IBOutlet weak var viewButton: UIButton!
 
-    private let dotSize: CGFloat = 26
-    private let trackHeight: CGFloat = 3
-    private let horizontalInset: CGFloat = 16
 
-    private let trackView: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor.white.withAlphaComponent(0.12)
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
-    }()
+    @IBOutlet weak var graphView: UIView!
+    var scriptedIdea: ScriptedIdea?
+    var onViewIdeaTapped: (() -> Void)?
 
-    private let progressView: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor.accent
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
-    }()
 
-    private var milestoneDots: [UIView] = []
-    private var milestoneCheckmarks: [UIImageView] = []
-    private var milestoneLabels: [UILabel] = []
-    private var progressWidthConstraint: NSLayoutConstraint?
-    private var middleDotCenterXConstraints: [NSLayoutConstraint] = []
-    private var lastWidth: CGFloat = 0
+        private let milestones: [String] = ["Script", "Title", "Description"]
+        private let typeOrder: [String] = ["script", "title", "description"]
 
-    private let containerView: UIView = {
-        let v = UIView()
-        v.backgroundColor = .black
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
-    }()
+        private let dotSize: CGFloat = 26
+        private let trackHeight: CGFloat = 3
+        private let horizontalInset: CGFloat = 16
 
-    // MARK: - Init
+        private let trackView: UIView = {
+            let v = UIView()
+            v.backgroundColor = UIColor.white.withAlphaComponent(0.12)
+            v.translatesAutoresizingMaskIntoConstraints = false
+            return v
+        }()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setup()
-    }
+        private let progressView: UIView = {
+            let v = UIView()
+            v.backgroundColor = UIColor.accent
+            v.translatesAutoresizingMaskIntoConstraints = false
+            return v
+        }()
+        override func awakeFromNib() {
+            super.awakeFromNib()
+            setupProgressBar()
+        }
+        private var milestoneDots: [UIView] = []
+        private var milestoneCheckmarks: [UIImageView] = []
+        private var milestoneLabels: [UILabel] = []
+        private var progressWidthConstraint: NSLayoutConstraint?
+        private var middleDotCenterXConstraints: [NSLayoutConstraint] = []
+        private var lastWidth: CGFloat = 0
 
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setup()
-    }
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+        }
 
-    // MARK: - Setup
+        required init?(coder: NSCoder) {
+            super.init(coder: coder)
+        }
 
-    private func setup() {
-        backgroundColor = .clear
-
-        addSubview(containerView)
-
-        NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: topAnchor),
-            containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            containerView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: trailingAnchor),
-        ])
-
-        setupProgressBar()
-    }
 
     private func setupProgressBar() {
-        containerView.addSubview(trackView)
+
+        graphView.addSubview(trackView)
         trackView.addSubview(progressView)
 
+        // Track constraints (NO vertical alignment yet)
         NSLayoutConstraint.activate([
-            trackView.centerYAnchor.constraint(equalTo: containerView.topAnchor, constant: dotSize / 2),
-            trackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: horizontalInset + dotSize / 2),
-            trackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -(horizontalInset + dotSize / 2)),
+            trackView.leadingAnchor.constraint(equalTo: graphView.leadingAnchor, constant: horizontalInset + dotSize / 2),
+            trackView.trailingAnchor.constraint(equalTo: graphView.trailingAnchor, constant: -(horizontalInset + dotSize / 2)),
             trackView.heightAnchor.constraint(equalToConstant: trackHeight),
 
             progressView.leadingAnchor.constraint(equalTo: trackView.leadingAnchor),
@@ -84,15 +70,15 @@ class ProgressCell: UIView {
         progressWidthConstraint = progressView.widthAnchor.constraint(equalTo: trackView.widthAnchor, multiplier: 0.001)
         progressWidthConstraint?.isActive = true
 
+        // CREATE DOTS FIRST
         for (index, milestone) in milestones.enumerated() {
-
             let dot = UIView()
             dot.layer.cornerRadius = dotSize / 2
             dot.layer.borderWidth = 2
             dot.layer.borderColor = UIColor.systemGray3.cgColor
             dot.backgroundColor = .clear
             dot.translatesAutoresizingMaskIntoConstraints = false
-            containerView.addSubview(dot)
+            graphView.addSubview(dot)
             milestoneDots.append(dot)
 
             let config = UIImage.SymbolConfiguration(pointSize: 11, weight: .semibold)
@@ -108,13 +94,15 @@ class ProgressCell: UIView {
             label.font = UIFont.systemFont(ofSize: 11, weight: .medium)
             label.textColor = .systemGray
             label.translatesAutoresizingMaskIntoConstraints = false
-            containerView.addSubview(label)
+            graphView.addSubview(label)
             milestoneLabels.append(label)
 
             NSLayoutConstraint.activate([
                 dot.widthAnchor.constraint(equalToConstant: dotSize),
                 dot.heightAnchor.constraint(equalToConstant: dotSize),
-                dot.topAnchor.constraint(equalTo: containerView.topAnchor),
+
+                // ❌ REMOVED topAnchor
+                // ✅ WILL ALIGN LATER
 
                 checkmark.centerXAnchor.constraint(equalTo: dot.centerXAnchor),
                 checkmark.centerYAnchor.constraint(equalTo: dot.centerYAnchor),
@@ -125,78 +113,81 @@ class ProgressCell: UIView {
 
             switch index {
             case 0:
-                dot.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: horizontalInset).isActive = true
+                dot.leadingAnchor.constraint(equalTo: graphView.leadingAnchor, constant: horizontalInset).isActive = true
             case milestones.count - 1:
-                dot.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -horizontalInset).isActive = true
+                dot.trailingAnchor.constraint(equalTo: graphView.trailingAnchor, constant: -horizontalInset).isActive = true
             default:
-                let centerX = dot.centerXAnchor.constraint(equalTo: containerView.leadingAnchor)
+                let centerX = dot.centerXAnchor.constraint(equalTo: graphView.leadingAnchor)
                 centerX.isActive = true
                 middleDotCenterXConstraints.append(centerX)
             }
         }
-    }
 
-    // MARK: - Layout
+        // ✅ NOW ALIGN EVERYTHING TOGETHER (AFTER DOTS EXIST)
+        guard let firstDot = milestoneDots.first else { return }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
+        trackView.centerYAnchor.constraint(equalTo: firstDot.centerYAnchor).isActive = true
 
-        let width = containerView.bounds.width
-        guard width > 0, width != lastWidth else { return }
-        lastWidth = width
-
-        for (i, constraint) in middleDotCenterXConstraints.enumerated() {
-            let milestoneIndex = i + 1
-            let fraction = CGFloat(milestoneIndex) / CGFloat(milestones.count - 1)
-            let trackWidth = width - (horizontalInset * 2) - dotSize
-            constraint.constant = horizontalInset + (dotSize / 2) + trackWidth * fraction
+        for dot in milestoneDots {
+            dot.centerYAnchor.constraint(equalTo: trackView.centerYAnchor).isActive = true
         }
     }
+        @IBAction func viewIdea(_ sender: Any) {
+            onViewIdeaTapped?()
+        }
+
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            let width = graphView.bounds.width
+            guard width > 0, width != lastWidth else { return }
+            lastWidth = width
+
+            for (i, constraint) in middleDotCenterXConstraints.enumerated() {
+                let milestoneIndex = i + 1
+                let fraction = CGFloat(milestoneIndex) / CGFloat(milestones.count - 1)
+                let trackWidth = width - (horizontalInset * 2) - dotSize
+                constraint.constant = horizontalInset + (dotSize / 2) + trackWidth * fraction
+            }
+        }
 
     func configure(completedTypes: Set<String>) {
-        if milestones.isEmpty {
-            milestones = ["Script", "Title", "Description"]
+        if milestoneDots.isEmpty {
             setupProgressBar()
         }
 
-        let typeOrder = ["script", "title", "description"]
-
-        // Reorder: marked types first, then unmarked
         let reordered = typeOrder.filter { completedTypes.contains($0) }
                      + typeOrder.filter { !completedTypes.contains($0) }
 
-        progressWidthConstraint?.isActive = false
         let completedCount = completedTypes.count
-        let lastCompletedIndex = completedCount == 0 ? nil : completedCount - 1
-        let fraction: CGFloat = lastCompletedIndex.map {
-            CGFloat($0) / CGFloat(milestones.count - 1)
-        } ?? 0.001
+        let fraction: CGFloat = completedCount == 0 ? 0.001 :
+            CGFloat(completedCount - 1) / CGFloat(milestones.count - 1)
 
+        progressWidthConstraint?.isActive = false
         progressWidthConstraint = progressView.widthAnchor.constraint(
             equalTo: trackView.widthAnchor,
             multiplier: max(fraction, 0.001)
         )
         progressWidthConstraint?.isActive = true
 
-        for (index, dot) in milestoneDots.enumerated() {
-            guard index < reordered.count else { continue }
-            let type = reordered[index]
-            let isActive = completedTypes.contains(type)
+            for (index, dot) in milestoneDots.enumerated() {
+                guard index < reordered.count else { continue }
+                let type = reordered[index]
+                let isActive = completedTypes.contains(type)
 
-            milestoneLabels[index].text = type.capitalized
+                milestoneLabels[index].text = type.capitalized
 
-            UIView.animate(withDuration: 0.25) {
-                dot.layer.borderColor = isActive ? UIColor.accent.cgColor : UIColor.systemGray3.cgColor
-                dot.backgroundColor = isActive ? UIColor.accent : .clear
-                self.milestoneCheckmarks[index].alpha = isActive ? 1 : 0
-                self.milestoneLabels[index].textColor = isActive ? UIColor.accent : .systemGray
-                self.milestoneLabels[index].font = UIFont.systemFont(
-                    ofSize: 11,
-                    weight: isActive ? .semibold : .medium
-                )
+                UIView.animate(withDuration: 0.25) {
+                    dot.layer.borderColor = isActive ? UIColor.accent.cgColor : UIColor.systemGray3.cgColor
+                    dot.backgroundColor = isActive ? UIColor.accent : .clear
+                    self.milestoneCheckmarks[index].alpha = isActive ? 1 : 0
+                    self.milestoneLabels[index].textColor = isActive ? UIColor.accent : .systemGray
+                    self.milestoneLabels[index].font = UIFont.systemFont(
+                        ofSize: 11,
+                        weight: isActive ? .semibold : .medium
+                    )
+                }
             }
-        }
 
-        setNeedsLayout()
+            setNeedsLayout()
+        }
     }
-}

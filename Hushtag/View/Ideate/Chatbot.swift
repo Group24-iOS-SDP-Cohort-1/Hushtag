@@ -52,8 +52,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         textFieldView.layer.shadowOpacity = 0.2
         textFieldView.layer.shadowOffset = CGSize(width: 0, height: 2)
         textFieldView.layer.shadowRadius = 4
-        tableView.contentInset = UIEdgeInsets(top: 100, left: 0, bottom: 0, right: 0)
-        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 100, left: 0, bottom: 0, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 80, left: 0, bottom: 0, right: 0)
+        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 80, left: 0, bottom: 0, right: 0)
+
         generateStack.isHidden = true
         tableView.register(
             UINib(nibName: "PlatformCellTableViewCell", bundle: nil),
@@ -61,9 +62,13 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         )
 
         tableView.sectionHeaderTopPadding = 0
-        let header = ProgressCell()
+        let header = Bundle.main.loadNibNamed("ProgressCell", owner: self, options: nil)?.first as! ProgressCell
+
         header.configure(completedTypes: [])
         header.translatesAutoresizingMaskIntoConstraints = false
+        header.onViewIdeaTapped = { [weak self] in
+            self?.navigateToViewIdea()
+        }
 
         view.addSubview(header)
         progressHeader = header
@@ -157,7 +162,26 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         setupKeyboardObservers()
         setupTapToDismiss()
     }
-    
+
+    private func navigateToViewIdea() {
+        Task {
+            do {
+                let allIdeas = try await controller.fetchScript()
+                guard let idea = allIdeas.first(where: { $0.chat_id == self.conversationID }) else {
+                    print("No scripted idea found for this conversation")
+                    return
+                }
+                await MainActor.run {
+                    let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
+                    guard let vc = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas else { return }
+                    vc.idea = idea
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            } catch {
+                print("Failed to fetch scripted idea:", error)
+            }
+        }
+    }
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
