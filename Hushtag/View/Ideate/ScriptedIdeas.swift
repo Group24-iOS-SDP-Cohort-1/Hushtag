@@ -12,6 +12,7 @@ class ScriptedIdeas: UIViewController {
     var isDescriptionExpanded = false
     var isScriptExpanded = false
     
+
     private let dbController = ScriptedIdeasController()
     private let dealsController = DealsController()
     private let brandDealIdeasController = BrandDealIdeasController()
@@ -170,21 +171,24 @@ class ScriptedIdeas: UIViewController {
             self?.confirmDelete()
         }
         
-        let menuChildren: [UIMenuElement]
-        if isModal {
-            // Modal (from DealsInfo): only show Delete
-            menuChildren = [deleteAction]
-        } else {
-            // Normal navigation (from Ideate): show both options
-            let chatAction = UIAction(title: "View Chat History", image: UIImage(systemName: "bubble.left.and.bubble.right.fill")) { [weak self] _ in
-                self?.navigateToChat()
-            }
-            menuChildren = [chatAction, deleteAction]
-        }
+//        let menuChildren: [UIMenuElement]
+//        if isModal {
+//            // Modal (from DealsInfo): only show Delete
+//            menuChildren = [deleteAction]
+//        } else {
+//            // Normal navigation (from Ideate): show both options
+//            let chatAction = UIAction(title: "View Chat History", image: UIImage(systemName: "bubble.left.and.bubble.right.fill")) { [weak self] _ in
+//                self?.navigateToChat()
+//            }
+//            menuChildren = [chatAction, deleteAction]
+//        }
         
-        optionsBarButton.menu = UIMenu(title: "", children: menuChildren)
+        optionsBarButton.menu = UIMenu(title: "", children:  [deleteAction])
     }
     
+    @IBAction func draftClick(_ sender: Any) {
+        navigateToChat()
+    }
     
     private func confirmDelete() {
         let alert = UIAlertController(title: "Delete Script", message: "Are you sure? This cannot be undone.", preferredStyle: .alert)
@@ -223,7 +227,9 @@ class ScriptedIdeas: UIViewController {
             }
         }
     }
-    
+
+
+
     private func navigateToChat() {
         guard let idea = self.idea else { return }
         
@@ -327,8 +333,8 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
                 for: indexPath
             ) as! ViewScriptsCell
             
-            setupTagDealMenu(for: cell)
-            
+           // setupTagDealMenu(for: cell)
+
             return cell
 
         default:

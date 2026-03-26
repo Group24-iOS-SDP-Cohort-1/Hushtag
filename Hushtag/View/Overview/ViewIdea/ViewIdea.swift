@@ -10,6 +10,7 @@ class ViewIdea: UIViewController {
     var video: [Video] = []
     var hasExistingScript: Bool = false
     var ideaMilestone: Int = 0
+    var completedScriptTypes: Set<String> = []
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
@@ -28,10 +29,14 @@ class ViewIdea: UIViewController {
                     self.hasExistingScript = script != nil
 
                     if let script = script {
-                        self.ideaMilestone = [script.script, script.title, script.description]
-                            .filter { $0 != nil && !($0?.isEmpty ?? true) }
-                            .count
+                        var types: Set<String> = []
+                        if let s = script.script, !s.isEmpty { types.insert("script") }
+                        if let t = script.title, !t.isEmpty { types.insert("title") }
+                        if let d = script.description, !d.isEmpty { types.insert("description") }
+                        self.completedScriptTypes = types
+                        self.ideaMilestone = types.count
                     } else {
+                        self.completedScriptTypes = []
                         self.ideaMilestone = 0
                     }
 
@@ -42,7 +47,6 @@ class ViewIdea: UIViewController {
             }
         }
     }
-
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         checkForExistingScript()
@@ -282,11 +286,14 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
                 for: indexPath
             ) as! IdeaProgressCollectionViewCell
 
+            let completedTypes = Set(
+                [("script", ideaMilestone >= 1), ("title", ideaMilestone >= 2), ("description", ideaMilestone >= 3)]
+                    .filter { $0.1 }.map { $0.0 }
+            )
             cell.configure(
-                currentMilestone: ideaMilestone - 1,  
+                completedTypes: completedScriptTypes,
                 buttonTitle: hasExistingScript ? "View Draft" : "Draft Script"
             )
-
             cell.onButtonTapped = { [weak self] in
                 guard let self = self, let idea = self.idea else { return }
                 self.handleDraftScriptTap(for: idea)

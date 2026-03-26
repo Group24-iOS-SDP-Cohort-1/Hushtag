@@ -2,7 +2,7 @@ import UIKit
 
 class ProgressCell: UIView {
 
-    private let milestones = ["Script", "Title", "Description"]
+    private var milestones: [String] = []
     private var currentMilestone: Int = -1
 
     private let dotSize: CGFloat = 26
@@ -153,15 +153,24 @@ class ProgressCell: UIView {
         }
     }
 
-    // MARK: - Configure
+    func configure(completedTypes: Set<String>) {
+        if milestones.isEmpty {
+            milestones = ["Script", "Title", "Description"]
+            setupProgressBar()
+        }
 
-    func configure(currentMilestone: Int) {
-        self.currentMilestone = max(-1, min(currentMilestone, milestones.count - 1))
+        let typeOrder = ["script", "title", "description"]
+
+        // Reorder: marked types first, then unmarked
+        let reordered = typeOrder.filter { completedTypes.contains($0) }
+                     + typeOrder.filter { !completedTypes.contains($0) }
 
         progressWidthConstraint?.isActive = false
-        let fraction: CGFloat = self.currentMilestone < 0
-            ? 0.001
-            : CGFloat(self.currentMilestone) / CGFloat(milestones.count - 1)
+        let completedCount = completedTypes.count
+        let lastCompletedIndex = completedCount == 0 ? nil : completedCount - 1
+        let fraction: CGFloat = lastCompletedIndex.map {
+            CGFloat($0) / CGFloat(milestones.count - 1)
+        } ?? 0.001
 
         progressWidthConstraint = progressView.widthAnchor.constraint(
             equalTo: trackView.widthAnchor,
@@ -170,12 +179,21 @@ class ProgressCell: UIView {
         progressWidthConstraint?.isActive = true
 
         for (index, dot) in milestoneDots.enumerated() {
-            let isActive = index <= self.currentMilestone
+            guard index < reordered.count else { continue }
+            let type = reordered[index]
+            let isActive = completedTypes.contains(type)
+
+            milestoneLabels[index].text = type.capitalized
+
             UIView.animate(withDuration: 0.25) {
                 dot.layer.borderColor = isActive ? UIColor.accent.cgColor : UIColor.systemGray3.cgColor
                 dot.backgroundColor = isActive ? UIColor.accent : .clear
                 self.milestoneCheckmarks[index].alpha = isActive ? 1 : 0
                 self.milestoneLabels[index].textColor = isActive ? UIColor.accent : .systemGray
+                self.milestoneLabels[index].font = UIFont.systemFont(
+                    ofSize: 11,
+                    weight: isActive ? .semibold : .medium
+                )
             }
         }
 

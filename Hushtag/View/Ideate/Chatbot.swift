@@ -62,7 +62,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
         tableView.sectionHeaderTopPadding = 0
         let header = ProgressCell()
-        header.configure(currentMilestone: ideaMilestone)
+        header.configure(completedTypes: [])
         header.translatesAutoresizingMaskIntoConstraints = false
 
         view.addSubview(header)
@@ -651,13 +651,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
     private func updateProgressHeader() {
-        let completedCount = requiredMarkTypes.filter {
+        let completedTypes = Set(requiredMarkTypes.filter {
             !(markedMessages[$0]?.isEmpty ?? true)
-        }.count
-
-        ideaMilestone = completedCount - 1
-
-        progressHeader?.configure(currentMilestone: ideaMilestone)
+        })
+        progressHeader?.configure(completedTypes: completedTypes)
     }
 
 }

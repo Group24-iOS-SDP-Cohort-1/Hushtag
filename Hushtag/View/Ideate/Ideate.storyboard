@@ -3,6 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="dark"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -85,7 +86,7 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="An AI-powered assistant that helps you generate, refine, and optimize your posts to boost your content’s reach and engagement." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cce-oJ-AQp">
                                                     <rect key="frame" x="80" y="41.666666666666657" width="264" height="46.333333333333343"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                                    <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="AI chatbot assistant" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tIX-X2-76c">
@@ -195,10 +196,10 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="title" id="NG3-ep-xlA" customClass="ViewScriptsCell" customModule="Hushtag" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="12.333333333333334" width="75" height="60.000000000000007"/>
+                                        <rect key="frame" x="0.0" y="34" width="75" height="60"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="DVE-nE-HIB">
-                                            <rect key="frame" x="0.0" y="0.0" width="75" height="60.000000000000007"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="75" height="60"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EwN-cM-D1v">
@@ -220,10 +221,10 @@
                                         </connections>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="content" id="iQE-K7-AIg" customClass="ViewScriptsCell" customModule="Hushtag" customModuleProvider="target">
-                                        <rect key="frame" x="304.66666666666669" y="0.0" width="88.333333333333314" height="84.666666666666671"/>
+                                        <rect key="frame" x="85" y="21.666666666666668" width="88.333333333333314" height="84.666666666666686"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="7bl-57-x0a">
-                                            <rect key="frame" x="0.0" y="0.0" width="88.333333333333314" height="84.666666666666671"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="88.333333333333314" height="84.666666666666686"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="content" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DLL-kv-BzU">
@@ -253,41 +254,29 @@
                                         </connections>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="buttons" id="emt-Rh-LvP" customClass="ViewScriptsCell" customModule="Hushtag" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="94.666666666666671" width="311.66666666666669" height="64.333333333333314"/>
+                                        <rect key="frame" x="183.33333333333334" y="0.0" width="128.00000000000003" height="128"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="V9d-3X-VfP">
-                                            <rect key="frame" x="0.0" y="0.0" width="311.66666666666669" height="64.333333333333314"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="128.00000000000003" height="128"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="qf0-ME-UoA">
-                                                    <rect key="frame" x="15" y="15.000000000000004" width="281.66666666666669" height="34.333333333333343"/>
-                                                    <subviews>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BjO-dB-iY7">
-                                                            <rect key="frame" x="0.0" y="0.0" width="133.33333333333334" height="34.333333333333336"/>
-                                                            <state key="normal" title="Button"/>
-                                                            <buttonConfiguration key="configuration" style="plain" title="Tag Deal"/>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pgL-rq-QJT">
-                                                            <rect key="frame" x="148.33333333333331" y="0.0" width="133.33333333333331" height="34.333333333333336"/>
-                                                            <state key="normal" title="Button"/>
-                                                            <buttonConfiguration key="configuration" style="plain" title="Schedule Post"/>
-                                                            <connections>
-                                                                <segue destination="N8p-cc-Flz" kind="show" id="7vz-Ya-xFl"/>
-                                                            </connections>
-                                                        </button>
-                                                    </subviews>
-                                                </stackView>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sb4-ha-PpJ">
+                                                    <rect key="frame" x="-15.666666666666671" y="46.666666666666657" width="159.33333333333337" height="35"/>
+                                                    <color key="tintColor" name="AccentColor"/>
+                                                    <state key="normal" title="Button"/>
+                                                    <buttonConfiguration key="configuration" style="filled" title="Continue Drafting">
+                                                        <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </buttonConfiguration>
+                                                    <connections>
+                                                        <action selector="draftClick:" destination="Yb8-13-5gt" eventType="touchUpInside" id="jYK-pt-JgK"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="bottom" secondItem="qf0-ME-UoA" secondAttribute="bottom" constant="15" id="IND-5A-OpN"/>
-                                                <constraint firstAttribute="trailing" secondItem="qf0-ME-UoA" secondAttribute="trailing" constant="15" id="YPT-HH-Zd2"/>
-                                                <constraint firstItem="qf0-ME-UoA" firstAttribute="top" secondItem="V9d-3X-VfP" secondAttribute="top" constant="15" id="dNs-6g-Rt9"/>
-                                                <constraint firstItem="qf0-ME-UoA" firstAttribute="leading" secondItem="V9d-3X-VfP" secondAttribute="leading" constant="15" id="qb6-Ap-7HS"/>
+                                                <constraint firstItem="sb4-ha-PpJ" firstAttribute="centerX" secondItem="V9d-3X-VfP" secondAttribute="centerX" id="MoG-SJ-sie"/>
+                                                <constraint firstItem="sb4-ha-PpJ" firstAttribute="centerY" secondItem="V9d-3X-VfP" secondAttribute="centerY" id="aRy-gE-Fg3"/>
                                             </constraints>
                                         </collectionViewCellContentView>
-                                        <connections>
-                                            <outlet property="tagDealButton" destination="BjO-dB-iY7" id="1zT-hA-pB0"/>
-                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
@@ -357,6 +346,9 @@
         <image name="person.2.circle" catalog="system" width="128" height="123"/>
         <image name="wand.and.rays" catalog="system" width="128" height="123"/>
         <image name="wand.and.sparkles" catalog="system" width="128" height="112"/>
+        <namedColor name="AccentColor">
+            <color red="0.54500001668930054" green="0.36100000143051147" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

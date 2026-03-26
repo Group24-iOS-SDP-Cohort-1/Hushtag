@@ -18,8 +18,8 @@
                     <connections>
                         <segue destination="UCO-yZ-Wcy" kind="relationship" relationship="viewControllers" id="Kqf-tz-kMG"/>
                         <segue destination="nrj-fI-A1x" kind="relationship" relationship="viewControllers" id="v4O-Ot-qss"/>
-                        <segue destination="K29-nh-ARG" kind="relationship" relationship="viewControllers" id="yAf-2m-q3B"/>
-                        <segue destination="O84-pg-5ez" kind="relationship" relationship="viewControllers" id="Kpu-fB-das"/>
+                        <segue destination="O84-pg-5ez" kind="relationship" relationship="viewControllers" id="z6Y-Ak-71a"/>
+                        <segue destination="K29-nh-ARG" kind="relationship" relationship="viewControllers" id="loY-bk-sgF"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dbM-z8-S3W" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -34,7 +34,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8hq-jX-MPv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-879" y="-68"/>
+            <point key="canvasLocation" x="-889" y="-59"/>
         </scene>
         <!--BrandDeals-->
         <scene sceneID="hEH-c2-3ne">
