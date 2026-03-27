@@ -346,103 +346,115 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
     
     func sendMessage(_ text: String) {
-        
+
         let userText = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !userText.isEmpty else { return }
-        
+        guard let conversationID = conversationID else { return }
+
         // 1. Show user message
         messages.append(Message(role: "user", content: userText))
         tableView.reloadData()
         scrollToBottom()
-        
+
         textFieldView.text = ""
         textViewDidChange(textFieldView)
-        
+
+        // 2. Save user message
         Task {
             do {
                 _ = try await self.controller.addChatMessage(
-                    id: conversationID ?? UUID(),
+                    id: conversationID,
                     sender: .user,
                     content: userText
                 )
-                print("✅ User message saved")
             } catch {
                 print("❌ Failed to save user message:", error)
             }
         }
-        
-        
-        // 2. Show loading
+
+        // 3. Show loading
         messages.append(Message(role: "bot", content: "Thinking..."))
         tableView.reloadData()
         scrollToBottom()
-        
-        // 3. Call Gemini
-        
-        // Decide intent & route
+
+        // 4. AI processing
         Task { [weak self] in
             guard let self = self else { return }
-            
+
             let intent = await AIResponseRouter.shared.classifyIntent(
                 message: userText,
                 conversationID: conversationID,
                 platform: selectedPlatform
             )
+
+            let platform = self.selectedPlatform ?? "general"
+
+            // ✅ CLEAN + LIMIT HISTORY
+            let cleanHistory = self.buildCleanHistory()
+            let historyText = cleanHistory
+                .suffix(10)
+                .map { "\($0.role): \($0.content)" }
+                .joined(separator: "\n")
+
+            // ✅ ONE CONSISTENT PROMPT
+            let finalPrompt = """
+            You are a content assistant for \(platform).
             
-            print(intent)
-            let platform = selectedPlatform ?? "general"
+            Conversation so far:
+            \(historyText)
             
+            User:
+            \(userText)
+            """
+
             switch intent {
-                
+
             case .generateScript:
-                print("routing to gemini")
-                
+
                 GeminiManager.shared.generateContent(
-                    prompt: "\(userText)\nWrite this for \(selectedPlatform ?? "general") audience.",
-                    conversationID: conversationID ?? UUID()
+                    prompt: finalPrompt,
+                    conversationID: conversationID
                 ) { reply in
                     self.latestScript = reply
                     self.handleBotReply(reply, source: "gemini")
                 }
-                
+
+
             case .generateTitle:
+
                 let reply = await generateTitleWithApple(
                     script: self.latestScript,
-                    userPrompt: "\(userText)\nPlatform: \(platform). Write a title optimized for \(platform).",
+                    userPrompt: finalPrompt, // ✅ FIX: pass full context
                     conversationID: conversationID
                 )
-                
-                self.handleBotReply(reply, source: "auto")
-                
+
+                self.handleBotReply(reply, source: "apple")
+
+
             case .generateDescription:
+
                 let reply = await generateDescriptionWithApple(
                     script: self.latestScript,
-                    userPrompt: "\(userText)\nPlatform: \(platform). Write a description optimized for \(platform).",
+                    userPrompt: finalPrompt,
                     conversationID: conversationID
                 )
-                
-                self.handleBotReply(reply, source: "auto")
-                
+
+                self.handleBotReply(reply, source: "apple")
+
+
             case .chat:
-                let prompt = """
-                    You are a friendly, casual AI assistant helping create content for \(platform).
-                    Keep responses relevant to \(platform) where applicable.
-                
-                User message:
-                \(userText)
-                """
-                
+
                 let reply = await AIResponseRouter.shared.respond(
                     intent: .chat,
-                    prompt: prompt,
+                    prompt: finalPrompt,
                     conversationID: conversationID
                 )
-                
-                self.handleBotReply(reply, source: "auto")
+
+                self.handleBotReply(reply, source: "router")
             }
         }
     }
-    
+
     func handleBotReply(_ replyText: String?, source: String) {
         
         
@@ -618,7 +630,13 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             markedMessages[type]?.isEmpty ?? true
         }
     }
-    
+
+    func buildCleanHistory() -> [Message] {
+        return messages.filter {
+            $0.content != "Thinking..." &&
+            $0.role != "system"
+        }
+    }
     func showScriptSuggestions() {
         
         // Remove previous buttons
