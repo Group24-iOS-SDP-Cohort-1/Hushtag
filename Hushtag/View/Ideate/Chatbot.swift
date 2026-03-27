@@ -52,8 +52,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         textFieldView.layer.shadowOpacity = 0.2
         textFieldView.layer.shadowOffset = CGSize(width: 0, height: 2)
         textFieldView.layer.shadowRadius = 4
-        tableView.contentInset = UIEdgeInsets(top: 80, left: 0, bottom: 0, right: 0)
-        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 80, left: 0, bottom: 0, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 125, left: 0, bottom: 0, right: 0)
+        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 125, left: 0, bottom: 0, right: 0)
 
         generateStack.isHidden = true
         tableView.register(
@@ -77,7 +77,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
             header.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
             header.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-            header.heightAnchor.constraint(equalToConstant: 80),
+            header.heightAnchor.constraint(equalToConstant: 125),
         ])
 
         if conversationID == nil {

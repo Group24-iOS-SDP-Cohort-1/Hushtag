@@ -127,6 +127,7 @@ class ProgressCell: UIView {
         guard let firstDot = milestoneDots.first else { return }
 
         trackView.centerYAnchor.constraint(equalTo: firstDot.centerYAnchor).isActive = true
+        trackView.centerYAnchor.constraint(equalTo: graphView.topAnchor, constant: 15).isActive = true
 
         for dot in milestoneDots {
             dot.centerYAnchor.constraint(equalTo: trackView.centerYAnchor).isActive = true
