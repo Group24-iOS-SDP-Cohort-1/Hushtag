@@ -342,7 +342,6 @@ extension ViewScriptsViewController: UICollectionViewDelegate {
             return
         }
     }
-    
 }
 
 extension ViewScriptsViewController: LikedCellDelegate {
