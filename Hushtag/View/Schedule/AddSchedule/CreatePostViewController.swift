@@ -301,16 +301,22 @@ class CreatePostViewController: UIViewController {
 
         let description = descriptionTextView.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let rawTags = tagsTextView.text ?? ""
-        let parsedTags = rawTags.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+        let parsedTags = rawTags.split(separator: ",").map { String($0.trimmingCharacters(in: .whitespaces)) }.filter { !$0.isEmpty }
 
-        print("📹 Video: \(String(describing: selectedVideoURL))")
-        print("🖼️ Thumbnail: \(String(describing: selectedThumbnailURL))")
-        print("📝 Title: \(title)")
-        print("📄 Description: \(description)")
-        print("🏷️ Tags: \(parsedTags)")
-        print("📂 Category: \(selectedCategory.categoryId)")
-        print("🔒 Privacy: \(selectedPrivacy.lowercased())")
-        print("📅 Publish At: \(publishAtDatePicker.date)")
+        let publishAt: Date? = currentFields.contains("Publish At") ? publishAtDatePicker.date : nil
+        
+        if let videoURL = selectedVideoURL {
+            YouTubeUploadManager.shared.uploadVideo(
+                videoURL: videoURL,
+                thumbnailURL: selectedThumbnailURL,
+                title: title,
+                description: description.isEmpty ? nil : description,
+                tags: parsedTags.isEmpty ? nil : parsedTags,
+                categoryId: selectedCategory.categoryId,
+                privacyStatus: selectedPrivacy,
+                publishAt: publishAt
+            )
+        }
 
         dismiss(animated: true)
     }
