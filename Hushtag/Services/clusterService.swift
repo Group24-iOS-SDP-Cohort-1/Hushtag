@@ -17,7 +17,7 @@ final class SupabaseEdgeService {
         completion: @escaping (Result<[ClusterIdea], Error>) -> Void
     ) {
 
-        // ✅ No request struct needed
+        // No request struct needed
         let jsonObject: [String: Any] = [
             "clusters": clusters
         ]

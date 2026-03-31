@@ -1,10 +1,3 @@
-//
-//  Details.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 14/01/26.
-//
-
 import UIKit
 
 class Details: UIViewController {

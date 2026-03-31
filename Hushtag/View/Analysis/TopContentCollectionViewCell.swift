@@ -1,10 +1,3 @@
-//
-//  TopContentCollectionViewCell.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 05/01/26.
-//
-
 import UIKit
 
 class TopContentCollectionViewCell: UICollectionViewCell {

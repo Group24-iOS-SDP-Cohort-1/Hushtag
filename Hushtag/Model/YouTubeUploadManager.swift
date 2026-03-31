@@ -79,7 +79,7 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
                 var request = URLRequest(url: URL(string: urlString)!)
                 request.httpMethod = "POST"
                 request.setValue("Bearer \(jwtToken)", forHTTPHeaderField: "Authorization")
-                request.setValue(SupabaseConfig.anonKey, forHTTPHeaderField: "apikey")
+                await request.setValue(SupabaseConfig.anonKey, forHTTPHeaderField: "apikey")
                 request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
                 
                 // 5. Assemble Multipart Data

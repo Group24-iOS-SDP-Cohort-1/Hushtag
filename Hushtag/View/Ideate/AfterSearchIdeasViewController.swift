@@ -1,10 +1,3 @@
-//
-//  AfterSearchIdeasViewController.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 25/03/26.
-//
-
 import UIKit
 
 class AfterSearchIdeasViewController: UIViewController {

@@ -1,9 +1,3 @@
-//
-//  videos.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 03/02/26.
-//
 import Foundation
 
 struct SearchResponse: Codable {

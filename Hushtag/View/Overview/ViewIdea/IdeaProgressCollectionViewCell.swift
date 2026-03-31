@@ -1,10 +1,3 @@
-//
-//  IdeaProgressCollectionViewCell.swift
-//  Hushtag
-//
-//  Created by SDC-USER on 24/03/26.
-//
-
 import UIKit
 
 class IdeaProgressCollectionViewCell: UICollectionViewCell {
