@@ -22,7 +22,19 @@ class Ideate1: UIViewController {
         case suggested
     }
     var sections: [SectionType] {
-        return [.search, .chatbot, .liked, .recent, .suggested]
+        var result: [SectionType] = [.search, .chatbot]
+        
+        if !likedIdeas.isEmpty {
+            result.append(.liked)
+        }
+        
+        if !recentScripts.isEmpty {
+            result.append(.recent)
+        }
+        
+        result.append(.suggested)
+        
+        return result
     }
     
     override func viewDidLoad() {
@@ -50,8 +62,9 @@ class Ideate1: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //fetchRecentScripts()
+        fetchRecentScripts()
         syncLikedIdeas()
+        self.collectionView.reloadData()
     }
     
     @objc func syncLikedIdeas() {

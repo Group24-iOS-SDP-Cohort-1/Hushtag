@@ -21,7 +21,7 @@ nonisolated struct ScriptedIdeaDB: Codable, Sendable {
     let script: String?
     let thumbnail: String?
     let tags: [String]?
-    let idea_id: UUID?
+    //let idea_id: UUID?
 }
 
 // 3. The Insert Payload

@@ -101,8 +101,6 @@ class ProgressCell: UIView {
                 dot.widthAnchor.constraint(equalToConstant: dotSize),
                 dot.heightAnchor.constraint(equalToConstant: dotSize),
 
-                // ❌ REMOVED topAnchor
-                // ✅ WILL ALIGN LATER
 
                 checkmark.centerXAnchor.constraint(equalTo: dot.centerXAnchor),
                 checkmark.centerYAnchor.constraint(equalTo: dot.centerYAnchor),

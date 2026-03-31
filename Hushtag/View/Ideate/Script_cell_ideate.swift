@@ -53,31 +53,31 @@ class Script_cell_ideate: UICollectionViewCell {
         
         let badge: Badges = Badges.loadFromNib()
         
-        if hashtag == "Idea" {
-            badge.configure(
-                text: hashtag,
-                color: UIColor.systemBlue,
-                cornerRadius: 12,
-                borderWidth: 1.0,
-                backgroundAlpha: 0.12
-            )
+        let tint: UIColor
+        
+        switch hashtag {
+        case "Idea":
+            // Soft lavender — lighter, muted purple
+            tint = UIColor(hex: "#c4b5fd")
             
-            badge.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.12)
-            badge.layer.borderColor = UIColor.systemBlue.withAlphaComponent(0.22).cgColor
+        case "Chatbot":
+            // Deep violet — darker, richer purple
+            tint = UIColor(hex: "#b794f4")
             
-        } else {
-            badge.configure(
-                text: hashtag,
-                color: UIColor(hex: "#a78bfa"),
-                cornerRadius: 12,
-                borderWidth: 1.0,
-                backgroundAlpha: 0.12
-            )
-            
-            badge.backgroundColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.12)
-            badge.layer.borderColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.22).cgColor
+        default:
+            tint = UIColor.systemGray
         }
-
+        
+        badge.configure(
+            text: hashtag,
+            color: tint,
+            cornerRadius: 12,
+            borderWidth: 1.0,
+            backgroundAlpha: 0.12
+        )
+        badge.backgroundColor = tint.withAlphaComponent(0.12)
+        badge.layer.borderColor = tint.withAlphaComponent(0.22).cgColor
+        
         badgeStack.addArrangedSubview(badge)
     }
 }

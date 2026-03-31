@@ -389,14 +389,14 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
             let platform = self.selectedPlatform ?? "general"
 
-            // ✅ CLEAN + LIMIT HISTORY
+            // CLEAN + LIMIT HISTORY
             let cleanHistory = self.buildCleanHistory()
             let historyText = cleanHistory
                 .suffix(10)
                 .map { "\($0.role): \($0.content)" }
                 .joined(separator: "\n")
 
-            // ✅ ONE CONSISTENT PROMPT
+            // ONE CONSISTENT PROMPT
             let finalPrompt = """
             You are a content assistant for \(platform).
             
@@ -418,13 +418,14 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     self.latestScript = reply
                     self.handleBotReply(reply, source: "gemini")
                 }
+                
 
 
             case .generateTitle:
 
                 let reply = await generateTitleWithApple(
                     script: self.latestScript,
-                    userPrompt: finalPrompt, // ✅ FIX: pass full context
+                    userPrompt: finalPrompt,
                     conversationID: conversationID
                 )
 
@@ -468,9 +469,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     )
                     print("✅ Bot message saved")
                     
-                    try await controller.generateAndStoreTitleIfNeeded(
-                        conversationID: conversationID!
-                    )
+                        try await controller.generateAndStoreTitleIfNeeded(
+                            conversationID: conversationID!
+                        )
+                    
                 } catch {
                     print("❌ Failed to save bot message:", error)
                 }
@@ -481,7 +483,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         // UI updates on main thread (unchanged)
         DispatchQueue.main.async {
             
-            // Remove "Thinking..."
             if !self.messages.isEmpty {
                 self.messages.removeLast()
             }

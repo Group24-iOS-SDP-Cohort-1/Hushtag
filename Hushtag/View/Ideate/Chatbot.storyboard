@@ -18,18 +18,18 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="SNm-vA-oEx">
-                                <rect key="frame" x="0.0" y="172" width="393" height="528"/>
+                                <rect key="frame" x="0.0" y="172" width="403" height="528"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ChatCell" id="gQw-bG-T5r" customClass="ChatCell" customModule="Hushtag" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="50" width="393" height="75"/>
+                                        <rect key="frame" x="0.0" y="50" width="403" height="75"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="gQw-bG-T5r" id="3r4-Uk-13r">
-                                            <rect key="frame" x="0.0" y="0.0" width="393" height="75"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="403" height="75"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" alignment="bottom" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="8WR-ec-8Ma">
-                                                    <rect key="frame" x="16" y="12" width="361" height="51"/>
+                                                    <rect key="frame" x="16" y="12" width="371" height="51"/>
                                                     <subviews>
                                                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4a3-qk-NU2">
                                                             <rect key="frame" x="0.0" y="1" width="50" height="50"/>
@@ -61,7 +61,7 @@
                                                             </constraints>
                                                         </view>
                                                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="azp-Yk-SFY">
-                                                            <rect key="frame" x="311" y="1" width="50" height="50"/>
+                                                            <rect key="frame" x="311" y="1" width="60" height="50"/>
                                                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         </view>
                                                     </subviews>
@@ -146,6 +146,7 @@
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="c7U-vD-YmN" secondAttribute="trailing" id="28I-SJ-eUc"/>
                             <constraint firstAttribute="trailing" secondItem="Nuj-q1-pSo" secondAttribute="trailing" id="683-Ar-XQ6"/>
+                            <constraint firstItem="SNm-vA-oEx" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="10" id="ITF-0X-Zbd"/>
                             <constraint firstItem="SNm-vA-oEx" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="NCO-KK-lXe"/>
                             <constraint firstItem="c7U-vD-YmN" firstAttribute="top" secondItem="SNm-vA-oEx" secondAttribute="bottom" constant="10" id="eIt-V9-Hyn"/>
                             <constraint firstItem="Nuj-q1-pSo" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leading" id="fgh-Z2-fYq"/>
@@ -154,6 +155,7 @@
                             <constraint firstItem="SNm-vA-oEx" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="p45-hi-EOD"/>
                             <constraint firstItem="SNm-vA-oEx" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="tuw-iU-HIN"/>
                             <constraint firstItem="c7U-vD-YmN" firstAttribute="leading" secondItem="5EZ-qb-Rvc" secondAttribute="leadingMargin" id="ucu-8c-3x9"/>
+                            <constraint firstItem="SNm-vA-oEx" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" constant="10" id="wZ1-oh-tVu"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="AI Assistant" largeTitleDisplayMode="never" id="iNc-XK-pMm">
@@ -213,7 +215,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGray5Color">
-            <color red="0.8980392157" green="0.8980392157" blue="0.91764705879999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
