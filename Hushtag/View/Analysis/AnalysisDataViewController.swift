@@ -432,7 +432,7 @@ class AnalysisDataViewController: UIViewController {
 extension AnalysisDataViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return shouldShowRevenue ? 6 : 5
+        return shouldShowRevenue ? 7 : 6
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -444,6 +444,7 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
             case 2: return 3
             case 3: return 1
             case 4: return 1
+            case 5: return 1
             default: return 0
             }
         }
@@ -455,6 +456,7 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
         case 3: return 4
         case 4: return 1
         case 5: return 1
+        case 6: return 1
         default: return 0
         }
     }
@@ -549,6 +551,9 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
             cell.configure(with: viewerActivity)
             return cell
             
+        case 6:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "insight_cell", for: indexPath)
+            return cell
         default:
             return UICollectionViewCell()
         }
@@ -756,11 +761,31 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
                 
                 return sectionLayout
             }
-            
-            // MARK: Upload Time
+            if section == 5 {
+                // MARK: Upload Time
+                let itemSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .estimated(220)
+                )
+                
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                item.contentInsets = NSDirectionalEdgeInsets(
+                    top: 10, leading: 20, bottom: 10, trailing: 20
+                )
+                
+                let group = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: itemSize,
+                    subitems: [item]
+                )
+                
+                let sectionLayout = NSCollectionLayoutSection(group: group)
+                sectionLayout.boundarySupplementaryItems = [makeHeaderItem()]
+                
+                return sectionLayout
+            }
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .estimated(220)
+                heightDimension: .estimated(100)
             )
             
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -774,7 +799,6 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
             )
             
             let sectionLayout = NSCollectionLayoutSection(group: group)
-            sectionLayout.boundarySupplementaryItems = [makeHeaderItem()]
             
             return sectionLayout
         }
