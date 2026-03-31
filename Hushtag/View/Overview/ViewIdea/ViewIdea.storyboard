@@ -72,13 +72,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="HqU-sn-gUV">
-                                                    <rect key="frame" x="171.66666666666666" y="31.333333333333336" width="50" height="65.333333333333314"/>
+                                                    <rect key="frame" x="171.66666666666666" y="34" width="50" height="30"/>
                                                     <subviews>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Lp-W4-v5X">
                                                             <rect key="frame" x="0.0" y="0.0" width="50" height="30"/>
                                                             <subviews>
                                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="MvU-4e-wFE">
-                                                                    <rect key="frame" x="10" y="5.0000000000000036" width="30" height="20"/>
+                                                                    <rect key="frame" x="10" y="5" width="30" height="20"/>
                                                                     <color key="tintColor" name="AccentColor"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="20" id="GlY-aC-jAO"/>
@@ -94,18 +94,20 @@
                                                                 <constraint firstItem="MvU-4e-wFE" firstAttribute="centerX" secondItem="9Lp-W4-v5X" secondAttribute="centerX" id="p6j-e2-2ec"/>
                                                             </constraints>
                                                         </view>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kzb-uC-gkA">
-                                                            <rect key="frame" x="0.0" y="45" width="50" height="20.333333333333329"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <nil key="textColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
                                                     </subviews>
                                                 </stackView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kzb-uC-gkA">
+                                                    <rect key="frame" x="176" y="74" width="41.333333333333343" height="20.333333333333329"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="HqU-sn-gUV" firstAttribute="centerY" secondItem="F5h-hm-eHc" secondAttribute="centerY" id="OhR-ZP-LTy"/>
+                                                <constraint firstItem="HqU-sn-gUV" firstAttribute="centerY" secondItem="F5h-hm-eHc" secondAttribute="centerY" constant="-15" id="OhR-ZP-LTy"/>
+                                                <constraint firstItem="kzb-uC-gkA" firstAttribute="centerX" secondItem="F5h-hm-eHc" secondAttribute="centerX" id="mVs-v9-YMx"/>
                                                 <constraint firstItem="HqU-sn-gUV" firstAttribute="centerX" secondItem="F5h-hm-eHc" secondAttribute="centerX" id="rW2-Gh-uk1"/>
+                                                <constraint firstItem="kzb-uC-gkA" firstAttribute="top" secondItem="HqU-sn-gUV" secondAttribute="bottom" constant="10" id="zUg-pa-CHP"/>
                                             </constraints>
                                         </collectionViewCellContentView>
                                         <connections>

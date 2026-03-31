@@ -9,6 +9,7 @@ nonisolated struct ScriptedIdea: Identifiable, Codable, Sendable {
     var script: String?
     var thumbnail: String?
     var tags: [String]?
+    let idea_id: UUID?
 }
 
 // 2. The Database Model
@@ -20,8 +21,7 @@ nonisolated struct ScriptedIdeaDB: Codable, Sendable {
     let script: String?
     let thumbnail: String?
     let tags: [String]?
-    let mock_title: String?
-    let mock_description: String?
+    let idea_id: UUID?
 }
 
 // 3. The Insert Payload
@@ -77,6 +77,7 @@ nonisolated struct Conversation: Codable, Sendable {
     let user_id: UUID
     let title: String?
     let created_at: Date?
+    let idea_id: UUID?
     let scripted_ideas: ScriptedIdeaDB?
     
     var hasStar: Bool {

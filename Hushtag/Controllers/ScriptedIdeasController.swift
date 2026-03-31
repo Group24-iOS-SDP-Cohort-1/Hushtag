@@ -26,13 +26,13 @@ final class ScriptedIdeasController {
     
     func addConversation(id: UUID, ideaId: UUID? = nil) async throws -> Conversation {
         let session = try await client.auth.session
-
+        
         let payload = ConversationInsertPayload(
             id: id,
             user_id: session.user.id,
             idea_id: ideaId
         )
-
+        
         let result: Conversation = try await client.database
             .from("conversations")
             .insert(payload)
@@ -40,10 +40,10 @@ final class ScriptedIdeasController {
             .single()
             .execute()
             .value
-
+        
         return result
     }
-
+    
     func getBotMessage() async throws -> ChatMessageDB {
         let chats: ChatMessageDB = try await client.database.from("chat_history").select().eq("role", value: "bot").execute().value
         
@@ -60,6 +60,7 @@ final class ScriptedIdeasController {
                     user_id,
                     title,
                     created_at,
+                idea_id,
                     chat_history!inner(conversation_id),
                     scripted_ideas (
                         id,
@@ -77,7 +78,7 @@ final class ScriptedIdeasController {
         
         return result
     }
-
+    
     func fetchConversation(for ideaId: UUID) async throws -> Conversation? {
         let result: [Conversation] = try await client.database
             .from("conversations")
@@ -99,10 +100,10 @@ final class ScriptedIdeasController {
             .limit(1)
             .execute()
             .value
-
+        
         return result.first
     }
-
+    
     
     func updateScript() {
         
@@ -167,10 +168,10 @@ final class ScriptedIdeasController {
         let result: [ScriptedIdea] = try await client.database
             .from("scripted_ideas")
             .select()
-            .in("id", value: stringIds) 
+            .in("id", value: stringIds)
             .execute()
             .value
-            
+        
         return result
     }
     
@@ -186,7 +187,7 @@ final class ScriptedIdeasController {
         
         return result
     }
-
+    
     func fetchScriptByIdeaId(ideaId: UUID) async throws -> ScriptedIdea? {
         let result: [ScriptedIdea] = try await client.database
             .from("scripted_ideas")
@@ -195,7 +196,7 @@ final class ScriptedIdeasController {
             .limit(1)
             .execute()
             .value
-
+        
         return result.first
     }
     
@@ -339,7 +340,7 @@ final class ScriptedIdeasController {
         ideaID: UUID,
         expandedDescription: String
     ) async throws {
-
+        
         try await client.database
             .from("ideas")
             .update([
@@ -347,10 +348,10 @@ final class ScriptedIdeasController {
             ])
             .eq("id", value: ideaID.uuidString)
             .execute()
-
+        
         print("Expanded description saved")
     }
-
+    
     func updatePlatform(id: UUID, platform: String) async throws {
         try await client.database
             .from("conversations")
@@ -358,7 +359,7 @@ final class ScriptedIdeasController {
             .eq("id", value: id.uuidString)
             .execute()
     }
-
+    
 }
 
 

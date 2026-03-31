@@ -22,19 +22,7 @@ class Ideate1: UIViewController {
         case suggested
     }
     var sections: [SectionType] {
-        var result: [SectionType] = [.search, .chatbot]
-        
-        if !likedIdeas.isEmpty {
-            result.append(.liked)
-        }
-        
-        if !recentScripts.isEmpty && !isSearching {
-            result.append(.recent)
-        }
-        
-        result.append(.suggested)
-        
-        return result
+        return [.search, .chatbot, .liked, .recent, .suggested]
     }
     
     override func viewDidLoad() {
@@ -62,7 +50,7 @@ class Ideate1: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchRecentScripts()
+        //fetchRecentScripts()
         syncLikedIdeas()
     }
     
@@ -97,7 +85,8 @@ class Ideate1: UIViewController {
                         description: dbScript.description,
                         script: dbScript.script,
                         thumbnail: dbScript.thumbnail,
-                        tags: dbScript.tags
+                        tags: dbScript.tags,
+                        idea_id: conversation.idea_id
                     )
                 }
                 
@@ -105,8 +94,13 @@ class Ideate1: UIViewController {
                 let top4 = Array(allScripts.prefix(4))
                 
                 await MainActor.run {
+                    print("🔄 Updating recentScripts")
+
                     self.recentScripts = top4
-                    self.collectionView.reloadData()
+
+                    DispatchQueue.main.async {
+                        self.collectionView.reloadData()
+                    }
                 }
             } catch {
                 print("Error fetching recent scripts: \(error)")
@@ -374,8 +368,22 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             return cell
             
         case .recent:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "scriptCellIdeate", for: indexPath) as! Script_cell_ideate
-            cell.configureCell(with: recentScripts[indexPath.row])
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "scriptCellIdeate",
+                for: indexPath
+            ) as! Script_cell_ideate
+
+            if indexPath.row >= recentScripts.count {
+                print("❌ Index out of range prevented")
+                print("indexPath.row:", indexPath.row)
+                print("recentScripts.count:", recentScripts.count)
+                return cell
+            }
+
+            let script = recentScripts[indexPath.row]
+            print("✅ Configuring recent script at index:", indexPath.row)
+
+            cell.configureCell(with: script)
             return cell
             
         case .suggested:
@@ -395,45 +403,6 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         guard kind == UICollectionView.elementKindSectionHeader else {
             return UICollectionReusableView()
         }
-        
-        
-        //        } else if indexPath.section == 2 {
-        //            // Recent Scripts Header using HeaderView
-        //            let header = collectionView.dequeueReusableSupplementaryView(
-        //                ofKind: kind,
-        //                withReuseIdentifier: "headerCell",
-        //                for: indexPath
-        //            ) as! HeaderView
-        //            header.configureHeader(text: "Saved Ideas")
-        //            header.showChevron(true)
-        //
-        //            header.didTapChevron = { [weak self] in
-        //                let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
-        //                guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
-        //                guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
-        //                destinationVC.pageTitle = "Liked Ideas"
-        //                self?.navigationController?.pushViewController(destinationVC, animated: true)
-        //            }
-        //
-        //            return header
-        //
-        //        } else if !recentScripts.isEmpty && !isSearching && indexPath.section == 3 {
-        //            // Recent Scripts Header using HeaderView
-        //            let header = collectionView.dequeueReusableSupplementaryView(
-        //                ofKind: kind,
-        //                withReuseIdentifier: "headerCell",
-        //                for: indexPath
-        //            ) as! HeaderView
-        //            header.configureHeader(text: "Generated Posts")
-        //            header.showChevron(true)
-        //
-        //            header.didTapChevron = { [weak self] in
-        //                let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
-        //                guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
-        //                guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
-        //                destinationVC.pageTitle = "Your Scripts"
-        //                self?.navigationController?.pushViewController(destinationVC, animated: true)
-        //            }
         
         let sectionType = sections[indexPath.section]
         
@@ -506,23 +475,50 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let sectionType = sections[indexPath.section]
-
+        
         switch sectionType {
-
+            
         case .chatbot:
             let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
             guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController,
                   let chatbotVC = navVC.topViewController as? Chatbot else { return }
             self.navigationController?.pushViewController(chatbotVC, animated: true)
-
-        case .recent:
-            let script = recentScripts[indexPath.row]
-            let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
-            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas {
-                destinationVC.idea = script
-                self.navigationController?.pushViewController(destinationVC, animated: true)
+            
+        case .liked:
+            if indexPath.row >= likedIdeas.count {
+                print("❌ Liked index out of range")
+                print("index:", indexPath.row)
+                print("likedIdeas.count:", likedIdeas.count)
+                return
             }
 
+            let idea = likedIdeas[indexPath.row]
+            let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
+
+            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "IdeaVC") as? ViewIdea {
+                destinationVC.idea = idea
+                self.navigationController?.pushViewController(destinationVC, animated: true)
+            }
+            
+        case .recent:
+            let script = recentScripts[indexPath.row]
+            
+            if let ideaId = script.idea_id {
+                let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
+                if let destinationVC = storyboard.instantiateViewController(withIdentifier: "IdeaVC") as? ViewIdea {
+                    destinationVC.ideaId = ideaId
+                    self.navigationController?.pushViewController(destinationVC, animated: true)
+                }
+            }
+            
+            else {
+                let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
+                if let destinationVC = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas {
+                    destinationVC.idea = script
+                    self.navigationController?.pushViewController(destinationVC, animated: true)
+                }
+            }
+            
         case .suggested:
             let idea = ideas[indexPath.row]
             let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
@@ -530,7 +526,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             guard let destinationVC = navVC.topViewController as? ViewIdea else { return }
             destinationVC.idea = idea
             self.navigationController?.pushViewController(destinationVC, animated: true)
-
+            
         default:
             break
         }
@@ -551,58 +547,6 @@ extension Ideate1: IdeaSearchDelegate {
             collectionView.reloadData()
             return
         }
-        
-//        self.isSearching = true
-//        
-//        OpaqueLoadingScreen.shared.show(message: "Searching ideas...")
-//        
-//        
-//        Task {
-//            do {
-//                let response = try await YouTubeService().search(query: keyword)
-//                
-//                // NEW FLOW
-//                let clusterIdeas = response.clusterIdeas
-//                collectionView.setCollectionViewLayout(generateLayout(), animated: false)
-//                
-//                // Flatten clusterIdeas → Idea objects
-//                let mappedIdeas: [Idea] = clusterIdeas.flatMap { cluster in
-//                    cluster.ideas.map { geminiIdea in
-//                        
-//                        let key = makeIdeaKey(
-//                            title: geminiIdea.title,
-//                            description: geminiIdea.description,
-//                            format: geminiIdea.format,
-//                            hashtags: geminiIdea.hashtags
-//                        )
-//                        
-//                        return Idea(
-//                            id: UUID(),
-//                            ideaKey: key,
-//                            title: geminiIdea.title,
-//                            description: geminiIdea.description,
-//                            format: geminiIdea.format,
-//                            hashtags: geminiIdea.hashtags,
-//                            noveltyScore: geminiIdea.noveltyScore,
-//                            videos: (cluster.videos).map { $0.toVideo() },
-//                            liked: false
-//                        )
-//                    }
-//                }
-//                
-//                await MainActor.run {
-//                    self.ideas = mappedIdeas
-//                    print("Ideas Count:", self.ideas.count)
-//                    self.collectionView.reloadData()
-//                    OpaqueLoadingScreen.shared.hide()
-//                }
-//                
-//            } catch {
-//                print("❌ ERROR:", error)
-//                await MainActor.run {
-//                    OpaqueLoadingScreen.shared.hide()
-//                }
-//            }
         
         let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
         if let searchVC = storyboard.instantiateViewController(withIdentifier: "AfterSearchIdeasViewController") as? AfterSearchIdeasViewController {
@@ -667,7 +611,7 @@ extension Ideate1: IdeaCellDelegate {
                     ) as? IdeaCells {
                         cell.updateLikeUI()
                     }
-                        collectionView.reloadData()
+                    collectionView.reloadData()
                 }
                 
             } catch {
@@ -683,7 +627,7 @@ extension Ideate1: LikedCellDelegate {
         print("Draft tapped:", idea.title)
         // you already handle this elsewhere probably
     }
-
+    
     func didToggleLike(for ideaKey: String) {
         // reuse SAME logic as suggested toggle
         didToggleLikeFromFeed(for: ideaKey)
