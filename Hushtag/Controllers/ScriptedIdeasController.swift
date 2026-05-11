@@ -308,7 +308,7 @@ final class ScriptedIdeasController {
         try await client.database
             .from("conversations")
             .delete()
-            .eq("id", value: id)
+            .eq("id", value: id.uuidString)
             .execute()
     }
     

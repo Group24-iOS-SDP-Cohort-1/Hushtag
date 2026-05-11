@@ -104,10 +104,16 @@ class ChatHistory: UITableViewController {
             
             Task {
                 do {
-                    // Delete from database
+                    
+                    // Delete related script first if it exists
+                    if let ideaId = convo.idea_id {
+                        try await self.controller.deleteScript(id: ideaId)
+                    }
+                    
+                    // Delete conversation
                     try await self.controller.deleteConversation(id: convo.id)
                     
-                    // Update UI on main thread
+                    // Update UI
                     await MainActor.run {
                         self.removeConversationFromDataSource(at: indexPath)
                         completion(true)
