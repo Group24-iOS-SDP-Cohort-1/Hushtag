@@ -230,9 +230,18 @@ final class ScriptedIdeasController {
         Output:
         """
         
-        let rawTitle = try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
-        
-        return cleanTitle(rawTitle)
+        do {
+            let rawTitle = try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
+            return cleanTitle(rawTitle)
+        } catch {
+            print("⚠️ Apple Intelligence Title generation failed, routing through AI router fallback")
+            let rawTitle = await AIResponseRouter.shared.respond(
+                intent: .chat,
+                prompt: prompt,
+                conversationID: nil
+            )
+            return cleanTitle(rawTitle)
+        }
     }
     
     private func cleanTitle(_ text: String) -> String {

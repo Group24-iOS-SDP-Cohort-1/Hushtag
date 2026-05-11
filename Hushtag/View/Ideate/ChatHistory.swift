@@ -17,6 +17,11 @@ class ChatHistory: UITableViewController {
         fetchConversationList()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchConversationList()
+    }
+    
     @objc private func handleScriptDeleted(_ notification: Notification) {
         fetchConversationList()
     }

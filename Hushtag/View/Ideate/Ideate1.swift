@@ -56,7 +56,7 @@ class Ideate1: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //fetchRecentScripts()
+        fetchRecentScripts()
         syncLikedIdeas()
     }
     
