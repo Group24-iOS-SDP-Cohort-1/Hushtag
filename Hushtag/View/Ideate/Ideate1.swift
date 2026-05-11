@@ -57,17 +57,24 @@ class Ideate1: UIViewController {
     @objc func syncLikedIdeas() {
         Task {
             do {
-                let likedIdeas = try await likedIdeasController.fetchLikedIdeas()
-                
-                await MainActor.run {
-                    self.likedIdeas = likedIdeas
+                let fetchedLikedIdeas = try await likedIdeasController.fetchLikedIdeas()
+
+                let personalizedIdeas = SessionManager.shared.personalizedIdeas
+
+                let syncedLikedIdeas = fetchedLikedIdeas.compactMap { liked in
+                    personalizedIdeas.first(where: { $0.ideaKey == liked.ideaKey })
                 }
+
+                await MainActor.run {
+                    self.likedIdeas = syncedLikedIdeas
+                    self.collectionView.reloadData()
+                }
+
             } catch {
                 print("Failed to fetch liked ideas:", error)
             }
         }
     }
-    
     
     private func fetchRecentScripts() {
         Task {
