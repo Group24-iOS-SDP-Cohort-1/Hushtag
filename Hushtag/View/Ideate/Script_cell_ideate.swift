@@ -53,30 +53,16 @@ class Script_cell_ideate: UICollectionViewCell {
         
         let badge: Badges = Badges.loadFromNib()
         
-        if hashtag == "Idea" {
-            badge.configure(
-                text: hashtag,
-                color: UIColor.systemBlue,
-                cornerRadius: 12,
-                borderWidth: 1.0,
-                backgroundAlpha: 0.12
-            )
-            
-            badge.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.12)
-            badge.layer.borderColor = UIColor.systemBlue.withAlphaComponent(0.22).cgColor
-            
-        } else {
-            badge.configure(
-                text: hashtag,
-                color: UIColor(hex: "#a78bfa"),
-                cornerRadius: 12,
-                borderWidth: 1.0,
-                backgroundAlpha: 0.12
-            )
-            
-            badge.backgroundColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.12)
-            badge.layer.borderColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.22).cgColor
-        }
+        badge.configure(
+            text: hashtag,
+            color: UIColor(hex: "#a78bfa"),
+            cornerRadius: 12,
+            borderWidth: 1.0,
+            backgroundAlpha: 0.12
+        )
+        
+        badge.backgroundColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.12)
+        badge.layer.borderColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.22).cgColor
 
         badgeStack.addArrangedSubview(badge)
     }

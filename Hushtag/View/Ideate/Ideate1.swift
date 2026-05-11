@@ -22,7 +22,13 @@ class Ideate1: UIViewController {
         case suggested
     }
     var sections: [SectionType] {
-        return [.search, .chatbot, .liked, .recent, .suggested]
+        var list: [SectionType] = [.search, .chatbot]
+        if !likedIdeas.isEmpty {
+            list.append(.liked)
+        }
+        list.append(.recent)
+        list.append(.suggested)
+        return list
     }
     
     override func viewDidLoad() {
@@ -370,6 +376,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             let idea: Idea
             idea = likedIdeas[indexPath.row]
             cell.configureCell(idea: idea)
+            cell.delegate = self
             cell.likeButton.setImage(UIImage(systemName: "bookmark.fill"), for: .normal)
             
             return cell
@@ -567,12 +574,14 @@ extension Ideate1: IdeaCellDelegate {
     
     func didToggleLikeFromFeed(for ideaKey: String) {
         
-        guard let index = ideas.firstIndex(where: { $0.ideaKey == ideaKey }) else {
+        let foundIdea = ideas.first(where: { $0.ideaKey == ideaKey }) ?? likedIdeas.first(where: { $0.ideaKey == ideaKey })
+        
+        guard var idea = foundIdea else {
+            print("❌ Idea not found")
             return
         }
         
         let isCurrentlyLiked = LikedIds.likedIdeaIds.contains(ideaKey)
-        let idea = ideas[index]
         
         Task {
             do {
@@ -587,38 +596,96 @@ extension Ideate1: IdeaCellDelegate {
                 }
                 
                 await MainActor.run {
-                    // Update Ideate list
-                    ideas[index].liked = !isCurrentlyLiked
+                    
+                    idea.liked = !isCurrentlyLiked
                     
                     // Keep SessionManager in sync (VERY important)
                     if let smIndex = SessionManager.shared.personalizedIdeas
                         .firstIndex(where: { $0.ideaKey == ideaKey }) {
                         SessionManager.shared.personalizedIdeas[smIndex].liked = !isCurrentlyLiked
                     }
-                    if isCurrentlyLiked {
-                        // UNLIKE → add back to suggested
-                        likedIdeas.removeAll { $0.ideaKey == ideaKey }
-                        ideas.insert(idea, at: 0)
-                    } else {
-                        // LIKE → move from suggested → liked
-                        likedIdeas.insert(idea, at: 0)
-                        ideas.removeAll { $0.ideaKey == ideaKey }
+                    let willCreateSection = self.likedIdeas.isEmpty && !isCurrentlyLiked
+                    let willDestroySection = self.likedIdeas.count == 1 && isCurrentlyLiked
+                    
+                    if willCreateSection || willDestroySection {
+                        
+                        if isCurrentlyLiked {
+                            self.likedIdeas.removeAll { $0.ideaKey == ideaKey }
+                            self.ideas.removeAll { $0.ideaKey == ideaKey }
+                            self.ideas.insert(idea, at: 0)
+                        } else {
+                            self.ideas.removeAll { $0.ideaKey == ideaKey }
+                            self.likedIdeas.removeAll { $0.ideaKey == ideaKey }
+                            self.likedIdeas.insert(idea, at: 0)
+                        }
+                        
+                        UIView.transition(with: self.collectionView,
+                                          duration: 0.3,
+                                          options: .transitionCrossDissolve,
+                                          animations: { self.collectionView.reloadData() },
+                                          completion: { _ in
+                            NotificationCenter.default.post(name: .didUpdateLikedStatus, object: ideaKey)
+                        })
+                        return
                     }
                     
-                    // Notify other screens
-                    NotificationCenter.default.post(
-                        name: .didUpdateLikedStatus,
-                        object: ideaKey
-                    )
-                    
-                    guard let suggestedSectionIndex = sections.firstIndex(of: .suggested) else { return }
-                    
-                    if let cell = collectionView.cellForItem(
-                        at: IndexPath(row: index, section: suggestedSectionIndex)
-                    ) as? IdeaCells {
-                        cell.updateLikeUI()
+                    guard let likedSectionIndex = self.sections.firstIndex(of: .liked),
+                          let suggestedSectionIndex = self.sections.firstIndex(of: .suggested) else {
+                        
+                        if isCurrentlyLiked {
+                            self.likedIdeas.removeAll { $0.ideaKey == ideaKey }
+                            self.ideas.removeAll { $0.ideaKey == ideaKey }
+                            self.ideas.insert(idea, at: 0)
+                        } else {
+                            self.ideas.removeAll { $0.ideaKey == ideaKey }
+                            self.likedIdeas.removeAll { $0.ideaKey == ideaKey }
+                            self.likedIdeas.insert(idea, at: 0)
+                        }
+                        self.collectionView.reloadData()
+                        return
                     }
-                    collectionView.reloadData()
+                    
+                    let oldIdeaRow = self.ideas.firstIndex(where: { $0.ideaKey == ideaKey })
+                    let oldLikedRow = self.likedIdeas.firstIndex(where: { $0.ideaKey == ideaKey })
+                    
+                    self.collectionView.performBatchUpdates({
+                        if isCurrentlyLiked {
+                            // UNLIKE → remove from liked, add back to suggested
+                            if let row = oldLikedRow {
+                                self.likedIdeas.remove(at: row)
+                                self.collectionView.deleteItems(at: [IndexPath(row: row, section: likedSectionIndex)])
+                            }
+                            
+                            // Safe cleanup in case it existed elsewhere
+                            if let row = oldIdeaRow {
+                                self.ideas.remove(at: row)
+                                self.collectionView.deleteItems(at: [IndexPath(row: row, section: suggestedSectionIndex)])
+                            }
+                            
+                            self.ideas.insert(idea, at: 0)
+                            self.collectionView.insertItems(at: [IndexPath(row: 0, section: suggestedSectionIndex)])
+                            
+                        } else {
+                            // LIKE → move from suggested → liked
+                            if let row = oldIdeaRow {
+                                self.ideas.remove(at: row)
+                                self.collectionView.deleteItems(at: [IndexPath(row: row, section: suggestedSectionIndex)])
+                            }
+                            
+                            if let row = oldLikedRow {
+                                self.likedIdeas.remove(at: row)
+                                self.collectionView.deleteItems(at: [IndexPath(row: row, section: likedSectionIndex)])
+                            }
+                            
+                            self.likedIdeas.insert(idea, at: 0)
+                            self.collectionView.insertItems(at: [IndexPath(row: 0, section: likedSectionIndex)])
+                        }
+                    }) { _ in
+                        NotificationCenter.default.post(
+                            name: .didUpdateLikedStatus,
+                            object: ideaKey
+                        )
+                    }
                 }
                 
             } catch {
