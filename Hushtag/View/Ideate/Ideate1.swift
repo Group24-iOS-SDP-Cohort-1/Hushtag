@@ -341,11 +341,14 @@ class Ideate1: UIViewController {
 
         profileButton.configuration = nil
 
+        profileButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            profileButton.widthAnchor.constraint(equalToConstant: 40),
+            profileButton.heightAnchor.constraint(equalToConstant: 40)
+        ])
+
         profileButton.clipsToBounds = true
         profileButton.layer.cornerRadius = 20
-
-        profileButton.contentHorizontalAlignment = .fill
-        profileButton.contentVerticalAlignment = .fill
 
         profileButton.imageEdgeInsets = .zero
 
@@ -370,6 +373,9 @@ class Ideate1: UIViewController {
                             )
 
                             self.profileButton.setTitle("", for: .normal)
+                            
+                            self.profileButton.contentHorizontalAlignment = .fill
+                            self.profileButton.contentVerticalAlignment = .fill
 
                             self.profileButton.imageView?.contentMode = .scaleAspectFill
                             self.profileButton.imageView?.clipsToBounds = true
@@ -389,6 +395,9 @@ class Ideate1: UIViewController {
                         self.profileButton.setImage(nil, for: .normal)
 
                         self.profileButton.setTitle(initial, for: .normal)
+                        
+                        self.profileButton.contentHorizontalAlignment = .center
+                        self.profileButton.contentVerticalAlignment = .center
 
                         self.profileButton.backgroundColor = UIColor.accent
 
