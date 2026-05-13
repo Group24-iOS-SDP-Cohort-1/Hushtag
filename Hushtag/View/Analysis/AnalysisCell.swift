@@ -7,7 +7,7 @@ class AnalysisCell: UICollectionViewCell {
     @IBOutlet weak var changeLabel: UILabel!
     @IBOutlet weak var sfSymbol: UIImageView!
     
-    
+    //
     override func awakeFromNib() {
         super.awakeFromNib()
         applyLiquidGlassEffect()
