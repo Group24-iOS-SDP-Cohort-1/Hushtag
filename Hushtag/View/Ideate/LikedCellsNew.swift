@@ -19,7 +19,6 @@ class LikedCellsNew: UICollectionViewCell {
         super.awakeFromNib()
         // Initialization code
         ideaView.layer.cornerRadius = 10
-        ideaTitle.numberOfLines = 2
         applyLiquidGlassEffect()
     }
 

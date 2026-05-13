@@ -123,7 +123,7 @@
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="Z17-7z-gvD">
                         <barButtonItem key="rightBarButtonItem" id="w3V-OA-a1P">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="gFr-h8-u3O">
-                                <rect key="frame" x="20" y="9" width="36" height="26"/>
+                                <rect key="frame" x="337" y="9" width="36" height="26"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="person.2.circle" catalog="system"/>
@@ -135,6 +135,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="Mxq-Iu-w0r" id="YeI-Ho-aaB"/>
+                        <outlet property="profileButton" destination="gFr-h8-u3O" id="S3L-Iv-1SA"/>
                         <segue destination="Yb8-13-5gt" kind="show" identifier="goToScript" animates="NO" id="rsD-Te-pVV"/>
                         <segue destination="EIE-es-Oql" kind="show" id="ndu-bI-26X"/>
                     </connections>
@@ -254,10 +255,10 @@
                                         </connections>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="buttons" id="emt-Rh-LvP" customClass="ViewScriptsCell" customModule="Hushtag" customModuleProvider="target">
-                                        <rect key="frame" x="183.33333333333334" y="0.0" width="128.00000000000003" height="128"/>
+                                        <rect key="frame" x="183.33333333333334" y="0.0" width="128" height="128"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="V9d-3X-VfP">
-                                            <rect key="frame" x="0.0" y="0.0" width="128.00000000000003" height="128"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sb4-ha-PpJ">

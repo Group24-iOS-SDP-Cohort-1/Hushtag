@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <device id="retina6_12" orientation="portrait" appearance="dark"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
@@ -16,7 +16,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2DI-YT-kN7">
-                    <rect key="frame" x="252" y="10" width="47" height="34"/>
+                    <rect key="frame" x="259.33333333333331" y="15" width="39.666666666666686" height="34"/>
                     <color key="tintColor" name="AccentColor"/>
                     <state key="normal" title=""/>
                     <buttonConfiguration key="configuration" style="tinted" image="chevron.right" catalog="system"/>
@@ -25,18 +25,18 @@
                     </connections>
                 </button>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ati-qQ-mwh">
-                    <rect key="frame" x="9" y="52" width="298" height="77"/>
+                    <rect key="frame" x="15" y="59" width="284" height="70"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="2DI-YT-kN7" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="15" id="btn-top"/>
-                <constraint firstAttribute="trailing" secondItem="2DI-YT-kN7" secondAttribute="trailing" constant="15" id="btn-right"/>
-                <constraint firstItem="ati-qQ-mwh" firstAttribute="top" secondItem="2DI-YT-kN7" secondAttribute="bottom" constant="10" id="graph-top"/>
                 <constraint firstAttribute="bottom" secondItem="ati-qQ-mwh" secondAttribute="bottom" constant="6" id="8Il-Kn-G5E"/>
+                <constraint firstAttribute="trailing" secondItem="2DI-YT-kN7" secondAttribute="trailing" constant="15" id="btn-right"/>
+                <constraint firstItem="2DI-YT-kN7" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="15" id="btn-top"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="ati-qQ-mwh" secondAttribute="trailing" constant="15" id="fcg-kI-umH"/>
+                <constraint firstItem="ati-qQ-mwh" firstAttribute="top" secondItem="2DI-YT-kN7" secondAttribute="bottom" constant="10" id="graph-top"/>
                 <constraint firstItem="ati-qQ-mwh" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="15" id="yC8-JC-lR8"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>

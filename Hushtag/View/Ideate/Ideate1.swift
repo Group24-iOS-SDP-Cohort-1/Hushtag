@@ -14,6 +14,9 @@ class Ideate1: UIViewController {
     private let scriptsController = ScriptedIdeasController()
     @IBOutlet weak var collectionView: UICollectionView!
     
+    @IBOutlet weak var profileButton: UIButton!
+    private let profileController = ProfileController()
+    
     enum SectionType {
         case search
         case chatbot
@@ -33,6 +36,7 @@ class Ideate1: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        fetchProfileButtonData()
         collectionView.reloadData()
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         register()
@@ -64,18 +68,18 @@ class Ideate1: UIViewController {
         Task {
             do {
                 let fetchedLikedIdeas = try await likedIdeasController.fetchLikedIdeas()
-
+                
                 let personalizedIdeas = SessionManager.shared.personalizedIdeas
-
+                
                 let syncedLikedIdeas = fetchedLikedIdeas.compactMap { liked in
                     personalizedIdeas.first(where: { $0.ideaKey == liked.ideaKey })
                 }
-
+                
                 await MainActor.run {
                     self.likedIdeas = syncedLikedIdeas
                     self.collectionView.reloadData()
                 }
-
+                
             } catch {
                 print("Failed to fetch liked ideas:", error)
             }
@@ -108,9 +112,9 @@ class Ideate1: UIViewController {
                 
                 await MainActor.run {
                     print("🔄 Updating recentScripts")
-
+                    
                     self.recentScripts = top4
-
+                    
                     DispatchQueue.main.async {
                         self.collectionView.reloadData()
                     }
@@ -332,6 +336,74 @@ class Ideate1: UIViewController {
             return updated
         }
     }
+    
+    private func fetchProfileButtonData() {
+
+        profileButton.configuration = nil
+
+        profileButton.clipsToBounds = true
+        profileButton.layer.cornerRadius = 20
+
+        profileButton.contentHorizontalAlignment = .fill
+        profileButton.contentVerticalAlignment = .fill
+
+        profileButton.imageEdgeInsets = .zero
+
+        Task {
+            do {
+
+                let profile = try await profileController.fetchProfile()
+
+                if let urlString = profile.avatarURL,
+                   let url = URL(string: urlString) {
+
+                    URLSession.shared.dataTask(with: url) { data, _, _ in
+
+                        guard let data,
+                              let image = UIImage(data: data) else { return }
+
+                        DispatchQueue.main.async {
+
+                            self.profileButton.setImage(
+                                image.withRenderingMode(.alwaysOriginal),
+                                for: .normal
+                            )
+
+                            self.profileButton.setTitle("", for: .normal)
+
+                            self.profileButton.imageView?.contentMode = .scaleAspectFill
+                            self.profileButton.imageView?.clipsToBounds = true
+
+                            self.profileButton.backgroundColor = .clear
+                        }
+
+                    }.resume()
+
+                } else {
+
+                    DispatchQueue.main.async {
+
+                        let initial = profile.fullName.first
+                            .map { String($0).uppercased() } ?? "U"
+
+                        self.profileButton.setImage(nil, for: .normal)
+
+                        self.profileButton.setTitle(initial, for: .normal)
+
+                        self.profileButton.backgroundColor = UIColor.accent
+
+                        self.profileButton.setTitleColor(.white, for: .normal)
+
+                        self.profileButton.titleLabel?.font =
+                            UIFont.systemFont(ofSize: 18, weight: .semibold)
+                    }
+                }
+
+            } catch {
+                print("Failed to fetch profile:", error)
+            }
+        }
+    }
 }
 
 extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
@@ -386,17 +458,17 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
                 withReuseIdentifier: "scriptCellIdeate",
                 for: indexPath
             ) as! Script_cell_ideate
-
+            
             if indexPath.row >= recentScripts.count {
                 print("❌ Index out of range prevented")
                 print("indexPath.row:", indexPath.row)
                 print("recentScripts.count:", recentScripts.count)
                 return cell
             }
-
+            
             let script = recentScripts[indexPath.row]
             print("✅ Configuring recent script at index:", indexPath.row)
-
+            
             cell.configureCell(with: script)
             return cell
             
@@ -505,10 +577,10 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
                 print("likedIdeas.count:", likedIdeas.count)
                 return
             }
-
+            
             let idea = likedIdeas[indexPath.row]
             let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
-
+            
             if let destinationVC = storyboard.instantiateViewController(withIdentifier: "IdeaVC") as? ViewIdea {
                 destinationVC.idea = idea
                 self.navigationController?.pushViewController(destinationVC, animated: true)

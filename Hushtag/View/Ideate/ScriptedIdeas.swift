@@ -295,7 +295,9 @@ class ScriptedIdeas: UIViewController {
                 trailing: 20
             )
             
-            if sectionIndex == 1 || sectionIndex == 2 {
+            let currentSection = self.sections[sectionIndex]
+
+            if currentSection == .description || currentSection == .script {
                 section.boundarySupplementaryItems = [headerItem]
             }
             return section
