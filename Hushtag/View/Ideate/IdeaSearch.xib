@@ -18,7 +18,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="547" height="292"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="F5p-iG-YO8">
-                            <rect key="frame" x="0.0" y="0.0" width="547" height="127"/>
+                            <rect key="frame" x="0.0" y="0.0" width="547" height="74"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="eCU-Wc-yoN">
                                     <rect key="frame" x="0.0" y="0.0" width="547" height="74"/>
@@ -38,27 +38,10 @@
                                         </label>
                                     </subviews>
                                 </stackView>
-                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Qlu-Zf-chP">
-                                    <rect key="frame" x="0.0" y="99" width="547" height="28"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Discover trending ideas tailored to your " textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vR4-ih-Ytj">
-                                            <rect key="frame" x="0.0" y="0.0" width="547" height="14"/>
-                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="niche instanatly." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HXC-wZ-V8J">
-                                            <rect key="frame" x="0.0" y="14" width="547" height="14"/>
-                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                </stackView>
                             </subviews>
                         </stackView>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="Zy2-Ce-dpI">
-                            <rect key="frame" x="0.0" y="147" width="547" height="145"/>
+                            <rect key="frame" x="0.0" y="94" width="547" height="198"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T9b-3e-pu7">
                                     <rect key="frame" x="0.0" y="0.0" width="547" height="50"/>
@@ -91,7 +74,7 @@
                                     </constraints>
                                 </view>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2qw-PG-bjF">
-                                    <rect key="frame" x="0.0" y="65" width="547" height="80"/>
+                                    <rect key="frame" x="0.0" y="65" width="547" height="133"/>
                                     <color key="tintColor" name="AccentColor"/>
                                     <state key="normal" title="Button"/>
                                     <buttonConfiguration key="configuration" style="filled" image="sparkles" catalog="system" title="Generate Ideas"/>
@@ -115,7 +98,6 @@
                 <outlet property="crossButton" destination="0yX-qb-IhQ" id="nAZ-Ge-GHs"/>
                 <outlet property="mainHeadingStack" destination="eCU-Wc-yoN" id="Knm-0C-a3J"/>
                 <outlet property="searchButton" destination="2qw-PG-bjF" id="dlF-eE-0Z1"/>
-                <outlet property="subheadingStack" destination="Qlu-Zf-chP" id="dJs-yD-xSN"/>
                 <outlet property="textLabel" destination="9qh-oQ-3Fh" id="Qwl-yf-Gra"/>
                 <outlet property="textStack" destination="F5p-iG-YO8" id="70p-US-7kJ"/>
                 <outlet property="textView" destination="T9b-3e-pu7" id="a7R-8M-y7M"/>

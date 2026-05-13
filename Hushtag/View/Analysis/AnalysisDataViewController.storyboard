@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3OO-fU-dZS">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3OO-fU-dZS">
     <device id="retina6_12" orientation="portrait" appearance="dark"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -117,17 +117,6 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Analysis" id="rdl-7Q-UK4">
-                        <barButtonItem key="leftBarButtonItem" id="UAW-Gn-9nf">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="zt1-xA-vae">
-                                <rect key="frame" x="20" y="9" width="36" height="26"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" image="person.2.circle" catalog="system"/>
-                                <connections>
-                                    <segue destination="vrc-xS-rQ3" kind="show" id="PWn-ZX-00h"/>
-                                </connections>
-                            </button>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" id="DOU-TL-5WX">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="oWK-FE-AFD">
                                 <rect key="frame" x="337" y="10" width="36" height="24"/>
@@ -205,16 +194,6 @@
             </objects>
             <point key="canvasLocation" x="5346" y="61"/>
         </scene>
-        <!--ProfileNew-->
-        <scene sceneID="aHa-3f-sja">
-            <objects>
-                <viewControllerPlaceholder storyboardIdentifier="ProfileVC" storyboardName="ProfileNew" id="vrc-xS-rQ3" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="7hq-18-ddd"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="SV5-xj-UIz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3847" y="550"/>
-        </scene>
         <!--Navigation Controller-->
         <scene sceneID="Fr1-GA-KxQ">
             <objects>
@@ -236,7 +215,6 @@
     </scenes>
     <resources>
         <image name="calendar" catalog="system" width="128" height="107"/>
-        <image name="person.2.circle" catalog="system" width="128" height="123"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

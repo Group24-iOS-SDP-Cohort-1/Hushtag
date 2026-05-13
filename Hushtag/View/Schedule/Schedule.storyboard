@@ -132,17 +132,6 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Schedule" id="2kR-Fi-Rbt">
-                        <barButtonItem key="leftBarButtonItem" id="Iu4-it-BXJ">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="nFG-MX-haa">
-                                <rect key="frame" x="20" y="9" width="36" height="26"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="" image="person.2.circle" catalog="system"/>
-                                <connections>
-                                    <segue destination="GrU-Fc-vhZ" kind="show" id="bvp-Od-eRA"/>
-                                </connections>
-                            </button>
-                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="29a-Y8-Dwg">
                             <connections>
                                 <segue destination="JVo-VW-pJQ" kind="presentation" id="2WD-ii-giS"/>
@@ -169,7 +158,7 @@
             </objects>
             <point key="canvasLocation" x="3508.3969465648852" y="138.73239436619718"/>
         </scene>
-        <!--AddViewController-->
+        <!--AddPostViewController-->
         <scene sceneID="6mE-XW-wAE">
             <objects>
                 <viewControllerPlaceholder storyboardIdentifier="AddVC" storyboardName="AddPostViewController" id="JVo-VW-pJQ" sceneMemberID="viewController"/>
@@ -195,20 +184,9 @@
             </objects>
             <point key="canvasLocation" x="1993.1297709923663" y="91.549295774647888"/>
         </scene>
-        <!--ProfileNew-->
-        <scene sceneID="bKC-vq-gMv">
-            <objects>
-                <viewControllerPlaceholder storyboardIdentifier="ProfileVC" storyboardName="ProfileNew" id="GrU-Fc-vhZ" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="ZmF-tv-uGX"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="VIl-yV-C1I" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3550" y="32"/>
-        </scene>
     </scenes>
     <resources>
         <image name="calendar" catalog="system" width="128" height="107"/>
-        <image name="person.2.circle" catalog="system" width="128" height="123"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

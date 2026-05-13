@@ -55,14 +55,11 @@ class Script_cell_ideate: UICollectionViewCell {
         
         badge.configure(
             text: hashtag,
-            color: UIColor(hex: "#a78bfa"),
+            color: .white,
             cornerRadius: 12,
-            borderWidth: 1.0,
+            borderWidth: 0.0,
             backgroundAlpha: 0.12
         )
-        
-        badge.backgroundColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.12)
-        badge.layer.borderColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.22).cgColor
 
         badgeStack.addArrangedSubview(badge)
     }

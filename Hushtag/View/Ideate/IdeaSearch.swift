@@ -12,9 +12,6 @@ class IdeaSearch: UICollectionReusableView {
     
     @IBOutlet weak var mainHeadingStack: UIStackView!
     
-    @IBOutlet weak var subheadingStack: UIStackView!
-    
-    
     @IBOutlet weak var crossButton: UIButton!
     weak var delegate: IdeaSearchDelegate?
 
@@ -41,7 +38,6 @@ class IdeaSearch: UICollectionReusableView {
         switch state {
         case .ideateMain:
             mainHeadingStack.isHidden = false
-            subheadingStack.isHidden = false
             crossButton.isHidden = true
             
         case .afterSearch(let showCross):
@@ -81,6 +77,3 @@ class IdeaSearch: UICollectionReusableView {
         delegate?.didTapSearch(with: "")
     }
 }
-    
-    
-
