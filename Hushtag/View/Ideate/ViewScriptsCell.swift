@@ -16,7 +16,7 @@ class ViewScriptsCell: UICollectionViewCell {
     
     func configure(with text: String) {
         content.numberOfLines = 8
-        content.text = text
+        content.attributedText = text.toStyledScript()
     }
     
     func configureTitle(with text: String) {
