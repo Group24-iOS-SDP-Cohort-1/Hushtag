@@ -41,10 +41,14 @@ class ChatHistory: UITableViewController {
                 await MainActor.run {
                     self.sections = grouped
                     self.tableView.reloadData()
+                    self.updateEmptyState()
                 }
                 
             } catch {
                 print("❌ Failed to fetch conversations:", error)
+                await MainActor.run {
+                    self.updateEmptyState()
+                }
             }
         }
     }
@@ -150,6 +154,25 @@ class ChatHistory: UITableViewController {
             tableView.deleteSections(IndexSet(integer: indexPath.section), with: .fade)
         } else {
             tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+        
+        updateEmptyState()
+    }
+    
+    private func updateEmptyState() {
+        if sections.isEmpty {
+            let emptyLabel = UILabel()
+            emptyLabel.text = "There is no chat history currently."
+            emptyLabel.textColor = .secondaryLabel
+            emptyLabel.textAlignment = .center
+            emptyLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+            emptyLabel.numberOfLines = 0
+            
+            tableView.backgroundView = emptyLabel
+            tableView.separatorStyle = .none
+        } else {
+            tableView.backgroundView = nil
+            tableView.separatorStyle = .singleLine
         }
     }
     
