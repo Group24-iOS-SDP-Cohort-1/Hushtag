@@ -14,7 +14,7 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
     
     @IBOutlet weak var textFieldOutlet: UITextField!
     
-    var sections: [PreferenceSection] = []
+    var options: [String] = []
     
     var preferenceID: Int = 0
     
@@ -79,7 +79,7 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
         var selectedValues: [String] = []
         
         for indexPath in sortedPaths {
-            let optionText = sections[indexPath.section].options[indexPath.item]
+            let optionText = options[indexPath.item]
             
             if optionText == otherOptionKey {
                 
@@ -114,12 +114,10 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
     
     
     func configureCell(with item: PreferenceItem){
-        let isFirstLoad = sections.isEmpty
+        let isFirstLoad = options.isEmpty
         
-        headingLabel.text = item.title
-        subheadingLabel.text = item.subheading
         preferenceID = item.id
-        sections = item.sections
+        options = item.options
         
         if isFirstLoad {
             innerCollectionView.collectionViewLayout = generateNicheLayout()
@@ -142,25 +140,22 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
         
         var otherItems: [String] = []
         
-        for (sectionIndex, section) in sections.enumerated() {
-            for (itemIndex, option) in section.options.enumerated() {
-                // If it's the "Other" option in the UI, we handle it below if there are unmatched strings
-                if option != otherOptionKey && selected.contains(option.lowercased()) {
-                    let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
-                    innerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
-                }
+        for (itemIndex, option) in options.enumerated() {
+            // If it's the "Other" option in the UI, we handle it below if there are unmatched strings
+            if option != otherOptionKey && selected.contains(option.lowercased()) {
+                let indexPath = IndexPath(item: itemIndex, section: 0)
+                innerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
             }
         }
         
         // Find items that don't match standard options
-        let allOptionsLowercased = sections.flatMap { $0.options }.map { $0.lowercased() }
+        let allOptionsLowercased = options.map { $0.lowercased() }
         otherItems = selected.filter { !allOptionsLowercased.contains($0) }
         
         if !otherItems.isEmpty {
             // Find "Other" index to select it
-            if let sectionIndex = sections.firstIndex(where: { $0.options.contains(otherOptionKey) }),
-               let itemIndex = sections[sectionIndex].options.firstIndex(of: otherOptionKey) {
-                let indexPath = IndexPath(item: itemIndex, section: sectionIndex)
+            if let itemIndex = options.firstIndex(of: otherOptionKey) {
+                let indexPath = IndexPath(item: itemIndex, section: 0)
                 innerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
                 
                 toggleTextField(active: true)
@@ -178,22 +173,15 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
 
 extension NicheCollectionCardViewCell: UICollectionViewDataSource{
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return sections.count
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        let s = sections[section]
-        let baseCount = s.options.count
-        
-        return baseCount
-        
+        return options.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let s = sections[indexPath.section]
-        
-        let optionText: String = s.options[indexPath.item]
+        let optionText: String = options[indexPath.item]
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "optionsCell", for: indexPath) as! OptionsCollectionViewCell
         cell.configureCell(with: optionText)
@@ -253,7 +241,7 @@ func generateNicheLayout() -> UICollectionViewLayout{
 
 extension NicheCollectionCardViewCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let selectedOption = sections[indexPath.section].options[indexPath.item]
+        let selectedOption = options[indexPath.item]
         
         
         if selectedOption == otherOptionKey {
@@ -265,7 +253,7 @@ extension NicheCollectionCardViewCell: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        let deselectedOption = sections[indexPath.section].options[indexPath.item]
+        let deselectedOption = options[indexPath.item]
         
         
         if deselectedOption == otherOptionKey {

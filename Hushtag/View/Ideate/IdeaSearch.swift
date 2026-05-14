@@ -12,22 +12,30 @@ class IdeaSearch: UICollectionReusableView {
     
     @IBOutlet weak var mainHeadingStack: UIStackView!
     
-    @IBOutlet weak var subheadingStack: UIStackView!
-    
-    
     @IBOutlet weak var crossButton: UIButton!
     weak var delegate: IdeaSearchDelegate?
-
+    
     enum SearchState {
         case ideateMain
         case afterSearch(showCross: Bool)
     }
-
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         textView.layer.borderColor = UIColor.accent.cgColor
         textView.layer.borderWidth = 1
-        textView.layer.cornerRadius = 8
+        textView.layer.cornerRadius = 20
+        
+        textLabel.attributedPlaceholder = NSAttributedString(
+            string: "Enter keyword, topic or niche...",
+            attributes: [
+                .foregroundColor: UIColor.accent
+            ]
+        )
+        
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: textLabel.frame.height))
+        textLabel.leftView = paddingView
+        textLabel.leftViewMode = .always
         
         // Initial defaults setup appropriately
         configure(state: .ideateMain)
@@ -41,36 +49,35 @@ class IdeaSearch: UICollectionReusableView {
         switch state {
         case .ideateMain:
             mainHeadingStack.isHidden = false
-            subheadingStack.isHidden = false
             crossButton.isHidden = true
             
         case .afterSearch(let showCross):
-//            mainHeadingStack.isHidden = true
-//            subheadingStack.isHidden = true
+            //            mainHeadingStack.isHidden = true
+            //            subheadingStack.isHidden = true
             textStack.isHidden = true
             crossButton.isHidden = !showCross
         }
     }
     
     private func setupKeyboardDismissGesture() {
-            let tapGesture = UITapGestureRecognizer(
-                target: self,
-                action: #selector(dismissKeyboard)
-            )
-
-            tapGesture.cancelsTouchesInView = false
-            addGestureRecognizer(tapGesture)
-        }
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard)
+        )
+        
+        tapGesture.cancelsTouchesInView = false
+        addGestureRecognizer(tapGesture)
+    }
     
     @objc private func dismissKeyboard() {
-            textLabel.resignFirstResponder()
-        }
+        textLabel.resignFirstResponder()
+    }
     
     @IBAction func searchTap(_ sender: UIButton) {
         let keyword = textLabel.text ?? ""
         guard !keyword.isEmpty else {
-               return   
-           }
+            return
+        }
         textLabel.resignFirstResponder()
         delegate?.didTapSearch(with: keyword)
     }
@@ -81,6 +88,3 @@ class IdeaSearch: UICollectionReusableView {
         delegate?.didTapSearch(with: "")
     }
 }
-    
-    
-

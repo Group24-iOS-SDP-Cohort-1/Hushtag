@@ -290,7 +290,7 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
                 for: indexPath
             ) as! IdeaProgressCollectionViewCell
 
-            let completedTypes = Set(
+            _ = Set(
                 [("script", ideaMilestone >= 1), ("title", ideaMilestone >= 2), ("description", ideaMilestone >= 3)]
                     .filter { $0.1 }.map { $0.0 }
             )

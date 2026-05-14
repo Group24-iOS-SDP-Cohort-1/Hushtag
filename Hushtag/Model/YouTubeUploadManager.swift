@@ -246,7 +246,7 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
                             
                             // 3. Set standard Supabase headers
                             request.setValue("Bearer \(jwtToken)", forHTTPHeaderField: "Authorization")
-                            request.setValue(SupabaseConfig.anonKey, forHTTPHeaderField: "apikey")
+                            await request.setValue(SupabaseConfig.anonKey, forHTTPHeaderField: "apikey")
                             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
                             
                             // 4. Encode your existing struct into the body

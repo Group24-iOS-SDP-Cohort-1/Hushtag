@@ -21,7 +21,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="560" height="316"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wGm-Fo-EzB">
-                                <rect key="frame" x="10" y="15" width="450" height="18"/>
+                                <rect key="frame" x="10" y="15" width="495" height="18"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -50,7 +50,7 @@
                             <constraint firstItem="shJ-vj-G5A" firstAttribute="top" secondItem="wGm-Fo-EzB" secondAttribute="bottom" constant="13" id="WcV-VS-nfu"/>
                             <constraint firstItem="f9h-1Q-D93" firstAttribute="top" secondItem="j8A-o1-Y0x" secondAttribute="top" constant="10" id="Zyu-wM-YdZ"/>
                             <constraint firstItem="wGm-Fo-EzB" firstAttribute="top" secondItem="j8A-o1-Y0x" secondAttribute="top" constant="15" id="dxA-OL-MTI"/>
-                            <constraint firstAttribute="trailing" secondItem="wGm-Fo-EzB" secondAttribute="trailing" constant="100" id="mCv-WC-FGG"/>
+                            <constraint firstAttribute="trailing" secondItem="wGm-Fo-EzB" secondAttribute="trailing" constant="55" id="mCv-WC-FGG"/>
                         </constraints>
                     </view>
                 </subviews>

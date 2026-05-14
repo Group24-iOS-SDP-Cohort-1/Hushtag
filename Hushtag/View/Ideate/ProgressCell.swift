@@ -101,9 +101,6 @@ class ProgressCell: UIView {
                 dot.widthAnchor.constraint(equalToConstant: dotSize),
                 dot.heightAnchor.constraint(equalToConstant: dotSize),
 
-                // ❌ REMOVED topAnchor
-                // ✅ WILL ALIGN LATER
-
                 checkmark.centerXAnchor.constraint(equalTo: dot.centerXAnchor),
                 checkmark.centerYAnchor.constraint(equalTo: dot.centerYAnchor),
 
@@ -179,7 +176,9 @@ class ProgressCell: UIView {
 
                 UIView.animate(withDuration: 0.25) {
                     dot.layer.borderColor = isActive ? UIColor.accent.cgColor : UIColor.systemGray3.cgColor
-                    dot.backgroundColor = isActive ? UIColor.accent : .clear
+                    dot.backgroundColor = isActive
+                        ? UIColor.accent
+                        : UIColor.systemGray5
                     self.milestoneCheckmarks[index].alpha = isActive ? 1 : 0
                     self.milestoneLabels[index].textColor = isActive ? UIColor.accent : .systemGray
                     self.milestoneLabels[index].font = UIFont.systemFont(
