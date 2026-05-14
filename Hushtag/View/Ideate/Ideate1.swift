@@ -29,7 +29,9 @@ class Ideate1: UIViewController {
         if !likedIdeas.isEmpty {
             list.append(.liked)
         }
-        list.append(.recent)
+        if !recentScripts.isEmpty {
+            list.append(.recent)
+        }
         list.append(.suggested)
         return list
     }
