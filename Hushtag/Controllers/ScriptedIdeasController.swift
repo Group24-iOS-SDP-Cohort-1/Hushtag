@@ -105,8 +105,19 @@ final class ScriptedIdeasController {
     }
     
     
-    func updateScript() {
+    func updateScript(id: UUID, title: String?, description: String?, script: String?) async throws {
+        var payload: [String: String] = [:]
+        if let title = title { payload["title"] = title }
+        if let description = description { payload["description"] = description }
+        if let script = script { payload["script"] = script }
         
+        guard !payload.isEmpty else { return }
+        
+        try await client.database
+            .from("scripted_ideas")
+            .update(payload)
+            .eq("id", value: id.uuidString)
+            .execute()
     }
     
     func deleteScript(id: UUID) async throws {
