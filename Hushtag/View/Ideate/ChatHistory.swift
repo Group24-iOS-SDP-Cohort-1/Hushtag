@@ -91,7 +91,7 @@ class ChatHistory: UITableViewController {
         
         guard let navigationController = self.navigationController else { return }
         
-        if let ideate1Index = navigationController.viewControllers.firstIndex(where: { String(describing: type(of: $0)) == "Ideate1" }) {
+        if let ideate1Index = navigationController.viewControllers.firstIndex(where: { $0 is Ideate1 }) {
             let newStack = Array(navigationController.viewControllers[0...ideate1Index]) + [vc]
             navigationController.setViewControllers(newStack, animated: true)
         } else {

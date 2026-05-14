@@ -595,6 +595,25 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
                         self.tableView.insertRows(at: [indexPath], with: .fade)
                         self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+                        
+                        let alert = UIAlertController(
+                            title: "Post Ready",
+                            message: "Your post is ready! What would you like to do?",
+                            preferredStyle: .alert
+                        )
+                        
+                        alert.addAction(UIAlertAction(title: "Continue drafting", style: .cancel))
+                        
+                        alert.addAction(UIAlertAction(title: "View post", style: .default) { _ in
+                            guard let navigationController = self.navigationController else { return }
+                            if let ideate1 = navigationController.viewControllers.first(where: { $0 is Ideate1 }) {
+                                navigationController.popToViewController(ideate1, animated: true)
+                            } else {
+                                navigationController.popViewController(animated: true)
+                            }
+                        })
+                        
+                        self.present(alert, animated: true)
                     }
 
                     
