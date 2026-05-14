@@ -78,9 +78,7 @@ class ChatHistory: UITableViewController {
         return sections[section].title
     }
     
-    override func tableView(_ tableView: UITableView,
-                            didSelectRowAt indexPath: IndexPath) {
-        
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let convo = sections[indexPath.section].items[indexPath.row]
         
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
@@ -91,7 +89,14 @@ class ChatHistory: UITableViewController {
         
         vc.conversationID = convo.id
         
-        navigationController?.pushViewController(vc, animated: true)
+        guard let navigationController = self.navigationController else { return }
+        
+        if let ideate1Index = navigationController.viewControllers.firstIndex(where: { String(describing: type(of: $0)) == "Ideate1" }) {
+            let newStack = Array(navigationController.viewControllers[0...ideate1Index]) + [vc]
+            navigationController.setViewControllers(newStack, animated: true)
+        } else {
+            navigationController.pushViewController(vc, animated: true)
+        }
     }
     
     override func tableView(_ tableView: UITableView,
