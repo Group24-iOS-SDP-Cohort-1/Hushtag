@@ -3,8 +3,11 @@ import UIKit
 class InsightsViewController: UIViewController {
     
     @IBOutlet weak var insightIdeaView: UICollectionView!
+    
     var ideas: [Idea] = []
     var analyticsIdeas: [AnalyticsIdea] = []
+    
+    var savedIdeaIDs: Set<UUID> = []
     var selectedIdea: Idea?
     
     var audienceMetrics: AudienceMetrics?
@@ -12,10 +15,21 @@ class InsightsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
+        
         insightIdeaView.delegate = self
         insightIdeaView.dataSource = self
+        insightIdeaView.register(PremiumIdeaCell.self, forCellWithReuseIdentifier: PremiumIdeaCell.identifier)
         insightIdeaView.register(UINib(nibName: "IdeaCells", bundle: nil), forCellWithReuseIdentifier: "ideaCell")
         insightIdeaView.setCollectionViewLayout(generateLayout(), animated: true)
+        
+        // Ensure collection view goes to the top, under safe area
+        insightIdeaView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 40, right: 0)
+        
+        fetchData()
+    }
+    
+    private func fetchData() {
         Task {
             await MainActor.run {
                 OpaqueLoadingScreen.shared.show(message: "Generating Video Ideas...")
@@ -71,16 +85,11 @@ class InsightsViewController: UIViewController {
     }
     
     func generateLayout() -> UICollectionViewLayout {
-        
         let layout = UICollectionViewCompositionalLayout { sectionIndex, env in
-            
-            
-            // self-sizing item
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
-                heightDimension: .estimated(116)
+                heightDimension: .estimated(120)
             )
-            
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             
             let group = NSCollectionLayoutGroup.horizontal(
@@ -100,27 +109,30 @@ class InsightsViewController: UIViewController {
     }
 }
 
-extension InsightsViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    
+extension InsightsViewController: UICollectionViewDelegate, UICollectionViewDataSource, PremiumIdeaCellDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return analyticsIdeas.isEmpty ? ideas.count : analyticsIdeas.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideaCell", for: indexPath) as! IdeaCells
         if !analyticsIdeas.isEmpty {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PremiumIdeaCell.identifier, for: indexPath) as! PremiumIdeaCell
             let analyticsIdea = analyticsIdeas[indexPath.row]
-            let mockIdea = Idea(id: analyticsIdea.id, ideaKey: nil, title: analyticsIdea.title, description: analyticsIdea.hook, format: analyticsIdea.format, hashtags: [], noveltyScore: Int(analyticsIdea.estimated_virality_score), videos: nil, expandedDescription: nil, liked: false)
-            cell.configure(idea: mockIdea)
+            cell.configure(with: analyticsIdea, isSaved: savedIdeaIDs.contains(analyticsIdea.id))
+            cell.delegate = self
+            return cell
         } else {
-            cell.configure(idea: ideas[indexPath.row])
+            // Fallback for old ideas. Also use PremiumIdeaCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PremiumIdeaCell.identifier, for: indexPath) as! PremiumIdeaCell
+            let idea = ideas[indexPath.row]
+            cell.configure(with: idea)
+            cell.delegate = self
+            return cell
         }
-        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         if !analyticsIdeas.isEmpty {
             let selectedIdea = analyticsIdeas[indexPath.row]
             let vc = AnalyticsIdeaDetailViewController()
@@ -132,6 +144,21 @@ extension InsightsViewController: UICollectionViewDelegate, UICollectionViewData
             let vc = storyboard.instantiateViewController(withIdentifier: "IdeaVC") as! ViewIdea
             vc.idea = selectedIdea
             navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+    
+    func didToggleLike(for cell: PremiumIdeaCell) {
+        guard let indexPath = insightIdeaView.indexPath(for: cell) else { return }
+        if !analyticsIdeas.isEmpty {
+            let idea = analyticsIdeas[indexPath.row]
+            if savedIdeaIDs.contains(idea.id) {
+                savedIdeaIDs.remove(idea.id)
+            } else {
+                savedIdeaIDs.insert(idea.id)
+                let generator = UIImpactFeedbackGenerator(style: .light)
+                generator.impactOccurred()
+            }
+            insightIdeaView.reloadItems(at: [indexPath])
         }
     }
 }
