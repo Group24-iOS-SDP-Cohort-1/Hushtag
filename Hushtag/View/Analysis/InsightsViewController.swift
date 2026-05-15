@@ -4,6 +4,7 @@ class InsightsViewController: UIViewController {
     
     @IBOutlet weak var insightIdeaView: UICollectionView!
     var ideas: [Idea] = []
+    var analyticsIdeas: [AnalyticsIdea] = []
     var selectedIdea: Idea?
     
     var audienceMetrics: AudienceMetrics?
@@ -50,7 +51,7 @@ class InsightsViewController: UIViewController {
                 let generatedIdeas = try await YouTubeController.shared.generateIdeas(payload: payload)
                 
                 await MainActor.run {
-                    self.ideas = generatedIdeas
+                    self.analyticsIdeas = generatedIdeas
                     self.insightIdeaView.reloadData()
                 }
             } catch {
@@ -103,24 +104,34 @@ extension InsightsViewController: UICollectionViewDelegate, UICollectionViewData
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return ideas.count
+        return analyticsIdeas.isEmpty ? ideas.count : analyticsIdeas.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideaCell", for: indexPath) as! IdeaCells
-        cell.configure(idea: ideas[indexPath.row])
+        if !analyticsIdeas.isEmpty {
+            let analyticsIdea = analyticsIdeas[indexPath.row]
+            let mockIdea = Idea(id: analyticsIdea.id, ideaKey: nil, title: analyticsIdea.title, description: analyticsIdea.hook, format: analyticsIdea.format, hashtags: [], noveltyScore: Int(analyticsIdea.estimated_virality_score), videos: nil, expandedDescription: nil, liked: false)
+            cell.configure(idea: mockIdea)
+        } else {
+            cell.configure(idea: ideas[indexPath.row])
+        }
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let selectedIdea = ideas[indexPath.row]
-        
-        let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "IdeaVC") as! ViewIdea
-        
-        vc.idea = selectedIdea
-        
-        navigationController?.pushViewController(vc, animated: true)
+        if !analyticsIdeas.isEmpty {
+            let selectedIdea = analyticsIdeas[indexPath.row]
+            let vc = AnalyticsIdeaDetailViewController()
+            vc.analyticsIdea = selectedIdea
+            navigationController?.pushViewController(vc, animated: true)
+        } else {
+            let selectedIdea = ideas[indexPath.row]
+            let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
+            let vc = storyboard.instantiateViewController(withIdentifier: "IdeaVC") as! ViewIdea
+            vc.idea = selectedIdea
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }

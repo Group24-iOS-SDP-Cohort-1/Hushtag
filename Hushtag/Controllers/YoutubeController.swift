@@ -37,7 +37,8 @@ struct YoutubeIdeaGeneratorPayload: Codable {
     let channel: ChannelMetricsPayload
 }
 
-struct GroqIdea: Codable {
+struct AnalyticsIdea: Codable, Identifiable {
+    var id: UUID = UUID()
     let title: String
     let hook: String
     let why_it_will_work: [String]
@@ -55,11 +56,15 @@ struct GroqIdea: Codable {
     let difficulty: String
     let estimated_ctr: Double
     let estimated_retention: Double
+    
+    enum CodingKeys: String, CodingKey {
+        case title, hook, why_it_will_work, target_emotion, format, estimated_virality_score, thumbnail_concept, opening_30_seconds, content_pillars, risks, difficulty, estimated_ctr, estimated_retention
+    }
 }
 
 struct YoutubeIdeaGeneratorResponse: Codable {
     let generatedAt: String
-    let ideas: [GroqIdea]
+    let ideas: [AnalyticsIdea]
 }
 
 final class YouTubeController {
@@ -207,7 +212,7 @@ final class YouTubeController {
             )
         }
         
-    func generateIdeas(payload: YoutubeIdeaGeneratorPayload) async throws -> [Idea] {
+    func generateIdeas(payload: YoutubeIdeaGeneratorPayload) async throws -> [AnalyticsIdea] {
         let session = try await client.auth.session
         
         let responseData: Data = try await client.functions.invoke(
@@ -224,20 +229,7 @@ final class YouTubeController {
         let decoder = JSONDecoder()
         let response = try decoder.decode(YoutubeIdeaGeneratorResponse.self, from: responseData)
         
-        return response.ideas.map { groqIdea in
-            Idea(
-                id: UUID(),
-                ideaKey: UUID().uuidString,
-                title: groqIdea.title,
-                description: groqIdea.hook,
-                format: groqIdea.format,
-                hashtags: [],
-                noveltyScore: Int(groqIdea.estimated_virality_score),
-                videos: nil,
-                expandedDescription: groqIdea.why_it_will_work.joined(separator: "\n"),
-                liked: false
-            )
-        }
+        return response.ideas
     }
 }
 
