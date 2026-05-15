@@ -13,6 +13,60 @@ struct AnalyticsRequestPayload: Codable {
     let endDate: String
 }
 
+struct ChannelMetricsPayload: Codable {
+    let id: String
+    let title: String
+    let niche: String?
+    let subscribers: Int
+    let postingFrequencyPerWeek: Int?
+    let audienceGeo: [String]?
+}
+
+struct GroqVideoPayload: Codable {
+    let title: String
+    let views: Int
+    let likes: Int
+    let comments: Int
+    let duration: Int
+    let publishedAt: String
+}
+
+struct YoutubeIdeaGeneratorPayload: Codable {
+    let analytics: AudienceMetrics?
+    let videos: [GroqVideoPayload]
+    let channel: ChannelMetricsPayload
+}
+
+struct AnalyticsIdea: Codable, Identifiable {
+    var id: UUID = UUID()
+    let title: String
+    let hook: String
+    let why_it_will_work: [String]
+    let target_emotion: String
+    let format: String
+    let estimated_virality_score: Double
+    struct ThumbnailConcept: Codable {
+        let text: String
+        let visual: String
+    }
+    let thumbnail_concept: ThumbnailConcept?
+    let opening_30_seconds: [String]
+    let content_pillars: [String]
+    let risks: [String]
+    let difficulty: String
+    let estimated_ctr: Double
+    let estimated_retention: Double
+    
+    enum CodingKeys: String, CodingKey {
+        case title, hook, why_it_will_work, target_emotion, format, estimated_virality_score, thumbnail_concept, opening_30_seconds, content_pillars, risks, difficulty, estimated_ctr, estimated_retention
+    }
+}
+
+struct YoutubeIdeaGeneratorResponse: Codable {
+    let generatedAt: String
+    let ideas: [AnalyticsIdea]
+}
+
 final class YouTubeController {
     
     static let shared = YouTubeController()
@@ -157,6 +211,26 @@ final class YouTubeController {
                 )
             )
         }
+        
+    func generateIdeas(payload: YoutubeIdeaGeneratorPayload) async throws -> [AnalyticsIdea] {
+        let session = try await client.auth.session
+        
+        let responseData: Data = try await client.functions.invoke(
+            "rapid-worker",
+            options: .init(
+                headers: [
+                    "Authorization": "Bearer \(session.accessToken)"
+                ],
+                body: payload
+            ),
+            decode: { data, _ in data }
+        )
+        
+        let decoder = JSONDecoder()
+        let response = try decoder.decode(YoutubeIdeaGeneratorResponse.self, from: responseData)
+        
+        return response.ideas
+    }
 }
 
 extension Notification.Name {
