@@ -12,6 +12,8 @@ class ViewIdea: UIViewController {
     var hasExistingScript: Bool = false
     var ideaMilestone: Int = 0
     var completedScriptTypes: Set<String> = []
+    var hasStartedConversation: Bool = false
+    var currentConversationID: UUID?
     override func viewDidLoad() {
         super.viewDidLoad()
         registerCell()
@@ -27,9 +29,12 @@ class ViewIdea: UIViewController {
         Task {
             do {
                 let script = try await ScriptedIdeasController().fetchScriptByIdeaId(ideaId: idea.id)
+                let conversation = try await ScriptedIdeasController().fetchConversation(for: idea.id)
 
                 DispatchQueue.main.async {
                     self.hasExistingScript = script != nil
+                    self.hasStartedConversation = conversation != nil
+                    self.currentConversationID = conversation?.id
 
                     if let script = script {
                         var types: Set<String> = []
@@ -62,27 +67,31 @@ class ViewIdea: UIViewController {
     
         }
     
-        func didTapDraftScript(for idea: Idea) {
+        func didTapDraftScript(for idea: Idea, conversationID: UUID? = nil) {
             let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
             guard let chatVC = storyboard.instantiateViewController(
                 withIdentifier: "Chatbot"
             ) as? Chatbot else { return }
             chatVC.ideaId = idea.id
-            chatVC.autoSendMessage = """
-    Create a short creator-style script for this video idea:
-    
-    Title: "\(idea.title)"
-    Description: "\(idea.description)"
-    
-    Structure:
-    1. Hook (1 sentence)
-    2. What happens (2–3 sentences)
-    3. Twist or surprise (1 sentence)
-    4. CTA (1 sentence)
-    
-    Tone: casual, friendly, modern.
-    Length: 15–20 seconds.
-    """
+            if let conversationID = conversationID {
+                chatVC.conversationID = conversationID
+            } else {
+                chatVC.autoSendMessage = """
+        Create a short creator-style script for this video idea:
+        
+        Title: "\(idea.title)"
+        Description: "\(idea.description)"
+        
+        Structure:
+        1. Hook (1 sentence)
+        2. What happens (2–3 sentences)
+        3. Twist or surprise (1 sentence)
+        4. CTA (1 sentence)
+        
+        Tone: casual, friendly, modern.
+        Length: 15–20 seconds.
+        """
+            }
             navigationController?.pushViewController(chatVC, animated: true)
         }
 
@@ -91,6 +100,8 @@ class ViewIdea: UIViewController {
             do {
                 let existing = try await ScriptedIdeasController()
                     .fetchScriptByIdeaId(ideaId: idea.id)
+                let existingConversation = try await ScriptedIdeasController()
+                    .fetchConversation(for: idea.id)
 
                 DispatchQueue.main.async {
                     if let existingScript = existing {
@@ -101,6 +112,8 @@ class ViewIdea: UIViewController {
                         ) as? ScriptedIdeas else { return }
                         vc.idea = existingScript
                         self.navigationController?.pushViewController(vc, animated: true)
+                    } else if let conversation = existingConversation {
+                        self.didTapDraftScript(for: idea, conversationID: conversation.id)
                     } else {
                         // No script yet — go to chatbot
                         self.didTapDraftScript(for: idea)
@@ -294,9 +307,18 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
                 [("script", ideaMilestone >= 1), ("title", ideaMilestone >= 2), ("description", ideaMilestone >= 3)]
                     .filter { $0.1 }.map { $0.0 }
             )
+            let title: String
+            if hasExistingScript {
+                title = "View Draft"
+            } else if hasStartedConversation {
+                title = "Continue"
+            } else {
+                title = "Draft Script"
+            }
+            
             cell.configure(
                 completedTypes: completedScriptTypes,
-                buttonTitle: hasExistingScript ? "View Draft" : "Draft Script"
+                buttonTitle: title
             )
             cell.onButtonTapped = { [weak self] in
                 guard let self = self, let idea = self.idea else { return }
