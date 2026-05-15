@@ -55,12 +55,13 @@ final class ProfileTableViewController: UITableViewController {
     private func showInstantProfile() {
         Task { @MainActor in
             do {
-                let session = try await SupabaseConfig.client.auth.session
-                let email = session.user.email ?? ""
+                let appUser = try await AuthManager.shared.getCurrentSession()
+                let email = appUser.email ?? ""
+                let name = appUser.fullName ?? email
                 
-                nameLabel.text = email
+                nameLabel.text = name
                 emailLabel.text = email
-                setInitialAvatar(from: email)
+                setInitialAvatar(from: name)
             } catch {
                 // user not logged in
             }
@@ -72,10 +73,11 @@ final class ProfileTableViewController: UITableViewController {
         Task {
             do {
                 let profile = try await profileController.fetchProfile()
+                let appUser = try await AuthManager.shared.getCurrentSession()
                 
                 await MainActor.run {
                     self.profile = profile
-                    self.updateUI(with: profile)
+                    self.updateUI(with: profile, appUser: appUser)
                 }
             } catch {
                 //print("Failed to fetch profile:", error)
@@ -84,15 +86,16 @@ final class ProfileTableViewController: UITableViewController {
     }
     
     
-    private func updateUI(with profile: Profile) {
-        nameLabel.text = profile.fullName
-        emailLabel.text = profile.email
+    private func updateUI(with profile: Profile, appUser: AppUser) {
+        let displayName = appUser.fullName ?? profile.fullName
+        nameLabel.text = displayName
+        emailLabel.text = appUser.email ?? profile.email
         
         if let urlString = profile.avatarURL,
            let url = URL(string: urlString) {
             loadImage(from: url)
         } else {
-            setInitialAvatar(from: profile.fullName)
+            setInitialAvatar(from: displayName)
         }
         
         if profile.isYouTubeConnected {
