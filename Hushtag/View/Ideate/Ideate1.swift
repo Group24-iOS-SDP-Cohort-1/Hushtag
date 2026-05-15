@@ -58,6 +58,8 @@ class Ideate1: UIViewController {
         self.ideas = syncLikedState(SessionManager.shared.personalizedIdeas)
         // Fetch recent scripts
         fetchRecentScripts()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchProfileButtonData), name: .didUpdateProfile, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -339,7 +341,7 @@ class Ideate1: UIViewController {
         }
     }
     
-    private func fetchProfileButtonData() {
+    @objc private func fetchProfileButtonData() {
 
         profileButton.configuration = nil
 
@@ -351,65 +353,41 @@ class Ideate1: UIViewController {
 
         profileButton.clipsToBounds = true
         profileButton.layer.cornerRadius = 20
+        profileButton.layer.borderWidth = 1
+        profileButton.layer.borderColor = UIColor.systemGray4.cgColor
 
         profileButton.imageEdgeInsets = .zero
+        profileButton.contentEdgeInsets = .zero
 
         Task {
             do {
+                let (profile, image) = try await SessionManager.shared.getProfileAndAvatar()
 
-                let profile = try await profileController.fetchProfile()
-
-                if let urlString = profile.avatarURL,
-                   let url = URL(string: urlString) {
-
-                    URLSession.shared.dataTask(with: url) { data, _, _ in
-
-                        guard let data,
-                              let image = UIImage(data: data) else { return }
-
-                        DispatchQueue.main.async {
-
-                            self.profileButton.setImage(
-                                image.withRenderingMode(.alwaysOriginal),
-                                for: .normal
-                            )
-
-                            self.profileButton.setTitle("", for: .normal)
-                            
-                            self.profileButton.contentHorizontalAlignment = .fill
-                            self.profileButton.contentVerticalAlignment = .fill
-
-                            self.profileButton.imageView?.contentMode = .scaleAspectFill
-                            self.profileButton.imageView?.clipsToBounds = true
-
-                            self.profileButton.backgroundColor = .clear
-                        }
-
-                    }.resume()
-
-                } else {
-
-                    DispatchQueue.main.async {
-
-                        let initial = profile.fullName.first
-                            .map { String($0).uppercased() } ?? "U"
+                await MainActor.run {
+                    if let image = image {
+                        self.profileButton.setImage(image.withRenderingMode(.alwaysOriginal), for: .normal)
+                        self.profileButton.setBackgroundImage(nil, for: .normal)
+                        self.profileButton.setTitle("", for: .normal)
+                        
+                        self.profileButton.contentHorizontalAlignment = .fill
+                        self.profileButton.contentVerticalAlignment = .fill
+                        self.profileButton.imageView?.contentMode = .scaleAspectFill
+                        self.profileButton.backgroundColor = .clear
+                        self.profileButton.imageView?.layer.transform = CATransform3DIdentity
+                    } else {
+                        let initial = profile.fullName.first.map { String($0).uppercased() } ?? "U"
 
                         self.profileButton.setImage(nil, for: .normal)
-
+                        self.profileButton.setBackgroundImage(nil, for: .normal)
                         self.profileButton.setTitle(initial, for: .normal)
                         
                         self.profileButton.contentHorizontalAlignment = .center
                         self.profileButton.contentVerticalAlignment = .center
-
                         self.profileButton.backgroundColor = UIColor.accent
-
                         self.profileButton.setTitleColor(.white, for: .normal)
-
-                        self.profileButton.titleLabel?.font =
-                            UIFont.systemFont(ofSize: 18, weight: .semibold)
+                        self.profileButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
                     }
                 }
-
             } catch {
                 print("Failed to fetch profile:", error)
             }

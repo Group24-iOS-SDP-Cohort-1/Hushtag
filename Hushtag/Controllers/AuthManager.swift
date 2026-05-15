@@ -23,11 +23,11 @@ class AuthManager{
         let metadata = session.user.userMetadata
         
         // Extract the full name from the metadata
-        let fullName: String?
-        if case .string(let name) = metadata["full_name"] {
+        var fullName: String? = nil
+        if case .string(let name) = metadata["full_name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
             fullName = name
-        } else {
-            fullName = nil
+        } else if case .string(let name) = metadata["name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
+            fullName = name
         }
         
         return AppUser(uid: session.user.id.uuidString, email: session.user.email, fullName: fullName)
@@ -54,11 +54,11 @@ class AuthManager{
         let session = try await client.auth.signIn(email: email, password: password)
         
         let metadata = session.user.userMetadata
-        let fullName: String?
-        if case .string(let name) = metadata["full_name"] {
+        var fullName: String? = nil
+        if case .string(let name) = metadata["full_name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
             fullName = name
-        } else {
-            fullName = nil
+        } else if case .string(let name) = metadata["name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
+            fullName = name
         }
         
         return AppUser(uid: session.user.id.uuidString, email: session.user.email, fullName: fullName)
@@ -69,11 +69,11 @@ class AuthManager{
         let session = try await client.auth.signInWithIdToken(credentials: .init(provider: .google, idToken: idToken))
         
         let metadata = session.user.userMetadata
-        let fullName: String?
-        if case .string(let name) = metadata["full_name"] {
+        var fullName: String? = nil
+        if case .string(let name) = metadata["full_name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
             fullName = name
-        } else {
-            fullName = nil
+        } else if case .string(let name) = metadata["name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
+            fullName = name
         }
         
         return AppUser(uid: session.user.id.uuidString, email: session.user.email, fullName: fullName)

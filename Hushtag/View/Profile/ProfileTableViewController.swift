@@ -11,7 +11,6 @@ final class ProfileTableViewController: UITableViewController {
     @IBOutlet weak var youtubeStatusDot: UIView!
     
     
-    private let profileController = ProfileController()
     private var profile: Profile?
     
     
@@ -19,8 +18,22 @@ final class ProfileTableViewController: UITableViewController {
         super.viewDidLoad()
         
         setupUI()
-        showInstantProfile()
+        
+        if let cachedProfile = SessionManager.shared.currentProfile {
+            self.profile = cachedProfile
+            Task {
+                let appUser = try? await AuthManager.shared.getCurrentSession()
+                await MainActor.run {
+                    updateUI(with: cachedProfile, image: SessionManager.shared.profileImageCache, appUser: appUser)
+                }
+            }
+        } else {
+            showInstantProfile()
+        }
+        
         fetchProfile()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleProfileUpdate), name: .didUpdateProfile, object: nil)
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             title: "Edit",
@@ -57,11 +70,11 @@ final class ProfileTableViewController: UITableViewController {
             do {
                 let appUser = try await AuthManager.shared.getCurrentSession()
                 let email = appUser.email ?? ""
-                let name = appUser.fullName ?? email
+                let name = appUser.fullName ?? "Add your name"
                 
                 nameLabel.text = name
                 emailLabel.text = email
-                setInitialAvatar(from: name)
+                setInitialAvatar(from: appUser.fullName ?? email)
             } catch {
                 // user not logged in
             }
@@ -69,15 +82,21 @@ final class ProfileTableViewController: UITableViewController {
     }
     
     
-    private func fetchProfile() {
+    @objc private func handleProfileUpdate() {
+        fetchProfile(forceRefresh: false)
+    }
+    
+    private func fetchProfile(forceRefresh: Bool = false) {
         Task {
             do {
-                let profile = try await profileController.fetchProfile()
-                let appUser = try await AuthManager.shared.getCurrentSession()
+                async let profileTask = SessionManager.shared.getProfileAndAvatar(forceRefresh: forceRefresh)
+                async let userTask = AuthManager.shared.getCurrentSession()
+                
+                let (profileAndAvatar, appUser) = try await (profileTask, userTask)
                 
                 await MainActor.run {
-                    self.profile = profile
-                    self.updateUI(with: profile, appUser: appUser)
+                    self.profile = profileAndAvatar.0
+                    self.updateUI(with: profileAndAvatar.0, image: profileAndAvatar.1, appUser: appUser)
                 }
             } catch {
                 //print("Failed to fetch profile:", error)
@@ -86,13 +105,18 @@ final class ProfileTableViewController: UITableViewController {
     }
     
     
-    private func updateUI(with profile: Profile, appUser: AppUser) {
-        let displayName = appUser.fullName ?? profile.fullName
-        nameLabel.text = displayName
-        emailLabel.text = appUser.email ?? profile.email
+    private func updateUI(with profile: Profile, image: UIImage?, appUser: AppUser?) {
+        var displayName = appUser?.fullName ?? ""
+        if displayName.trimmingCharacters(in: .whitespaces).isEmpty {
+            displayName = "Add your name"
+        }
         
-        if let urlString = profile.avatarURL,
-           let url = URL(string: urlString) {
+        nameLabel.text = displayName
+        emailLabel.text = profile.email
+        
+        if let image = image {
+            self.profileImageView.image = image
+        } else if let urlString = profile.avatarURL, let url = URL(string: urlString) {
             loadImage(from: url)
         } else {
             setInitialAvatar(from: displayName)
@@ -121,6 +145,7 @@ final class ProfileTableViewController: UITableViewController {
             
             DispatchQueue.main.async {
                 self.profileImageView.image = image
+                SessionManager.shared.profileImageCache = image
             }
         }.resume()
     }
@@ -180,7 +205,7 @@ final class ProfileTableViewController: UITableViewController {
                 try await AuthManager.shared.signOut()
                 //print("User signed out successfully")
                 
-                
+                SessionManager.shared.clearSession()
                 self.navigateToLoginScreen()
                 
             } catch {
@@ -253,7 +278,7 @@ final class ProfileTableViewController: UITableViewController {
                 self.forceClearLocalSession()
             }
             
-            
+            SessionManager.shared.clearSession()
             self.navigateToLoginScreen()
         }
     }

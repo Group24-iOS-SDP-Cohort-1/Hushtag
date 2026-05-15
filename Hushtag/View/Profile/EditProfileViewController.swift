@@ -22,15 +22,21 @@ final class EditProfileViewController: UIViewController,
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        nameTextField.text = ""
+        nameTextField.text = profile?.fullName ?? ""
         
         Task { @MainActor in
-            if let appUser = try? await AuthManager.shared.getCurrentSession() {
-                self.nameTextField.text = appUser.fullName
+            if let appUser = try? await AuthManager.shared.getCurrentSession(),
+               let fullName = appUser.fullName,
+               !fullName.isEmpty {
+                self.nameTextField.text = fullName
             }
         }
         
-        loadAvatar()
+        if let cachedImage = SessionManager.shared.profileImageCache {
+            self.profileImageView.image = cachedImage
+        } else {
+            loadAvatar()
+        }
         setupImageTap()
     }
     
@@ -104,7 +110,7 @@ final class EditProfileViewController: UIViewController,
                 }
                 
                 
-                _ = try await profileController.updateProfile(
+                let updatedProfile = try await profileController.updateProfile(
                     fullName: fullName,
                     avatarURL: avatarURLToSave
                 )
@@ -112,6 +118,7 @@ final class EditProfileViewController: UIViewController,
                 try await AuthManager.shared.updateFullName(newName: fullName)
                 
                 await MainActor.run {
+                    SessionManager.shared.refreshProfileAndAvatar(with: updatedProfile, image: self.selectedImage)
                     self.delegate?.profileDidUpdate()
                     self.dismiss(animated: true)
                 }

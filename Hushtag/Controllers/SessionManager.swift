@@ -1,6 +1,7 @@
 import Foundation
 import Supabase
 import Combine
+import UIKit
 
 class SessionManager: ObservableObject {
     
@@ -11,6 +12,9 @@ class SessionManager: ObservableObject {
     @Published var userPreferences: UserPreference?
     
     @Published var personalizedIdeas: [Idea] = []
+    
+    var currentProfile: Profile?
+    var profileImageCache: UIImage?
     
     func restoreSession() async {
         do {
@@ -107,5 +111,41 @@ class SessionManager: ObservableObject {
     func clearSession() {
         currentUser = nil
         userPreferences = nil
+        currentProfile = nil
+        profileImageCache = nil
     }
+    
+    func refreshProfileAndAvatar(with profile: Profile, image: UIImage?) {
+        self.currentProfile = profile
+        if let image = image {
+            self.profileImageCache = image
+        }
+        NotificationCenter.default.post(name: .didUpdateProfile, object: nil)
+    }
+    
+    func getProfileAndAvatar(forceRefresh: Bool = false) async throws -> (Profile, UIImage?) {
+        if !forceRefresh, let profile = currentProfile {
+            return (profile, profileImageCache)
+        }
+        
+        let profile = try await ProfileController().fetchProfile()
+        self.currentProfile = profile
+        
+        if let urlString = profile.avatarURL, let url = URL(string: urlString) {
+            do {
+                let (data, _) = try await URLSession.shared.data(from: url)
+                self.profileImageCache = UIImage(data: data)
+            } catch {
+                print("Failed to load avatar image data:", error)
+            }
+        } else {
+            self.profileImageCache = nil
+        }
+        
+        return (profile, self.profileImageCache)
+    }
+}
+
+extension Notification.Name {
+    static let didUpdateProfile = Notification.Name("didUpdateProfile")
 }
