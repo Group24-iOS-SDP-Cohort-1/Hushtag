@@ -310,7 +310,7 @@ final class ScriptedIdeasController {
         let messages = try await fetchMessages(for: conversationID)
         
         // Wait until meaningful context exists
-        guard messages.count >= 3 else { return }
+        guard messages.count >= 2 else { return }
         
         // Generate title
         let generatedTitle = try await generateConversationTitleWithApple(
