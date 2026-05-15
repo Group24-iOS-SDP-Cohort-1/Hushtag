@@ -6,6 +6,9 @@ class InsightsViewController: UIViewController {
     var ideas: [Idea] = []
     var selectedIdea: Idea?
     
+    var audienceMetrics: AudienceMetrics?
+    var latestContent: [LatestContent] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         insightIdeaView.delegate = self
@@ -13,14 +16,56 @@ class InsightsViewController: UIViewController {
         insightIdeaView.register(UINib(nibName: "IdeaCells", bundle: nil), forCellWithReuseIdentifier: "ideaCell")
         insightIdeaView.setCollectionViewLayout(generateLayout(), animated: true)
         Task {
-            OpaqueLoadingScreen.shared.show(message: "Fetching Ideas")
-            await SessionManager.shared.restoreSession()
-            
             await MainActor.run {
-                self.ideas = SessionManager.shared.personalizedIdeas
-                self.insightIdeaView.reloadData()
+                OpaqueLoadingScreen.shared.show(message: "Generating Video Ideas...")
             }
-            OpaqueLoadingScreen.shared.hide()
+            
+            do {
+                let channel = ChannelMetricsPayload(
+                    id: SessionManager.shared.currentUser?.uid ?? UUID().uuidString,
+                    title: "My Channel",
+                    niche: SessionManager.shared.userPreferences?.niche.first?.rawValue ?? "General",
+                    subscribers: audienceMetrics?.subscribers ?? 0,
+                    postingFrequencyPerWeek: 3,
+                    audienceGeo: []
+                )
+                
+                let videos = latestContent.map { video in
+                    GroqVideoPayload(
+                        title: video.title,
+                        views: video.views,
+                        likes: video.likes,
+                        comments: 0,
+                        duration: video.duration_seconds,
+                        publishedAt: ISO8601DateFormatter().string(from: video.published_at)
+                    )
+                }
+                
+                let payload = YoutubeIdeaGeneratorPayload(
+                    analytics: audienceMetrics,
+                    videos: videos,
+                    channel: channel
+                )
+                
+                let generatedIdeas = try await YouTubeController.shared.generateIdeas(payload: payload)
+                
+                await MainActor.run {
+                    self.ideas = generatedIdeas
+                    self.insightIdeaView.reloadData()
+                }
+            } catch {
+                print("Failed to generate ideas:", error)
+                // Fallback
+                await SessionManager.shared.restoreSession()
+                
+                await MainActor.run {
+                    self.ideas = SessionManager.shared.personalizedIdeas
+                    self.insightIdeaView.reloadData()
+                }
+            }
+            await MainActor.run {
+                OpaqueLoadingScreen.shared.hide()
+            }
         }
     }
     

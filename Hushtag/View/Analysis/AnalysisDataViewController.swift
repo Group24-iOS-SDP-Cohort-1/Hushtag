@@ -427,6 +427,13 @@ class AnalysisDataViewController: UIViewController {
         
         return week
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segue.destination as? InsightsViewController {
+            destination.audienceMetrics = self.audienceMetrics.first
+            destination.latestContent = self.latestContent
+        }
+    }
 }
 
 extension AnalysisDataViewController: UICollectionViewDataSource {
