@@ -23,7 +23,13 @@ final class EditProfileViewController: UIViewController,
         super.viewDidLoad()
         
         nameTextField.text = profile?.fullName
-        loadAvatar()
+        
+        if let cachedImage = SessionManager.shared.profileImageCache {
+            self.profileImageView.image = cachedImage
+        } else {
+            loadAvatar()
+        }
+        
         setupImageTap()
     }
     
@@ -97,12 +103,13 @@ final class EditProfileViewController: UIViewController,
                 }
                 
                 
-                _ = try await profileController.updateProfile(
+                let updatedProfile = try await profileController.updateProfile(
                     fullName: fullName,
                     avatarURL: avatarURLToSave
                 )
                 
                 await MainActor.run {
+                    SessionManager.shared.refreshProfileAndAvatar(with: updatedProfile, image: self.selectedImage)
                     self.delegate?.profileDidUpdate()
                     self.dismiss(animated: true)
                 }

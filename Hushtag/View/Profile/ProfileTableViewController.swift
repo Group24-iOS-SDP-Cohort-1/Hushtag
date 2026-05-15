@@ -19,8 +19,17 @@ final class ProfileTableViewController: UITableViewController {
         super.viewDidLoad()
         
         setupUI()
-        showInstantProfile()
+        
+        if let cachedProfile = SessionManager.shared.currentProfile {
+            self.profile = cachedProfile
+            updateUI(with: cachedProfile, image: SessionManager.shared.profileImageCache)
+        } else {
+            showInstantProfile()
+        }
+        
         fetchProfile()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(handleProfileUpdate), name: .didUpdateProfile, object: nil)
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             title: "Edit",
@@ -68,14 +77,18 @@ final class ProfileTableViewController: UITableViewController {
     }
     
     
-    private func fetchProfile() {
+    @objc private func handleProfileUpdate() {
+        fetchProfile(forceRefresh: false)
+    }
+    
+    private func fetchProfile(forceRefresh: Bool = false) {
         Task {
             do {
-                let profile = try await profileController.fetchProfile()
+                let (profile, image) = try await SessionManager.shared.getProfileAndAvatar(forceRefresh: forceRefresh)
                 
                 await MainActor.run {
                     self.profile = profile
-                    self.updateUI(with: profile)
+                    self.updateUI(with: profile, image: image)
                 }
             } catch {
                 //print("Failed to fetch profile:", error)
@@ -84,12 +97,13 @@ final class ProfileTableViewController: UITableViewController {
     }
     
     
-    private func updateUI(with profile: Profile) {
+    private func updateUI(with profile: Profile, image: UIImage?) {
         nameLabel.text = profile.fullName
         emailLabel.text = profile.email
         
-        if let urlString = profile.avatarURL,
-           let url = URL(string: urlString) {
+        if let image = image {
+            self.profileImageView.image = image
+        } else if let urlString = profile.avatarURL, let url = URL(string: urlString) {
             loadImage(from: url)
         } else {
             setInitialAvatar(from: profile.fullName)
@@ -118,6 +132,7 @@ final class ProfileTableViewController: UITableViewController {
             
             DispatchQueue.main.async {
                 self.profileImageView.image = image
+                SessionManager.shared.profileImageCache = image
             }
         }.resume()
     }
