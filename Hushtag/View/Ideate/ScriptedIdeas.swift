@@ -373,7 +373,7 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
                 for: indexPath
             ) as! ViewScriptsCell
             
-           // setupTagDealMenu(for: cell)
+            setupTagDealMenu(for: cell)
 
             return cell
 
@@ -453,17 +453,24 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     private func setupTagDealMenu(for cell: ViewScriptsCell) {
-        let actions = allDeals.map { deal in
-            let isTagged = taggedDealIds.contains(deal.id)
-            let actionText = deal.name
-            
-            return UIAction(
-                title: actionText,
-                state: isTagged ? .on : .off,
-                handler: { [weak self] _ in
-                    self?.handleTagDealToggled(deal: deal, isCurrentlyTagged: isTagged)
-                }
-            )
+        let actions: [UIMenuElement]
+        
+        if allDeals.isEmpty {
+            let noDealsAction = UIAction(title: "No Deals Available", attributes: .disabled) { _ in }
+            actions = [noDealsAction]
+        } else {
+            actions = allDeals.map { deal in
+                let isTagged = taggedDealIds.contains(deal.id)
+                let actionText = deal.name
+                
+                return UIAction(
+                    title: actionText,
+                    state: isTagged ? .on : .off,
+                    handler: { [weak self] _ in
+                        self?.handleTagDealToggled(deal: deal, isCurrentlyTagged: isTagged)
+                    }
+                )
+            }
         }
         
         let menu = UIMenu(title: "Select Deal", children: actions)
