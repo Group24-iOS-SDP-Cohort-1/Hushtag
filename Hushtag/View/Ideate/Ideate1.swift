@@ -14,7 +14,7 @@ class Ideate1: UIViewController {
     private let scriptsController = ScriptedIdeasController()
     @IBOutlet weak var collectionView: UICollectionView!
     
-    @IBOutlet weak var profileButton: UIButton!
+    @IBOutlet weak var profileImageView: UIImageView!
     private let profileController = ProfileController()
     
     enum SectionType {
@@ -29,7 +29,9 @@ class Ideate1: UIViewController {
         if !likedIdeas.isEmpty {
             list.append(.liked)
         }
-        list.append(.recent)
+        if !recentScripts.isEmpty {
+            list.append(.recent)
+        }
         list.append(.suggested)
         return list
     }
@@ -56,6 +58,8 @@ class Ideate1: UIViewController {
         self.ideas = syncLikedState(SessionManager.shared.personalizedIdeas)
         // Fetch recent scripts
         fetchRecentScripts()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchProfileButtonData), name: .didUpdateProfile, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -337,81 +341,54 @@ class Ideate1: UIViewController {
         }
     }
     
-    private func fetchProfileButtonData() {
-
-        profileButton.configuration = nil
-
-        profileButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            profileButton.widthAnchor.constraint(equalToConstant: 40),
-            profileButton.heightAnchor.constraint(equalToConstant: 40)
-        ])
-
-        profileButton.clipsToBounds = true
-        profileButton.layer.cornerRadius = 20
-
-        profileButton.imageEdgeInsets = .zero
+    @objc private func fetchProfileButtonData() {
+        profileImageView.clipsToBounds = true
+        profileImageView.layer.cornerRadius = 20
+        profileImageView.contentMode = .scaleAspectFill
+        profileImageView.isUserInteractionEnabled = true
 
         Task {
             do {
+                let (profile, image) = try await SessionManager.shared.getProfileAndAvatar()
 
-                let profile = try await profileController.fetchProfile()
-
-                if let urlString = profile.avatarURL,
-                   let url = URL(string: urlString) {
-
-                    URLSession.shared.dataTask(with: url) { data, _, _ in
-
-                        guard let data,
-                              let image = UIImage(data: data) else { return }
-
-                        DispatchQueue.main.async {
-
-                            self.profileButton.setImage(
-                                image.withRenderingMode(.alwaysOriginal),
-                                for: .normal
-                            )
-
-                            self.profileButton.setTitle("", for: .normal)
-                            
-                            self.profileButton.contentHorizontalAlignment = .fill
-                            self.profileButton.contentVerticalAlignment = .fill
-
-                            self.profileButton.imageView?.contentMode = .scaleAspectFill
-                            self.profileButton.imageView?.clipsToBounds = true
-
-                            self.profileButton.backgroundColor = .clear
-                        }
-
-                    }.resume()
-
-                } else {
-
-                    DispatchQueue.main.async {
-
-                        let initial = profile.fullName.first
-                            .map { String($0).uppercased() } ?? "U"
-
-                        self.profileButton.setImage(nil, for: .normal)
-
-                        self.profileButton.setTitle(initial, for: .normal)
+                await MainActor.run {
+                    if let image = image {
+                        self.profileImageView.image = image
+                        self.profileImageView.backgroundColor = .clear
+                    } else {
+                        let initial = profile.fullName.first.map { String($0).uppercased() } ?? "U"
                         
-                        self.profileButton.contentHorizontalAlignment = .center
-                        self.profileButton.contentVerticalAlignment = .center
-
-                        self.profileButton.backgroundColor = UIColor.accent
-
-                        self.profileButton.setTitleColor(.white, for: .normal)
-
-                        self.profileButton.titleLabel?.font =
-                            UIFont.systemFont(ofSize: 18, weight: .semibold)
+                        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 40, height: 40))
+                        let img = renderer.image { ctx in
+                            let attributes: [NSAttributedString.Key: Any] = [
+                                .font: UIFont.systemFont(ofSize: 18, weight: .semibold),
+                                .foregroundColor: UIColor.white
+                            ]
+                            let string = NSAttributedString(string: initial, attributes: attributes)
+                            let stringSize = string.size()
+                            let rect = CGRect(
+                                x: (40 - stringSize.width) / 2,
+                                y: (40 - stringSize.height) / 2,
+                                width: stringSize.width,
+                                height: stringSize.height
+                            )
+                            string.draw(in: rect)
+                        }
+                        
+                        self.profileImageView.image = img
+                        self.profileImageView.backgroundColor = UIColor.accent
                     }
                 }
-
             } catch {
                 print("Failed to fetch profile:", error)
             }
         }
+    }
+    
+    @IBAction func profileTapped(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "ProfileNew", bundle: nil)
+        let destVC = storyboard.instantiateViewController(withIdentifier: "ProfileVC")
+        self.navigationController?.pushViewController(destVC, animated: true)
     }
 }
 

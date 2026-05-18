@@ -30,7 +30,7 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
     // Add this new property alongside milestoneDots/milestoneLabels
     private var milestoneCheckmarks: [UIImageView] = []
 
-    private let dotSize: CGFloat = 20
+    private let dotSize: CGFloat = 26
     private let trackHeight: CGFloat = 3
     private let horizontalInset: CGFloat = 16
     // Update trackHeight
@@ -103,7 +103,7 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
             milestoneDots.append(dot)
 
             // Checkmark inside dot
-            let config = UIImage.SymbolConfiguration(pointSize: 13, weight: .semibold)
+            let config = UIImage.SymbolConfiguration(pointSize: 11, weight: .semibold)
             let checkmark = UIImageView(image: UIImage(systemName: "checkmark", withConfiguration: config))
             checkmark.tintColor = .white
             checkmark.contentMode = .scaleAspectFit
@@ -129,10 +129,8 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
 
                 checkmark.centerXAnchor.constraint(equalTo: dot.centerXAnchor),
                 checkmark.centerYAnchor.constraint(equalTo: dot.centerYAnchor),
-                checkmark.widthAnchor.constraint(equalToConstant: 14),
-                checkmark.heightAnchor.constraint(equalToConstant: 14),
 
-                label.topAnchor.constraint(equalTo: dot.bottomAnchor, constant: 8),
+                label.topAnchor.constraint(equalTo: dot.bottomAnchor, constant: 6),
                 label.centerXAnchor.constraint(equalTo: dot.centerXAnchor),
                 label.widthAnchor.constraint(equalToConstant: 80),
             ])
@@ -202,7 +200,7 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
 
             UIView.animate(withDuration: 0.25) {
                 dot.layer.borderColor = isActive ? UIColor.accent.cgColor : UIColor.systemGray3.cgColor
-                dot.backgroundColor = isActive ? UIColor.accent : .clear
+                dot.backgroundColor = isActive ? UIColor.accent : UIColor.systemGray5
                 self.milestoneCheckmarks[index].alpha = isActive ? 1 : 0
                 self.milestoneLabels[index].textColor = isActive ? UIColor.accent : .systemGray
                 self.milestoneLabels[index].font = UIFont.systemFont(

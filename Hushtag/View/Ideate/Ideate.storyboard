@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="j7i-eP-7Qk">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24765" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="j7i-eP-7Qk">
     <device id="retina6_12" orientation="portrait" appearance="dark"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24743"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -121,26 +121,33 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="Z17-7z-gvD">
-                        <barButtonItem key="rightBarButtonItem" id="w3V-OA-a1P">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="gFr-h8-u3O">
-                                <rect key="frame" x="337" y="9" width="36" height="26"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" image="person.2.circle" catalog="system"/>
+                        <barButtonItem key="rightBarButtonItem" id="profileBarBtn">
+                            <imageView key="customView" clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="profileImageView">
+                                <rect key="frame" x="19.999999999999986" y="4.0000000000000009" width="353" height="36"/>
+                                <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="hProfileImg"/>
+                                    <constraint firstAttribute="width" constant="40" id="wProfileImg"/>
+                                </constraints>
                                 <connections>
-                                    <segue destination="ePC-98-eZG" kind="show" id="EVA-gX-Zk9"/>
+                                    <outletCollection property="gestureRecognizers" destination="tapProfileGesture" appends="YES" id="tapConn"/>
                                 </connections>
-                            </button>
+                            </imageView>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="Mxq-Iu-w0r" id="YeI-Ho-aaB"/>
-                        <outlet property="profileButton" destination="gFr-h8-u3O" id="S3L-Iv-1SA"/>
+                        <outlet property="profileImageView" destination="profileImageView" id="profileImgOutlet"/>
                         <segue destination="Yb8-13-5gt" kind="show" identifier="goToScript" animates="NO" id="rsD-Te-pVV"/>
                         <segue destination="EIE-es-Oql" kind="show" id="ndu-bI-26X"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="tapProfileGesture">
+                    <connections>
+                        <action selector="profileTapped:" destination="Y6W-OH-hqX" id="tapAction"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="3209.9236641221373" y="409.85915492957747"/>
         </scene>
@@ -148,27 +155,40 @@
         <scene sceneID="QWX-XP-l6H">
             <objects>
                 <viewController storyboardIdentifier="AfterSearchIdeasViewController" id="EIE-es-Oql" customClass="AfterSearchIdeasViewController" customModule="Hushtag" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="OGz-EZ-DzP">
+                    <view key="view" contentMode="scaleToFill" id="AfterSearchRootView">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="OGz-EZ-DzP">
+                                <rect key="frame" x="10" y="0.0" width="373" height="852"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="uf0-Do-8eL">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="vRx-bG-XEh">
+                                        <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="faE-AA-O0X">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="AfterSearchSafe"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="uf0-Do-8eL">
-                            <size key="itemSize" width="128" height="128"/>
-                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                        </collectionViewFlowLayout>
-                        <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="vRx-bG-XEh">
-                                <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="faE-AA-O0X">
-                                    <rect key="frame" x="0.0" y="0.0" width="127.99999999999997" height="128"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </collectionViewCellContentView>
-                            </collectionViewCell>
-                        </cells>
-                    </collectionView>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="OGz-EZ-DzP" secondAttribute="bottom" id="btmAfterSearch"/>
+                            <constraint firstItem="OGz-EZ-DzP" firstAttribute="leading" secondItem="AfterSearchSafe" secondAttribute="leading" constant="10" id="ldAfterSearch"/>
+                            <constraint firstItem="OGz-EZ-DzP" firstAttribute="top" secondItem="AfterSearchRootView" secondAttribute="top" id="topAfterSearch"/>
+                            <constraint firstItem="AfterSearchSafe" firstAttribute="trailing" secondItem="OGz-EZ-DzP" secondAttribute="trailing" constant="10" id="trlAfterSearch"/>
+                        </constraints>
+                    </view>
                     <navigationItem key="navigationItem" title="Search Idea" id="IaK-iF-727"/>
                     <connections>
                         <outlet property="collectionView" destination="OGz-EZ-DzP" id="yuF-Ej-qZy"/>
@@ -255,29 +275,43 @@
                                         </connections>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="buttons" id="emt-Rh-LvP" customClass="ViewScriptsCell" customModule="Hushtag" customModuleProvider="target">
-                                        <rect key="frame" x="183.33333333333334" y="0.0" width="128" height="128"/>
+                                        <rect key="frame" x="183.33333333333334" y="0.0" width="128.00000000000003" height="128"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="V9d-3X-VfP">
-                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="128.00000000000003" height="128"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sb4-ha-PpJ">
-                                                    <rect key="frame" x="-15.666666666666671" y="46.666666666666657" width="159.33333333333337" height="35"/>
-                                                    <color key="tintColor" name="AccentColor"/>
-                                                    <state key="normal" title="Button"/>
-                                                    <buttonConfiguration key="configuration" style="filled" title="Continue Drafting">
-                                                        <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    </buttonConfiguration>
-                                                    <connections>
-                                                        <action selector="draftClick:" destination="Yb8-13-5gt" eventType="touchUpInside" id="jYK-pt-JgK"/>
-                                                    </connections>
-                                                </button>
+                                                <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="sTq-yE-fFh">
+                                                    <rect key="frame" x="-99.666666666666671" y="47" width="327.33333333333331" height="34.333333333333343"/>
+                                                    <subviews>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sb4-ha-PpJ">
+                                                            <rect key="frame" x="0.0" y="0.0" width="158.66666666666666" height="34.333333333333336"/>
+                                                            <color key="tintColor" name="AccentColor"/>
+                                                            <state key="normal" title="Button"/>
+                                                            <buttonConfiguration key="configuration" style="filled" title="Continue Drafting">
+                                                                <color key="baseForegroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            </buttonConfiguration>
+                                                            <connections>
+                                                                <action selector="draftClick:" destination="Yb8-13-5gt" eventType="touchUpInside" id="jYK-pt-JgK"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tag-ha-PpJ">
+                                                            <rect key="frame" x="168.66666666666669" y="0.0" width="158.66666666666669" height="34.333333333333336"/>
+                                                            <color key="tintColor" name="AccentColor"/>
+                                                            <state key="normal" title="Button"/>
+                                                            <buttonConfiguration key="configuration" style="plain" title="Tag Deal"/>
+                                                        </button>
+                                                    </subviews>
+                                                </stackView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="sb4-ha-PpJ" firstAttribute="centerX" secondItem="V9d-3X-VfP" secondAttribute="centerX" id="MoG-SJ-sie"/>
-                                                <constraint firstItem="sb4-ha-PpJ" firstAttribute="centerY" secondItem="V9d-3X-VfP" secondAttribute="centerY" id="aRy-gE-Fg3"/>
+                                                <constraint firstItem="sTq-yE-fFh" firstAttribute="centerX" secondItem="V9d-3X-VfP" secondAttribute="centerX" id="MoG-ST-sie"/>
+                                                <constraint firstItem="sTq-yE-fFh" firstAttribute="centerY" secondItem="V9d-3X-VfP" secondAttribute="centerY" id="aRy-sT-Fg3"/>
                                             </constraints>
                                         </collectionViewCellContentView>
+                                        <connections>
+                                            <outlet property="tagDealButton" destination="tag-ha-PpJ" id="tag-out-let"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
@@ -344,7 +378,6 @@
     </scenes>
     <resources>
         <image name="ellipsis.circle" catalog="system" width="128" height="123"/>
-        <image name="person.2.circle" catalog="system" width="128" height="123"/>
         <image name="wand.and.rays" catalog="system" width="128" height="123"/>
         <image name="wand.and.sparkles" catalog="system" width="128" height="112"/>
         <namedColor name="AccentColor">

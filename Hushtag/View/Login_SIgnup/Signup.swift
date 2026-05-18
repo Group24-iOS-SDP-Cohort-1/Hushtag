@@ -9,9 +9,11 @@ class Signup: UIViewController {
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var fullNameTextField: UITextField!
     @IBOutlet weak var appleButton: UIButton!
     @IBOutlet weak var facebookButton: UIButton!
     @IBOutlet weak var googleButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -21,6 +23,7 @@ class Signup: UIViewController {
         styleTextField(emailTextField)
         styleTextField(passwordTextField)
         styleTextField(confirmPasswordTextField)
+        styleTextField(fullNameTextField)
         
         enableKeyboardDismissOnTap()
         
@@ -49,7 +52,9 @@ class Signup: UIViewController {
         
         guard let email = emailTextField.text,
               let password = passwordTextField.text,
-              let confirmPassword = confirmPasswordTextField.text else {
+              let confirmPassword = confirmPasswordTextField.text,
+              let fullName = fullNameTextField.text, !fullName.isEmpty
+        else {
             showAlert(title: "Error", message: AuthError.emptyFields.localizedDescription)
             return
         }
@@ -62,7 +67,7 @@ class Signup: UIViewController {
         Task { @MainActor in
             LoadingOverlay.shared.show()
             do {
-                let user = try await viewModel.registerNewUserWithEmail(email: email, password: password)
+                let user = try await viewModel.registerNewUserWithEmail(email: email, password: password, fullName: fullName)
                 
                 
                 self.appUser = user

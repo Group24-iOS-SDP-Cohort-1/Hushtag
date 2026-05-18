@@ -105,8 +105,19 @@ final class ScriptedIdeasController {
     }
     
     
-    func updateScript() {
+    func updateScript(id: UUID, title: String?, description: String?, script: String?) async throws {
+        var payload: [String: String] = [:]
+        if let title = title { payload["title"] = title }
+        if let description = description { payload["description"] = description }
+        if let script = script { payload["script"] = script }
         
+        guard !payload.isEmpty else { return }
+        
+        try await client.database
+            .from("scripted_ideas")
+            .update(payload)
+            .eq("id", value: id.uuidString)
+            .execute()
     }
     
     func deleteScript(id: UUID) async throws {
@@ -299,7 +310,7 @@ final class ScriptedIdeasController {
         let messages = try await fetchMessages(for: conversationID)
         
         // Wait until meaningful context exists
-        guard messages.count >= 3 else { return }
+        guard messages.count >= 2 else { return }
         
         // Generate title
         let generatedTitle = try await generateConversationTitleWithApple(

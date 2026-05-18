@@ -7,10 +7,11 @@ extension Notification.Name {
 
 class ScriptedIdeas: UIViewController {
     
-    @IBOutlet weak var optionsBarButton: UIBarButtonItem!
+    @IBOutlet var optionsBarButton: UIBarButtonItem!
     @IBOutlet weak var ideaView: UICollectionView!
     var isDescriptionExpanded = false
     var isScriptExpanded = false
+    var isEditingMode = false
     
 
     private let dbController = ScriptedIdeasController()
@@ -167,23 +168,56 @@ class ScriptedIdeas: UIViewController {
     }
     
     private func setupMenu() {
+        if isEditingMode {
+            let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(saveEdits))
+            navigationItem.rightBarButtonItem = saveButton
+            return
+        }
+        
+        let editAction = UIAction(title: "Edit", image: UIImage(systemName: "pencil")) { [weak self] _ in
+            self?.toggleEditMode()
+        }
         let deleteAction = UIAction(title: "Delete Script", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
             self?.confirmDelete()
         }
         
-//        let menuChildren: [UIMenuElement]
-//        if isModal {
-//            // Modal (from DealsInfo): only show Delete
-//            menuChildren = [deleteAction]
-//        } else {
-//            // Normal navigation (from Ideate): show both options
-//            let chatAction = UIAction(title: "View Chat History", image: UIImage(systemName: "bubble.left.and.bubble.right.fill")) { [weak self] _ in
-//                self?.navigateToChat()
-//            }
-//            menuChildren = [chatAction, deleteAction]
-//        }
+        let menuChildren = isModal ? [deleteAction] : [editAction, deleteAction]
         
-        optionsBarButton.menu = UIMenu(title: "", children:  [deleteAction])
+        let menu = UIMenu(title: "", children: menuChildren)
+        
+        if navigationItem.rightBarButtonItem != optionsBarButton {
+            navigationItem.rightBarButtonItem = optionsBarButton
+        }
+        optionsBarButton.menu = menu
+    }
+    
+    @objc private func toggleEditMode() {
+        isEditingMode = true
+        setupMenu()
+        isDescriptionExpanded = true
+        isScriptExpanded = true
+        ideaView.reloadData()
+    }
+    
+    @objc private func saveEdits() {
+        guard let id = idea?.id else { return }
+        
+        isEditingMode = false
+        setupMenu()
+        ideaView.reloadData()
+        
+        Task {
+            do {
+                try await dbController.updateScript(
+                    id: id,
+                    title: idea?.title,
+                    description: idea?.description,
+                    script: idea?.script
+                )
+            } catch {
+                print("Error saving edits: \(error)")
+            }
+        }
     }
     
     @IBAction func draftClick(_ sender: Any) {
@@ -327,6 +361,10 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
             ) as! ViewScriptsCell
             
             cell.configureTitle(with: idea?.title ?? "")
+            cell.setEditingMode(isEditingMode, isTitle: true)
+            cell.textChangedHandler = { [weak self] newText in
+                self?.idea?.title = newText
+            }
             return cell
         
         case .buttons:
@@ -335,7 +373,7 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
                 for: indexPath
             ) as! ViewScriptsCell
             
-           // setupTagDealMenu(for: cell)
+            setupTagDealMenu(for: cell)
 
             return cell
 
@@ -360,6 +398,11 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
                     cell.content.numberOfLines = 8
                     cell.readMoreButton.setTitle("Read More", for: .normal)
                 }
+                
+                cell.setEditingMode(isEditingMode, isTitle: false)
+                cell.textChangedHandler = { [weak self] newText in
+                    self?.idea?.description = newText
+                }
 
             case .script:
                 cell.configure(with: idea?.script ?? "")
@@ -370,6 +413,11 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
                 } else {
                     cell.content.numberOfLines = 8
                     cell.readMoreButton.setTitle("Read More", for: .normal)
+                }
+                
+                cell.setEditingMode(isEditingMode, isTitle: false)
+                cell.textChangedHandler = { [weak self] newText in
+                    self?.idea?.script = newText
                 }
 
             default:
@@ -405,17 +453,24 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     private func setupTagDealMenu(for cell: ViewScriptsCell) {
-        let actions = allDeals.map { deal in
-            let isTagged = taggedDealIds.contains(deal.id)
-            let actionText = deal.name
-            
-            return UIAction(
-                title: actionText,
-                state: isTagged ? .on : .off,
-                handler: { [weak self] _ in
-                    self?.handleTagDealToggled(deal: deal, isCurrentlyTagged: isTagged)
-                }
-            )
+        let actions: [UIMenuElement]
+        
+        if allDeals.isEmpty {
+            let noDealsAction = UIAction(title: "No Deals Available", attributes: .disabled) { _ in }
+            actions = [noDealsAction]
+        } else {
+            actions = allDeals.map { deal in
+                let isTagged = taggedDealIds.contains(deal.id)
+                let actionText = deal.name
+                
+                return UIAction(
+                    title: actionText,
+                    state: isTagged ? .on : .off,
+                    handler: { [weak self] _ in
+                        self?.handleTagDealToggled(deal: deal, isCurrentlyTagged: isTagged)
+                    }
+                )
+            }
         }
         
         let menu = UIMenu(title: "Select Deal", children: actions)

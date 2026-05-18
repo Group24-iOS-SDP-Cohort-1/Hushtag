@@ -9,7 +9,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                willConnectTo session: UISceneSession,
                options connectionOptions: UIScene.ConnectionOptions) {
         
-        // ADD THIS BLOCK
+        // force dark mode
+        guard let _ = (scene as? UIWindowScene) else { return }
+        window?.overrideUserInterfaceStyle = .dark
+        
         GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
             if let error = error {
                 print("❌ Google restore failed:", error)

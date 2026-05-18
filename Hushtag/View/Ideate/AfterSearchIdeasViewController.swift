@@ -282,7 +282,7 @@ extension AfterSearchIdeasViewController: IdeaCellDelegate {
                     guard let suggestedSectionIndex = sections.firstIndex(of: .suggested) else { return }
                     
                     if let cell = collectionView.cellForItem(at: IndexPath(row: index, section: suggestedSectionIndex)) as? IdeaCells {
-                        cell.updateLikeUI()
+                        cell.configure(idea: ideas[index])
                     }
                 }
             } catch {

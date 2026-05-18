@@ -41,10 +41,14 @@ class ChatHistory: UITableViewController {
                 await MainActor.run {
                     self.sections = grouped
                     self.tableView.reloadData()
+                    self.updateEmptyState()
                 }
                 
             } catch {
                 print("❌ Failed to fetch conversations:", error)
+                await MainActor.run {
+                    self.updateEmptyState()
+                }
             }
         }
     }
@@ -78,9 +82,7 @@ class ChatHistory: UITableViewController {
         return sections[section].title
     }
     
-    override func tableView(_ tableView: UITableView,
-                            didSelectRowAt indexPath: IndexPath) {
-        
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let convo = sections[indexPath.section].items[indexPath.row]
         
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
@@ -91,7 +93,14 @@ class ChatHistory: UITableViewController {
         
         vc.conversationID = convo.id
         
-        navigationController?.pushViewController(vc, animated: true)
+        guard let navigationController = self.navigationController else { return }
+        
+        if let ideate1Index = navigationController.viewControllers.firstIndex(where: { $0 is Ideate1 }) {
+            let newStack = Array(navigationController.viewControllers[0...ideate1Index]) + [vc]
+            navigationController.setViewControllers(newStack, animated: true)
+        } else {
+            navigationController.pushViewController(vc, animated: true)
+        }
     }
     
     override func tableView(_ tableView: UITableView,
@@ -145,6 +154,25 @@ class ChatHistory: UITableViewController {
             tableView.deleteSections(IndexSet(integer: indexPath.section), with: .fade)
         } else {
             tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+        
+        updateEmptyState()
+    }
+    
+    private func updateEmptyState() {
+        if sections.isEmpty {
+            let emptyLabel = UILabel()
+            emptyLabel.text = "There is no chat history currently."
+            emptyLabel.textColor = .secondaryLabel
+            emptyLabel.textAlignment = .center
+            emptyLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+            emptyLabel.numberOfLines = 0
+            
+            tableView.backgroundView = emptyLabel
+            tableView.separatorStyle = .none
+        } else {
+            tableView.backgroundView = nil
+            tableView.separatorStyle = .singleLine
         }
     }
     

@@ -11,7 +11,6 @@ final class ProfileTableViewController: UITableViewController {
     @IBOutlet weak var youtubeStatusDot: UIView!
     
     
-    private let profileController = ProfileController()
     private var profile: Profile?
     
     
@@ -19,48 +18,36 @@ final class ProfileTableViewController: UITableViewController {
         super.viewDidLoad()
         
         setupUI()
-        showInstantProfile()
+        
+        if let cachedProfile = SessionManager.shared.currentProfile {
+            self.profile = cachedProfile
+            Task {
+                let appUser = try? await AuthManager.shared.getCurrentSession()
+                await MainActor.run {
+                    updateUI(with: cachedProfile, image: SessionManager.shared.profileImageCache, appUser: appUser)
+                }
+            }
+        } else {
+            showInstantProfile()
+        }
+        
         fetchProfile()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: "Edit",
-            style: .plain,
-            target: self,
-            action: #selector(editButtonTapped)
-        )
-    }
-    
-    
-    @objc private func editButtonTapped() {
-        guard let profile = profile else {
-            showAlert(title: "Please wait", message: "Profile is still loading.")
-            return
-        }
-        
-        let storyboard = UIStoryboard(name: "EditProfile", bundle: nil)
-        
-        
-        if let editVC = storyboard.instantiateViewController(
-            withIdentifier: "EditProfileViewController"
-        ) as? EditProfileViewController {
-            
-            editVC.profile = profile
-            editVC.delegate = self
-            editVC.modalPresentationStyle = .fullScreen
-            present(editVC, animated: true)
-        }
+        NotificationCenter.default.addObserver(self, selector: #selector(handleProfileUpdate), name: .didUpdateProfile, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleProfileUpdate), name: .didUpdateProfile, object: nil)
     }
     
     
     private func showInstantProfile() {
         Task { @MainActor in
             do {
-                let session = try await SupabaseConfig.client.auth.session
-                let email = session.user.email ?? ""
+                let appUser = try await AuthManager.shared.getCurrentSession()
+                let email = appUser.email ?? ""
+                let name = appUser.fullName ?? "Add your name"
                 
-                nameLabel.text = email
+                nameLabel.text = name
                 emailLabel.text = email
-                setInitialAvatar(from: email)
+                setInitialAvatar(from: appUser.fullName ?? email)
             } catch {
                 // user not logged in
             }
@@ -68,14 +55,21 @@ final class ProfileTableViewController: UITableViewController {
     }
     
     
-    private func fetchProfile() {
+    @objc private func handleProfileUpdate() {
+        fetchProfile(forceRefresh: false)
+    }
+    
+    private func fetchProfile(forceRefresh: Bool = false) {
         Task {
             do {
-                let profile = try await profileController.fetchProfile()
+                async let profileTask = SessionManager.shared.getProfileAndAvatar(forceRefresh: forceRefresh)
+                async let userTask = AuthManager.shared.getCurrentSession()
+                
+                let (profileAndAvatar, appUser) = try await (profileTask, userTask)
                 
                 await MainActor.run {
-                    self.profile = profile
-                    self.updateUI(with: profile)
+                    self.profile = profileAndAvatar.0
+                    self.updateUI(with: profileAndAvatar.0, image: profileAndAvatar.1, appUser: appUser)
                 }
             } catch {
                 //print("Failed to fetch profile:", error)
@@ -84,15 +78,21 @@ final class ProfileTableViewController: UITableViewController {
     }
     
     
-    private func updateUI(with profile: Profile) {
-        nameLabel.text = profile.fullName
+    private func updateUI(with profile: Profile, image: UIImage?, appUser: AppUser?) {
+        var displayName = appUser?.fullName ?? ""
+        if displayName.trimmingCharacters(in: .whitespaces).isEmpty {
+            displayName = "Add your name"
+        }
+        
+        nameLabel.text = displayName
         emailLabel.text = profile.email
         
-        if let urlString = profile.avatarURL,
-           let url = URL(string: urlString) {
+        if let image = image {
+            self.profileImageView.image = image
+        } else if let urlString = profile.avatarURL, let url = URL(string: urlString) {
             loadImage(from: url)
         } else {
-            setInitialAvatar(from: profile.fullName)
+            setInitialAvatar(from: displayName)
         }
         
         if profile.isYouTubeConnected {
@@ -118,6 +118,7 @@ final class ProfileTableViewController: UITableViewController {
             
             DispatchQueue.main.async {
                 self.profileImageView.image = image
+                SessionManager.shared.profileImageCache = image
             }
         }.resume()
     }
@@ -153,6 +154,32 @@ final class ProfileTableViewController: UITableViewController {
         profileImageView.layer.borderWidth = 1
         profileImageView.layer.borderColor = UIColor.systemGray4.cgColor
         
+        if let container = profileImageView.superview {
+            let editBadge = UIImageView(image: UIImage(systemName: "pencil.circle.fill"))
+            editBadge.tintColor = .systemBlue
+            editBadge.backgroundColor = .white
+            editBadge.layer.cornerRadius = 15
+            editBadge.clipsToBounds = true
+            editBadge.translatesAutoresizingMaskIntoConstraints = false
+            
+            container.addSubview(editBadge)
+            NSLayoutConstraint.activate([
+                editBadge.widthAnchor.constraint(equalToConstant: 30),
+                editBadge.heightAnchor.constraint(equalToConstant: 30),
+                editBadge.trailingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: -5),
+                editBadge.bottomAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: -5)
+            ])
+        }
+        
+        profileImageView.isUserInteractionEnabled = true
+        let imageTap = UITapGestureRecognizer(target: self, action: #selector(profileImageTapped))
+        profileImageView.addGestureRecognizer(imageTap)
+        
+        nameLabel.isUserInteractionEnabled = true
+        let nameDoubleTap = UITapGestureRecognizer(target: self, action: #selector(nameLabelDoubleTapped))
+        nameDoubleTap.numberOfTapsRequired = 2
+        nameLabel.addGestureRecognizer(nameDoubleTap)
+        
         title = "Profile"
         youtubeStatusDot.layer.cornerRadius = youtubeStatusDot.frame.width / 2
         youtubeStatusDot.clipsToBounds = true
@@ -177,7 +204,7 @@ final class ProfileTableViewController: UITableViewController {
                 try await AuthManager.shared.signOut()
                 //print("User signed out successfully")
                 
-                
+                SessionManager.shared.clearSession()
                 self.navigateToLoginScreen()
                 
             } catch {
@@ -250,7 +277,7 @@ final class ProfileTableViewController: UITableViewController {
                 self.forceClearLocalSession()
             }
             
-            
+            SessionManager.shared.clearSession()
             self.navigateToLoginScreen()
         }
     }
@@ -353,10 +380,119 @@ final class ProfileTableViewController: UITableViewController {
 }
 
 
-extension ProfileTableViewController: EditProfileDelegate {
-    func profileDidUpdate() {
-        fetchProfile()
+
+
+
+extension ProfileTableViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    @objc private func profileImageTapped() {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.sourceType = .photoLibrary
+        present(picker, animated: true)
     }
     
+    func imagePickerController(
+        _ picker: UIImagePickerController,
+        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
+    ) {
+        if let image = info[.originalImage] as? UIImage {
+            self.profileImageView.image = image
+            uploadImage(image)
+        }
+        picker.dismiss(animated: true)
+    }
     
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+    
+    private func uploadImage(_ selectedImage: UIImage) {
+        Task {
+            do {
+                guard let imageData = selectedImage.jpegData(compressionQuality: 0.8) else { return }
+                
+                let session = try await SupabaseConfig.client.auth.session
+                let userId = session.user.id.uuidString.lowercased()
+                
+                let fileName = "\(userId).jpg"
+                let path = "\(fileName)"
+                
+                try await SupabaseConfig.client.storage
+                    .from("user-avatars")
+                    .upload(
+                        path: path,
+                        file: imageData,
+                        options: .init(upsert: true)
+                    )
+                
+                let publicURL = try SupabaseConfig.client.storage
+                    .from("user-avatars")
+                    .getPublicURL(path: path)
+                
+                let avatarURLToSave = publicURL.absoluteString
+                
+                let profileController = ProfileController()
+                _ = try await profileController.updateProfile(
+                    fullName: self.profile?.fullName ?? "",
+                    avatarURL: avatarURLToSave
+                )
+                
+                self.fetchProfile(forceRefresh: true)
+            } catch {
+                await MainActor.run {
+                    self.showAlert(title: "Error", message: "Failed to upload profile picture.")
+                }
+            }
+        }
+    }
+    
+    @objc private func nameLabelDoubleTapped() {
+        let alert = UIAlertController(title: "Edit Name", message: "Enter your full name", preferredStyle: .alert)
+        
+        alert.addTextField { textField in
+            let currentName = self.nameLabel.text
+            if currentName != "Add your name" {
+                textField.text = currentName
+            }
+        }
+        
+        let saveAction = UIAlertAction(title: "Save", style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            guard let newName = alert.textFields?.first?.text, !newName.trimmingCharacters(in: .whitespaces).isEmpty else {
+                return
+            }
+            
+            self.updateName(newName)
+        }
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(saveAction)
+        
+        present(alert, animated: true)
+    }
+    
+    private func updateName(_ newName: String) {
+        Task {
+            do {
+                try await AuthManager.shared.updateFullName(newName: newName)
+                
+                await MainActor.run {
+                    self.nameLabel.text = newName
+                }
+                
+                let profileController = ProfileController()
+                _ = try await profileController.updateProfile(
+                    fullName: newName,
+                    avatarURL: self.profile?.avatarURL
+                )
+                
+                self.fetchProfile(forceRefresh: true)
+            } catch {
+                await MainActor.run {
+                    self.showAlert(title: "Error", message: "Failed to update name.")
+                }
+            }
+        }
+    }
 }

@@ -4,9 +4,9 @@ import GoogleSignIn
 
 class SignInModel {
     
-    private func validateForSignup(email: String, password: String) throws {
+    private func validateForSignup(email: String, password: String, fullName: String) throws {
         
-        if email.isEmpty || password.isEmpty {
+        if email.isEmpty || password.isEmpty || fullName.isEmpty {
             throw AuthError.emptyFields
         }
         
@@ -28,11 +28,12 @@ class SignInModel {
     }
     
     
-    func registerNewUserWithEmail(email: String, password: String) async throws -> AppUser {
-        try validateForSignup(email: email, password: password)
+    func registerNewUserWithEmail(email: String, password: String, fullName: String) async throws -> AppUser {
+        try validateForSignup(email: email, password: password, fullName: fullName)
         return try await AuthManager.shared.registerNewUserWithEmail(
             email: email,
-            password: password
+            password: password,
+            fullName: fullName
         )
     }
     
