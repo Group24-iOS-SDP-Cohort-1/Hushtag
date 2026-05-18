@@ -149,16 +149,76 @@ extension InsightsViewController: UICollectionViewDelegate, UICollectionViewData
     
     func didToggleLike(for cell: PremiumIdeaCell) {
         guard let indexPath = insightIdeaView.indexPath(for: cell) else { return }
-        if !analyticsIdeas.isEmpty {
-            let idea = analyticsIdeas[indexPath.row]
-            if savedIdeaIDs.contains(idea.id) {
-                savedIdeaIDs.remove(idea.id)
-            } else {
-                savedIdeaIDs.insert(idea.id)
-                let generator = UIImpactFeedbackGenerator(style: .light)
-                generator.impactOccurred()
+        guard !analyticsIdeas.isEmpty else { return }
+
+        let analyticsIdea = analyticsIdeas[indexPath.row]
+        let isCurrentlySaved = savedIdeaIDs.contains(analyticsIdea.id)
+
+        // Convert AnalyticsIdea → Idea so we can use the existing LikedIdeasController
+        let ideaKey = makeIdeaKey(
+            title: analyticsIdea.title,
+            description: analyticsIdea.hook,
+            format: analyticsIdea.format,
+            hashtags: []
+        )
+        let idea = Idea(
+            id: analyticsIdea.id,
+            ideaKey: ideaKey,
+            title: analyticsIdea.title,
+            description: analyticsIdea.hook,
+            format: analyticsIdea.format,
+            hashtags: [],
+            noveltyScore: Int(analyticsIdea.estimated_virality_score),
+            videos: nil,
+            liked: !isCurrentlySaved
+        )
+
+        let likedIdeasController = LikedIdeasController()
+
+        Task {
+            do {
+                if isCurrentlySaved {
+                    // UNLIKE — remove from DB
+                    try await likedIdeasController.unlikeIdea(ideaKey: ideaKey)
+                    LikedIds.likedIdeaIds.remove(ideaKey)
+
+                    // Remove from SessionManager if present
+                    SessionManager.shared.personalizedIdeas.removeAll { $0.ideaKey == ideaKey }
+
+                } else {
+                    // LIKE — save to DB
+                    try await likedIdeasController.likeIdea(idea)
+                    LikedIds.likedIdeaIds.insert(ideaKey)
+
+                    // Add to SessionManager so home screen can show it
+                    if !SessionManager.shared.personalizedIdeas.contains(where: { $0.ideaKey == ideaKey }) {
+                        SessionManager.shared.personalizedIdeas.insert(idea, at: 0)
+                    }
+
+                    let generator = UIImpactFeedbackGenerator(style: .light)
+                    generator.impactOccurred()
+                }
+
+                await MainActor.run {
+                    if isCurrentlySaved {
+                        self.savedIdeaIDs.remove(analyticsIdea.id)
+                        CapsuleNotification.show(message: "Idea removed", iconName: "bookmark.slash")
+                    } else {
+                        self.savedIdeaIDs.insert(analyticsIdea.id)
+                        CapsuleNotification.show(message: "Idea saved!", iconName: "bookmark.fill")
+                    }
+                    self.insightIdeaView.reloadItems(at: [indexPath])
+
+                    // Notify home screen to sync
+                    NotificationCenter.default.post(name: .didUpdateLikedStatus, object: ideaKey)
+                }
+
+            } catch {
+                print("❌ Analytics idea save/unsave failed:", error)
+                await MainActor.run {
+                    CapsuleNotification.show(message: "Failed to save idea", iconName: "xmark.circle")
+                }
             }
-            insightIdeaView.reloadItems(at: [indexPath])
         }
     }
 }
