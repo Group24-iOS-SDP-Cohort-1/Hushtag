@@ -14,7 +14,7 @@ class Ideate1: UIViewController {
     private let scriptsController = ScriptedIdeasController()
     @IBOutlet weak var collectionView: UICollectionView!
     
-    @IBOutlet weak var profileButton: UIButton!
+    @IBOutlet weak var profileImageView: UIImageView!
     private let profileController = ProfileController()
     
     enum SectionType {
@@ -342,22 +342,10 @@ class Ideate1: UIViewController {
     }
     
     @objc private func fetchProfileButtonData() {
-
-        profileButton.configuration = nil
-
-        profileButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            profileButton.widthAnchor.constraint(equalToConstant: 40),
-            profileButton.heightAnchor.constraint(equalToConstant: 40)
-        ])
-
-        profileButton.clipsToBounds = true
-        profileButton.layer.cornerRadius = 20
-        profileButton.layer.borderWidth = 1
-        profileButton.layer.borderColor = UIColor.systemGray4.cgColor
-
-        profileButton.imageEdgeInsets = .zero
-        profileButton.contentEdgeInsets = .zero
+        profileImageView.clipsToBounds = true
+        profileImageView.layer.cornerRadius = 20
+        profileImageView.contentMode = .scaleAspectFill
+        profileImageView.isUserInteractionEnabled = true
 
         Task {
             do {
@@ -365,33 +353,42 @@ class Ideate1: UIViewController {
 
                 await MainActor.run {
                     if let image = image {
-                        self.profileButton.setImage(image.withRenderingMode(.alwaysOriginal), for: .normal)
-                        self.profileButton.setBackgroundImage(nil, for: .normal)
-                        self.profileButton.setTitle("", for: .normal)
-                        
-                        self.profileButton.contentHorizontalAlignment = .fill
-                        self.profileButton.contentVerticalAlignment = .fill
-                        self.profileButton.imageView?.contentMode = .scaleAspectFill
-                        self.profileButton.backgroundColor = .clear
-                        self.profileButton.imageView?.layer.transform = CATransform3DIdentity
+                        self.profileImageView.image = image
+                        self.profileImageView.backgroundColor = .clear
                     } else {
                         let initial = profile.fullName.first.map { String($0).uppercased() } ?? "U"
-
-                        self.profileButton.setImage(nil, for: .normal)
-                        self.profileButton.setBackgroundImage(nil, for: .normal)
-                        self.profileButton.setTitle(initial, for: .normal)
                         
-                        self.profileButton.contentHorizontalAlignment = .center
-                        self.profileButton.contentVerticalAlignment = .center
-                        self.profileButton.backgroundColor = UIColor.accent
-                        self.profileButton.setTitleColor(.white, for: .normal)
-                        self.profileButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
+                        let renderer = UIGraphicsImageRenderer(size: CGSize(width: 40, height: 40))
+                        let img = renderer.image { ctx in
+                            let attributes: [NSAttributedString.Key: Any] = [
+                                .font: UIFont.systemFont(ofSize: 18, weight: .semibold),
+                                .foregroundColor: UIColor.white
+                            ]
+                            let string = NSAttributedString(string: initial, attributes: attributes)
+                            let stringSize = string.size()
+                            let rect = CGRect(
+                                x: (40 - stringSize.width) / 2,
+                                y: (40 - stringSize.height) / 2,
+                                width: stringSize.width,
+                                height: stringSize.height
+                            )
+                            string.draw(in: rect)
+                        }
+                        
+                        self.profileImageView.image = img
+                        self.profileImageView.backgroundColor = UIColor.accent
                     }
                 }
             } catch {
                 print("Failed to fetch profile:", error)
             }
         }
+    }
+    
+    @IBAction func profileTapped(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "ProfileNew", bundle: nil)
+        let destVC = storyboard.instantiateViewController(withIdentifier: "ProfileVC")
+        self.navigationController?.pushViewController(destVC, animated: true)
     }
 }
 
