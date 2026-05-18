@@ -439,7 +439,7 @@ class AnalysisDataViewController: UIViewController {
 extension AnalysisDataViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return shouldShowRevenue ? 7 : 6
+        return shouldShowRevenue ? 6 : 5
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -451,7 +451,6 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
             case 2: return 3
             case 3: return 1
             case 4: return 1
-            case 5: return 1
             default: return 0
             }
         }
@@ -463,13 +462,11 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
         case 3: return 4
         case 4: return 1
         case 5: return 1
-        case 6: return 1
         default: return 0
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         var section = indexPath.section
         
@@ -540,17 +537,6 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
             
         case 4:
             let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "gender_analysis_cell",
-                for: indexPath
-            ) as! AudienceChartCell
-            
-            guard let latest = audienceDemographic.first else { return cell }
-            cell.configure(with: latest)
-            
-            return cell
-            
-        case 5:
-            let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "optimal_time_cell",
                 for: indexPath
             ) as! OptimalTimeChartCell
@@ -558,7 +544,7 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
             cell.configure(with: viewerActivity)
             return cell
             
-        case 6:
+        case 5:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "insight_cell", for: indexPath)
             return cell
         default:
@@ -582,8 +568,7 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
             case 1: headerView.configureHeader(text: "Latest Content Performance")
             case 2: headerView.configureHeader(text: "Top Content")
             case 3: headerView.configureHeader(text: "Revenue Insights")
-            case 4: headerView.configureHeader(text: "Audience Demographic")
-            case 5: headerView.configureHeader(text: "Optimal Upload Times")
+            case 4: headerView.configureHeader(text: "Optimal Upload Times")
             default: break
             }
         } else {
@@ -591,8 +576,7 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
             case 0: headerView.configureHeader(text: "Audience Metrics")
             case 1: headerView.configureHeader(text: "Latest Content Performance")
             case 2: headerView.configureHeader(text: "Top Content")
-            case 3: headerView.configureHeader(text: "Audience Demographic")
-            case 4: headerView.configureHeader(text: "Optimal Upload Times")
+            case 3: headerView.configureHeader(text: "Optimal Upload Times")
             default: break
             }
         }
@@ -745,30 +729,8 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
                 return sectionLayout
             }
             
-            // MARK: Demographics
+            
             if section == 4 {
-                
-                let itemSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(200)
-                )
-                
-                let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                item.contentInsets = NSDirectionalEdgeInsets(
-                    top: 10, leading: 20, bottom: 10, trailing: 20
-                )
-                
-                let group = NSCollectionLayoutGroup.horizontal(
-                    layoutSize: itemSize,
-                    subitems: [item]
-                )
-                
-                let sectionLayout = NSCollectionLayoutSection(group: group)
-                sectionLayout.boundarySupplementaryItems = [makeHeaderItem()]
-                
-                return sectionLayout
-            }
-            if section == 5 {
                 // MARK: Upload Time
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
