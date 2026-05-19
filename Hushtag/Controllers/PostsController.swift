@@ -8,7 +8,7 @@ final class PostsController {
         let session = try await client.auth.session
 
         let payload = PostInsertPayload(
-            user_id: session.user.id,
+            userId: session.user.id,
             name: post.name,
             deadline: post.deadline,
             platform: post.platform.map(\.rawValue),
@@ -30,7 +30,7 @@ final class PostsController {
             let taskPayload = post.tasks.map {
                 TaskDB(
                     id: UUID(),
-                    post_id: postDB.post_id,
+                    postId: postDB.postId,
                     name: $0.name,
                     deadline: $0.deadline,
                     isCompleted: $0.isCompleted
@@ -55,7 +55,7 @@ final class PostsController {
         let posts: [PostDB] = try await client.database
             .from("posts")
             .select()
-            .eq("user_id", value: session.user.id)
+            .eq("userId", value: session.user.id)
             .order("deadline", ascending: true)
             .execute()
             .value
@@ -69,7 +69,7 @@ final class PostsController {
         return posts.map { post in
             mapToPost(
                 post,
-                tasks.filter { $0.post_id == post.post_id }
+                tasks.filter { $0.postId == post.postId }
             )
         }
     }
@@ -89,7 +89,7 @@ final class PostsController {
         let session = try await client.auth.session
 
         let payload = PostInsertPayload(
-            user_id: session.user.id,
+            userId: session.user.id,
             name: post.name,
             deadline: post.deadline,
             platform: post.platform.map(\.rawValue),
@@ -118,7 +118,7 @@ final class PostsController {
             let taskPayloads = post.tasks.map {
                 TaskDB(
                     id: UUID(),
-                    post_id: post.id ?? UUID(),
+                    postId: post.id ?? UUID(),
                     name: $0.name,
                     deadline: $0.deadline,
                     isCompleted: $0.isCompleted
@@ -149,7 +149,7 @@ final class PostsController {
 
     private func mapToPost(_ post: PostDB, _ tasks: [TaskDB]) -> Post {
         Post(
-            id: post.post_id,
+            id: post.postId,
             name: post.name,
             platform: post.platform,
             tasks: tasks.map {

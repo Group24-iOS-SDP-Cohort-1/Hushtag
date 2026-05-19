@@ -1,9 +1,9 @@
 import UIKit
 
 class ScriptsCell1: UICollectionViewCell {
-    @IBOutlet var Title: UILabel!
+    @IBOutlet var title: UILabel!
 
-    @IBOutlet var Description: UILabel!
+    @IBOutlet var descriptionLabel: UILabel!
 
     @IBOutlet var progressView: CircularProgressView!
 
@@ -13,26 +13,26 @@ class ScriptsCell1: UICollectionViewCell {
         super.awakeFromNib()
         layer.cornerRadius = 12
         applyLiquidGlassEffect()
-        Title.numberOfLines = 2
-        Description.numberOfLines = 1
-        Description.textColor = .secondaryLabel
+        title.numberOfLines = 2
+        descriptionLabel.numberOfLines = 1
+        descriptionLabel.textColor = .secondaryLabel
     }
 
     func configureCell(with script: ScriptedIdea) {
         if let realTitle = script.title, !realTitle.isEmpty {
-            Title.text = realTitle
-            Title.textColor = .label // Standard color for user-selected title
+            title.text = realTitle
+            title.textColor = .label // Standard color for user-selected title
         } else {
-            Title.text = "Untitled Script"
+            title.text = "Untitled Script"
             // Optional: You could make mock text slightly lighter to differentiate
             // Title.textColor = .secondaryLabel
         }
 
         // Description: Use real desc -> fallback to Mock -> fallback to Empty
         if let realDesc = script.description, !realDesc.isEmpty {
-            Description.text = realDesc
+            descriptionLabel.text = realDesc
         } else {
-            Description.text = "No description available"
+            descriptionLabel.text = "No description available"
         }
 
         // Tags

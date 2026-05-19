@@ -106,7 +106,11 @@ class SignInGoogle {
     @MainActor
     func signInWithGoogleFlow(completion: @escaping (Result<SignInGoogleResult, Error>) -> Void) {
         guard let topVC = UIApplication.topViewController else {
-            let error = NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not find the top view controller."])
+            let error = NSError(
+                domain: "AuthError",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Could not find the top view controller."]
+            )
 
             completion(.failure(error))
             return
@@ -127,7 +131,11 @@ class SignInGoogle {
             }
 
             guard let user = signInResult?.user, let idToken = user.idToken else {
-                let tokenError = NSError(domain: "AuthError", code: -2, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve Google ID Token."])
+                let tokenError = NSError(
+                    domain: "AuthError",
+                    code: -2,
+                    userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve Google ID Token."]
+                )
 
                 completion(.failure(tokenError))
                 // print("Error signing in: \(error?.localizedDescription ?? "No error description")")
@@ -155,7 +163,11 @@ class SignInGoogle {
     @MainActor
     func connectYouTubeFlow(completion: @escaping (Result<ConnectYouTubeResult, Error>) -> Void) {
         guard let topVC = UIApplication.topViewController else {
-            let error = NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not find the top view controller."])
+            let error = NSError(
+                domain: "AuthError",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Could not find the top view controller."]
+            )
             completion(.failure(error))
             return
         }

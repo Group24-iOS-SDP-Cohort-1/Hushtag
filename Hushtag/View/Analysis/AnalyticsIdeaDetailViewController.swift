@@ -80,168 +80,152 @@ class AnalyticsIdeaDetailViewController: UIViewController {
 
     private func populateData() {
         guard let idea = analyticsIdea else { return }
+        addHeroCard(idea: idea)
+        setupDraftProgressView()
+        addStrategyCard(idea: idea)
+        addHookCard(idea: idea)
+        addThumbnailCard(idea: idea)
+        addMetricsGrid(idea: idea)
+    }
 
-        // 1. Hero Section
+    private func addHeroCard(idea: AnalyticsIdea) {
         let heroCard = createCardView()
-
         let titleLabel = UILabel()
         titleLabel.text = idea.title
         titleLabel.font = .systemFont(ofSize: 24, weight: .bold)
         titleLabel.numberOfLines = 0
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-
         let metaLabel = UILabel()
-        metaLabel.text = "\(idea.format.uppercased()) • Virality: \(Int(idea.estimatedViralityScore))"
+        metaLabel.text = "\(idea.format.uppercased()) \u{2022} Virality: \(Int(idea.estimatedViralityScore))"
         metaLabel.font = .systemFont(ofSize: 13, weight: .semibold)
         metaLabel.textColor = .accent
         metaLabel.translatesAutoresizingMaskIntoConstraints = false
-
         heroCard.addSubview(titleLabel)
         heroCard.addSubview(metaLabel)
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: heroCard.topAnchor, constant: 20),
             titleLabel.leadingAnchor.constraint(equalTo: heroCard.leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: heroCard.trailingAnchor, constant: -20),
-
             metaLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             metaLabel.leadingAnchor.constraint(equalTo: heroCard.leadingAnchor, constant: 20),
             metaLabel.bottomAnchor.constraint(equalTo: heroCard.bottomAnchor, constant: -20)
         ])
         stackView.addArrangedSubview(heroCard)
+    }
 
-        // 2. Draft Progress
-        setupDraftProgressView()
-
-        // 3. AI Strategy Card
-        let strategyCard = createCardView()
-        let strategyTitle = createSectionTitle("Why it will work")
-        let strategyLabel = UILabel()
-        strategyLabel.text = idea.whyItWillWork.joined(separator: "\n• ")
-        strategyLabel.text = "• " + (strategyLabel.text ?? "")
-        strategyLabel.numberOfLines = 0
-        strategyLabel.font = .systemFont(ofSize: 15, weight: .regular)
-        strategyLabel.textColor = .secondaryLabel
-        strategyLabel.translatesAutoresizingMaskIntoConstraints = false
-
+    private func addStrategyCard(idea: AnalyticsIdea) {
+        let card = createCardView()
+        let sectionTitle = createSectionTitle("Why it will work")
+        let bodyLabel = UILabel()
+        bodyLabel.text = "\u{2022} " + idea.whyItWillWork.joined(separator: "\n\u{2022} ")
+        bodyLabel.numberOfLines = 0
+        bodyLabel.font = .systemFont(ofSize: 15, weight: .regular)
+        bodyLabel.textColor = .secondaryLabel
+        bodyLabel.translatesAutoresizingMaskIntoConstraints = false
         let emotionLabel = UILabel()
         emotionLabel.text = "Target Emotion: \(idea.targetEmotion)"
         emotionLabel.font = .systemFont(ofSize: 14, weight: .medium)
         emotionLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        strategyCard.addSubview(strategyTitle)
-        strategyCard.addSubview(emotionLabel)
-        strategyCard.addSubview(strategyLabel)
-
+        card.addSubview(sectionTitle)
+        card.addSubview(emotionLabel)
+        card.addSubview(bodyLabel)
         NSLayoutConstraint.activate([
-            strategyTitle.topAnchor.constraint(equalTo: strategyCard.topAnchor, constant: 20),
-            strategyTitle.leadingAnchor.constraint(equalTo: strategyCard.leadingAnchor, constant: 20),
-
-            emotionLabel.topAnchor.constraint(equalTo: strategyTitle.bottomAnchor, constant: 12),
-            emotionLabel.leadingAnchor.constraint(equalTo: strategyCard.leadingAnchor, constant: 20),
-
-            strategyLabel.topAnchor.constraint(equalTo: emotionLabel.bottomAnchor, constant: 12),
-            strategyLabel.leadingAnchor.constraint(equalTo: strategyCard.leadingAnchor, constant: 20),
-            strategyLabel.trailingAnchor.constraint(equalTo: strategyCard.trailingAnchor, constant: -20),
-            strategyLabel.bottomAnchor.constraint(equalTo: strategyCard.bottomAnchor, constant: -20)
+            sectionTitle.topAnchor.constraint(equalTo: card.topAnchor, constant: 20),
+            sectionTitle.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 20),
+            emotionLabel.topAnchor.constraint(equalTo: sectionTitle.bottomAnchor, constant: 12),
+            emotionLabel.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 20),
+            bodyLabel.topAnchor.constraint(equalTo: emotionLabel.bottomAnchor, constant: 12),
+            bodyLabel.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 20),
+            bodyLabel.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -20),
+            bodyLabel.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -20)
         ])
-        stackView.addArrangedSubview(strategyCard)
+        stackView.addArrangedSubview(card)
+    }
 
-        // 4. Hook & Timeline
-        let hookCard = createCardView()
-        let hookTitle = createSectionTitle("Opening Flow")
-
+    private func addHookCard(idea: AnalyticsIdea) {
+        let card = createCardView()
+        let sectionTitle = createSectionTitle("Opening Flow")
         let hookLabel = UILabel()
         hookLabel.text = "Hook: \(idea.hook)"
         hookLabel.numberOfLines = 0
         hookLabel.font = .systemFont(ofSize: 15, weight: .bold)
         hookLabel.translatesAutoresizingMaskIntoConstraints = false
-
         let openingLabel = UILabel()
         openingLabel.text = idea.opening30Seconds.joined(separator: "\n")
         openingLabel.numberOfLines = 0
         openingLabel.font = .systemFont(ofSize: 15, weight: .regular)
         openingLabel.textColor = .secondaryLabel
         openingLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        hookCard.addSubview(hookTitle)
-        hookCard.addSubview(hookLabel)
-        hookCard.addSubview(openingLabel)
-
+        card.addSubview(sectionTitle)
+        card.addSubview(hookLabel)
+        card.addSubview(openingLabel)
         NSLayoutConstraint.activate([
-            hookTitle.topAnchor.constraint(equalTo: hookCard.topAnchor, constant: 20),
-            hookTitle.leadingAnchor.constraint(equalTo: hookCard.leadingAnchor, constant: 20),
-
-            hookLabel.topAnchor.constraint(equalTo: hookTitle.bottomAnchor, constant: 12),
-            hookLabel.leadingAnchor.constraint(equalTo: hookCard.leadingAnchor, constant: 20),
-            hookLabel.trailingAnchor.constraint(equalTo: hookCard.trailingAnchor, constant: -20),
-
+            sectionTitle.topAnchor.constraint(equalTo: card.topAnchor, constant: 20),
+            sectionTitle.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 20),
+            hookLabel.topAnchor.constraint(equalTo: sectionTitle.bottomAnchor, constant: 12),
+            hookLabel.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 20),
+            hookLabel.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -20),
             openingLabel.topAnchor.constraint(equalTo: hookLabel.bottomAnchor, constant: 12),
-            openingLabel.leadingAnchor.constraint(equalTo: hookCard.leadingAnchor, constant: 20),
-            openingLabel.trailingAnchor.constraint(equalTo: hookCard.trailingAnchor, constant: -20),
-            openingLabel.bottomAnchor.constraint(equalTo: hookCard.bottomAnchor, constant: -20)
+            openingLabel.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 20),
+            openingLabel.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -20),
+            openingLabel.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -20)
         ])
-        stackView.addArrangedSubview(hookCard)
+        stackView.addArrangedSubview(card)
+    }
 
-        // 5. Thumbnail
-        if let thumb = idea.thumbnailConcept {
-            let thumbCard = createCardView()
-            let thumbTitle = createSectionTitle("Thumbnail Concept")
+    private func addThumbnailCard(idea: AnalyticsIdea) {
+        guard let thumb = idea.thumbnailConcept else { return }
+        let card = createCardView()
+        let sectionTitle = createSectionTitle("Thumbnail Concept")
+        let vStack = UIStackView()
+        vStack.axis = .vertical
+        vStack.spacing = 8
+        vStack.translatesAutoresizingMaskIntoConstraints = false
+        let txtLabel = UILabel()
+        txtLabel.text = "Text: \(thumb.text)"
+        txtLabel.numberOfLines = 0
+        txtLabel.font = .systemFont(ofSize: 15)
+        let visLabel = UILabel()
+        visLabel.text = "Visual: \(thumb.visual)"
+        visLabel.numberOfLines = 0
+        visLabel.font = .systemFont(ofSize: 15)
+        vStack.addArrangedSubview(txtLabel)
+        vStack.addArrangedSubview(visLabel)
+        card.addSubview(sectionTitle)
+        card.addSubview(vStack)
+        NSLayoutConstraint.activate([
+            sectionTitle.topAnchor.constraint(equalTo: card.topAnchor, constant: 20),
+            sectionTitle.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 20),
+            vStack.topAnchor.constraint(equalTo: sectionTitle.bottomAnchor, constant: 12),
+            vStack.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 20),
+            vStack.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -20),
+            vStack.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -20)
+        ])
+        stackView.addArrangedSubview(card)
+    }
 
-            let vStack = UIStackView()
-            vStack.axis = .vertical
-            vStack.spacing = 8
-            vStack.translatesAutoresizingMaskIntoConstraints = false
-
-            let txtLabel = UILabel()
-            txtLabel.text = "Text: \(thumb.text)"
-            txtLabel.numberOfLines = 0
-            txtLabel.font = .systemFont(ofSize: 15)
-
-            let visLabel = UILabel()
-            visLabel.text = "Visual: \(thumb.visual)"
-            visLabel.numberOfLines = 0
-            visLabel.font = .systemFont(ofSize: 15)
-
-            vStack.addArrangedSubview(txtLabel)
-            vStack.addArrangedSubview(visLabel)
-
-            thumbCard.addSubview(thumbTitle)
-            thumbCard.addSubview(vStack)
-            NSLayoutConstraint.activate([
-                thumbTitle.topAnchor.constraint(equalTo: thumbCard.topAnchor, constant: 20),
-                thumbTitle.leadingAnchor.constraint(equalTo: thumbCard.leadingAnchor, constant: 20),
-
-                vStack.topAnchor.constraint(equalTo: thumbTitle.bottomAnchor, constant: 12),
-                vStack.leadingAnchor.constraint(equalTo: thumbCard.leadingAnchor, constant: 20),
-                vStack.trailingAnchor.constraint(equalTo: thumbCard.trailingAnchor, constant: -20),
-                vStack.bottomAnchor.constraint(equalTo: thumbCard.bottomAnchor, constant: -20)
-            ])
-            stackView.addArrangedSubview(thumbCard)
-        }
-
-        // 6. Metrics Grid
-        let metricsTitle = createSectionTitle("Performance Estimations")
-        stackView.addArrangedSubview(metricsTitle)
-
+    private func addMetricsGrid(idea: AnalyticsIdea) {
+        stackView.addArrangedSubview(createSectionTitle("Performance Estimations"))
         let gridStack = UIStackView()
         gridStack.axis = .horizontal
         gridStack.distribution = .fillEqually
         gridStack.spacing = 16
-
         let leftCol = UIStackView()
         leftCol.axis = .vertical
         leftCol.spacing = 16
-
         let rightCol = UIStackView()
         rightCol.axis = .vertical
         rightCol.spacing = 16
-
         leftCol.addArrangedSubview(createMetricCard(title: "CTR", value: "\(Int(idea.estimatedCTR * 100))%"))
-        leftCol.addArrangedSubview(createMetricCard(title: "Virality", value: "\(Int(idea.estimatedViralityScore))/100"))
-
-        rightCol.addArrangedSubview(createMetricCard(title: "Retention", value: "\(Int(idea.estimatedRetention * 100))%"))
+        leftCol.addArrangedSubview(createMetricCard(
+            title: "Virality",
+            value: "\(Int(idea.estimatedViralityScore))/100"
+        ))
+        rightCol.addArrangedSubview(createMetricCard(
+            title: "Retention",
+            value: "\(Int(idea.estimatedRetention * 100))%"
+        ))
         rightCol.addArrangedSubview(createMetricCard(title: "Difficulty", value: idea.difficulty.capitalized))
-
         gridStack.addArrangedSubview(leftCol)
         gridStack.addArrangedSubview(rightCol)
         stackView.addArrangedSubview(gridStack)
@@ -340,7 +324,10 @@ class AnalyticsIdeaDetailViewController: UIViewController {
 
             progressViewYourDraftBtn.topAnchor.constraint(equalTo: pBar.bottomAnchor, constant: 16),
             progressViewYourDraftBtn.leadingAnchor.constraint(equalTo: progressContainer.leadingAnchor, constant: 16),
-            progressViewYourDraftBtn.trailingAnchor.constraint(equalTo: progressContainer.trailingAnchor, constant: -16),
+            progressViewYourDraftBtn.trailingAnchor.constraint(
+                equalTo: progressContainer.trailingAnchor,
+                constant: -16
+            ),
             progressViewYourDraftBtn.bottomAnchor.constraint(equalTo: progressContainer.bottomAnchor, constant: -16),
             progressViewYourDraftBtn.heightAnchor.constraint(equalToConstant: 44)
         ])
@@ -484,7 +471,10 @@ class AnalyticsIdeaDetailViewController: UIViewController {
         let completedCount = completedScriptTypes.count
         let fraction: CGFloat = completedCount > 0 ? CGFloat(completedCount - 1) / 2.0 : 0.001
 
-        progressWidthConstraint = progressView.widthAnchor.constraint(equalTo: trackView.widthAnchor, multiplier: max(fraction, 0.001))
+        progressWidthConstraint = progressView.widthAnchor.constraint(
+            equalTo: trackView.widthAnchor,
+            multiplier: max(fraction, 0.001)
+        )
         progressWidthConstraint?.isActive = true
 
         for (index, dot) in milestoneDots.enumerated() {

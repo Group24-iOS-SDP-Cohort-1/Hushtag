@@ -13,7 +13,7 @@ class TopContentCollectionViewCell: UICollectionViewCell {
     func configure(with item: TopVideo) {
         titleLabel.text = item.title
         titleLabel.numberOfLines = 1
-        viewsLabel.text = "\(item.views.formattedCount()) views • \(item.published_at.dateAndMonth())"
+        viewsLabel.text = "\(item.views.formattedCount()) views • \(item.publishedAt.dateAndMonth())"
         thumbnailImageView.loadImage(from: item.thumbnail)
     }
 }

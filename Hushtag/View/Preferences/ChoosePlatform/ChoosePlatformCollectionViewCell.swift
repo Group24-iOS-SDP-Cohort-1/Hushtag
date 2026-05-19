@@ -37,7 +37,10 @@ class ChoosePlatformCollectionViewCell: UICollectionViewCell {
         innerCollectionView.backgroundColor = .clear
         innerCollectionView.alwaysBounceVertical = false
         innerCollectionView.bounces = false
-        innerCollectionView.register(UINib(nibName: "ContentGoalsCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "contentGoalCell")
+        innerCollectionView.register(
+            UINib(nibName: "ContentGoalsCollectionViewCell", bundle: nil),
+            forCellWithReuseIdentifier: "contentGoalCell"
+        )
     }
 
     func configureCell(with item: PreferenceItem) {
@@ -88,9 +91,19 @@ extension ChoosePlatformCollectionViewCell: UICollectionViewDataSource, UICollec
         return platformOptions.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let optionText = platformOptions[indexPath.item]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "contentGoalCell", for: indexPath) as! ContentGoalsCollectionViewCell
+        guard let cell = collectionView
+            .dequeueReusableCell(
+                withReuseIdentifier: "contentGoalCell",
+                for: indexPath
+            ) as? ContentGoalsCollectionViewCell
+        else {
+            return UICollectionViewCell()
+        }
         cell.configureCell(with: optionText)
 
         if let selectedPaths = collectionView.indexPathsForSelectedItems, selectedPaths.contains(indexPath) {

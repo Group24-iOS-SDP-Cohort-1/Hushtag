@@ -35,8 +35,14 @@ class ViewScriptsViewController: UIViewController {
         scriptsCollectionView.dataSource = self
         scriptsCollectionView.delegate = self
 
-        scriptsCollectionView.register(UINib(nibName: "ScriptsCell1", bundle: nil), forCellWithReuseIdentifier: "scriptedIdeas")
-        scriptsCollectionView.register(UINib(nibName: "LikedCellsNew", bundle: nil), forCellWithReuseIdentifier: "likedCellsNew")
+        scriptsCollectionView.register(
+            UINib(nibName: "ScriptsCell1", bundle: nil),
+            forCellWithReuseIdentifier: "scriptedIdeas"
+        )
+        scriptsCollectionView.register(
+            UINib(nibName: "LikedCellsNew", bundle: nil),
+            forCellWithReuseIdentifier: "likedCellsNew"
+        )
 
         let layout = generateScriptsLayout(title: pageTitle)
         scriptsCollectionView.setCollectionViewLayout(layout, animated: true)
@@ -105,7 +111,7 @@ class ViewScriptsViewController: UIViewController {
                         script: dbScript.script,
                         thumbnail: dbScript.thumbnail,
                         tags: dbScript.tags,
-                        idea_id: conversation.ideaId
+                        ideaId: conversation.ideaId
                     )
                 }
 
@@ -212,12 +218,17 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         if pageTitle == "Chat History" || pageTitle == "Your Scripts" {
-            let cell = collectionView.dequeueReusableCell(
+            guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "scriptedIdeas",
                 for: indexPath
-            ) as! ScriptsCell1
+            ) as? ScriptsCell1 else {
+                return UICollectionViewCell()
+            }
 
             // Fetch correct object based on search state
             let script: ScriptedIdea
@@ -232,10 +243,11 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
         }
 
         // Logic for Liked Ideas
-        let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "likedCellsNew",
-            for: indexPath
-        ) as! LikedCellsNew
+        guard let cell = collectionView
+            .dequeueReusableCell(withReuseIdentifier: "likedCellsNew", for: indexPath) as? LikedCellsNew
+        else {
+            return UICollectionViewCell()
+        }
 
         let idea: Idea
         if isFiltering {
@@ -321,7 +333,8 @@ extension ViewScriptsViewController: UICollectionViewDelegate {
             }
 
             let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
-            if let destinationVC = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas {
+            if let destinationVC = storyboard
+                .instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas {
                 destinationVC.idea = script
                 navigationController?.pushViewController(destinationVC, animated: true)
             }

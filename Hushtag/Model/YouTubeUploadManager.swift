@@ -8,8 +8,8 @@ struct GetResumableUrlResponse: Codable {
 }
 
 struct AttachThumbnailRequest: Codable {
-    let upload_id: String
-    let youtube_video_id: String
+    let uploadId: String
+    let youtubeVideoId: String
 }
 
 class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate, URLSessionDataDelegate {
@@ -82,7 +82,6 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
                 request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
 
                 // 5. Assemble Multipart Data
-                var body = Data()
                 let isoFormatter = ISO8601DateFormatter()
                 let finalPrivacy = publishAt != nil ? "private" : privacyStatus.lowercased()
 
@@ -96,70 +95,12 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
                     "localVideoFilename": persistentVideoURL.lastPathComponent
                 ]
 
-                for (key, value) in parameters {
-                    if key == "publishAt" && value.isEmpty { continue } // Omit if nil
-                    body.append("--\(boundary)\r\n".data(using: .utf8)!)
-                    body.append("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".data(using: .utf8)!)
-                    body.append("\(value)\r\n".data(using: .utf8)!)
-                }
+                var body = buildMultipartBody(
+                    parameters: parameters,
+                    thumbnailURL: thumbnailURL,
+                    boundary: boundary
+                )
 
-                // 6. Attach Thumbnail Binary if available
-                if let thumb = thumbnailURL {
-                    // Attempt to compress the image to stay under YouTube's 2MB limit
-                    var finalThumbData: Data?
-
-                    if let image = UIImage(contentsOfFile: thumb.path) {
-                        // 0.7 is a good balance. If it's still > 2MB, you can lower this to 0.5
-                        finalThumbData = image.jpegData(compressionQuality: 0.7)
-                    }
-
-                    // Fallback to raw data if UIImage fails
-                    // 6. Attach Thumbnail Binary if available
-                    if let thumb = thumbnailURL {
-                        var finalThumbData: Data?
-                        let maxBytes = 1_900_000 // 1.9 MB safety threshold to respect your 2MB bucket
-
-                        if let image = UIImage(contentsOfFile: thumb.path) {
-                            var compression: CGFloat = 0.9
-
-                            // Start with initial compression
-                            if var data = image.jpegData(compressionQuality: compression) {
-                                // 🔄 Iteratively compress until it fits under 1.9 MB
-                                while data.count > maxBytes && compression > 0.1 {
-                                    compression -= 0.15 // Drop quality in chunks
-                                    if let newData = image.jpegData(compressionQuality: compression) {
-                                        data = newData
-                                    }
-                                }
-                                finalThumbData = data
-                                print("📸 Final compressed thumbnail size: \(Double(data.count) / 1_000_000) MB")
-                            }
-                        }
-
-                        // Fallback to raw data if UIImage fails (very rare)
-                        if finalThumbData == nil {
-                            finalThumbData = try? Data(contentsOf: thumb)
-                        }
-
-                        if let thumbData = finalThumbData {
-                            // Double check it's actually under the bucket limit before sending
-                            if thumbData.count > 2_000_000 {
-                                print("⚠️ WARNING: Thumbnail is still over 2MB, Supabase might reject this!")
-                            }
-
-                            let ext = "jpeg"
-                            let thumbName = "thumb.\(ext)"
-
-                            body.append("--\(boundary)\r\n".data(using: .utf8)!)
-                            body.append("Content-Disposition: form-data; name=\"thumbnail\"; filename=\"\(thumbName)\"\r\n".data(using: .utf8)!)
-                            body.append("Content-Type: image/\(ext)\r\n\r\n".data(using: .utf8)!)
-                            body.append(thumbData)
-                            body.append("\r\n".data(using: .utf8)!)
-                        }
-                    }
-                }
-
-                body.append("--\(boundary)--\r\n".data(using: .utf8)!)
                 request.httpBody = body
 
                 // 7. Fire Handshake to Edge Function
@@ -200,6 +141,56 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
                 print("❌ Failed to orchestrate upload process: \(error.localizedDescription)")
             }
         }
+    }
+
+    // MARK: - Multipart helpers
+
+    private func buildMultipartBody(
+        parameters: [String: String],
+        thumbnailURL: URL?,
+        boundary: String
+    ) -> Data {
+        var body = Data()
+        for (key, value) in parameters {
+            if key == "publishAt" && value.isEmpty { continue }
+            body.append(Data("--\(boundary)\r\n".utf8))
+            body.append(Data("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n".utf8))
+            body.append(Data("\(value)\r\n".utf8))
+        }
+        if let thumb = thumbnailURL, let thumbData = compressedThumbnailData(from: thumb) {
+            let ext = "jpeg"
+            let thumbName = "thumb.\(ext)"
+            body.append(Data("--\(boundary)\r\n".utf8))
+            body.append(
+                Data("Content-Disposition: form-data; name=\"thumbnail\"; filename=\"\(thumbName)\"\r\n".utf8)
+            )
+            body.append(Data("Content-Type: image/\(ext)\r\n\r\n".utf8))
+            body.append(thumbData)
+            body.append(Data("\r\n".utf8))
+        }
+        body.append(Data("--\(boundary)--\r\n".utf8))
+        return body
+    }
+
+    private func compressedThumbnailData(from url: URL) -> Data? {
+        let maxBytes = 1_900_000 // 1.9 MB safety threshold
+        guard let image = UIImage(contentsOfFile: url.path) else {
+            return try? Data(contentsOf: url)
+        }
+        var compression: CGFloat = 0.9
+        guard var data = image.jpegData(compressionQuality: compression) else { return nil }
+        // 🔄 Iteratively compress until it fits under 1.9 MB
+        while data.count > maxBytes, compression > 0.1 {
+            compression -= 0.15
+            if let newData = image.jpegData(compressionQuality: compression) {
+                data = newData
+            }
+        }
+        print("📸 Final compressed thumbnail size: \(Double(data.count) / 1_000_000) MB")
+        if data.count > 2_000_000 {
+            print("⚠️ WARNING: Thumbnail is still over 2MB, Supabase might reject this!")
+        }
+        return data
     }
 
     // MARK: - URLSession Delegates
@@ -248,7 +239,7 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
                             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
                             // 4. Encode your existing struct into the body
-                            let reqBody = AttachThumbnailRequest(upload_id: uploadId, youtube_video_id: videoId)
+                            let reqBody = AttachThumbnailRequest(uploadId: uploadId, youtubeVideoId: videoId)
                             request.httpBody = try JSONEncoder().encode(reqBody)
 
                             // 5. Fire the request

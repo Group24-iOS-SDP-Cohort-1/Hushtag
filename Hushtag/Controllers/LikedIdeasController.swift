@@ -10,7 +10,7 @@ final class LikedIdeasController {
 
         let payload = LikedIdeaInsertPayload(
             id: UUID(),
-            user_id: session.user.id,
+            userId: session.user.id,
             ideaKey: idea.ideaKey ?? "",
             title: idea.title,
             description: idea.description,
@@ -102,6 +102,6 @@ final class LikedIdeasController {
             .execute()
             .value
 
-        return response.first?.convo_id
+        return response.first?.convoId
     }
 }

@@ -10,21 +10,22 @@ struct Profile: Identifiable {
 
 nonisolated struct ProfileDB: Codable {
     let id: UUID
-    let user_id: UUID
-    let full_name: String
+    let userId: UUID
+    let fullName: String
     let email: String
-    let avatar_url: String?
-    let is_youtube_connected: Bool?
+    let avatarUrl: String?
+    let isYoutubeConnected: Bool?
 }
 
 nonisolated struct ProfileUpdatePayload: Encodable {
-    let full_name: String
-    let avatar_url: String?
+    let fullName: String
+    let avatarUrl: String?
 }
 
 nonisolated struct ProfileInsertPayload: Encodable {
-    let user_id: UUID
-    let full_name: String
+    let userId: UUID
+    let fullName: String
     let email: String
-    let avatar_url: String?
+    let avatarUrl: String?
 }
+

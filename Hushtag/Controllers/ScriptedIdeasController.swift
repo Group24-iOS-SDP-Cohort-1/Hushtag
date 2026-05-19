@@ -6,7 +6,7 @@ final class ScriptedIdeasController {
 
     func addChatMessage(id: UUID, sender: Role, content: String) async throws -> ChatMessageDB {
         let payload = ChatMessageInsertPayload(
-            conversation_id: id,
+            conversationId: id,
             role: sender,
             content: content
         )
@@ -122,7 +122,7 @@ final class ScriptedIdeasController {
 
         let payload = ScriptedIdeaInsertPayload(
             userId: session.user.id,
-            chat_id: script.chatId,
+            chatId: script.chatId,
             title: script.title,
             description: script.description,
             script: script.script,
@@ -314,7 +314,7 @@ final class ScriptedIdeasController {
 
         let payload = ScriptedIdeaInsertPayload(
             userId: session.user.id,
-            chat_id: chatID,
+            chatId: chatID,
             title: field == "title" ? value : nil,
             description: field == "description" ? value : nil,
             script: field == "script" ? value : nil,

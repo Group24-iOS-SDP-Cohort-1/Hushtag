@@ -103,7 +103,10 @@ class PremiumIdeaCell: UICollectionViewCell {
         subtitleLabel.text = analyticsIdea.hook
 
         let config = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
-        bookmarkButton.setImage(UIImage(systemName: isSaved ? "bookmark.fill" : "bookmark", withConfiguration: config), for: .normal)
+        bookmarkButton.setImage(
+            UIImage(systemName: isSaved ? "bookmark.fill" : "bookmark", withConfiguration: config),
+            for: .normal
+        )
         bookmarkButton.tintColor = isSaved ? .accent : .secondaryLabel
     }
 
@@ -113,7 +116,10 @@ class PremiumIdeaCell: UICollectionViewCell {
 
         let isSaved = idea.liked == true
         let config = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
-        bookmarkButton.setImage(UIImage(systemName: isSaved ? "bookmark.fill" : "bookmark", withConfiguration: config), for: .normal)
+        bookmarkButton.setImage(
+            UIImage(systemName: isSaved ? "bookmark.fill" : "bookmark", withConfiguration: config),
+            for: .normal
+        )
         bookmarkButton.tintColor = isSaved ? .accent : .secondaryLabel
     }
 }

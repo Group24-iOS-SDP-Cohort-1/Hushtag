@@ -60,28 +60,34 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         )
 
         tableView.sectionHeaderTopPadding = 0
-        let header = Bundle.main.loadNibNamed("ProgressCell", owner: self, options: nil)?.first as! ProgressCell
+        setupProgressHeader()
+        loadConversationHistory()
+        setupKeyboardObservers()
+        setupTapToDismiss()
+    }
 
+    private func setupProgressHeader() {
+        guard let header = Bundle.main.loadNibNamed("ProgressCell", owner: self, options: nil)?.first as? ProgressCell
+        else { return }
         header.configure(completedTypes: [])
         header.translatesAutoresizingMaskIntoConstraints = false
         header.onViewIdeaTapped = { [weak self] in
             self?.navigateToViewIdea()
         }
-
         view.addSubview(header)
         progressHeader = header
-
         NSLayoutConstraint.activate([
             header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
             header.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
             header.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
             header.heightAnchor.constraint(equalToConstant: 125)
         ])
+    }
 
+    private func loadConversationHistory() {
         if conversationID == nil {
             conversationID = UUID()
             print("New Conversation started:", conversationID!)
-
             Task {
                 do {
                     _ = try await controller.addConversation(id: conversationID ?? UUID(), ideaId: ideaId)
@@ -90,7 +96,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     print("Failed to create conversation:", error)
                 }
             }
-
         } else {
             print("📌 Opening existing conversation:", conversationID!)
         }
@@ -100,31 +105,16 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 let history = try await controller.fetchMessages(for: conversationID ?? UUID())
                 let allIdeas = try await controller.fetchScript()
                 let idea = allIdeas.first { $0.chatId == self.conversationID }
-
-                let mapped = history.map { chat in
-                    var message = Message(
-                        role: chat.role.rawValue,
-                        content: chat.content,
-                        mark: nil
-                    )
-
+                let mapped = history.map { chat -> Message in
+                    var message = Message(role: chat.role.rawValue, content: chat.content, mark: nil)
                     guard let idea else { return message }
-
-                    if chat.content == idea.script {
-                        message.mark = "script"
-                    } else if chat.content == idea.title {
-                        message.mark = "title"
-                    } else if chat.content == idea.description {
-                        message.mark = "description"
-                    }
-
+                    if chat.content == idea.script { message.mark = "script" }
+                    else if chat.content == idea.title { message.mark = "title" }
+                    else if chat.content == idea.description { message.mark = "description" }
                     return message
                 }
                 await MainActor.run {
-                    if !mapped.isEmpty {
-                        self.messages = mapped
-                    }
-
+                    if !mapped.isEmpty { self.messages = mapped }
                     if let idea = idea {
                         if let script = idea.script, !script.isEmpty {
                             self.markedMessages["script"] = [Message(role: "bot", content: script, mark: "script")]
@@ -133,28 +123,23 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                             self.markedMessages["title"] = [Message(role: "bot", content: title, mark: "title")]
                         }
                         if let description = idea.description, !description.isEmpty {
-                            self.markedMessages["description"] = [Message(role: "bot", content: description, mark: "description")]
+                            self.markedMessages["description"] = [Message(
+                                role: "bot", content: description, mark: "description"
+                            )]
                         }
-
                         self.updateProgressHeader()
                     }
-
                     self.tableView.reloadData()
                     self.scrollToBottom()
-
                     if let text = self.autoSendMessage {
                         self.sendMessage(text)
                         self.autoSendMessage = nil
                     }
                 }
-
             } catch {
                 print(" Failed loading conversation:", error)
             }
         }
-
-        setupKeyboardObservers()
-        setupTapToDismiss()
     }
 
     private func navigateToViewIdea() {
@@ -167,7 +152,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 }
                 await MainActor.run {
                     let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
-                    guard let vc = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas else { return }
+                    guard let vc = storyboard
+                        .instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas else { return }
                     vc.idea = idea
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
@@ -186,10 +172,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
     func isAllContentMarked() -> Bool {
-        for type in requiredMarkTypes {
-            if markedMessages[type]?.isEmpty ?? true {
-                return false
-            }
+        for type in requiredMarkTypes where markedMessages[type]?.isEmpty ?? true {
+            return false
         }
         return true
     }
@@ -221,12 +205,23 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
     func setupKeyboardObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
     }
 
     @objc func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?
+            .cgRectValue {
             let bottomPadding = view.safeAreaInsets.bottom
             inputViewBottomConstraint.constant = keyboardSize.height - bottomPadding
 
@@ -263,10 +258,11 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
-            let cell = tableView.dequeueReusableCell(
-                withIdentifier: "PlatformCell",
-                for: indexPath
-            ) as! PlatformCellTableViewCell
+            guard let cell = tableView
+                .dequeueReusableCell(withIdentifier: "PlatformCell", for: indexPath) as? PlatformCellTableViewCell
+            else {
+                return UITableViewCell()
+            }
             cell.onPlatformSelected = { [weak self] platform in
                 guard let self = self, let id = self.conversationID else { return }
                 self.selectedPlatform = platform
@@ -284,7 +280,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
         let messageIndex = indexPath.row - 1
 
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as? ChatCell else {
+            return UITableViewCell()
+        }
         cell.configure(with: messages[messageIndex])
 
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))

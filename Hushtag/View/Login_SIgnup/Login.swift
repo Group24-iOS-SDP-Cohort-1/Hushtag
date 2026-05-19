@@ -132,7 +132,9 @@ extension UIViewController {
 
         let storyboard = UIStoryboard(name: "login_signup", bundle: nil)
 
-        guard let loginNav = storyboard.instantiateViewController(withIdentifier: "LoginNavigationController") as? UINavigationController else {
+        guard let loginNav = storyboard
+            .instantiateViewController(withIdentifier: "LoginNavigationController") as? UINavigationController
+        else {
             // print("Error: Could not find LoginNavigationController in Storyboard")
             return
         }

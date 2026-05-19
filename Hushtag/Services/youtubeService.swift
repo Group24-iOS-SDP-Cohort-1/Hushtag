@@ -1,11 +1,32 @@
 import Foundation
 
+enum AppConfig {
+
+    static func value(for key: String) -> String {
+        
+        guard let path = Bundle.main.path(forResource: "keys", ofType: "plist"),
+              let plist = NSDictionary(contentsOfFile: path),
+              let value = plist[key] as? String else {
+            
+            fatalError("Missing key: \(key)")
+        }
+
+        return value
+    }
+}
+
+enum Keys {
+    static let anonKey = AppConfig.value(for: "AnonKey")
+    static let supabaseURL = AppConfig.value(for: "SupabaseURL")
+    static let youtubeSearch = AppConfig.value(for: "SupabaseURL") + "/functions/v1/YouTube-search"
+    static let preferenceSearch = AppConfig.value(for: "SupabaseURL") + "/functions/v1/preference-search"
+}
+
 final class YouTubeService {
     func search(query: String) async throws -> SearchResponse {
-        let anonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1dXV3dXlkbGdqaGd3d2Fic3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwMTEwMzAsImV4cCI6MjA4NDU4NzAzMH0.qTJ2zoIj3uBR5tSOp8-J-dU0ZPJIE_XKkw23zP4-sRg"
+        let anonKey = Keys.anonKey
 
-        let url = URL(string:
-            "https://juuuwuydlgjhgwwabswy.supabase.co/functions/v1/YouTube-search")!
+        let url = URL(string: Keys.youtubeSearch)!
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"

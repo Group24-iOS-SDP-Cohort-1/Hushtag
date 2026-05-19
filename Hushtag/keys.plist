@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>youtube-search</key>
+	<string>https://juuuwuydlgjhgwwabswy.supabase.co/functions/v1/YouTube-search</string>
+	<key>SupabaseURL</key>
+	<string>https://juuuwuydlgjhgwwabswy.supabase.co</string>
+	<key>preference-search</key>
+	<string>https://juuuwuydlgjhgwwabswy.supabase.co/functions/v1/preference-search</string>
+	<key>AnonKey</key>
+	<string>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1dXV3dXlkbGdqaGd3d2Fic3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwMTEwMzAsImV4cCI6MjA4NDU4NzAzMH0.qTJ2zoIj3uBR5tSOp8-J-dU0ZPJIE_XKkw23zP4-sRg</string>
+</dict>
+</plist>

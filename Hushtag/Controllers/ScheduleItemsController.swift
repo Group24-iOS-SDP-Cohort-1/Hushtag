@@ -47,13 +47,11 @@ final class ScheduleItemController {
             }
 
             // Include individual deliverables if their deadline matches
-            for deliverable in deal.deliverables {
-                if calendar.isDate(
-                    deliverable.deadline,
-                    inSameDayAs: date
-                ) {
-                    allItems.append(.deal(deal: deal, deliverable: deliverable))
-                }
+            for deliverable in deal.deliverables where calendar.isDate(
+                deliverable.deadline,
+                inSameDayAs: date
+            ) {
+                allItems.append(.deal(deal: deal, deliverable: deliverable))
             }
         }
 
@@ -68,10 +66,8 @@ final class ScheduleItemController {
             }
 
             // Include individual tasks if their deadline matches
-            for task in post.tasks {
-                if calendar.isDate(task.deadline, inSameDayAs: date) {
-                    allItems.append(.post(post: post, task: task))
-                }
+            for task in post.tasks where calendar.isDate(task.deadline, inSameDayAs: date) {
+                allItems.append(.post(post: post, task: task))
             }
         }
 
@@ -82,10 +78,12 @@ final class ScheduleItemController {
         scheduleItems(on: date).filter { item in
             switch item {
             case let .deal(deal, deliverable):
-                // If it's a deliverable, use its completion status. If it's the main deal, use the deal's completion status.
+                // If it's a deliverable, use its completion status. If it's the main deal, use the deal's completion
+                // status.
                 return deliverable?.isCompleted ?? deal.isManuallyCompleted
             case let .post(_, task):
-                // If it's a task, use its status. If it's the main post, just return false (unless you add an isCompleted flag to Post)
+                // If it's a task, use its status. If it's the main post, just return false (unless you add an
+                // isCompleted flag to Post)
                 return task?.isCompleted ?? false
             }
         }

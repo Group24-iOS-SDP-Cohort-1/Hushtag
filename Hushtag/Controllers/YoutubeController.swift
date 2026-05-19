@@ -3,7 +3,7 @@ import Supabase
 
 struct YouTubeAuthPayload: Codable {
     let action: String
-    let server_auth_code: String
+    let serverAuthCode: String
 }
 
 struct AnalyticsRequestPayload: Codable {
@@ -95,7 +95,7 @@ final class YouTubeController {
 
         let payload = YouTubeAuthPayload(
             action: "exchange_and_save_tokens",
-            server_auth_code: serverAuthCode
+            serverAuthCode: serverAuthCode
         )
 
         // print("🚀 Sending tokens to unified YouTube function...")
@@ -137,7 +137,7 @@ final class YouTubeController {
     }
 
     nonisolated struct ConnectionStatus: Decodable {
-        let is_youtube_connected: Bool?
+        let isYoutubeConnected: Bool?
     }
 
     func checkYouTubeConnection() async -> Bool {
@@ -152,7 +152,7 @@ final class YouTubeController {
                 .execute()
                 .value
 
-            return status.is_youtube_connected ?? false
+            return status.isYoutubeConnected ?? false
 
         } catch {
             // print("YouTube connection check Failed or Not Found: \(error)")
@@ -202,7 +202,7 @@ final class YouTubeController {
 
         let payload = YouTubeAuthPayload(
             action: "disconnect",
-            server_auth_code: ""
+            serverAuthCode: ""
         )
 
         try await client.functions.invoke(

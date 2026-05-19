@@ -119,8 +119,18 @@ class CreatePostViewController: UIViewController {
     // MARK: - Layout & Navigation
 
     private func setupNavigationBar() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeTapped))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(doneTapped))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            title: "Close",
+            style: .plain,
+            target: self,
+            action: #selector(closeTapped)
+        )
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "Done",
+            style: .done,
+            target: self,
+            action: #selector(doneTapped)
+        )
     }
 
     private func setupDescriptionView() {
@@ -211,12 +221,18 @@ class CreatePostViewController: UIViewController {
         if shouldShowPublishAt, !hasPublishAt {
             currentFields.append("Publish At")
             if let index = currentFields.firstIndex(of: "Publish At") {
-                tableView.insertRows(at: [IndexPath(row: index, section: Section.postDetails.rawValue)], with: .automatic)
+                tableView.insertRows(
+                    at: [IndexPath(row: index, section: Section.postDetails.rawValue)],
+                    with: .automatic
+                )
             }
         } else if !shouldShowPublishAt, hasPublishAt {
             if let index = currentFields.firstIndex(of: "Publish At") {
                 currentFields.remove(at: index)
-                tableView.deleteRows(at: [IndexPath(row: index, section: Section.postDetails.rawValue)], with: .automatic)
+                tableView.deleteRows(
+                    at: [IndexPath(row: index, section: Section.postDetails.rawValue)],
+                    with: .automatic
+                )
             }
         }
     }
@@ -305,7 +321,8 @@ class CreatePostViewController: UIViewController {
 
         let description = descriptionTextView.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let rawTags = tagsTextView.text ?? ""
-        let parsedTags = rawTags.split(separator: ",").map { String($0.trimmingCharacters(in: .whitespaces)) }.filter { !$0.isEmpty }
+        let parsedTags = rawTags.split(separator: ",").map { String($0.trimmingCharacters(in: .whitespaces)) }
+            .filter { !$0.isEmpty }
 
         let publishAt: Date? = currentFields.contains("Publish At") ? publishAtDatePicker.date : nil
 
@@ -398,135 +415,129 @@ extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let sec = Section(rawValue: indexPath.section) else { return UITableViewCell() }
-
         switch sec {
         case .media:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "PostMediaCell", for: indexPath) as! PostMediaCell
-
-            // Video Config
-            cell.uploadButton.addTarget(self, action: #selector(uploadVideoTapped), for: .touchUpInside)
-            cell.removeButton.addTarget(self, action: #selector(removeVideoTapped), for: .touchUpInside)
-            uploadVideoButton = cell.uploadButton
-            videoPreviewLabel = cell.previewLabel
-
-            if let url = selectedVideoURL {
-                videoPreviewLabel?.text = "📹 \(url.lastPathComponent)"
-                videoPreviewLabel?.isHidden = false
-                cell.removeButton.isHidden = false
-                uploadVideoButton?.setTitle("  Change Video", for: .normal)
-            } else {
-                videoPreviewLabel?.isHidden = true
-                cell.removeButton.isHidden = true
-                uploadVideoButton?.setTitle("  Upload Video", for: .normal)
-            }
-
-            // Thumbnail Config
-            cell.thumbnailUploadButton.addTarget(self, action: #selector(uploadThumbnailTapped), for: .touchUpInside)
-            cell.thumbnailRemoveButton.addTarget(self, action: #selector(removeThumbnailTapped), for: .touchUpInside)
-            uploadThumbnailButton = cell.thumbnailUploadButton
-            thumbnailPreviewLabel = cell.thumbnailPreviewLabel
-
-            if let url = selectedThumbnailURL {
-                thumbnailPreviewLabel?.text = "🖼️ \(url.lastPathComponent)"
-                thumbnailPreviewLabel?.isHidden = false
-                cell.thumbnailRemoveButton.isHidden = false
-                uploadThumbnailButton?.setTitle("  Change Thumbnail", for: .normal)
-            } else {
-                thumbnailPreviewLabel?.isHidden = true
-                cell.thumbnailRemoveButton.isHidden = true
-                uploadThumbnailButton?.setTitle("  Upload Thumbnail", for: .normal)
-            }
-
-            return cell
-
+            guard let cell = tableView
+                .dequeueReusableCell(withIdentifier: "PostMediaCell", for: indexPath) as? PostMediaCell
+            else { return UITableViewCell() }
+            return configureMediaCell(cell)
         case .postDetails:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "PostFieldCell", for: indexPath) as! PostFieldCell
-            let placeholder = currentFields[indexPath.row]
-
-            cell.resetAccessory()
-
-            let toolbar = UIToolbar()
-            toolbar.sizeToFit()
-            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissPicker))
-            toolbar.setItems([doneButton], animated: true)
-
-            switch placeholder {
-            case "Title":
-                cell.install(view: titleContainer)
-            case "Description":
-                cell.install(view: descriptionContainer)
-            case "Tags":
-                cell.install(view: tagsContainer)
-            case "Category":
-                cell.textField.textAlignment = .left
-                cell.textField.text = selectedCategory.rawValue
-
-                let button = UIButton(type: .system)
-                button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
-
-                let actions = YouTubeCategory.allCases.map { category in
-                    UIAction(title: category.rawValue) { [weak self, weak cell] _ in
-                        self?.selectedCategory = category
-                        cell?.textField.text = category.rawValue
-                    }
-                }
-
-                let menu = UIMenu(children: actions)
-                button.menu = menu
-                button.showsMenuAsPrimaryAction = true
-
-                cell.textField.rightView = button
-                cell.textField.rightViewMode = .always
-                cell.textField.isUserInteractionEnabled = true
-
-                let overlayButton = UIButton(type: .custom)
-                overlayButton.menu = menu
-                overlayButton.showsMenuAsPrimaryAction = true
-                cell.addOverlay(overlayButton)
-            case "Privacy Status":
-                privacyTextField.placeholder = "Privacy Status"
-                privacyTextField.text = selectedPrivacy
-                privacyTextField.textAlignment = .left
-                cell.install(textField: privacyTextField, title: nil)
-
-                let button = UIButton(type: .system)
-                button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
-
-                let privacyOptions = ["Public", "Private", "Unlisted"]
-                let actions = privacyOptions.map { option in
-                    UIAction(title: option) { [weak self] _ in
-                        guard let self = self else { return }
-                        self.selectedPrivacy = option
-                        self.privacyTextField.text = option
-                        self.updateFieldsBasedOnPrivacy()
-                    }
-                }
-
-                let menu = UIMenu(children: actions)
-                button.menu = menu
-                button.showsMenuAsPrimaryAction = true
-
-                privacyTextField.rightView = button
-                privacyTextField.rightViewMode = .always
-                privacyTextField.isUserInteractionEnabled = true
-
-                let overlayButton = UIButton(type: .custom)
-                overlayButton.menu = menu
-                overlayButton.showsMenuAsPrimaryAction = true
-                cell.addOverlay(overlayButton)
-            case "Publish At":
-                cell.textField.textAlignment = .right
-                cell.textField.text = dateFormatter.string(from: publishAtDatePicker.date)
-                cell.textField.inputView = publishAtDatePicker
-                cell.textField.inputAccessoryView = toolbar
-                cell.setTitle("Publish At")
-                publishAtDatePicker.addTarget(self, action: #selector(publishDateChanged), for: .valueChanged)
-            default:
-                break
-            }
-
-            return cell
+            guard let cell = tableView
+                .dequeueReusableCell(withIdentifier: "PostFieldCell", for: indexPath) as? PostFieldCell
+            else { return UITableViewCell() }
+            return configurePostDetailsCell(cell, at: indexPath)
         }
+    }
+
+    private func configureMediaCell(_ cell: PostMediaCell) -> PostMediaCell {
+        cell.uploadButton.addTarget(self, action: #selector(uploadVideoTapped), for: .touchUpInside)
+        cell.removeButton.addTarget(self, action: #selector(removeVideoTapped), for: .touchUpInside)
+        uploadVideoButton = cell.uploadButton
+        videoPreviewLabel = cell.previewLabel
+
+        if let url = selectedVideoURL {
+            videoPreviewLabel?.text = "📹 \(url.lastPathComponent)"
+            videoPreviewLabel?.isHidden = false
+            cell.removeButton.isHidden = false
+            uploadVideoButton?.setTitle("  Change Video", for: .normal)
+        } else {
+            videoPreviewLabel?.isHidden = true
+            cell.removeButton.isHidden = true
+            uploadVideoButton?.setTitle("  Upload Video", for: .normal)
+        }
+
+        cell.thumbnailUploadButton.addTarget(self, action: #selector(uploadThumbnailTapped), for: .touchUpInside)
+        cell.thumbnailRemoveButton.addTarget(self, action: #selector(removeThumbnailTapped), for: .touchUpInside)
+        uploadThumbnailButton = cell.thumbnailUploadButton
+        thumbnailPreviewLabel = cell.thumbnailPreviewLabel
+
+        if let url = selectedThumbnailURL {
+            thumbnailPreviewLabel?.text = "🖼️ \(url.lastPathComponent)"
+            thumbnailPreviewLabel?.isHidden = false
+            cell.thumbnailRemoveButton.isHidden = false
+            uploadThumbnailButton?.setTitle("  Change Thumbnail", for: .normal)
+        } else {
+            thumbnailPreviewLabel?.isHidden = true
+            cell.thumbnailRemoveButton.isHidden = true
+            uploadThumbnailButton?.setTitle("  Upload Thumbnail", for: .normal)
+        }
+        return cell
+    }
+
+    private func configurePostDetailsCell(_ cell: PostFieldCell, at indexPath: IndexPath) -> PostFieldCell {
+        let placeholder = currentFields[indexPath.row]
+        cell.resetAccessory()
+
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(dismissPicker))
+        toolbar.setItems([doneButton], animated: true)
+
+        switch placeholder {
+        case "Title":
+            cell.install(view: titleContainer)
+        case "Description":
+            cell.install(view: descriptionContainer)
+        case "Tags":
+            cell.install(view: tagsContainer)
+        case "Category":
+            cell.textField.textAlignment = .left
+            cell.textField.text = selectedCategory.rawValue
+            let button = UIButton(type: .system)
+            button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+            let actions = YouTubeCategory.allCases.map { category in
+                UIAction(title: category.rawValue) { [weak self, weak cell] _ in
+                    self?.selectedCategory = category
+                    cell?.textField.text = category.rawValue
+                }
+            }
+            let menu = UIMenu(children: actions)
+            button.menu = menu
+            button.showsMenuAsPrimaryAction = true
+            cell.textField.rightView = button
+            cell.textField.rightViewMode = .always
+            cell.textField.isUserInteractionEnabled = true
+            let overlayButton = UIButton(type: .custom)
+            overlayButton.menu = menu
+            overlayButton.showsMenuAsPrimaryAction = true
+            cell.addOverlay(overlayButton)
+        case "Privacy Status":
+            privacyTextField.placeholder = "Privacy Status"
+            privacyTextField.text = selectedPrivacy
+            privacyTextField.textAlignment = .left
+            cell.install(textField: privacyTextField, title: nil)
+            let button = UIButton(type: .system)
+            button.setImage(UIImage(systemName: "chevron.down"), for: .normal)
+            let privacyOptions = ["Public", "Private", "Unlisted"]
+            let actions = privacyOptions.map { option in
+                UIAction(title: option) { [weak self] _ in
+                    guard let self = self else { return }
+                    self.selectedPrivacy = option
+                    self.privacyTextField.text = option
+                    self.updateFieldsBasedOnPrivacy()
+                }
+            }
+            let menu = UIMenu(children: actions)
+            button.menu = menu
+            button.showsMenuAsPrimaryAction = true
+            privacyTextField.rightView = button
+            privacyTextField.rightViewMode = .always
+            privacyTextField.isUserInteractionEnabled = true
+            let overlayButton = UIButton(type: .custom)
+            overlayButton.menu = menu
+            overlayButton.showsMenuAsPrimaryAction = true
+            cell.addOverlay(overlayButton)
+        case "Publish At":
+            cell.textField.textAlignment = .right
+            cell.textField.text = dateFormatter.string(from: publishAtDatePicker.date)
+            cell.textField.inputView = publishAtDatePicker
+            cell.textField.inputAccessoryView = toolbar
+            cell.setTitle("Publish At")
+            publishAtDatePicker.addTarget(self, action: #selector(publishDateChanged), for: .valueChanged)
+        default:
+            break
+        }
+        return cell
     }
 
     @objc func publishDateChanged() {

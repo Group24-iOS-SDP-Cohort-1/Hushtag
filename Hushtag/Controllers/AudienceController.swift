@@ -13,7 +13,7 @@ final class AudienceController {
         return try await client.database
             .from("audience")
             .select()
-            .eq("user_id", value: session.user.id)
+            .eq("userId", value: session.user.id)
             .eq("start_date", value: startDate)
             .eq("end_date", value: endDate)
             .execute()
@@ -29,7 +29,7 @@ final class AudienceController {
         return try await client.database
             .from("top_videos")
             .select()
-            .eq("user_id", value: session.user.id)
+            .eq("userId", value: session.user.id)
             .eq("start_date", value: startDate)
             .eq("end_date", value: endDate)
             .execute()
@@ -42,7 +42,7 @@ final class AudienceController {
         return try await client.database
             .from("latest_content")
             .select()
-            .eq("user_id", value: session.user.id)
+            .eq("userId", value: session.user.id)
             .execute()
             .value
     }
@@ -56,9 +56,9 @@ final class AudienceController {
         return try await client.database
             .from("revenue_insights")
             .select()
-            .eq("user_id", value: session.user.id)
-            .eq("start_date", value: startDate)
-            .eq("end_date", value: endDate)
+            .eq("userId", value: session.user.id)
+            .eq("startDate", value: startDate)
+            .eq("endDate", value: endDate)
             .execute()
             .value
     }
@@ -72,9 +72,9 @@ final class AudienceController {
         return try await client.database
             .from("audience_demographics")
             .select()
-            .eq("user_id", value: session.user.id)
-            .eq("start_date", value: startDate)
-            .eq("end_date", value: endDate)
+            .eq("userId", value: session.user.id)
+            .eq("startDate", value: startDate)
+            .eq("endDate", value: endDate)
             .execute()
             .value
     }
@@ -88,9 +88,9 @@ final class AudienceController {
         return try await client.database
             .from("viewer_activity")
             .select()
-            .eq("user_id", value: session.user.id)
-            .eq("start_date", value: startDate)
-            .eq("end_date", value: endDate)
+            .eq("userId", value: session.user.id)
+            .eq("startDate", value: startDate)
+            .eq("endDate", value: endDate)
             .order("day", ascending: true)
             .execute()
             .value

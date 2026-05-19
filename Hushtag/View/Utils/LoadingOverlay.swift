@@ -25,7 +25,12 @@ class LoadingOverlay {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.color = .white
         indicator.center = overlay.center
-        indicator.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin, .flexibleTopMargin, .flexibleBottomMargin]
+        indicator.autoresizingMask = [
+            .flexibleLeftMargin,
+            .flexibleRightMargin,
+            .flexibleTopMargin,
+            .flexibleBottomMargin
+        ]
         indicator.startAnimating()
 
         overlay.addSubview(indicator)

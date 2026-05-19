@@ -30,8 +30,18 @@ final class ProfileTableViewController: UITableViewController {
 
         fetchProfile()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(handleProfileUpdate), name: .didUpdateProfile, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleProfileUpdate), name: .didUpdateProfile, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleProfileUpdate),
+            name: .didUpdateProfile,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleProfileUpdate),
+            name: .didUpdateProfile,
+            object: nil
+        )
     }
 
     private func showInstantProfile() {
@@ -179,7 +189,11 @@ final class ProfileTableViewController: UITableViewController {
     }
 
     func signOutTap() {
-        let alert = UIAlertController(title: "Sign Out", message: "Are you sure you want to sign out?", preferredStyle: .actionSheet)
+        let alert = UIAlertController(
+            title: "Sign Out",
+            message: "Are you sure you want to sign out?",
+            preferredStyle: .actionSheet
+        )
 
         alert.addAction(UIAlertAction(title: "Sign Out", style: .destructive, handler: { [weak self] _ in
             self?.performSignOut()
@@ -337,7 +351,8 @@ final class ProfileTableViewController: UITableViewController {
 
     private func navigateToPreferences(with preferences: UserPreference?) {
         let storyboard = UIStoryboard(name: "Preferences", bundle: nil)
-        if let preferencesVC = storyboard.instantiateViewController(withIdentifier: "PreferenceVC") as? PreferencesViewController {
+        if let preferencesVC = storyboard
+            .instantiateViewController(withIdentifier: "PreferenceVC") as? PreferencesViewController {
             preferencesVC.initialPreference = preferences
             navigationController?.pushViewController(preferencesVC, animated: true)
         }
@@ -435,7 +450,9 @@ extension ProfileTableViewController: UIImagePickerControllerDelegate, UINavigat
 
         let saveAction = UIAlertAction(title: "Save", style: .default) { [weak self] _ in
             guard let self = self else { return }
-            guard let newName = alert.textFields?.first?.text, !newName.trimmingCharacters(in: .whitespaces).isEmpty else {
+            guard let newName = alert.textFields?.first?.text,
+                  !newName.trimmingCharacters(in: .whitespaces).isEmpty
+            else {
                 return
             }
 

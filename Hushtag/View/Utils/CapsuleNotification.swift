@@ -103,7 +103,13 @@ class CapsuleNotification: UIView {
         ])
 
         // Animate In
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.5, options: .curveEaseOut) {
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0,
+            usingSpringWithDamping: 0.7,
+            initialSpringVelocity: 0.5,
+            options: .curveEaseOut
+        ) {
             notification.alpha = 1
             notification.transform = .identity
         } completion: { _ in

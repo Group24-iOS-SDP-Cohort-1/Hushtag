@@ -76,12 +76,16 @@
 //
 //    }
 //
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) ->
+//    UICollectionViewCell {
 //        let s = sections[indexPath.section]
 //
 //        let optionText: String = s.options[indexPath.item]
 //
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "optionsCell", for: indexPath) as! OptionsCollectionViewCell
+//        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "optionsCell", for: indexPath) as?
+//        OptionsCollectionViewCell else {
+//            return UICollectionViewCell()
+//        }
 //        cell.configureCell(with: optionText)
 //        return cell
 //    }

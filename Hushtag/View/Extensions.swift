@@ -22,7 +22,8 @@ extension String {
         //      let boldFont = UIFont.systemFont(ofSize: 16, weight: .bold)
 
         let baseFont = UIFont.preferredFont(forTextStyle: .body)
-        let boldDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).withSymbolicTraits(.traitBold)
+        let boldDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body)
+            .withSymbolicTraits(.traitBold)
         let boldFont = UIFont(descriptor: boldDescriptor!, size: 0)
         let textColor = UIColor.label
         let bulletColor = UIColor.systemBlue
@@ -68,7 +69,11 @@ extension String {
         // 4. PARSE BULLETS (* text)
         let stringContent = attributedString.string
         let bulletRegex = try! NSRegularExpression(pattern: "^\\s*\\*\\s+(.*)$", options: .anchorsMatchLines)
-        let bulletMatches = bulletRegex.matches(in: stringContent, options: [], range: NSRange(location: 0, length: stringContent.utf16.count))
+        let bulletMatches = bulletRegex.matches(
+            in: stringContent,
+            options: [],
+            range: NSRange(location: 0, length: stringContent.utf16.count)
+        )
 
         for match in bulletMatches.reversed() {
             let fullRange = match.range
