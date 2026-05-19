@@ -128,7 +128,11 @@ class PreferencesViewController: UIViewController {
                 print("Failed to update onboarding status or save preferences: \(error)")
                 self.skipSubmitButton.isEnabled = true
 
-                let alert = UIAlertController(title: "Save Failed", message: "We were unable to save your preferences. Please try again.", preferredStyle: .alert)
+                let alert = UIAlertController(
+                    title: "Save Failed",
+                    message: "We were unable to save your preferences. Please try again.",
+                    preferredStyle: .alert
+                )
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
             }

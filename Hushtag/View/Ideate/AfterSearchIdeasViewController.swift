@@ -36,8 +36,16 @@ class AfterSearchIdeasViewController: UIViewController {
 
     private func registerCells() {
         collectionView.register(UINib(nibName: "IdeaCells", bundle: nil), forCellWithReuseIdentifier: "ideaCell")
-        collectionView.register(UINib(nibName: "IdeaSearch", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "IdeaSearch")
-        collectionView.register(UINib(nibName: "HeaderView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "headerCell")
+        collectionView.register(
+            UINib(nibName: "IdeaSearch", bundle: nil),
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "IdeaSearch"
+        )
+        collectionView.register(
+            UINib(nibName: "HeaderView", bundle: nil),
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "headerCell"
+        )
     }
 
     private func setupGlobalKeyboardDismiss() {
@@ -184,7 +192,11 @@ extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollecti
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
         guard kind == UICollectionView.elementKindSectionHeader else {
             return UICollectionReusableView()
         }

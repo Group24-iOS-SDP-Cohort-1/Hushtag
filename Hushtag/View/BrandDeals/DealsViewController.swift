@@ -208,13 +208,17 @@ class DealsViewController: UIViewController {
 }
 
 extension DealsViewController: UICollectionViewDataSource, UICollectionViewDelegate {
-    func collectionView(_: UICollectionView,
-                        numberOfItemsInSection _: Int) -> Int {
+    func collectionView(
+        _: UICollectionView,
+        numberOfItemsInSection _: Int
+    ) -> Int {
         return displayedDeals.count
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let deal = displayedDeals[indexPath.item]
         let isCompletedTab = (selectedSegmentIndex == 1)
 

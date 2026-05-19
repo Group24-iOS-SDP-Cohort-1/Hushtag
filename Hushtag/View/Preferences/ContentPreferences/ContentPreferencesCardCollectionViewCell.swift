@@ -271,12 +271,14 @@
 //        return cell
 //    }
 //
-//    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+//    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) ->
+//    UICollectionReusableView {
 //        guard kind == UICollectionView.elementKindSectionHeader else {
 //            return UICollectionReusableView()
 //        }
 //
-//        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header_cell", for: indexPath) as! PreferencesHeaderView
+//        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "header_cell", for: indexPath) as!
+//        PreferencesHeaderView
 //
 //        if collectionView == firstInnerCollectionView {
 //            headerView.configureHeader(text: vibeSection?.title ?? "")
@@ -297,7 +299,8 @@
 //
 //        var headerSupplementary: NSCollectionLayoutBoundarySupplementaryItem? = nil
 //        let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(40))
-//        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment: .top)
+//        let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: UICollectionView.elementKindSectionHeader, alignment:
+//        .top)
 //        headerSupplementary = header
 //
 //        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.33), heightDimension: .absolute(45))

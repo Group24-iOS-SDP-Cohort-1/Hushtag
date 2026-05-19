@@ -115,7 +115,11 @@ class SignInGoogle {
         GIDSignIn.sharedInstance.signIn(
             withPresenting: topVC,
             hint: nil,
-            additionalScopes: ["https://www.googleapis.com/auth/yt-analytics.readonly", "https://www.googleapis.com/auth/youtube.readonly", "https://www.googleapis.com/auth/youtube.upload"]
+            additionalScopes: [
+                "https://www.googleapis.com/auth/yt-analytics.readonly",
+                "https://www.googleapis.com/auth/youtube.readonly",
+                "https://www.googleapis.com/auth/youtube.upload"
+            ]
         ) { signInResult, error in
             if let error = error {
                 completion(.failure(error))
@@ -159,7 +163,11 @@ class SignInGoogle {
         GIDSignIn.sharedInstance.signIn(
             withPresenting: topVC,
             hint: nil,
-            additionalScopes: ["https://www.googleapis.com/auth/yt-analytics.readonly", "https://www.googleapis.com/auth/youtube.readonly", "https://www.googleapis.com/auth/youtube.upload"]
+            additionalScopes: [
+                "https://www.googleapis.com/auth/yt-analytics.readonly",
+                "https://www.googleapis.com/auth/youtube.readonly",
+                "https://www.googleapis.com/auth/youtube.upload"
+            ]
         ) { signInResult, error in
             if let error = error {
                 completion(.failure(error))
@@ -167,7 +175,11 @@ class SignInGoogle {
             }
 
             guard (signInResult?.user) != nil else {
-                let tokenError = NSError(domain: "AuthError", code: -3, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve user during YouTube connect."])
+                let tokenError = NSError(
+                    domain: "AuthError",
+                    code: -3,
+                    userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve user during YouTube connect."]
+                )
                 completion(.failure(tokenError))
                 // print("Error connecting YouTube: User not found in result")
                 return

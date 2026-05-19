@@ -48,7 +48,8 @@ class Details: UIViewController {
                 if case let .deal(currentDeal, currentDeliverable) = self.schedule {
                     if let updatedDeal = deals.first(where: { $0.id == currentDeal.id }) {
                         // CHANGED: Safely handle if currentDeliverable is nil
-                        let updatedDeliverable = currentDeliverable != nil ? (updatedDeal.deliverables.first(where: { $0.id == currentDeliverable!.id }) ?? currentDeliverable) : nil
+                        let updatedDeliverable = currentDeliverable != nil ?
+                            (updatedDeal.deliverables.first(where: { $0.id == currentDeliverable!.id }) ?? currentDeliverable) : nil
 
                         await MainActor.run {
                             self.schedule = .deal(deal: updatedDeal, deliverable: updatedDeliverable)
@@ -282,7 +283,8 @@ extension Details: UICollectionViewDataSource {
                     for: indexPath
                 ) as! DetailsCollectionViewCell
                 cell.indexPath = indexPath
-                // Add Main Toggle action directly on common_details cell. We can just use the status/circle button if it existed, but usually Section 0 does not have a status button. If it does, here's how to toggle it.
+                // Add Main Toggle action directly on common_details cell. We can just use the status/circle button if it existed, but usually Section 0 does
+                // not have a status button. If it does, here's how to toggle it.
                 cell.onToggleCompletion = { [weak self] _ in
                     guard let self else { return }
                     guard case let .deal(deal, _) = self.schedule else { return }

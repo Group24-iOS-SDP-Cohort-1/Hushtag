@@ -55,8 +55,10 @@ class ChatHistory: UITableViewController {
         return sections.count
     }
 
-    override func tableView(_: UITableView,
-                            numberOfRowsInSection section: Int) -> Int {
+    override func tableView(
+        _: UITableView,
+        numberOfRowsInSection section: Int
+    ) -> Int {
         return sections[section].items.count
     }
 
@@ -74,8 +76,10 @@ class ChatHistory: UITableViewController {
         return cell
     }
 
-    override func tableView(_: UITableView,
-                            titleForHeaderInSection section: Int) -> String? {
+    override func tableView(
+        _: UITableView,
+        titleForHeaderInSection section: Int
+    ) -> String? {
         return sections[section].title
     }
 
@@ -100,8 +104,10 @@ class ChatHistory: UITableViewController {
         }
     }
 
-    override func tableView(_: UITableView,
-                            trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
+    override func tableView(
+        _: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    )
         -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(
             style: .destructive,

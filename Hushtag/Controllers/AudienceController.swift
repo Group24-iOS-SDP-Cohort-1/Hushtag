@@ -20,8 +20,10 @@ final class AudienceController {
             .value
     }
 
-    func fetchTopVideos(startDate: String,
-                        endDate: String) async throws -> [TopVideo] {
+    func fetchTopVideos(
+        startDate: String,
+        endDate: String
+    ) async throws -> [TopVideo] {
         let session = try await client.auth.session
 
         return try await client.database
@@ -45,8 +47,10 @@ final class AudienceController {
             .value
     }
 
-    func fetchRevenueInsight(startDate: String,
-                             endDate: String) async throws -> [RevenueInsight] {
+    func fetchRevenueInsight(
+        startDate: String,
+        endDate: String
+    ) async throws -> [RevenueInsight] {
         let session = try await client.auth.session
 
         return try await client.database
@@ -59,8 +63,10 @@ final class AudienceController {
             .value
     }
 
-    func fetchAudienceDemographic(startDate: String,
-                                  endDate: String) async throws -> [AudienceDemographic] {
+    func fetchAudienceDemographic(
+        startDate: String,
+        endDate: String
+    ) async throws -> [AudienceDemographic] {
         let session = try await client.auth.session
 
         return try await client.database
@@ -73,8 +79,10 @@ final class AudienceController {
             .value
     }
 
-    func fetchViewerActivity(startDate: String,
-                             endDate: String) async throws -> [ViewerActivity] {
+    func fetchViewerActivity(
+        startDate: String,
+        endDate: String
+    ) async throws -> [ViewerActivity] {
         let session = try await client.auth.session
 
         return try await client.database

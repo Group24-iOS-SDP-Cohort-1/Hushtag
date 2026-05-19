@@ -678,7 +678,11 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
         return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
         if kind == "header", indexPath.section == 1 {
             let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: "header",

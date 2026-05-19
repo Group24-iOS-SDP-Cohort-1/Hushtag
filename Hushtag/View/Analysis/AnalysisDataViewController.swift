@@ -60,8 +60,10 @@ class AnalysisDataViewController: UIViewController {
         )
 
         analysisCollectionView.register(
-            UINib(nibName: "HeaderView",
-                  bundle: nil),
+            UINib(
+                nibName: "HeaderView",
+                bundle: nil
+            ),
             forSupplementaryViewOfKind: "header",
             withReuseIdentifier: "headerCell"
         )
@@ -542,9 +544,11 @@ extension AnalysisDataViewController: UICollectionViewDataSource {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        viewForSupplementaryElementOfKind _: String,
-                        at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind _: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
         let headerView = collectionView.dequeueReusableSupplementaryView(
             ofKind: "header",
             withReuseIdentifier: "headerCell",

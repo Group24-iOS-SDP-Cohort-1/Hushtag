@@ -135,22 +135,32 @@ class Ideate1: UIViewController {
     }
 
     private func register() {
-        collectionView.register(UINib(nibName: "IdeaCells", bundle: nil),
-                                forCellWithReuseIdentifier: "ideaCell")
+        collectionView.register(
+            UINib(nibName: "IdeaCells", bundle: nil),
+            forCellWithReuseIdentifier: "ideaCell"
+        )
 
-        collectionView.register(UINib(nibName: "LikedCellsNew", bundle: nil),
-                                forCellWithReuseIdentifier: "likedCellsNew")
+        collectionView.register(
+            UINib(nibName: "LikedCellsNew", bundle: nil),
+            forCellWithReuseIdentifier: "likedCellsNew"
+        )
 
-        collectionView.register(UINib(nibName: "Script_cell_ideate", bundle: nil),
-                                forCellWithReuseIdentifier: "scriptCellIdeate")
+        collectionView.register(
+            UINib(nibName: "Script_cell_ideate", bundle: nil),
+            forCellWithReuseIdentifier: "scriptCellIdeate"
+        )
         // Use existing HeaderView
-        collectionView.register(UINib(nibName: "HeaderView", bundle: nil),
-                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                withReuseIdentifier: "headerCell")
+        collectionView.register(
+            UINib(nibName: "HeaderView", bundle: nil),
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "headerCell"
+        )
 
-        collectionView.register(UINib(nibName: "IdeaSearch", bundle: nil),
-                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                withReuseIdentifier: "IdeaSearch")
+        collectionView.register(
+            UINib(nibName: "IdeaSearch", bundle: nil),
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "IdeaSearch"
+        )
     }
 
     private func setupGlobalKeyboardDismiss() {
@@ -422,8 +432,10 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let sectionType = sections[indexPath.section]
 
         switch sectionType {
@@ -476,9 +488,11 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        viewForSupplementaryElementOfKind kind: String,
-                        at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
         guard kind == UICollectionView.elementKindSectionHeader else {
             return UICollectionReusableView()
         }
@@ -679,13 +693,15 @@ extension Ideate1: IdeaCellDelegate {
                             self.likedIdeas.insert(idea, at: 0)
                         }
 
-                        UIView.transition(with: self.collectionView,
-                                          duration: 0.3,
-                                          options: .transitionCrossDissolve,
-                                          animations: { self.collectionView.reloadData() },
-                                          completion: { _ in
-                                              NotificationCenter.default.post(name: .didUpdateLikedStatus, object: ideaKey)
-                                          })
+                        UIView.transition(
+                            with: self.collectionView,
+                            duration: 0.3,
+                            options: .transitionCrossDissolve,
+                            animations: { self.collectionView.reloadData() },
+                            completion: { _ in
+                                NotificationCenter.default.post(name: .didUpdateLikedStatus, object: ideaKey)
+                            }
+                        )
                         return
                     }
 

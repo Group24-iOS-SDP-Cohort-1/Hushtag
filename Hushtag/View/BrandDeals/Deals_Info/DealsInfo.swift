@@ -346,8 +346,10 @@ extension DealsInfo: UICollectionViewDataSource {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let type = sections[indexPath.section]
 
         switch type {
@@ -426,9 +428,11 @@ extension DealsInfo: UICollectionViewDataSource {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        viewForSupplementaryElementOfKind kind: String,
-                        at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
             withReuseIdentifier: "headerCell",
@@ -448,14 +452,18 @@ extension DealsInfo: UICollectionViewDataSource {
 }
 
 extension DealsInfo: UICollectionViewDelegate {
-    func collectionView(_: UICollectionView,
-                        shouldSelectItemAt indexPath: IndexPath) -> Bool {
+    func collectionView(
+        _: UICollectionView,
+        shouldSelectItemAt indexPath: IndexPath
+    ) -> Bool {
         let section = sections[indexPath.section]
         return section == .deliverables || section == .selectedIdeas
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        didSelectItemAt indexPath: IndexPath) {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
         let section = sections[indexPath.section]
 
         if section == .selectedIdeas {

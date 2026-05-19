@@ -112,8 +112,10 @@ extension InsightsViewController: UICollectionViewDelegate, UICollectionViewData
         return analyticsIdeas.isEmpty ? ideas.count : analyticsIdeas.count
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         if !analyticsIdeas.isEmpty {
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: PremiumIdeaCell.identifier,

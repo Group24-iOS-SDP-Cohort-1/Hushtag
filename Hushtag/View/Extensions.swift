@@ -90,7 +90,11 @@ extension String {
         // 5. CLEANUP: Remove "---" lines AND the surrounding extra newlines
         // The regex now looks for: (newline) + (---) + (newline)
         let separatorRegex = try! NSRegularExpression(pattern: "\\n+\\s*---\\s*\\n+", options: [])
-        let separatorMatches = separatorRegex.matches(in: attributedString.string, options: [], range: NSRange(location: 0, length: attributedString.string.utf16.count))
+        let separatorMatches = separatorRegex.matches(
+            in: attributedString.string,
+            options: [],
+            range: NSRange(location: 0, length: attributedString.string.utf16.count)
+        )
 
         for match in separatorMatches.reversed() {
             // Replace the whole block with just TWO newlines (Standard paragraph break)

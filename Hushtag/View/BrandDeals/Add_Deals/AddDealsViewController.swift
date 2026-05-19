@@ -292,15 +292,19 @@ class AddDealsViewController: UITableViewController {
         }
     }
 
-    override func tableView(_: UITableView,
-                            numberOfRowsInSection section: Int) -> Int {
+    override func tableView(
+        _: UITableView,
+        numberOfRowsInSection section: Int
+    ) -> Int {
         return section == Section.mainFields.rawValue
             ? fieldPlaceholders.count
             : currentDeliverables.count
     }
 
-    override func tableView(_ tableView: UITableView,
-                            cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
         guard let sec = Section(rawValue: indexPath.section) else {
             return UITableViewCell()
         }

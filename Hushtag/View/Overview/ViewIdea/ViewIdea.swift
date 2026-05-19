@@ -127,8 +127,10 @@ class ViewIdea: UIViewController {
 
     func registerCell() {
         ideaView.register(
-            UINib(nibName: "HeaderView",
-                  bundle: nil),
+            UINib(
+                nibName: "HeaderView",
+                bundle: nil
+            ),
             forSupplementaryViewOfKind: "header",
             withReuseIdentifier: "headerCell"
         )
@@ -359,7 +361,11 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
         return ideaView.dequeueReusableCell(withReuseIdentifier: "button", for: indexPath) as! IdeaDetailsCollectionViewCell
     }
 
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
         if kind == "header", indexPath.section == 2 {
             let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: "header",
