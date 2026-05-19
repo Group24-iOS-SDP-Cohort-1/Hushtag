@@ -426,14 +426,14 @@ extension ViewScriptsViewController: LikedCellDelegate {
                 await MainActor.run {
                     let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
 
-                    guard let vc = storyboard.instantiateViewController(
+                    guard let chatbotVC = storyboard.instantiateViewController(
                         withIdentifier: "Chatbot"
                     ) as? Chatbot else { return }
 
-                    vc.conversationID = finalConvoId
+                    chatbotVC.conversationID = finalConvoId
 
                     if isNew {
-                        vc.autoSendMessage = """
+                        chatbotVC.autoSendMessage = """
                         Generate a short engaging social media video script.
 
                         Idea Title: \(idea.title)
@@ -447,7 +447,7 @@ extension ViewScriptsViewController: LikedCellDelegate {
                         """
                     }
 
-                    self.navigationController?.pushViewController(vc, animated: true)
+                    self.navigationController?.pushViewController(chatbotVC, animated: true)
                 }
 
             } catch {

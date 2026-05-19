@@ -5,10 +5,10 @@ import UniformTypeIdentifiers
 class CreatePostViewController: UIViewController {
     // MARK: - Data
 
-    private var selectedVideoURL: URL?
-    private var selectedThumbnailURL: URL?
-    private var selectedCategory: YouTubeCategory = .filmAndAnimation
-    private var selectedPrivacy: String = "Public"
+     var selectedVideoURL: URL?
+     var selectedThumbnailURL: URL?
+     var selectedCategory: YouTubeCategory = .filmAndAnimation
+     var selectedPrivacy: String = "Public"
 
     enum YouTubeCategory: String, CaseIterable {
         case filmAndAnimation = "Film & Animation"
@@ -57,17 +57,17 @@ class CreatePostViewController: UIViewController {
     private weak var videoPreviewLabel: UILabel?
     private weak var uploadThumbnailButton: UIButton?
     private weak var thumbnailPreviewLabel: UILabel?
-    private let titleTextView = UITextView()
-    private let titlePlaceholder = UILabel()
-    private let titleContainer = UIView()
-    private let descriptionTextView = UITextView()
-    private let descriptionPlaceholder = UILabel()
-    private let descriptionContainer = UIView()
-    private let tagsTextView = UITextView()
-    private let tagsPlaceholder = UILabel()
-    private let tagsContainer = UIView()
-    private let privacyTextField = UITextField()
-    private let publishAtDatePicker = UIDatePicker()
+     let titleTextView = UITextView()
+     let titlePlaceholder = UILabel()
+     let titleContainer = UIView()
+     let descriptionTextView = UITextView()
+     let descriptionPlaceholder = UILabel()
+     let descriptionContainer = UIView()
+     let tagsTextView = UITextView()
+     let tagsPlaceholder = UILabel()
+     let tagsContainer = UIView()
+     let privacyTextField = UITextField()
+     let publishAtDatePicker = UIDatePicker()
 
     private let dateFormatter = DateFormatter()
 
@@ -550,8 +550,6 @@ extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
-// MARK: - UITextViewDelegate
-
 extension CreatePostViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         if textView === titleTextView {
@@ -580,11 +578,11 @@ extension CreatePostViewController: PHPickerViewControllerDelegate {
                 let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(url.lastPathComponent)
                 try? FileManager.default.removeItem(at: tempURL)
                 try? FileManager.default.copyItem(at: url, to: tempURL)
-
-                DispatchQueue.main.async {
-                    self?.selectedVideoURL = tempURL
+                let captured = tempURL
+                DispatchQueue.main.async(execute: {
+                    self?.selectedVideoURL = captured
                     self?.tableView.reloadSections(IndexSet(integer: Section.media.rawValue), with: .automatic)
-                }
+                })
             }
         } else if result.itemProvider.hasItemConformingToTypeIdentifier(imageType) {
             result.itemProvider.loadFileRepresentation(forTypeIdentifier: imageType) { [weak self] url, error in
@@ -592,11 +590,11 @@ extension CreatePostViewController: PHPickerViewControllerDelegate {
                 let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(url.lastPathComponent)
                 try? FileManager.default.removeItem(at: tempURL)
                 try? FileManager.default.copyItem(at: url, to: tempURL)
-
-                DispatchQueue.main.async {
-                    self?.selectedThumbnailURL = tempURL
+                let captured = tempURL
+                DispatchQueue.main.async(execute: {
+                    self?.selectedThumbnailURL = captured
                     self?.tableView.reloadSections(IndexSet(integer: Section.media.rawValue), with: .automatic)
-                }
+                })
             }
         }
     }
@@ -604,7 +602,7 @@ extension CreatePostViewController: PHPickerViewControllerDelegate {
 
 // MARK: - Custom Cells
 
-private class PostFieldCell: UITableViewCell {
+class PostFieldCell: UITableViewCell {
     let textField = UITextField()
     private let titleLabel = UILabel()
     private var sharedTextField: UITextField?
@@ -712,7 +710,7 @@ private class PostFieldCell: UITableViewCell {
     }
 }
 
-private class PostMediaCell: UITableViewCell {
+class PostMediaCell: UITableViewCell {
     let uploadButton = UIButton(type: .system)
     let removeButton = UIButton(type: .system)
     let previewLabel = UILabel()
@@ -751,11 +749,9 @@ private class PostMediaCell: UITableViewCell {
         removeButton.isHidden = true
         removeButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
         removeButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
-
         previewLabel.font = .systemFont(ofSize: 14)
         previewLabel.textColor = .secondaryLabel
         previewLabel.isHidden = true
-
         infoStack.addArrangedSubview(previewLabel)
         infoStack.addArrangedSubview(removeButton)
 
@@ -775,23 +771,18 @@ private class PostMediaCell: UITableViewCell {
         thumbInfoStack.spacing = 8
         thumbInfoStack.alignment = .center
         thumbInfoStack.translatesAutoresizingMaskIntoConstraints = false
-
         thumbnailRemoveButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
         thumbnailRemoveButton.tintColor = .systemRed
         thumbnailRemoveButton.isHidden = true
         thumbnailRemoveButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
         thumbnailRemoveButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
-
         thumbnailPreviewLabel.font = .systemFont(ofSize: 14)
         thumbnailPreviewLabel.textColor = .secondaryLabel
         thumbnailPreviewLabel.isHidden = true
-
         thumbInfoStack.addArrangedSubview(thumbnailPreviewLabel)
         thumbInfoStack.addArrangedSubview(thumbnailRemoveButton)
-
         container.addArrangedSubview(thumbnailUploadButton)
         container.addArrangedSubview(thumbInfoStack)
-
         NSLayoutConstraint.activate([
             container.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             container.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),

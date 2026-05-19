@@ -36,7 +36,7 @@ class PreferencesViewController: UIViewController {
         if let prefs = initialPreference {
             selectedOptions["Niche"] = prefs.niche.map { $0.rawValue }
             selectedOptions["Platform"] = prefs.platform.map {
-                $0 == .x ? "x (twitter)" : $0.rawValue
+                $0 == .xTwitter ? "x (twitter)" : $0.rawValue
             }
 
             if completedStates.count > 0 {
@@ -203,8 +203,8 @@ class PreferencesViewController: UIViewController {
 
             let containerCenterX = offset.x + (env.container.contentSize.width / 2.0)
 
-            let nearest = items.min { a, b in
-                abs(a.frame.midX - containerCenterX) < abs(b.frame.midX - containerCenterX)
+            let nearest = items.min { itemA, itemB in
+                abs(itemA.frame.midX - containerCenterX) < abs(itemB.frame.midX - containerCenterX)
             }
 
             let page = nearest?.indexPath.item ?? 0

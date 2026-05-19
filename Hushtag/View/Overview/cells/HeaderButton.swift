@@ -6,7 +6,7 @@ class HeaderButton: UICollectionReusableView {
     @IBOutlet var forward: UIButton!
 
     var onDateChanged: ((Date) -> Void)?
-    private var currentDate: Date = .init()
+    var currentDate: Date = .init()
     override func awakeFromNib() {
         super.awakeFromNib()
         backward.addTarget(self, action: #selector(prevMonth), for: .touchUpInside)

@@ -49,14 +49,14 @@ final class LikedIdeasController {
         return likedIdeasDB.map { mapToIdea($0) }
     }
 
-    private func mapToIdea(_ db: LikedIdeaDB) -> Idea {
+    private func mapToIdea(_ database: LikedIdeaDB) -> Idea {
         Idea(
             id: UUID(),
-            ideaKey: db.ideaKey,
-            title: db.title,
-            description: db.description ?? "",
+            ideaKey: database.ideaKey,
+            title: database.title,
+            description: database.description ?? "",
             format: "",
-            hashtags: db.hashtags ?? [],
+            hashtags: database.hashtags ?? [],
             noveltyScore: 0,
             videos: nil,
             liked: true

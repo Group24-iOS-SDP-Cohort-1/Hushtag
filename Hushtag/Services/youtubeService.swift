@@ -1,13 +1,11 @@
 import Foundation
 
 enum AppConfig {
-
     static func value(for key: String) -> String {
-        
         guard let path = Bundle.main.path(forResource: "keys", ofType: "plist"),
               let plist = NSDictionary(contentsOfFile: path),
-              let value = plist[key] as? String else {
-            
+              let value = plist[key] as? String
+        else {
             fatalError("Missing key: \(key)")
         }
 
@@ -21,7 +19,6 @@ enum Keys {
     static let youtubeSearch = AppConfig.value(for: "SupabaseURL") + "/functions/v1/YouTube-search"
     static let preferenceSearch = AppConfig.value(for: "SupabaseURL") + "/functions/v1/preference-search"
     static let chatWithGemini = AppConfig.value(for: "SupabaseURL") + "/functions/v1/chat-with-gemini"
-
 }
 
 final class YouTubeService {

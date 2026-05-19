@@ -8,25 +8,25 @@ class AnalyticsIdeaDetailViewController: UIViewController {
     var completedScriptTypes: Set<String> = []
 
     private let scrollView: UIScrollView = {
-        let sv = UIScrollView()
-        sv.translatesAutoresizingMaskIntoConstraints = false
-        sv.alwaysBounceVertical = true
-        sv.showsVerticalScrollIndicator = false
-        return sv
+        let scroll = UIScrollView()
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        scroll.alwaysBounceVertical = true
+        scroll.showsVerticalScrollIndicator = false
+        return scroll
     }()
 
     private let contentView: UIView = {
-        let v = UIView()
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
     private let stackView: UIStackView = {
-        let sv = UIStackView()
-        sv.axis = .vertical
-        sv.spacing = 24
-        sv.translatesAutoresizingMaskIntoConstraints = false
-        return sv
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 24
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
     }()
 
     // Draft script progress view (we will build this below)
@@ -232,21 +232,21 @@ class AnalyticsIdeaDetailViewController: UIViewController {
     }
 
     private func createCardView() -> UIView {
-        let v = UIView()
-        v.backgroundColor = UIColor.secondarySystemBackground.withAlphaComponent(0.5)
-        v.layer.cornerRadius = 16
-        v.layer.borderWidth = 1
-        v.layer.borderColor = UIColor.systemGray5.cgColor
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
+        let cardView = UIView()
+        cardView.backgroundColor = UIColor.secondarySystemBackground.withAlphaComponent(0.5)
+        cardView.layer.cornerRadius = 16
+        cardView.layer.borderWidth = 1
+        cardView.layer.borderColor = UIColor.systemGray5.cgColor
+        cardView.translatesAutoresizingMaskIntoConstraints = false
+        return cardView
     }
 
     private func createSectionTitle(_ text: String) -> UILabel {
-        let l = UILabel()
-        l.text = text
-        l.font = .systemFont(ofSize: 18, weight: .semibold)
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
+        let titleLabel = UILabel()
+        titleLabel.text = text
+        titleLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        return titleLabel
     }
 
     private func createMetricCard(title: String, value: String) -> UIView {
@@ -356,7 +356,7 @@ class AnalyticsIdeaDetailViewController: UIViewController {
         progressWidthConstraint?.isActive = true
 
         let milestones = ["Script", "Title", "Description"]
-        for (i, m) in milestones.enumerated() {
+        for (index, milestoneName) in milestones.enumerated() {
             let dot = UIView()
             dot.backgroundColor = .systemGray5
             dot.layer.cornerRadius = 10
@@ -367,7 +367,7 @@ class AnalyticsIdeaDetailViewController: UIViewController {
             milestoneDots.append(dot)
 
             let lbl = UILabel()
-            lbl.text = m
+            lbl.text = milestoneName
             lbl.font = .systemFont(ofSize: 11, weight: .medium)
             lbl.textColor = .systemGray
             lbl.translatesAutoresizingMaskIntoConstraints = false
@@ -394,9 +394,9 @@ class AnalyticsIdeaDetailViewController: UIViewController {
                 lbl.centerXAnchor.constraint(equalTo: dot.centerXAnchor)
             ])
 
-            if i == 0 {
+            if index == 0 {
                 dot.leadingAnchor.constraint(equalTo: pBar.leadingAnchor, constant: 6).isActive = true
-            } else if i == milestones.count - 1 {
+            } else if index == milestones.count - 1 {
                 dot.trailingAnchor.constraint(equalTo: pBar.trailingAnchor, constant: -6).isActive = true
             } else {
                 dot.centerXAnchor.constraint(equalTo: pBar.centerXAnchor).isActive = true
@@ -438,9 +438,9 @@ class AnalyticsIdeaDetailViewController: UIViewController {
                     self.hasExistingScript = script != nil
                     if let script = script {
                         var types: Set<String> = []
-                        if let s = script.script, !s.isEmpty { types.insert("script") }
-                        if let t = script.title, !t.isEmpty { types.insert("title") }
-                        if let d = script.description, !d.isEmpty { types.insert("description") }
+                        if let scriptText = script.script, !scriptText.isEmpty { types.insert("script") }
+                        if let titleText = script.title, !titleText.isEmpty { types.insert("title") }
+                        if let descText = script.description, !descText.isEmpty { types.insert("description") }
                         self.completedScriptTypes = types
                         self.ideaMilestone = types.count
                     } else {

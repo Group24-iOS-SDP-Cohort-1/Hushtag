@@ -67,8 +67,8 @@ extension UIView {
     func findCollectionView() -> UICollectionView? {
         var view = superview
         while view != nil {
-            if let cv = view as? UICollectionView {
-                return cv
+            if let collectionView = view as? UICollectionView {
+                return collectionView
             }
             view = view?.superview
         }

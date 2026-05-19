@@ -10,11 +10,11 @@ enum ToggleService {
 
         var updatedPost = post
         updatedPost.tasks = post.tasks.map {
-            var t = $0
-            if t.id == task.id {
-                t.isCompleted = newValue
+            var currentTask = $0
+            if currentTask.id == task.id {
+                currentTask.isCompleted = newValue
             }
-            return t
+            return currentTask
         }
 
         try await postsController.updateTaskCompletion(
@@ -34,11 +34,11 @@ enum ToggleService {
 
         var updatedDeal = deal
         updatedDeal.deliverables = deal.deliverables.map {
-            var d = $0
-            if d.id == deliverable.id {
-                d.isCompleted = newValue
+            var deliverableItem = $0
+            if deliverableItem.id == deliverable.id {
+                deliverableItem.isCompleted = newValue
             }
-            return d
+            return deliverableItem
         }
 
         return try await dealsController.updateDeal(updatedDeal)
@@ -53,9 +53,9 @@ enum ToggleService {
         var updatedPost = post
         updatedPost.isManuallyCompleted = newValue
         updatedPost.tasks = post.tasks.map {
-            var t = $0
-            t.isCompleted = newValue
-            return t
+            var task = $0
+            task.isCompleted = newValue
+            return task
         }
 
         return try await postsController.updatePost(updatedPost)
@@ -70,9 +70,9 @@ enum ToggleService {
         var updatedDeal = deal
         updatedDeal.isManuallyCompleted = newValue
         updatedDeal.deliverables = deal.deliverables.map {
-            var d = $0
-            d.isCompleted = newValue
-            return d
+            var deliverableItem = $0
+            deliverableItem.isCompleted = newValue
+            return deliverableItem
         }
 
         return try await dealsController.updateDeal(updatedDeal)

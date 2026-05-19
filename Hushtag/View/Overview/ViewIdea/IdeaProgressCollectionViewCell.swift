@@ -13,17 +13,17 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
 
     /// Replace these properties at the top
     private let trackView: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor.white.withAlphaComponent(0.12)
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
+        let view = UIView()
+        view.backgroundColor = UIColor.white.withAlphaComponent(0.12)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
     private let progressView: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor.accent
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
+        let view = UIView()
+        view.backgroundColor = UIColor.accent
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
     /// Add this new property alongside milestoneDots/milestoneLabels
@@ -160,8 +160,8 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
         guard width > 0, width != lastContainerWidth else { return }
         lastContainerWidth = width
 
-        for (i, constraint) in middleDotCenterXConstraints.enumerated() {
-            let milestoneIndex = i + 1
+        for (index, constraint) in middleDotCenterXConstraints.enumerated() {
+            let milestoneIndex = index + 1
             let fraction = CGFloat(milestoneIndex) / CGFloat(milestones.count - 1)
             let trackWidth = width - (horizontalInset * 2) - dotSize
             constraint.constant = horizontalInset + (dotSize / 2) + trackWidth * fraction

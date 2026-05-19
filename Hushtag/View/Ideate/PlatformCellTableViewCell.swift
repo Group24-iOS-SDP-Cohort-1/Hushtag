@@ -1,8 +1,6 @@
 import UIKit
 
 class PlatformCellTableViewCell: UITableViewCell {
-   
-
     @IBOutlet var view: UIView!
 
     @IBOutlet var youtubebtn: UIButton!

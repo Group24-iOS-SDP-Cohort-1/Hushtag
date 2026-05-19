@@ -101,8 +101,8 @@ class AddDealsViewController: UITableViewController {
 
     private func setText(_ placeholder: String, value: String) {
         guard let row = fieldPlaceholders.firstIndex(of: placeholder) else { return }
-        let ip = IndexPath(row: row, section: Section.mainFields.rawValue)
-        (tableView.cellForRow(at: ip) as? MainFieldCell)?
+        let indexPath = IndexPath(row: row, section: Section.mainFields.rawValue)
+        (tableView.cellForRow(at: indexPath) as? MainFieldCell)?
             .textField.text = value
     }
 
@@ -148,8 +148,8 @@ class AddDealsViewController: UITableViewController {
 
         var fieldValues: [String] = []
         for row in 0 ..< fieldPlaceholders.count {
-            let ip = IndexPath(row: row, section: Section.mainFields.rawValue)
-            let cell = tableView.cellForRow(at: ip) as? MainFieldCell
+            let indexPath = IndexPath(row: row, section: Section.mainFields.rawValue)
+            let cell = tableView.cellForRow(at: indexPath) as? MainFieldCell
             fieldValues.append(cell?.textField.text ?? "")
         }
 

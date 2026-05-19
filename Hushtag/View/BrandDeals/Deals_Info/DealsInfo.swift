@@ -129,17 +129,17 @@ class DealsInfo: UIViewController {
     @IBAction func editModal(_: Any) {
         let storyboard = UIStoryboard(name: "BrandDeals", bundle: nil)
 
-        guard let vc = storyboard.instantiateViewController(
+        guard let addDealsVC = storyboard.instantiateViewController(
             withIdentifier: "AddDealsViewController"
         ) as? AddDealsViewController else { return }
 
-        vc.editingDeal = deals
-        vc.editingIndex = dealIndex
+        addDealsVC.editingDeal = deals
+        addDealsVC.editingIndex = dealIndex
 
-        vc.title = deals.name
+        addDealsVC.title = deals.name
 
-        vc.delegate = self
-        let nav = UINavigationController(rootViewController: vc)
+        addDealsVC.delegate = self
+        let nav = UINavigationController(rootViewController: addDealsVC)
         nav.modalPresentationStyle = .pageSheet
 
         present(nav, animated: true)
@@ -476,14 +476,16 @@ extension DealsInfo: UICollectionViewDelegate {
         if section == .selectedIdeas {
             let idea = selectedIdeas[indexPath.item]
             let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
-            guard let vc = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas
+            guard let scriptedIdeasVC =
+                    storyboard.instantiateViewController(withIdentifier: "scriptedIdea")
+                    as? ScriptedIdeas
             else { return }
-            vc.idea = idea
-            vc.isModal = true
-            vc.onDealUntagged = { [weak self] in
+            scriptedIdeasVC.idea = idea
+            scriptedIdeasVC.isModal = true
+            scriptedIdeasVC.onDealUntagged = { [weak self] in
                 self?.fetchLinkedIdeas()
             }
-            let nav = UINavigationController(rootViewController: vc)
+            let nav = UINavigationController(rootViewController: scriptedIdeasVC)
             nav.modalPresentationStyle = .pageSheet
             present(nav, animated: true)
             return

@@ -23,11 +23,11 @@ class DealsViewController: UIViewController {
     }()
 
     private let noDealsImageView: UIImageView = {
-        let iv = UIImageView()
-        iv.image = UIImage(systemName: "tag.fill")
-        iv.tintColor = .systemGray4
-        iv.contentMode = .scaleAspectFit
-        return iv
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "tag.fill")
+        imageView.tintColor = .systemGray4
+        imageView.contentMode = .scaleAspectFit
+        return imageView
     }()
 
     private let noDealsLabel: UILabel = {
@@ -247,13 +247,13 @@ extension DealsViewController: UICollectionViewDataSource, UICollectionViewDeleg
 
         if segue.identifier == "info_page",
            let deal = sender as? Deal,
-           let vc = segue.destination as? DealsInfo {
-            vc.deals = deal
+           let dealsInfoVC = segue.destination as? DealsInfo {
+            dealsInfoVC.deals = deal
             if let idx = deals.firstIndex(where: { $0.id == deal.id }) {
-                vc.dealIndex = idx
-                vc.delegate = self
+                dealsInfoVC.dealIndex = idx
+                dealsInfoVC.delegate = self
             } else {
-                vc.dealIndex = -1
+                dealsInfoVC.dealIndex = -1
             }
         }
     }

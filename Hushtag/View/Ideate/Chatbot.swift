@@ -152,10 +152,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 }
                 await MainActor.run {
                     let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
-                    guard let vc = storyboard
+                    guard let scriptedVC = storyboard
                         .instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas else { return }
-                    vc.idea = idea
-                    self.navigationController?.pushViewController(vc, animated: true)
+                    scriptedVC.idea = idea
+                    self.navigationController?.pushViewController(scriptedVC, animated: true)
                 }
             } catch {
                 print("Failed to fetch scripted idea:", error)

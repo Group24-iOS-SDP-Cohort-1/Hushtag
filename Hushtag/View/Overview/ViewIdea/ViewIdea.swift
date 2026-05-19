@@ -38,9 +38,9 @@ class ViewIdea: UIViewController {
 
                     if let script = script {
                         var types: Set<String> = []
-                        if let s = script.script, !s.isEmpty { types.insert("script") }
-                        if let t = script.title, !t.isEmpty { types.insert("title") }
-                        if let d = script.description, !d.isEmpty { types.insert("description") }
+                        if let script = script.script, !script.isEmpty { types.insert("script") }
+                        if let title = script.title, !title.isEmpty { types.insert("title") }
+                        if let description = script.description, !description.isEmpty { types.insert("description") }
                         self.completedScriptTypes = types
                         self.ideaMilestone = types.count
                     } else {
@@ -106,11 +106,11 @@ class ViewIdea: UIViewController {
                     if let existingScript = existing {
                         // Script exists — go straight to it
                         let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
-                        guard let vc = storyboard.instantiateViewController(
+                        guard let scriptedVC = storyboard.instantiateViewController(
                             withIdentifier: "scriptedIdea"
                         ) as? ScriptedIdeas else { return }
-                        vc.idea = existingScript
-                        self.navigationController?.pushViewController(vc, animated: true)
+                        scriptedVC.idea = existingScript
+                        self.navigationController?.pushViewController(scriptedVC, animated: true)
                     } else if let conversation = existingConversation {
                         self.didTapDraftScript(for: idea, conversationID: conversation.id)
                     } else {

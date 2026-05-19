@@ -145,17 +145,17 @@ extension InsightsViewController: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if !analyticsIdeas.isEmpty {
             let selectedIdea = analyticsIdeas[indexPath.row]
-            let vc = AnalyticsIdeaDetailViewController()
-            vc.analyticsIdea = selectedIdea
-            navigationController?.pushViewController(vc, animated: true)
+            let detailVC = AnalyticsIdeaDetailViewController()
+            detailVC.analyticsIdea = selectedIdea
+            navigationController?.pushViewController(detailVC, animated: true)
         } else {
             let selectedIdea = ideas[indexPath.row]
             let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
-            guard let vc = storyboard.instantiateViewController(withIdentifier: "IdeaVC") as? ViewIdea else {
+            guard let viewIdeaVC = storyboard.instantiateViewController(withIdentifier: "IdeaVC") as? ViewIdea else {
                 return
             }
-            vc.idea = selectedIdea
-            navigationController?.pushViewController(vc, animated: true)
+            viewIdeaVC.idea = selectedIdea
+            navigationController?.pushViewController(viewIdeaVC, animated: true)
         }
     }
 

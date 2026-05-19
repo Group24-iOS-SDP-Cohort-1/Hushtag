@@ -1,6 +1,6 @@
 import UIKit
 
-class Script_cell_ideate: UICollectionViewCell {
+class ScriptIdeateCell: UICollectionViewCell {
     @IBOutlet var progressView: CircularProgressView!
 
     @IBOutlet var title: UILabel!
@@ -34,9 +34,9 @@ class Script_cell_ideate: UICollectionViewCell {
         let totalCriteria: Float = 3.0
         var filledCriteria: Float = 0.0
 
-        if let t = script.title, !t.isEmpty { filledCriteria += 1 }
-        if let d = script.description, !d.isEmpty { filledCriteria += 1 }
-        if let s = script.script, !s.isEmpty { filledCriteria += 1 }
+        if let title = script.title, !title.isEmpty { filledCriteria += 1 }
+        if let description = script.description, !description.isEmpty { filledCriteria += 1 }
+        if let script = script.script, !script.isEmpty { filledCriteria += 1 }
 
         let progress = filledCriteria / totalCriteria
         progressView.setProgress(value: progress)

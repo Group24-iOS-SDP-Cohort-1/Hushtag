@@ -307,9 +307,10 @@ final class ProfileTableViewController: UITableViewController {
                     try await signInModel.connectYouTube()
 
                     // Verify database state explicitly
-                    let confirmedState = await YouTubeController.shared.verifyYouTubeConnectionState(expectedState: true)
+                    let confirmedState =
+                    await YouTubeController.shared.verifyYouTubeConnectionState(expectedState: true)
                     SessionManager.shared.currentProfile?.isYouTubeConnected = confirmedState
-                    
+
                     self.fetchProfile(forceRefresh: true)
                 } catch {
                     // print("Failed to connect YouTube: \(error)")
@@ -333,7 +334,7 @@ final class ProfileTableViewController: UITableViewController {
                 // Verify database state explicitly
                 let confirmedState = await YouTubeController.shared.verifyYouTubeConnectionState(expectedState: false)
                 SessionManager.shared.currentProfile?.isYouTubeConnected = confirmedState
-                
+
                 self.fetchProfile(forceRefresh: true)
 
             } catch {
