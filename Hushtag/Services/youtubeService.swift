@@ -20,6 +20,8 @@ enum Keys {
     static let supabaseURL = AppConfig.value(for: "SupabaseURL")
     static let youtubeSearch = AppConfig.value(for: "SupabaseURL") + "/functions/v1/YouTube-search"
     static let preferenceSearch = AppConfig.value(for: "SupabaseURL") + "/functions/v1/preference-search"
+    static let chatWithGemini = AppConfig.value(for: "SupabaseURL") + "/functions/v1/chat-with-gemini"
+
 }
 
 final class YouTubeService {

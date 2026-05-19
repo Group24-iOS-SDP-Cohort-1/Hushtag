@@ -1,8 +1,8 @@
 import UIKit
 
 class PreferencesCollectionViewCell: UICollectionViewCell {
-    @IBOutlet var Subheading: UILabel!
-    @IBOutlet var Heading: UILabel!
+    @IBOutlet var subheading: UILabel!
+    @IBOutlet var heading: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()

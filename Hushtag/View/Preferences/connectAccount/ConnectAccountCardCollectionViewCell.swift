@@ -57,7 +57,10 @@
 //
 //
 //    func registerCells(){
-//        innerCollectionView.register(UINib(nibName: "OptionsCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "optionsCell")
+//        innerCollectionView.register(
+//            UINib(nibName: "OptionsCollectionViewCell", bundle: nil),
+//            forCellWithReuseIdentifier: "optionsCell"
+//        )
 //    }
 //
 // }

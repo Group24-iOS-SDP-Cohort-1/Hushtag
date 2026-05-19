@@ -10,7 +10,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         options _: UIScene.ConnectionOptions
     ) {
         // force dark mode
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard (scene as? UIWindowScene) != nil else { return }
         window?.overrideUserInterfaceStyle = .dark
 
         GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in

@@ -12,6 +12,17 @@ struct AttachThumbnailRequest: Codable {
     let youtubeVideoId: String
 }
 
+struct VideoUploadRequest {
+    let videoURL: URL
+    let thumbnailURL: URL?
+    let title: String
+    let description: String?
+    let tags: [String]?
+    let categoryId: String
+    let privacyStatus: String
+    let publishAt: Date?
+}
+
 class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate, URLSessionDataDelegate {
     static let shared = YouTubeUploadManager()
 
@@ -47,16 +58,15 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
     }
 
     /// Main entry point to upload a video
-    func uploadVideo(
-        videoURL: URL,
-        thumbnailURL: URL?,
-        title: String,
-        description: String?,
-        tags: [String]?,
-        categoryId: String,
-        privacyStatus: String,
-        publishAt: Date?
-    ) {
+    func uploadVideo(request: VideoUploadRequest) {
+        let videoURL = request.videoURL
+        let thumbnailURL = request.thumbnailURL
+        let title = request.title
+        let description = request.description
+        let tags = request.tags
+        let categoryId = request.categoryId
+        let privacyStatus = request.privacyStatus
+        let publishAt = request.publishAt
         Task {
             do {
                 // 1. Copy video to Documents directory for robust background networking compliance
@@ -229,7 +239,8 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
                             let jwtToken = session.accessToken
 
                             // 2. Use the hardcoded production URL (Matching the exact spelling of your function)
-                            let urlString = "https://juuuwuydlgjhgwwabswy.supabase.co/functions/v1/set-youtube-thumbnail"
+                            let urlString =
+                                "https://juuuwuydlgjhgwwabswy.supabase.co/functions/v1/set-youtube-thumbnail"
                             var request = URLRequest(url: URL(string: urlString)!)
                             request.httpMethod = "POST"
 

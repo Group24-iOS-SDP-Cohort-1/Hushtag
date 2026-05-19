@@ -327,7 +327,7 @@ class CreatePostViewController: UIViewController {
         let publishAt: Date? = currentFields.contains("Publish At") ? publishAtDatePicker.date : nil
 
         if let videoURL = selectedVideoURL {
-            YouTubeUploadManager.shared.uploadVideo(
+            YouTubeUploadManager.shared.uploadVideo(request: VideoUploadRequest(
                 videoURL: videoURL,
                 thumbnailURL: selectedThumbnailURL,
                 title: title,
@@ -336,7 +336,7 @@ class CreatePostViewController: UIViewController {
                 categoryId: selectedCategory.categoryId,
                 privacyStatus: selectedPrivacy,
                 publishAt: publishAt
-            )
+            ))
         }
 
         dismiss(animated: true)

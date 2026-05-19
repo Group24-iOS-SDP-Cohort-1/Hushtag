@@ -107,11 +107,11 @@ class OpaqueLoadingScreen {
         guard let overlay = overlayView else { return }
         UIView.animate(withDuration: 0.3, animations: {
             overlay.alpha = 0
-        }) { _ in
+        }, completion: { _ in
             overlay.removeFromSuperview()
             self.overlayView = nil
             self.activityIndicator = nil
             self.messageLabel = nil
-        }
+        })
     }
 }

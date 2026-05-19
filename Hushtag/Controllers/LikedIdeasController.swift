@@ -31,7 +31,7 @@ final class LikedIdeasController {
         try await client.database
             .from("liked_ideas")
             .delete()
-            .eq("user_id", value: session.user.id)
+            .eq("userId", value: session.user.id)
             .eq("ideaKey", value: ideaKey)
             .execute()
     }
@@ -42,7 +42,7 @@ final class LikedIdeasController {
         let likedIdeasDB: [LikedIdeaDB] = try await client.database
             .from("liked_ideas")
             .select()
-            .eq("user_id", value: session.user.id)
+            .eq("userId", value: session.user.id)
             .execute()
             .value
 
@@ -83,9 +83,9 @@ final class LikedIdeasController {
         try await client.database
             .from("liked_ideas")
             .update([
-                "convo_id": convoId
+                "convoId": convoId
             ])
-            .eq("user_id", value: session.user.id)
+            .eq("userId", value: session.user.id)
             .eq("ideaKey", value: ideaKey)
             .execute()
     }
@@ -95,8 +95,8 @@ final class LikedIdeasController {
 
         let response: [ConvoResponse] = try await client.database
             .from("liked_ideas")
-            .select("convo_id")
-            .eq("user_id", value: session.user.id)
+            .select("convoId")
+            .eq("userId", value: session.user.id)
             .eq("ideaKey", value: ideaKey)
             .limit(1)
             .execute()

@@ -62,11 +62,9 @@ class ChoosePlatformCollectionViewCell: UICollectionViewCell {
             innerCollectionView.deselectItem(at: indexPath, animated: false)
         }
 
-        for (itemIndex, option) in platformOptions.enumerated() {
-            if selected.contains(option.lowercased()) {
-                let indexPath = IndexPath(item: itemIndex, section: 0)
-                innerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
-            }
+        for (itemIndex, option) in platformOptions.enumerated() where selected.contains(option.lowercased()) {
+            let indexPath = IndexPath(item: itemIndex, section: 0)
+            innerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
         }
     }
 

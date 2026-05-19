@@ -57,7 +57,7 @@ final class DealsController {
         let deals: [DealDB] = try await client.database
             .from("brand_deals")
             .select()
-            .eq("user_id", value: session.user.id)
+            .eq("userId", value: session.user.id)
             .order("deadline", ascending: true)
             .execute()
             .value
@@ -94,7 +94,7 @@ final class DealsController {
         let updatedDeal: DealDB = try await client.database
             .from("brand_deals")
             .update(payload)
-            .eq("deal_id", value: deal.id)
+            .eq("dealId", value: deal.id)
             .select()
             .single()
             .execute()
@@ -103,7 +103,7 @@ final class DealsController {
         try await client.database
             .from("deliverables")
             .delete()
-            .eq("deal_id", value: deal.id)
+            .eq("dealId", value: deal.id)
             .execute()
 
         let deliverablesPayload = deal.deliverables.map {
@@ -146,7 +146,7 @@ final class DealsController {
         try await client.database
             .from("brand_deals")
             .update(["isCompleted": isCompleted])
-            .eq("deal_id", value: dealId)
+            .eq("dealId", value: dealId)
             .execute()
     }
 
@@ -156,14 +156,14 @@ final class DealsController {
         try await client.database
             .from("deliverables")
             .delete()
-            .eq("deal_id", value: dealId)
+            .eq("dealId", value: dealId)
             .execute()
 
         try await client.database
             .from("brand_deals")
             .delete()
-            .eq("deal_id", value: dealId)
-            .eq("user_id", value: session.user.id)
+            .eq("dealId", value: dealId)
+            .eq("userId", value: session.user.id)
             .execute()
     }
 

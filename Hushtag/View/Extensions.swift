@@ -51,7 +51,12 @@ extension String {
         )
 
         // 3. PARSE BOLD (**text**)
-        let boldRegex = try! NSRegularExpression(pattern: "\\*\\*(.*?)\\*\\*", options: [])
+        let boldRegex: NSRegularExpression
+        do {
+            boldRegex = try NSRegularExpression(pattern: "\\*\\*(.*?)\\*\\*", options: [])
+        } catch {
+            fatalError("Invalid bold regex pattern: \(error)")
+        }
         let matches = boldRegex.matches(in: self, options: [], range: NSRange(location: 0, length: utf16.count))
 
         for match in matches.reversed() {
@@ -68,7 +73,12 @@ extension String {
 
         // 4. PARSE BULLETS (* text)
         let stringContent = attributedString.string
-        let bulletRegex = try! NSRegularExpression(pattern: "^\\s*\\*\\s+(.*)$", options: .anchorsMatchLines)
+        let bulletRegex: NSRegularExpression
+        do {
+            bulletRegex = try NSRegularExpression(pattern: "^\\s*\\*\\s+(.*)$", options: .anchorsMatchLines)
+        } catch {
+            fatalError("Invalid bullet regex pattern: \(error)")
+        }
         let bulletMatches = bulletRegex.matches(
             in: stringContent,
             options: [],
@@ -94,7 +104,12 @@ extension String {
 
         // 5. CLEANUP: Remove "---" lines AND the surrounding extra newlines
         // The regex now looks for: (newline) + (---) + (newline)
-        let separatorRegex = try! NSRegularExpression(pattern: "\\n+\\s*---\\s*\\n+", options: [])
+        let separatorRegex: NSRegularExpression
+        do {
+            separatorRegex = try NSRegularExpression(pattern: "\\n+\\s*---\\s*\\n+", options: [])
+        } catch {
+            fatalError("Invalid separator regex pattern: \(error)")
+        }
         let separatorMatches = separatorRegex.matches(
             in: attributedString.string,
             options: [],

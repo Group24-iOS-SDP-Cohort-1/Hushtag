@@ -108,9 +108,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 let mapped = history.map { chat -> Message in
                     var message = Message(role: chat.role.rawValue, content: chat.content, mark: nil)
                     guard let idea else { return message }
-                    if chat.content == idea.script { message.mark = "script" }
-                    else if chat.content == idea.title { message.mark = "title" }
-                    else if chat.content == idea.description { message.mark = "description" }
+                    if chat.content == idea.script { message.mark = "script"
+                    } else if chat.content == idea.title { message.mark = "title"
+                    } else if chat.content == idea.description { message.mark = "description" }
                     return message
                 }
                 await MainActor.run {

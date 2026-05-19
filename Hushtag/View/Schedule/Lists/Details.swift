@@ -317,7 +317,7 @@ extension Details: UICollectionViewDataSource {
             ) as? DetailsCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            cell.DealDetails(with: deal)
+            cell.dealDetails(with: deal)
             return cell
         }
 

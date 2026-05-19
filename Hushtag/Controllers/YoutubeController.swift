@@ -146,8 +146,8 @@ final class YouTubeController {
 
             let status: ConnectionStatus = try await client.database
                 .from("profiles")
-                .select("is_youtube_connected")
-                .eq("user_id", value: session.user.id)
+                .select("isYoutubeConnected")
+                .eq("userId", value: session.user.id)
                 .single()
                 .execute()
                 .value

@@ -788,9 +788,9 @@ extension Ideate1: IdeaCellDelegate {
                 self.likedIdeas.insert(idea, at: 0)
                 self.collectionView.insertItems(at: [IndexPath(row: 0, section: likedSection)])
             }
-        }) { _ in
+        }, completion: { _ in
             NotificationCenter.default.post(name: .didUpdateLikedStatus, object: ideaKey)
-        }
+        })
     }
 }
 

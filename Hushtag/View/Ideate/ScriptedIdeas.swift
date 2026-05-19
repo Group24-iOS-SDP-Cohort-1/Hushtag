@@ -56,7 +56,7 @@ class ScriptedIdeas: UIViewController {
         ideaView.delegate = self
         ideaView.dataSource = self
         ideaView.setCollectionViewLayout(generateLayout(), animated: true)
-        guard let _ = idea else {
+        guard idea != nil else {
             print("No idea received.")
             return
         }

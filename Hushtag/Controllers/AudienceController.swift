@@ -14,8 +14,8 @@ final class AudienceController {
             .from("audience")
             .select()
             .eq("userId", value: session.user.id)
-            .eq("start_date", value: startDate)
-            .eq("end_date", value: endDate)
+            .eq("startDate", value: startDate)
+            .eq("endDate", value: endDate)
             .execute()
             .value
     }
@@ -30,8 +30,8 @@ final class AudienceController {
             .from("top_videos")
             .select()
             .eq("userId", value: session.user.id)
-            .eq("start_date", value: startDate)
-            .eq("end_date", value: endDate)
+            .eq("startDate", value: startDate)
+            .eq("endDate", value: endDate)
             .execute()
             .value
     }

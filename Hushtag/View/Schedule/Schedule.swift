@@ -274,8 +274,7 @@ class Schedule: UIViewController {
     }
 
     func generateLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout {
-            section, _ in
+        return UICollectionViewCompositionalLayout { section, _ in
             let headerSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .absolute(50)

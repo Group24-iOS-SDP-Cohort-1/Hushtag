@@ -80,8 +80,8 @@ final class PostsController {
         try await client.database
             .from("posts")
             .delete()
-            .eq("post_id", value: postId)
-            .eq("user_id", value: session.user.id)
+            .eq("postId", value: postId)
+            .eq("userId", value: session.user.id)
             .execute()
     }
 
@@ -100,7 +100,7 @@ final class PostsController {
         let updatedPost: PostDB = try await client.database
             .from("posts")
             .update(payload)
-            .eq("post_id", value: post.id ?? UUID())
+            .eq("postId", value: post.id ?? UUID())
             .select()
             .single()
             .execute()
@@ -109,7 +109,7 @@ final class PostsController {
         try await client.database
             .from("sub_tasks")
             .delete()
-            .eq("post_id", value: post.id ?? UUID())
+            .eq("postId", value: post.id ?? UUID())
             .execute()
 
         var updatedTasks: [TaskDB] = []

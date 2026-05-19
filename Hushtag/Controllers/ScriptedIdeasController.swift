@@ -49,22 +49,22 @@ final class ScriptedIdeasController {
             .from("conversations")
             .select("""
                 id,
-                user_id,
+                userId,
                 title,
-                created_at,
-            idea_id,
-                chat_history!inner(conversation_id),
+                createdAt,
+            ideaId,
+                chat_history!inner(conversationId),
                 scripted_ideas (
                     id,
-                    chat_id,
+                    chatId,
                     title,
                     description,
                     script,
                     thumbnail
                 )
             """)
-            .eq("user_id", value: session.user.id.uuidString)
-            .order("created_at", ascending: false)
+            .eq("userId", value: session.user.id.uuidString)
+            .order("createdAt", ascending: false)
             .execute()
             .value
     }
@@ -74,19 +74,19 @@ final class ScriptedIdeasController {
             .from("conversations")
             .select("""
                 id,
-                user_id,
+                userId,
                 title,
-                created_at,
+                createdAt,
                 scripted_ideas (
                     id,
-                    chat_id,
+                    chatId,
                     title,
                     description,
                     script,
                     thumbnail
                 )
             """)
-            .eq("idea_id", value: ideaId.uuidString)
+            .eq("ideaId", value: ideaId.uuidString)
             .limit(1)
             .execute()
             .value
@@ -147,8 +147,8 @@ final class ScriptedIdeasController {
         return try await client.database
             .from("chat_history")
             .select()
-            .eq("conversation_id", value: conversationID.uuidString)
-            .order("created_at", ascending: true)
+            .eq("conversationId", value: conversationID.uuidString)
+            .order("createdAt", ascending: true)
             .execute()
             .value
     }
@@ -179,8 +179,8 @@ final class ScriptedIdeasController {
     func fetchScriptByIdeaId(ideaId: UUID) async throws -> ScriptedIdea? {
         let result: [ScriptedIdea] = try await client.database
             .from("scripted_ideas")
-            .select("*, conversations!inner(idea_id)")
-            .eq("conversations.idea_id", value: ideaId.uuidString)
+            .select("*, conversations!inner(ideaId)")
+            .eq("conversations.ideaId", value: ideaId.uuidString)
             .limit(1)
             .execute()
             .value
@@ -265,7 +265,7 @@ final class ScriptedIdeasController {
         // Fetch conversation
         let conversations: [Conversation] = try await client.database
             .from("conversations")
-            .select("id, user_id, title, created_at")
+            .select("id, userId, title, createdAt")
             .eq("id", value: conversationID)
             .execute()
             .value
@@ -324,7 +324,7 @@ final class ScriptedIdeasController {
 
         try await client.database
             .from("scripted_ideas")
-            .upsert(payload, onConflict: "chat_id")
+            .upsert(payload, onConflict: "chatId")
             .execute()
     }
 
@@ -335,7 +335,7 @@ final class ScriptedIdeasController {
         try await client.database
             .from("ideas")
             .update([
-                "expanded_description": expandedDescription
+                "expandedDescription": expandedDescription
             ])
             .eq("id", value: ideaID.uuidString)
             .execute()

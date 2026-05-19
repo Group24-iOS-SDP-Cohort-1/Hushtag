@@ -28,4 +28,3 @@ nonisolated struct ProfileInsertPayload: Encodable {
     let email: String
     let avatarUrl: String?
 }
-
