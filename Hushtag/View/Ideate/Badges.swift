@@ -1,9 +1,9 @@
 import UIKit
 
 class Badges: UIView {
-    
+
     @IBOutlet weak var badgeLabel: UILabel!
-    
+
     private var badgeCornerRadius: CGFloat = 12
 
     static func loadFromNib() -> Badges {

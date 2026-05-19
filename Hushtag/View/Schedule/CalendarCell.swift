@@ -1,13 +1,12 @@
-
 import UIKit
 
 class CalendarCell: UICollectionViewCell, UIGestureRecognizerDelegate {
-    
+
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     private var swipeLeft: UISwipeGestureRecognizer!
     private var swipeRight: UISwipeGestureRecognizer!
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         contentView.layer.cornerRadius = 12
@@ -27,7 +26,7 @@ class CalendarCell: UICollectionViewCell, UIGestureRecognizerDelegate {
             dateLabel.textColor = .white
         }
     }
-    
+
     private func setupGestures() {
         contentView.gestureRecognizers?.forEach {
                 contentView.removeGestureRecognizer($0)
@@ -59,7 +58,7 @@ class CalendarCell: UICollectionViewCell, UIGestureRecognizerDelegate {
             break
         }
     }
-    
+
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }

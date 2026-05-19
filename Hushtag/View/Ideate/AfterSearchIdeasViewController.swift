@@ -3,44 +3,44 @@ import UIKit
 class AfterSearchIdeasViewController: UIViewController {
 
     @IBOutlet var collectionView: UICollectionView!
-    
+
     var keyword: String = ""
     var currentInputText: String = ""
     var ideas: [Idea] = []
-    
+
     private let likedIdeasController = LikedIdeasController()
-    
+
     enum SectionType {
         case search
         case suggested
     }
-    
+
     let sections: [SectionType] = [.search, .suggested]
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         currentInputText = keyword
 
         collectionView.setCollectionViewLayout(generateLayout(), animated: false)
         collectionView.dataSource = self
         collectionView.delegate = self
-        
+
         registerCells()
         setupGlobalKeyboardDismiss()
-        
+
         // Execute initial search
         if !keyword.isEmpty {
             performSearch(with: keyword)
         }
     }
-    
+
     private func registerCells() {
         collectionView.register(UINib(nibName: "IdeaCells", bundle: nil), forCellWithReuseIdentifier: "ideaCell")
         collectionView.register(UINib(nibName: "IdeaSearch", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "IdeaSearch")
         collectionView.register(UINib(nibName: "HeaderView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "headerCell")
     }
-    
+
     private func setupGlobalKeyboardDismiss() {
         let tapGesture = UITapGestureRecognizer(
             target: self,
@@ -49,15 +49,15 @@ class AfterSearchIdeasViewController: UIViewController {
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
     }
-    
+
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
-    
+
     func generateLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout { sectionIndex, environment in
+        return UICollectionViewCompositionalLayout { sectionIndex, _ in
             let sectionType = self.sections[sectionIndex]
-            
+
             switch sectionType {
             case .search:
                 let itemSize = NSCollectionLayoutSize(
@@ -67,7 +67,7 @@ class AfterSearchIdeasViewController: UIViewController {
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: itemSize, subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
-                
+
                 let header = NSCollectionLayoutBoundarySupplementaryItem(
                     layoutSize: NSCollectionLayoutSize(
                         widthDimension: .fractionalWidth(1.0),
@@ -80,7 +80,7 @@ class AfterSearchIdeasViewController: UIViewController {
                 // Increase spacing below the search cell
                 section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0)
                 return section
-                
+
             case .suggested:
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
@@ -88,12 +88,12 @@ class AfterSearchIdeasViewController: UIViewController {
                 )
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: itemSize, subitems: [item])
-                
+
                 let section = NSCollectionLayoutSection(group: group)
                 section.contentInsets = NSDirectionalEdgeInsets(
                     top: 10, leading: 0, bottom: 20, trailing: 0
                 )
-                
+
                 let header = NSCollectionLayoutBoundarySupplementaryItem(
                     layoutSize: NSCollectionLayoutSize(
                         widthDimension: .fractionalWidth(1.0),
@@ -102,23 +102,23 @@ class AfterSearchIdeasViewController: UIViewController {
                     elementKind: UICollectionView.elementKindSectionHeader,
                     alignment: .top
                 )
-                
+
                 section.boundarySupplementaryItems = [header]
                 section.interGroupSpacing = 15
-                
+
                 return section
             }
         }
     }
-    
+
     private func performSearch(with query: String) {
         OpaqueLoadingScreen.shared.show(message: "Searching ideas...")
-        
+
         Task {
             do {
                 let response = try await YouTubeService().search(query: query)
                 let clusterIdeas = response.clusterIdeas
-                
+
                 let mappedIdeas: [Idea] = clusterIdeas.flatMap { cluster in
                     cluster.ideas.map { geminiIdea in
                         let key = makeIdeaKey(
@@ -140,13 +140,13 @@ class AfterSearchIdeasViewController: UIViewController {
                         )
                     }
                 }
-                
+
                 await MainActor.run {
                     self.ideas = mappedIdeas
                     self.collectionView.reloadData()
                     OpaqueLoadingScreen.shared.hide()
                 }
-                
+
             } catch {
                 print("❌ ERROR:", error)
                 await MainActor.run {
@@ -158,11 +158,11 @@ class AfterSearchIdeasViewController: UIViewController {
 }
 
 extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollectionViewDelegate {
-    
+
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return sections.count
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let sectionType = sections[section]
         switch sectionType {
@@ -172,7 +172,7 @@ extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollecti
             return ideas.count
         }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let sectionType = sections[indexPath.section]
         switch sectionType {
@@ -185,12 +185,12 @@ extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollecti
             return cell
         }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard kind == UICollectionView.elementKindSectionHeader else {
             return UICollectionReusableView()
         }
-        
+
         let sectionType = sections[indexPath.section]
         switch sectionType {
         case .search:
@@ -200,12 +200,12 @@ extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollecti
                 for: indexPath
             ) as! IdeaSearch
             header.textLabel.text = self.currentInputText
-            
+
             header.configure(state: .afterSearch(showCross: !self.currentInputText.isEmpty))
-            
+
             header.delegate = self
             return header
-            
+
         case .suggested:
             let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
@@ -217,7 +217,7 @@ extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollecti
             return header
         }
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let sectionType = sections[indexPath.section]
         switch sectionType {
@@ -237,14 +237,14 @@ extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollecti
 extension AfterSearchIdeasViewController: IdeaSearchDelegate {
     func didTapSearch(with keyword: String) {
         self.currentInputText = keyword
-        
+
         if keyword.isEmpty {
             // Keep the previous search results exactly as they are.
             // Reload collection view to force layout update and fix glitch when stack view is unhidden
             self.collectionView.reloadData()
             return
         }
-        
+
         self.keyword = keyword
         self.collectionView.reloadData()
         performSearch(with: keyword)
@@ -256,10 +256,10 @@ extension AfterSearchIdeasViewController: IdeaCellDelegate {
         guard let index = ideas.firstIndex(where: { $0.ideaKey == ideaKey }) else {
             return
         }
-        
+
         let isCurrentlyLiked = LikedIds.likedIdeaIds.contains(ideaKey)
         let idea = ideas[index]
-        
+
         Task {
             do {
                 if isCurrentlyLiked {
@@ -269,18 +269,18 @@ extension AfterSearchIdeasViewController: IdeaCellDelegate {
                     try await likedIdeasController.likeIdea(idea)
                     LikedIds.likedIdeaIds.insert(ideaKey)
                 }
-                
+
                 await MainActor.run {
                     ideas[index].liked = !isCurrentlyLiked
-                    
+
                     if let smIndex = SessionManager.shared.personalizedIdeas.firstIndex(where: { $0.ideaKey == ideaKey }) {
                         SessionManager.shared.personalizedIdeas[smIndex].liked = !isCurrentlyLiked
                     }
-                    
+
                     NotificationCenter.default.post(name: .didUpdateLikedStatus, object: ideaKey)
-                    
+
                     guard let suggestedSectionIndex = sections.firstIndex(of: .suggested) else { return }
-                    
+
                     if let cell = collectionView.cellForItem(at: IndexPath(row: index, section: suggestedSectionIndex)) as? IdeaCells {
                         cell.configure(idea: ideas[index])
                     }

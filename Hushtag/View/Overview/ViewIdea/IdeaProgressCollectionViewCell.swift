@@ -54,7 +54,7 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
 
             view.layer.cornerRadius = 16
             view.clipsToBounds = true
-            
+
             // Button styling
             viewYourDraft.layer.cornerRadius = 20
             viewYourDraft.backgroundColor = UIColor.accent.withAlphaComponent(0.15)
@@ -82,7 +82,7 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
 
             progressView.leadingAnchor.constraint(equalTo: trackView.leadingAnchor),
             progressView.topAnchor.constraint(equalTo: trackView.topAnchor),
-            progressView.bottomAnchor.constraint(equalTo: trackView.bottomAnchor),
+            progressView.bottomAnchor.constraint(equalTo: trackView.bottomAnchor)
         ])
 
         progressWidthConstraint = progressView.widthAnchor.constraint(
@@ -132,7 +132,7 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
 
                 label.topAnchor.constraint(equalTo: dot.bottomAnchor, constant: 6),
                 label.centerXAnchor.constraint(equalTo: dot.centerXAnchor),
-                label.widthAnchor.constraint(equalToConstant: 80),
+                label.widthAnchor.constraint(equalToConstant: 80)
             ])
 
             switch index {

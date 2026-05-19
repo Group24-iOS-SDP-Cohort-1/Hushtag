@@ -1,7 +1,7 @@
 import UIKit
 
 class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
-    
+
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textView: UIView!
     @IBOutlet weak var textViewHeightConstraint: NSLayoutConstraint!
@@ -25,15 +25,14 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         "description": [],
         "thumbnail": []
     ]
-    
+
     let maxLines: CGFloat = 10
     let minLines: CGFloat = 3
     let lineHeight: CGFloat = 100
     let requiredMarkTypes = ["script", "title", "description"]
     var didShowFinalReadyMessage = false
     var conversationID: UUID?
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
@@ -41,7 +40,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         tableView.separatorStyle = .none
         tableView.reloadData()
         textView.layer.backgroundColor = UIColor.clear.cgColor
-        
+
         enterbutton.layer.cornerRadius = 30
         textFieldView.delegate = self
         textFieldView.isScrollEnabled = false
@@ -77,14 +76,14 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
             header.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
             header.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-            header.heightAnchor.constraint(equalToConstant: 125),
+            header.heightAnchor.constraint(equalToConstant: 125)
         ])
 
         if conversationID == nil {
-            
+
             conversationID = UUID()
             print("New Conversation started:", conversationID!)
-            
+
             Task {
                 do {
                     _ = try await controller.addConversation(id: conversationID ?? UUID(), ideaId: ideaId)
@@ -93,27 +92,27 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     print("Failed to create conversation:", error)
                 }
             }
-            
+
         } else {
             print("📌 Opening existing conversation:", conversationID!)
         }
-        
+
         Task {
             do {
                 let history = try await controller.fetchMessages(for: conversationID ?? UUID())
                 let allIdeas = try await controller.fetchScript()
                 let idea = allIdeas.first { $0.chat_id == self.conversationID }
-                
+
                 let mapped = history.map { chat in
-                    
+
                     var message = Message(
                         role: chat.role.rawValue,
                         content: chat.content,
                         mark: nil
                     )
-                    
+
                     guard let idea else { return message }
-                    
+
                     if chat.content == idea.script {
                         message.mark = "script"
                     } else if chat.content == idea.title {
@@ -121,7 +120,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     } else if chat.content == idea.description {
                         message.mark = "description"
                     }
-                    
+
                     return message
                 }
                 await MainActor.run {
@@ -157,8 +156,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 print(" Failed loading conversation:", error)
             }
         }
-        
-        
+
         setupKeyboardObservers()
         setupTapToDismiss()
     }
@@ -185,11 +183,11 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
+
     func isTypeAlreadyMarked(_ type: String) -> Bool {
         return !(markedMessages[type]?.isEmpty ?? true)
     }
-    
+
     func isAllContentMarked() -> Bool {
         for type in requiredMarkTypes {
             if markedMessages[type]?.isEmpty ?? true {
@@ -198,7 +196,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         }
         return true
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if messages.isEmpty {
@@ -208,52 +206,50 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             scrollToBottom()
         }
     }
-    
-    
+
     @IBAction func scriptView(_ sender: Any) {
         let storyboard = UIStoryboard(name: "ChatHistory", bundle: nil)
         guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
         guard let destinationVC = navVC.topViewController as? ChatHistory else {return}
         self.navigationController?.pushViewController(destinationVC, animated: true)
     }
-    
-    
+
     func setupTapToDismiss() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tableView.addGestureRecognizer(tapGesture)
     }
-    
+
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
-    
+
     func setupKeyboardObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
-    
+
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            
+
             let bottomPadding = view.safeAreaInsets.bottom
             self.inputViewBottomConstraint.constant = keyboardSize.height - bottomPadding
-            
+
             UIView.animate(withDuration: 0.3) {
                 self.view.layoutIfNeeded()
             }
-            
+
             scrollToBottom()
         }
     }
-    
+
     @objc func keyboardWillHide(notification: NSNotification) {
         self.inputViewBottomConstraint.constant = 8
-        
+
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
         }
     }
-    
+
     func scrollToBottom() {
         if messages.count > 0 {
             let indexPath = IndexPath(row: messages.count, section: 0)
@@ -288,21 +284,19 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             }
             return cell
         }
-        
-        
-        let messageIndex = indexPath.row - 1
 
+        let messageIndex = indexPath.row - 1
 
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChatCell", for: indexPath) as! ChatCell
         cell.configure(with: messages[messageIndex])
-        
+
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
         longPress.minimumPressDuration = 0.5
         cell.contentView.addGestureRecognizer(longPress)
         cell.contentView.tag = messageIndex
-        
+
         return cell
-        
+
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -314,37 +308,35 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
     func textViewDidChange(_ textView: UITextView) {
-        
+
         guard textView.font != nil else { return }
-        
+
         let lineHeight = textView.font?.lineHeight ?? 0
         let inset = textView.textContainerInset.top + textView.textContainerInset.bottom
-        
+
         let maxHeight = (lineHeight * 10) + inset
         let minHeight = (lineHeight * 3) + inset
-        
+
         let size = CGSize(width: textView.frame.width, height: .infinity)
         let estimatedSize = textView.sizeThatFits(size)
         let contentHeight = estimatedSize.height
-        
+
         if contentHeight >= maxHeight {
             textViewHeightConstraint.constant = maxHeight
             textView.isScrollEnabled = true
-        }
-        else if contentHeight < maxHeight && contentHeight > minHeight{
+        } else if contentHeight < maxHeight && contentHeight > minHeight {
             textViewHeightConstraint.constant = contentHeight
             textView.isScrollEnabled = false
-        }
-        else if contentHeight <= minHeight {
+        } else if contentHeight <= minHeight {
             textViewHeightConstraint.constant = minHeight
             textView.isScrollEnabled = false
         }
-        
+
         UIView.animate(withDuration: 0.1) {
             self.view.layoutIfNeeded()
         }
     }
-    
+
     func sendMessage(_ text: String) {
 
         let userText = text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -399,10 +391,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             // ✅ ONE CONSISTENT PROMPT
             let finalPrompt = """
             You are a content assistant for \(platform).
-            
+
             Conversation so far:
             \(historyText)
-            
+
             User:
             \(userText)
             """
@@ -419,7 +411,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     self.handleBotReply(reply, source: "gemini")
                 }
 
-
             case .generateTitle:
 
                 let reply = await generateTitleWithApple(
@@ -430,7 +421,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
                 self.handleBotReply(reply, source: "apple")
 
-
             case .generateDescription:
 
                 let reply = await generateDescriptionWithApple(
@@ -440,7 +430,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 )
 
                 self.handleBotReply(reply, source: "apple")
-
 
             case .chat:
 
@@ -456,8 +445,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
     func handleBotReply(_ replyText: String?, source: String) {
-        
-        
+
         if let replyText {
             Task {
                 do {
@@ -467,7 +455,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                         content: replyText
                     )
                     print("✅ Bot message saved")
-                    
+
                     try await controller.generateAndStoreTitleIfNeeded(
                         conversationID: conversationID!
                     )
@@ -476,16 +464,15 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 }
             }
         }
-        
-        
+
         // UI updates on main thread (unchanged)
         DispatchQueue.main.async {
-            
+
             // Remove "Thinking..."
             if !self.messages.isEmpty {
                 self.messages.removeLast()
             }
-            
+
             guard let replyText else {
                 self.messages.append(
                     Message(role: "bot", content: "Something went wrong.")
@@ -494,45 +481,44 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 self.scrollToBottom()
                 return
             }
-            
+
             self.messages.append(
                 Message(role: "bot", content: replyText)
             )
-            
+
             self.tableView.reloadData()
             self.scrollToBottom()
         }
     }
-    
-    
+
     @IBAction func sendButton(_ sender: Any) {
         let text = textFieldView.text.trimmingCharacters(in: .whitespacesAndNewlines)
         if !text.isEmpty {
             sendMessage(text)
         }
     }
-    
+
     @objc func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
-        //to trigger action once the press begins
+        // to trigger action once the press begins
         guard gesture.state == .began else { return }
-        //to get the view that we long pressed
+        // to get the view that we long pressed
         guard let cellView = gesture.view else { return }
-        //to store the row the cell belongs to
+        // to store the row the cell belongs to
         let row = cellView.tag
-        //message object corresponsding to that row
+        // message object corresponsding to that row
         var message = messages[row]
-        
+
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        
+
         // Helper to add mark/unmark option
         func addMarkAction(type: String) {
             let isMarked = message.mark == type
             if !isMarked && isTypeAlreadyMarked(type) {
                 return
             }
-            
+
             let title = isMarked ? "Unmark \(type.capitalized)" : "Mark as \(type.capitalized)"
-            
+
             alert.addAction(UIAlertAction(title: title, style: .default) { _ in
                 if isMarked {
                     message.mark = nil
@@ -555,12 +541,12 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                             }
                         }
                     }
-                    
+
                 } else {
                     if let oldType = message.mark {
                         self.markedMessages[oldType]?.removeAll { $0.content == message.content }
                     }
-                    
+
                     self.generateStack.isHidden = false
                     message.mark = type
                     self.markedMessages[type]?.append(message)
@@ -579,7 +565,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                             }
                         }
                     }
-                    
+
                     if self.isAllContentMarked() && !self.didShowFinalReadyMessage {
 
                         self.didShowFinalReadyMessage = true
@@ -595,15 +581,15 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
                         self.tableView.insertRows(at: [indexPath], with: .fade)
                         self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
-                        
+
                         let alert = UIAlertController(
                             title: "Post Ready",
                             message: "Your post is ready! What would you like to do?",
                             preferredStyle: .alert
                         )
-                        
+
                         alert.addAction(UIAlertAction(title: "Continue drafting", style: .cancel))
-                        
+
                         alert.addAction(UIAlertAction(title: "View post", style: .default) { _ in
                             guard let navigationController = self.navigationController else { return }
                             if let ideate1 = navigationController.viewControllers.first(where: { $0 is Ideate1 }) {
@@ -612,11 +598,10 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                                 navigationController.popViewController(animated: true)
                             }
                         })
-                        
+
                         self.present(alert, animated: true)
                     }
 
-                    
                     switch type {
                     case "script":
                         self.showScriptSuggestions()
@@ -626,7 +611,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                         self.showScriptSuggestions()
                     case "thumbnail":
                         self.showScriptSuggestions()
-                        
+
                     default:
                         self.showScriptSuggestions()
                     }
@@ -635,15 +620,14 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 self.tableView.reloadRows(at: [IndexPath(row: row + 1, section: 0)], with: .none)
             })
         }
-        
+
         ["script", "title", "description"].forEach { addMarkAction(type: $0) }
-        
+
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         self.present(alert, animated: true)
-        
+
     }
-    
-    
+
     func getUnmarkedTypes() -> [String] {
         return requiredMarkTypes.filter { type in
             markedMessages[type]?.isEmpty ?? true
@@ -657,24 +641,24 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         }
     }
     func showScriptSuggestions() {
-        
+
         // Remove previous buttons
         generateStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        
+
         // Get only the types which are not marked
         let unmarkedTypes = getUnmarkedTypes()
-        
+
         if unmarkedTypes.isEmpty {
             generateStack.isHidden = true
             return
         }
-        
+
         generateStack.isHidden = false
-        
+
         for type in unmarkedTypes {
-            
+
             let buttonTitle: String
-            
+
             switch type {
             case "script":
                 buttonTitle = "Generate Script"
@@ -685,26 +669,25 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             default:
                 continue
             }
-            
+
             if let view = Bundle.main
                 .loadNibNamed("SuggestionCell", owner: self)?
                 .first as? SuggestionCell {
-                
+
                 view.generateButton.setTitle(buttonTitle, for: .normal)
                 view.generateButton.addTarget(
                     self,
                     action: #selector(generateButtonTapped(_:)),
                     for: .touchUpInside
                 )
-                
+
                 generateStack.addArrangedSubview(view)
             }
         }
-        
+
         generateStack.layoutIfNeeded()
     }
-    
-    
+
     @objc func generateButtonTapped(_ sender: UIButton) {
         guard let title = sender.currentTitle else { return }
         sendMessage(title)
@@ -719,4 +702,3 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
 }
-

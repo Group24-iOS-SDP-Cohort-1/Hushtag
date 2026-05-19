@@ -8,7 +8,7 @@ struct Post: Identifiable, Sendable {
     let reminder: [Date]?
     let deadline: Date
     var isManuallyCompleted: Bool = false
-    
+
     var isCompleted: Bool {
         if tasks.isEmpty {
             return isManuallyCompleted
@@ -51,58 +51,57 @@ nonisolated struct TaskDB: Codable, Sendable {
 }
 
 enum ScheduleItem: Identifiable, Sendable {
-    
+
     case deal(deal: Deal, deliverable: Deliverable?)
     case post(post: Post, task: Tasks?)
-    
+
     var id: UUID {
         switch self {
         case .deal(let deal, let deliverable):
-           
+
             return deliverable?.id ?? deal.id
         case .post(let post, let task):
-          
+
             return task?.id ?? post.id ?? UUID()
         }
     }
-    
+
     var effectiveDeadline: Date {
         switch self {
         case .post(let post, let task):
-         
+
             return task?.deadline ?? post.deadline
-            
+
         case .deal(let deal, let deliverable):
-            
+
             return deliverable?.deadline ?? deal.deadline
         }
     }
-    
+
     var date: Date {
-     
+
         return effectiveDeadline
     }
-    
-    
+
     func matches(post: Post, task: Tasks?) -> Bool {
         guard case .post(let p, let t) = self else { return false }
         return p.id == post.id && t?.id == task?.id
     }
-    
+
     func matches(deal: Deal, deliverable: Deliverable?) -> Bool {
         guard case .deal(let d, let del) = self else { return false }
         return d.id == deal.id && del?.id == deliverable?.id
     }
 }
 
-enum Platform: String, Codable , CaseIterable {
+enum Platform: String, Codable, CaseIterable {
     case instagram
     case youtube
     case x
     case pinterest
     case others
-    
-    var description : String {
+
+    var description: String {
         switch self {
         case .instagram: return "Instagram"
         case .youtube: return "YouTube"

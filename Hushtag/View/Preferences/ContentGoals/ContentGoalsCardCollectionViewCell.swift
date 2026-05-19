@@ -1,6 +1,6 @@
-//import UIKit
+// import UIKit
 //
-//class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
+// class ContentGoalsCardCollectionViewCell: UICollectionViewCell {
 //    
 //    weak var delegate: PreferenceCardSelectionDelegate?
 //    var cardIndex: Int = -1
@@ -100,10 +100,10 @@
 //        innerCollectionView.register(UINib(nibName: "ContentGoalsCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "contentGoalsCell")
 //    }
 //    
-//}
+// }
 //
 //
-//extension ContentGoalsCardCollectionViewCell: UICollectionViewDataSource {
+// extension ContentGoalsCardCollectionViewCell: UICollectionViewDataSource {
 //    func numberOfSections(in collectionView: UICollectionView) -> Int {
 //        return sections.count
 //    }
@@ -135,10 +135,10 @@
 //    }
 //    
 //    
-//}
+// }
 //
 //
-//func generateGoalsInnerLayout() -> UICollectionViewLayout{
+// func generateGoalsInnerLayout() -> UICollectionViewLayout{
 //    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(35))
 //    
 //    let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -152,11 +152,11 @@
 //    let layout = UICollectionViewCompositionalLayout(section: section)
 //    
 //    return layout
-//}
+// }
 //
 //
 //
-//extension ContentGoalsCardCollectionViewCell: UICollectionViewDelegate {
+// extension ContentGoalsCardCollectionViewCell: UICollectionViewDelegate {
 //    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 //        updateSelection()
 //        notifyCompletionIfNeeded()
@@ -165,4 +165,4 @@
 //        updateSelection()
 //        notifyCompletionIfNeeded()
 //    }
-//}
+// }

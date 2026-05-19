@@ -5,7 +5,7 @@ class HeaderButton: UICollectionReusableView {
     @IBOutlet weak var headerLabel: UILabel!
     @IBOutlet weak var backward: UIButton!
     @IBOutlet weak var forward: UIButton!
-    
+
     var onDateChanged: ((Date) -> Void)?
     private var currentDate: Date = Date()
     override func awakeFromNib() {
@@ -17,7 +17,7 @@ class HeaderButton: UICollectionReusableView {
         headerLabel.text = text
         currentDate = date
     }
-    
+
     @objc private func nextMonth() {
         changeMonth(by: 1)
     }

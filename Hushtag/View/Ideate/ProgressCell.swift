@@ -2,14 +2,11 @@ import UIKit
 
 class ProgressCell: UIView {
 
-    
     @IBOutlet weak var viewButton: UIButton!
-
 
     @IBOutlet weak var graphView: UIView!
     var scriptedIdea: ScriptedIdea?
     var onViewIdeaTapped: (() -> Void)?
-
 
         private let milestones: [String] = ["Script", "Title", "Description"]
         private let typeOrder: [String] = ["script", "title", "description"]
@@ -50,7 +47,6 @@ class ProgressCell: UIView {
             super.init(coder: coder)
         }
 
-
     private func setupProgressBar() {
 
         graphView.addSubview(trackView)
@@ -64,7 +60,7 @@ class ProgressCell: UIView {
 
             progressView.leadingAnchor.constraint(equalTo: trackView.leadingAnchor),
             progressView.topAnchor.constraint(equalTo: trackView.topAnchor),
-            progressView.bottomAnchor.constraint(equalTo: trackView.bottomAnchor),
+            progressView.bottomAnchor.constraint(equalTo: trackView.bottomAnchor)
         ])
 
         progressWidthConstraint = progressView.widthAnchor.constraint(equalTo: trackView.widthAnchor, multiplier: 0.001)
@@ -105,7 +101,7 @@ class ProgressCell: UIView {
                 checkmark.centerYAnchor.constraint(equalTo: dot.centerYAnchor),
 
                 label.topAnchor.constraint(equalTo: dot.bottomAnchor, constant: 6),
-                label.centerXAnchor.constraint(equalTo: dot.centerXAnchor),
+                label.centerXAnchor.constraint(equalTo: dot.centerXAnchor)
             ])
 
             switch index {

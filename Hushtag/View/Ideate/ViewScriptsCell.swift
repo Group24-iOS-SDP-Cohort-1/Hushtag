@@ -1,15 +1,15 @@
 import UIKit
 
 class ViewScriptsCell: UICollectionViewCell {
-    
+
     @IBOutlet weak var content: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var readMoreButton: UIButton!
     @IBOutlet weak var tagDealButton: UIButton!
-    
+
     private var fullText: String = ""
     private var isExpanded = false
-    
+
     lazy var editableTextView: UITextView = {
         let tv = UITextView()
         tv.translatesAutoresizingMaskIntoConstraints = false
@@ -20,28 +20,24 @@ class ViewScriptsCell: UICollectionViewCell {
         tv.delegate = self
         return tv
     }()
-    
+
     var textChangedHandler: ((String) -> Void)?
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
-    
+
     func configure(with text: String) {
         fullText = text
         content.numberOfLines = 8
         content.attributedText = text.toStyledScript()
     }
-    
+
     func configureTitle(with text: String) {
         fullText = text
         titleLabel.text = text
     }
-    
+
     func setEditingMode(_ isEditing: Bool, isTitle: Bool) {
         let targetLabel = isTitle ? titleLabel : content
         guard let label = targetLabel else { return }
-        
+
         if editableTextView.superview == nil {
             label.superview?.addSubview(editableTextView)
             NSLayoutConstraint.activate([
@@ -51,7 +47,7 @@ class ViewScriptsCell: UICollectionViewCell {
                 editableTextView.bottomAnchor.constraint(equalTo: label.bottomAnchor)
             ])
         }
-        
+
         if isTitle {
             editableTextView.font = UIFont.boldSystemFont(ofSize: 25)
             editableTextView.textAlignment = .center
@@ -59,7 +55,7 @@ class ViewScriptsCell: UICollectionViewCell {
             editableTextView.font = UIFont.preferredFont(forTextStyle: .body)
             editableTextView.textAlignment = .natural
         }
-        
+
         if isEditing {
             editableTextView.text = fullText
             editableTextView.isHidden = false
@@ -71,31 +67,31 @@ class ViewScriptsCell: UICollectionViewCell {
             readMoreButton?.isHidden = false
         }
     }
-    
+
     private func collapsedText(_ text: String) -> NSAttributedString {
         let readMore = "... Read more"
-        
+
         let attributed = NSMutableAttributedString(
             string: text,
             attributes: [.foregroundColor: UIColor.label]
         )
-        
+
         let readMoreAttr = NSAttributedString(
             string: readMore,
             attributes: [.foregroundColor: UIColor.tintColor]
         )
-        
+
         attributed.append(readMoreAttr)
         return attributed
     }
-    
+
     @objc private func handleTap() {
         guard !isExpanded else { return }
-        
+
         isExpanded = true
         content.numberOfLines = 0
         content.text = fullText
-        
+
         var view = superview
         while view != nil {
             if let cv = view as? UICollectionView {
@@ -111,7 +107,7 @@ extension ViewScriptsCell: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         fullText = textView.text
         textChangedHandler?(textView.text)
-        
+
         UIView.setAnimationsEnabled(false)
         var view = superview
         while view != nil {

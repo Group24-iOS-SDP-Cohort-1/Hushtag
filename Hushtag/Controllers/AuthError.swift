@@ -8,7 +8,7 @@ enum AuthError: LocalizedError {
     case invalidCredentials
     case sessionMissing
     case unknown
-    
+
     var errorDescription: String? {
         switch self {
         case .emptyFields:

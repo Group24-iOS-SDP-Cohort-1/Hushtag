@@ -1,35 +1,34 @@
 import UIKit
 
 class ChatCell: UITableViewCell {
-    
+
     @IBOutlet weak var chatView: UIView!
     @IBOutlet weak var chatLabel: UILabel!
     @IBOutlet weak var leftSpacer: UIView!
     @IBOutlet weak var rightSpacer: UIView!
     @IBOutlet weak var starImage: UIImageView!
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         chatView.layer.cornerRadius = 16
     }
-    
+
     func configure(with message: Message) {
-        
+
         chatLabel.numberOfLines = 0
-        
+
         if message.role == "user" {
             chatLabel.text = message.content
-        }else{
+        } else {
             chatLabel.attributedText = message.content.toStyledScript()
         }
-        
-        
+
         if message.mark != nil {
             starImage.isHidden = false
         } else {
             starImage.isHidden = true
         }
-        
+
         if message.role == "user" {
             chatView.backgroundColor = UIColor.accent
             chatLabel.textColor = .white
@@ -42,9 +41,5 @@ class ChatCell: UITableViewCell {
             rightSpacer.isHidden = false
         }
     }
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
-    
+
 }

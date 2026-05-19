@@ -12,83 +12,81 @@ func makeIdeaKey(
     return hash.map { String(format: "%02x", $0) }.joined()
 }
 
-
 struct LikedIds {
     static var likedIdeaIds: Set<String> = []
 }
 
-
 extension Date {
-    
+
     private static let dayOnlyFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE"
         formatter.locale = .current
         return formatter
     }()
-    
+
     private static let dateAndMonthFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM"
         formatter.locale = .current
         return formatter
     }()
-    
+
     private static let dayDateYearFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, dd MMM yyyy"
         formatter.locale = .current
         return formatter
     }()
-    
+
     private static let deadlineFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM dd"
         formatter.locale = .current
         return formatter
     }()
-    
+
     private static let monthYearFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM yyyy"
         formatter.locale = .current
         return formatter
     }()
-    
+
     private static let timeOnlyFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "h:mm a"   // Example: 4:30 PM
         formatter.locale = .current
         return formatter
     }()
-    
+
     func dayOnly() -> String {
         Self.dayOnlyFormatter.string(from: self)
     }
-    
+
     func dateAndMonth() -> String {
         Self.dateAndMonthFormatter.string(from: self)
     }
-    
+
     func dayDateYear() -> String {
         Self.dayDateYearFormatter.string(from: self)
     }
-    
+
     func deadlineFormatted() -> String {
         Self.deadlineFormatter.string(from: self)
     }
-    
+
     func monthAndYear() -> String {
         Self.monthYearFormatter.string(from: self)
     }
-    
+
     func timeOnly() -> String {
         Self.timeOnlyFormatter.string(from: self)
     }
 }
 
 extension Int {
-    
+
     func formattedCount() -> String {
         let num = Double(self)
 
@@ -148,4 +146,3 @@ struct Video: Codable, Identifiable {
     let publishedAt: String
     let link: String?
 }
-

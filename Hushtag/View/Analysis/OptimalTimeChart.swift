@@ -24,7 +24,7 @@ struct OptimalTimeChart: View {
             map[weekday, default: 0] += item.views
         }
 
-        let orderedWeekdays = [1,2,3,4,5,6,7]
+        let orderedWeekdays = [1, 2, 3, 4, 5, 6, 7]
 
         return orderedWeekdays.map { weekday in
 

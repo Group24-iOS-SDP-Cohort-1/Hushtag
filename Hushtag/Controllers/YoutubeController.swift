@@ -1,7 +1,6 @@
 import Foundation
 import Supabase
 
-
 struct YouTubeAuthPayload: Codable {
     let action: String
     let server_auth_code: String
@@ -56,7 +55,7 @@ struct AnalyticsIdea: Codable, Identifiable {
     let difficulty: String
     let estimated_ctr: Double
     let estimated_retention: Double
-    
+
     enum CodingKeys: String, CodingKey {
         case title, hook, why_it_will_work, target_emotion, format, estimated_virality_score, thumbnail_concept, opening_30_seconds, content_pillars, risks, difficulty, estimated_ctr, estimated_retention
     }
@@ -68,26 +67,25 @@ struct YoutubeIdeaGeneratorResponse: Codable {
 }
 
 final class YouTubeController {
-    
+
     static let shared = YouTubeController()
     private init() {}
-    
+
     private let client = SupabaseConfig.client
-    
-    
+
     func saveYouTubeTokens(
         serverAuthCode: String
     ) async throws {
-        
+
         let session = try await client.auth.session
-        //print("🟢 SUPABASE AUTH OK: \(session.user.id)")
-        
+        // print("🟢 SUPABASE AUTH OK: \(session.user.id)")
+
         let payload = YouTubeAuthPayload(
             action: "exchange_and_save_tokens",
             server_auth_code: serverAuthCode
         )
-        
-        //print("🚀 Sending tokens to unified YouTube function...")
+
+        // print("🚀 Sending tokens to unified YouTube function...")
         try await client.functions.invoke(
             "youtube-auth",
             options: .init(
@@ -97,24 +95,23 @@ final class YouTubeController {
                 body: payload
             )
         )
-        
-        //print("✅ Tokens encrypted & saved")
+
+        // print("✅ Tokens encrypted & saved")
     }
-    
-    
+
     func fetchAnalytics(
         startDate: String,
         endDate: String
     ) async throws -> Data {
-        
+
         let session = try await client.auth.session
-        
+
         let payload = AnalyticsRequestPayload(
             action: "fetch_analytics",
             startDate: startDate,
             endDate: endDate
         )
-        
+
         let responseData: Data =
         try await client.functions.invoke(
             "youtube-auth",
@@ -126,20 +123,19 @@ final class YouTubeController {
             ),
             decode: { data, _ in data }
         )
-        
+
         return responseData
     }
-    
-    
+
     nonisolated struct ConnectionStatus: Decodable {
         let is_youtube_connected: Bool?
     }
-    
+
     func checkYouTubeConnection() async -> Bool {
-        
+
         do {
             let session = try await client.auth.session
-            
+
             let status: ConnectionStatus = try await client.database
                 .from("profiles")
                 .select("is_youtube_connected")
@@ -147,15 +143,15 @@ final class YouTubeController {
                 .single()
                 .execute()
                 .value
-            
+
             return status.is_youtube_connected ?? false
-            
+
         } catch {
-            //print("YouTube connection check Failed or Not Found: \(error)")
+            // print("YouTube connection check Failed or Not Found: \(error)")
             return false
         }
     }
-    
+
     func restoreYouTubeConnectionIfNeeded(
         startDate: String,
         endDate: String
@@ -166,43 +162,42 @@ final class YouTubeController {
 
         do {
             let isConnected = await checkYouTubeConnection()
-            
+
             guard isConnected else {
                 print("⚠️ No YouTube connection found")
                 return
             }
-            
-            //print("✅ YouTube already connected")
-            
+
+            // print("✅ YouTube already connected")
+
             let data = try await fetchAnalytics(
                 startDate: startDate,
                 endDate: endDate
             )
-            
+
             print("📊 ANALYTICS RESPONSE:")
             print(String(data: data, encoding: .utf8) ?? "No data")
-            
+
             DispatchQueue.main.async {
                 NotificationCenter.default.post(
                     name: .analyticsUpdated,
                     object: data
                 )
             }
-            
+
         } catch {
             print("❌ Analytics auto-fetch failed:", error)
         }
     }
-    
-    
+
     func disconnectYouTubeBackend() async throws {
             let session = try await client.auth.session
-            
+
             let payload = YouTubeAuthPayload(
                 action: "disconnect",
                 server_auth_code: ""
             )
-            
+
             try await client.functions.invoke(
                 "youtube-auth",
                 options: .init(
@@ -211,10 +206,10 @@ final class YouTubeController {
                 )
             )
         }
-        
+
     func generateIdeas(payload: YoutubeIdeaGeneratorPayload) async throws -> [AnalyticsIdea] {
         let session = try await client.auth.session
-        
+
         let responseData: Data = try await client.functions.invoke(
             "rapid-worker",
             options: .init(
@@ -225,10 +220,10 @@ final class YouTubeController {
             ),
             decode: { data, _ in data }
         )
-        
+
         let decoder = JSONDecoder()
         let response = try decoder.decode(YoutubeIdeaGeneratorResponse.self, from: responseData)
-        
+
         return response.ideas
     }
 }

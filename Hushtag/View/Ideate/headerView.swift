@@ -3,9 +3,9 @@ import UIKit
 class HeaderView: UICollectionReusableView {
 
     @IBOutlet weak var headerView: UILabel!
-    
+
     var didTapChevron: (() -> Void)?
-    
+
     // Programmatic chevron if XIB is not updated or for easier management
     private let chevronButton: UIButton = {
         let button = UIButton(type: .system)
@@ -22,7 +22,7 @@ class HeaderView: UICollectionReusableView {
         super.awakeFromNib()
         setupChevron()
     }
-    
+
     private func setupChevron() {
         addSubview(chevronButton)
         NSLayoutConstraint.activate([
@@ -31,18 +31,18 @@ class HeaderView: UICollectionReusableView {
             chevronButton.widthAnchor.constraint(equalToConstant: 24),
             chevronButton.heightAnchor.constraint(equalToConstant: 24)
         ])
-        
+
         chevronButton.addTarget(self, action: #selector(chevronTapped), for: .touchUpInside)
     }
-    
+
     @objc private func chevronTapped() {
         didTapChevron?()
     }
-    
-    func configureHeader(text:String){
+
+    func configureHeader(text: String) {
         headerView.text = text
     }
-    
+
     func showChevron(_ show: Bool) {
         chevronButton.isHidden = !show
     }

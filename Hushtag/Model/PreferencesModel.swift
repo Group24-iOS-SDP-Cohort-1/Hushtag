@@ -20,7 +20,7 @@ nonisolated struct PreferenceDB: Codable, Sendable {
     let platform: [Platforms]?
 }
 
-enum Platforms: String, Codable, CustomStringConvertible{
+enum Platforms: String, Codable, CustomStringConvertible {
     case youtube
     case instagram
     case x
@@ -46,10 +46,6 @@ enum Niche: String, Codable, CustomStringConvertible {
         rawValue
     }
 }
-
-
-
-
 
 struct PreferenceItem {
     let id: Int

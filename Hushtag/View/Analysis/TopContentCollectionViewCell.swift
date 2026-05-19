@@ -10,7 +10,7 @@ class TopContentCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
         applyLiquidGlassEffect()
     }
-    
+
     func configure(with item: TopVideo) {
         titleLabel.text = item.title
         titleLabel.numberOfLines = 1
@@ -45,4 +45,3 @@ extension UIImageView {
         }
     }
 }
-

@@ -22,12 +22,12 @@ class LikedCellsNew: UICollectionViewCell {
         applyLiquidGlassEffect()
     }
 
-    func configureCell(idea: Idea){
+    func configureCell(idea: Idea) {
         self.idea = idea
         ideaTitle.text = idea.title
         updateLikeUI()
     }
-    
+
     private func configureHashtags(_ hashtags: [String]) {
 
             badgeStack.arrangedSubviews.forEach {
@@ -54,7 +54,7 @@ class LikedCellsNew: UICollectionViewCell {
         guard let idea = idea else { return }
         delegate?.didToggleLike(for: idea.ideaKey ?? "")
     }
-    
+
     func updateLikeUI() {
         guard let idea = idea else { return }
         let isLiked = idea.liked == true

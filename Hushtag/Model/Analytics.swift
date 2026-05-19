@@ -61,7 +61,6 @@ nonisolated struct AudienceDemographic: Codable {
     let subscribers_lost: Int
 }
 
-
 nonisolated struct ViewerActivity: Codable, Identifiable {
 
     let id: UUID?

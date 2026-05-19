@@ -24,9 +24,7 @@ class IdeaCells: UICollectionViewCell {
         ideaTitle.numberOfLines = 2
         applyLiquidGlassEffect()
     }
-    
 
-    
     func configure(idea: Idea) {
         self.idea = idea
         ideaTitle.text = idea.title
@@ -39,21 +37,19 @@ class IdeaCells: UICollectionViewCell {
             badgeStack.removeArrangedSubview($0)
             $0.removeFromSuperview()
         }
-        for tag in hashtags.prefix(2)  {
+        for tag in hashtags.prefix(2) {
             let badge: Badges = Badges.loadFromNib()
 
             badge.configure(
                 text: "\(tag)",
                 color: UIColor(hex: "#a78bfa"),
-                cornerRadius: 12,          
+                cornerRadius: 12,
                 borderWidth: 1.0,
                 backgroundAlpha: 0.12
             )
 
             badge.backgroundColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.12)
             badge.layer.borderColor = UIColor(hex: "#8a6cff").withAlphaComponent(0.22).cgColor
-
-
 
             badgeStack.addArrangedSubview(badge)
         }
@@ -64,7 +60,7 @@ class IdeaCells: UICollectionViewCell {
         delegate?.didToggleLikeFromFeed(for: idea.ideaKey ?? "")
 
     }
-    
+
     func updateLikeUI() {
             guard let idea = idea else { return }
             let isLiked = idea.liked == true

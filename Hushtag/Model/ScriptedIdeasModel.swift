@@ -79,7 +79,7 @@ nonisolated struct Conversation: Codable, Sendable {
     let created_at: Date?
     let idea_id: UUID?
     let scripted_ideas: ScriptedIdeaDB?
-    
+
     var hasStar: Bool {
         guard let idea = scripted_ideas else { return false }
 
@@ -94,8 +94,8 @@ extension Conversation {
     var milestoneCount: Int {
         guard let idea = scripted_ideas else { return 0 }
         var count = 0
-        if idea.script != nil      { count += 1 }
-        if idea.title != nil       { count += 1 }
+        if idea.script != nil { count += 1 }
+        if idea.title != nil { count += 1 }
         if idea.description != nil { count += 1 }
         return count
     }

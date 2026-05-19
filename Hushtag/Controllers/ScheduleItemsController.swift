@@ -1,52 +1,52 @@
 import Foundation
 
 final class ScheduleItemController {
-    
+
     private let dealsController = DealsController()
     private let postsController = PostsController()
-    
+
     private var deals: [Deal] = []
     private var posts: [Post] = []
-    
+
     func replacePost(_ updatedPost: Post) {
         posts = posts.map {
             $0.id == updatedPost.id ? updatedPost : $0
         }
     }
-    
+
     func replaceDeal(_ updatedDeal: Deal) {
         deals = deals.map {
             $0.id == updatedDeal.id ? updatedDeal : $0
         }
     }
-    
+
     func getPost(id: UUID?) -> Post? {
         return posts.first { $0.id == id }
     }
-    
+
     func getDeal(id: UUID) -> Deal? {
         return deals.first { $0.id == id }
     }
-    
+
     func load() async throws {
         async let dealsTask = dealsController.fetchDeals()
         async let postsTask = postsController.fetchPosts()
-        
+
         self.deals = try await dealsTask
         self.posts = try await postsTask
     }
-    
+
     func scheduleItems(on date: Date) -> [ScheduleItem] {
         let calendar = Calendar.current
         var allItems: [ScheduleItem] = []
-        
+
         // 1. Process Deals
         for deal in deals {
             // Include main deal if deadline matches
             if calendar.isDate(deal.deadline, inSameDayAs: date) {
                 allItems.append(.deal(deal: deal, deliverable: nil))
             }
-            
+
             // Include individual deliverables if their deadline matches
             for deliverable in deal.deliverables {
                 if calendar.isDate(deliverable.deadline, inSameDayAs: date) {
@@ -54,14 +54,14 @@ final class ScheduleItemController {
                 }
             }
         }
-        
+
         // 2. Process Posts
         for post in posts {
             // Include main post if deadline matches
             if calendar.isDate(post.deadline, inSameDayAs: date) {
                 allItems.append(.post(post: post, task: nil))
             }
-            
+
             // Include individual tasks if their deadline matches
             for task in post.tasks {
                 if calendar.isDate(task.deadline, inSameDayAs: date) {
@@ -69,10 +69,10 @@ final class ScheduleItemController {
                 }
             }
         }
-        
+
         return allItems.sorted { $0.effectiveDeadline < $1.effectiveDeadline }
     }
-    
+
     func completedScheduleItems(on date: Date) -> [ScheduleItem] {
         scheduleItems(on: date).filter { item in
             switch item {

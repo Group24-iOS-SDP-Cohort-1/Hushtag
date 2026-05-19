@@ -11,7 +11,7 @@ struct Deal: Identifiable, Sendable {
     var deliverables: [Deliverable]
     let reminder: [Date]?
     var isManuallyCompleted: Bool = false
-    
+
     var isCompleted: Bool {
         if deliverables.isEmpty {
             return isManuallyCompleted
@@ -21,15 +21,15 @@ struct Deal: Identifiable, Sendable {
 }
 struct Deliverable: Identifiable, Sendable {
     let id: UUID
-    let deal_id: UUID
+    let dealId: UUID
     var name: String
     var deadline: Date
     var isCompleted: Bool
 }
 
 nonisolated struct DealDB: Codable, Sendable {
-    let deal_id: UUID
-    let user_id: UUID
+    let dealId: UUID
+    let userId: UUID
     let name: String
     let payment: Double?
     let mobileNumber: Int64?
@@ -42,14 +42,14 @@ nonisolated struct DealDB: Codable, Sendable {
 
 nonisolated struct DeliverableDB: Codable, Sendable {
     let id: UUID
-    let deal_id: UUID
+    let dealId: UUID
     let name: String
     let deadline: Date
     let isCompleted: Bool
 }
 
-nonisolated struct DealInsertPayload: Encodable, Sendable{
-    let user_id: UUID
+nonisolated struct DealInsertPayload: Encodable, Sendable {
+    let userId: UUID
     let name: String
     let payment: Double
     let mobileNumber: Int64

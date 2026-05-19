@@ -43,14 +43,14 @@ class PlatformCellTableViewCell: UITableViewCell {
         let platform = sender.currentTitle ?? ""
         onPlatformSelected?(platform)
     }
-    
+
     func configure(selectedPlatform: String?) {
-        
+
         // reset all
         youtubebtn.backgroundColor = .gray
         instagrambtn.backgroundColor = .gray
         twitterbtn.backgroundColor = .gray
-        
+
         // highlight selected
         switch selectedPlatform {
         case "YouTube":

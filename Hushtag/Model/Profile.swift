@@ -17,7 +17,6 @@ nonisolated struct ProfileDB: Codable, Sendable {
     let is_youtube_connected: Bool?
 }
 
-
 nonisolated struct ProfileUpdatePayload: Encodable, Sendable {
     let full_name: String
     let avatar_url: String?

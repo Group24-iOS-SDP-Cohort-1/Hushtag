@@ -2,14 +2,11 @@ import UIKit
 import SwiftUI
 
 class OptimalTimeChartCell: UICollectionViewCell {
-    
+
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var chartContainer: UIView!
     private var hostingController: UIHostingController<OptimalTimeChart>?
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
-    
+
     func configure(with activity: [ViewerActivity]) {
 
         guard !activity.isEmpty else {
@@ -29,7 +26,7 @@ class OptimalTimeChartCell: UICollectionViewCell {
         }
 
         // Convert to array
-        let orderedWeekdays = [1,2,3,4,5,6,7]
+        let orderedWeekdays = [1, 2, 3, 4, 5, 6, 7]
 
         let weekdayData = orderedWeekdays.map { weekday -> (day: String, views: Int) in
 
@@ -63,32 +60,32 @@ class OptimalTimeChartCell: UICollectionViewCell {
         contentView.backgroundColor = .clear
         chartContainer.backgroundColor = .clear
     }
-    
+
     private func setupChart(
         activity: [ViewerActivity]
     ) {
-        
+
         let chartView = OptimalTimeChart(
             data: activity
         )
-        
+
         if let existingController = hostingController {
             existingController.rootView = chartView
         } else {
-            
+
             let controller = UIHostingController(rootView: chartView)
             controller.view.backgroundColor = .clear
-            
+
             chartContainer.addSubview(controller.view)
             controller.view.translatesAutoresizingMaskIntoConstraints = false
-            
+
             NSLayoutConstraint.activate([
                 controller.view.topAnchor.constraint(equalTo: chartContainer.topAnchor),
                 controller.view.bottomAnchor.constraint(equalTo: chartContainer.bottomAnchor),
                 controller.view.leadingAnchor.constraint(equalTo: chartContainer.leadingAnchor),
                 controller.view.trailingAnchor.constraint(equalTo: chartContainer.trailingAnchor)
             ])
-            
+
             hostingController = controller
         }
     }

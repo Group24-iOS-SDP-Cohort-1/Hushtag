@@ -1,6 +1,6 @@
-//import UIKit
+// import UIKit
 //
-//class AccountConnectCollectionViewCell: UICollectionViewCell {
+// class AccountConnectCollectionViewCell: UICollectionViewCell {
 //    
 //    @IBOutlet weak var headingLabel: UILabel!
 //    
@@ -67,4 +67,4 @@
 //        
 //    }
 //    
-//}
+// }

@@ -9,12 +9,12 @@ class RevenueSourceCell: UICollectionViewCell {
         super.awakeFromNib()
         applyLiquidGlassEffect()
     }
-    
+
     func configure(metric: RevenueType, data: Double) {
-        
+
         var title: String = ""
         var sf: String = ""
-        
+
         switch metric {
 
         case .ads:
@@ -28,7 +28,7 @@ class RevenueSourceCell: UICollectionViewCell {
         case .ypp:
             title = "Creator's Share from YPP"
             sf = "person.2.fill"
-            
+
         case .collaboration:
             title = "Collaboration Revenue"
             sf = "briefcase.fill"

@@ -1,6 +1,6 @@
-//import UIKit
+// import UIKit
 //
-//class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
+// class ContentPreferencesCardCollectionViewCell: UICollectionViewCell {
 //    
 //    
 //    weak var delegate: PreferenceCardSelectionDelegate?
@@ -228,10 +228,10 @@
 //        
 //        secondInnerCollectionView.register(UINib(nibName: "PreferencesHeaderView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header_cell")
 //    }
-//}
+// }
 //
 //
-//extension ContentPreferencesCardCollectionViewCell: UICollectionViewDataSource {
+// extension ContentPreferencesCardCollectionViewCell: UICollectionViewDataSource {
 //    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 //        if collectionView == firstInnerCollectionView{
 //            //print("Vibe Selected")
@@ -288,10 +288,10 @@
 //    }
 //    
 //    
-//}
+// }
 //
 //
-//func generateContentPreferencesLayout() -> UICollectionViewLayout{
+// func generateContentPreferencesLayout() -> UICollectionViewLayout{
 //    let layout = UICollectionViewCompositionalLayout { sectionIndex, env -> NSCollectionLayoutSection? in
 //        
 //        
@@ -324,11 +324,11 @@
 //    }
 //    
 //    return layout
-//}
+// }
 //
 //
 //
-//extension ContentPreferencesCardCollectionViewCell: UICollectionViewDelegate {
+// extension ContentPreferencesCardCollectionViewCell: UICollectionViewDelegate {
 //    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 //        let selectedOption = sections[indexPath.section].options[indexPath.item]
 //        
@@ -349,4 +349,4 @@
 //        updateSelection()
 //        notifyCompletionIfNeeded()
 //    }
-//}
+// }

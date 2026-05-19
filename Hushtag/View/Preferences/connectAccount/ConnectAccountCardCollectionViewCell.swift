@@ -1,6 +1,6 @@
-//import UIKit
+// import UIKit
 //
-//class ConnectAccountCardCollectionViewCell: UICollectionViewCell {
+// class ConnectAccountCardCollectionViewCell: UICollectionViewCell {
 //
 //    @IBOutlet weak var headingLabel: UILabel!
 //    
@@ -60,10 +60,10 @@
 //        innerCollectionView.register(UINib(nibName: "OptionsCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "optionsCell")
 //    }
 //
-//}
+// }
 //
 //
-//extension ConnectAccountCardCollectionViewCell: UICollectionViewDataSource{
+// extension ConnectAccountCardCollectionViewCell: UICollectionViewDataSource{
 //    func numberOfSections(in collectionView: UICollectionView) -> Int {
 //        return sections.count
 //    }
@@ -86,10 +86,10 @@
 //        return cell
 //    }
 //    
-//}
+// }
 //
 //
-//func generateAccountLayout() -> UICollectionViewLayout{
+// func generateAccountLayout() -> UICollectionViewLayout{
 //    let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(45))
 //    
 //    let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -116,14 +116,14 @@
 //    let layout = UICollectionViewCompositionalLayout(section: section)
 //    
 //    return layout
-//}
+// }
 //
 //
-//extension ConnectAccountCardCollectionViewCell: UICollectionViewDelegate {
+// extension ConnectAccountCardCollectionViewCell: UICollectionViewDelegate {
 //    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 //        notifyCompletionIfNeeded()
 //    }
 //    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
 //        notifyCompletionIfNeeded()
 //    }
-//}
+// }

@@ -76,7 +76,6 @@ struct YouTubeSearchRequest: Codable {
     let query: String
 }
 
-
 extension ClusteredVideo {
     func toVideo() -> Video {
         return Video(

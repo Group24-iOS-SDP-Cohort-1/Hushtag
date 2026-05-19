@@ -1,72 +1,68 @@
 import UIKit
 
 class OptionsCollectionViewCell: UICollectionViewCell {
-    
+
     @IBOutlet weak var buttonLabel: UILabel!
-    
+
     let customPurple = UIColor(red: 139/255, green: 92/255, blue: 246/255, alpha: 1)
-    
+
     override func awakeFromNib() {
-        
+
         super.awakeFromNib()
-        
+
         setupStyle()
     }
-    
+
     func setupStyle() {
-        
-        
-        
+
         self.layer.cornerRadius = 18
         self.layer.borderWidth = 1
         self.layer.borderColor = customPurple.cgColor
         self.buttonLabel.textColor = customPurple
         contentView.applyLiquidGlassEffect()
     }
-    
+
     override var isSelected: Bool {
         didSet {
             if isSelected {
-                
+
                 self.layer.borderColor = customPurple.cgColor
                 self.backgroundColor = customPurple
                 self.buttonLabel.textColor = .white
-                
+
                 if let basicText = buttonLabel.text {
-                    
+
                     buttonLabel.attributedText = .symbolPrefixedText(
                         symbol: "xmark",
                         text: basicText,
                         font: buttonLabel.font,
                         color: buttonLabel.textColor
                     )
-                    
+
                 }
             } else {
-                
+
                 self.layer.borderColor = customPurple.cgColor
                 self.backgroundColor = .clear
                 self.buttonLabel.textColor = customPurple
-                
+
                 buttonLabel.removeSymbolPrefix()
             }
         }
     }
-    
-    func configureCell(with buttonName : String) {
+
+    func configureCell(with buttonName: String) {
         buttonLabel.text = buttonName
     }
-    
+
 }
-
-
 
 extension NSAttributedString {
     static func symbolPrefixedText(symbol: String, text: String, font: UIFont, color: UIColor) -> NSAttributedString {
         let config = UIImage.SymbolConfiguration(pointSize: font.pointSize, weight: .regular)
         let image = UIImage(systemName: symbol, withConfiguration: config)?
             .withRenderingMode(.alwaysTemplate)
-        
+
         let attachment = NSTextAttachment()
         attachment.image = image
         attachment.bounds = CGRect(
@@ -75,36 +71,31 @@ extension NSAttributedString {
             width: font.pointSize,
             height: font.pointSize
         )
-        
+
         let symbolString = NSAttributedString(attachment: attachment)
-        
+
         let textString = NSAttributedString(
             string: " " + text,
             attributes: [.font: font, .foregroundColor: color]
         )
-        
+
         let combined = NSMutableAttributedString()
         combined.append(symbolString)
         combined.append(textString)
-        
+
         return combined
     }
 }
 
-
-
 extension UILabel {
     func removeSymbolPrefix() {
-        
+
         guard let attr = self.attributedText else { return }
-        
-        
+
         let full = attr.string
-        
-        
+
         let trimmed = full.trimmingCharacters(in: .whitespaces)
-        
-        
+
         self.attributedText = nil
         self.text = trimmed
     }
