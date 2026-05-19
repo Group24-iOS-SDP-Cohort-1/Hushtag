@@ -1,22 +1,19 @@
 import UIKit
 
 class RevenueSourceCell: UICollectionViewCell {
-
-    @IBOutlet weak var sfSymbol: UIImageView!
-    @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var amountLabel: UILabel!
+    @IBOutlet var sfSymbol: UIImageView!
+    @IBOutlet var nameLabel: UILabel!
+    @IBOutlet var amountLabel: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
         applyLiquidGlassEffect()
     }
 
     func configure(metric: RevenueType, data: Double) {
-
-        var title: String = ""
-        var sf: String = ""
+        var title = ""
+        var sf = ""
 
         switch metric {
-
         case .ads:
             title = "Estimated Ad Revenue"
             sf = "play.rectangle.fill"
@@ -39,5 +36,4 @@ class RevenueSourceCell: UICollectionViewCell {
         amountLabel.text = "Rs. \(data)"
         sfSymbol.image = UIImage(systemName: sf)
     }
-
 }

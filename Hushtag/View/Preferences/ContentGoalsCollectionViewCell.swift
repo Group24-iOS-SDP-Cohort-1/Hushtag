@@ -1,10 +1,9 @@
 import UIKit
 
 class ContentGoalsCollectionViewCell: UICollectionViewCell {
+    @IBOutlet var checkMarkImage: UIImageView!
 
-    @IBOutlet weak var checkMarkImage: UIImageView!
-
-    @IBOutlet weak var contentGoalLabel: UILabel!
+    @IBOutlet var contentGoalLabel: UILabel!
 
     private let checkedSymbolName = "checkmark.square.fill"
     private let uncheckedSymbolName = "square"
@@ -31,7 +30,6 @@ class ContentGoalsCollectionViewCell: UICollectionViewCell {
     }
 
     private func setChecked(_ checked: Bool, animated: Bool) {
-
         let imageName = checked ? checkedSymbolName : uncheckedSymbolName
         let image = UIImage(systemName: imageName)?
             .withRenderingMode(.alwaysTemplate)

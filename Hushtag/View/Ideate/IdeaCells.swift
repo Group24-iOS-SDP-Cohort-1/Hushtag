@@ -5,15 +5,16 @@ struct EngagementStyle {
     let icon: String
     let color: UIColor
 }
+
 protocol IdeaCellDelegate: AnyObject {
     func didToggleLikeFromFeed(for ideaKey: String)
 }
 
 class IdeaCells: UICollectionViewCell {
-    @IBOutlet weak var ideaTitle: UILabel!
-    @IBOutlet weak var ideaView: UIView!
-    @IBOutlet weak var badgeStack: UIStackView!
-    @IBOutlet weak var likeButton: UIButton!
+    @IBOutlet var ideaTitle: UILabel!
+    @IBOutlet var ideaView: UIView!
+    @IBOutlet var badgeStack: UIStackView!
+    @IBOutlet var likeButton: UIButton!
     weak var delegate: IdeaCellDelegate?
     private var ideaKey: String?
 
@@ -33,12 +34,12 @@ class IdeaCells: UICollectionViewCell {
     }
 
     func configureHashtags(_ hashtags: [String]) {
-        badgeStack.arrangedSubviews.forEach {
-            badgeStack.removeArrangedSubview($0)
-            $0.removeFromSuperview()
+        for arrangedSubview in badgeStack.arrangedSubviews {
+            badgeStack.removeArrangedSubview(arrangedSubview)
+            arrangedSubview.removeFromSuperview()
         }
         for tag in hashtags.prefix(2) {
-            let badge: Badges = Badges.loadFromNib()
+            let badge = Badges.loadFromNib()
 
             badge.configure(
                 text: "\(tag)",
@@ -55,16 +56,15 @@ class IdeaCells: UICollectionViewCell {
         }
     }
 
-    @IBAction func likeTapped(_ sender: UIButton) {
+    @IBAction func likeTapped(_: UIButton) {
         guard let idea = idea else { return }
         delegate?.didToggleLikeFromFeed(for: idea.ideaKey ?? "")
-
     }
 
     func updateLikeUI() {
-            guard let idea = idea else { return }
-            let isLiked = idea.liked == true
-            let imageName = isLiked ? "bookmark.fill" : "bookmark"
-            likeButton.setImage(UIImage(systemName: imageName), for: .normal)
-        }
+        guard let idea = idea else { return }
+        let isLiked = idea.liked == true
+        let imageName = isLiked ? "bookmark.fill" : "bookmark"
+        likeButton.setImage(UIImage(systemName: imageName), for: .normal)
+    }
 }

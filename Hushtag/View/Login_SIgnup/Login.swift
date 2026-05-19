@@ -1,17 +1,16 @@
 import UIKit
 
 class Login: UIViewController {
-
-    var viewModel: SignInModel = SignInModel()
+    var viewModel: SignInModel = .init()
 
     var appUser: AppUser?
 
-    @IBOutlet weak var googleButton: UIButton!
+    @IBOutlet var googleButton: UIButton!
 
-    @IBOutlet weak var passwordTextField: UITextField!
-    @IBOutlet weak var emailTextField: UITextField!
-    @IBOutlet weak var appleButton: UIButton!
-    @IBOutlet weak var facebookButton: UIButton!
+    @IBOutlet var passwordTextField: UITextField!
+    @IBOutlet var emailTextField: UITextField!
+    @IBOutlet var appleButton: UIButton!
+    @IBOutlet var facebookButton: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -39,10 +38,10 @@ class Login: UIViewController {
         textField.textColor = .white
     }
 
-    @IBAction func logInTapped(_ sender: Any) {
-
+    @IBAction func logInTapped(_: Any) {
         guard let email = emailTextField.text, !email.isEmpty,
-              let password = passwordTextField.text, !password.isEmpty else {
+              let password = passwordTextField.text, !password.isEmpty
+        else {
             showAlert(title: "Error", message: AuthError.emptyFields.localizedDescription)
             return
         }
@@ -64,14 +63,11 @@ class Login: UIViewController {
             } catch {
                 LoadingOverlay.shared.hide()
                 self.showAlert(title: "Login Failed", message: AuthError.unknown.localizedDescription)
-
             }
         }
-
     }
 
-    @IBAction func googleLoginTapped(_ sender: Any) {
-
+    @IBAction func googleLoginTapped(_: Any) {
         Task { @MainActor in
             LoadingOverlay.shared.show()
 
@@ -85,13 +81,10 @@ class Login: UIViewController {
                 self.navigateBasedOnOnboardingStatus()
 
             } catch let error as LocalizedError {
-
                 self.showAlert(title: "Login Failed", message: error.localizedDescription)
 
             } catch {
-
                 self.showAlert(title: "Login Failed", message: AuthError.unknown.localizedDescription)
-
             }
         }
     }
@@ -101,13 +94,14 @@ extension UIViewController {
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
-        self.present(alert, animated: true)
+        present(alert, animated: true)
     }
 
     func navigateToHomeScreen() {
         guard let window = UIApplication.shared.connectedScenes
             .compactMap({ $0 as? UIWindowScene })
-            .first?.windows.first else {
+            .first?.windows.first
+        else {
             return
         }
 
@@ -131,7 +125,8 @@ extension UIViewController {
 
     func navigateToLoginScreen() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first else {
+              let window = windowScene.windows.first
+        else {
             return
         }
 
@@ -151,7 +146,8 @@ extension UIViewController {
 
     func navigateToPreferencesScreen() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first else {
+              let window = windowScene.windows.first
+        else {
             return
         }
 
@@ -196,7 +192,6 @@ extension UIViewController {
             } else {
                 self.navigateToPreferencesScreen()
             }
-
         }
     }
 }

@@ -1,9 +1,8 @@
 import UIKit
 
 class CalendarCell: UICollectionViewCell, UIGestureRecognizerDelegate {
-
-    @IBOutlet weak var dayLabel: UILabel!
-    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet var dayLabel: UILabel!
+    @IBOutlet var dateLabel: UILabel!
     private var swipeLeft: UISwipeGestureRecognizer!
     private var swipeRight: UISwipeGestureRecognizer!
 
@@ -29,8 +28,8 @@ class CalendarCell: UICollectionViewCell, UIGestureRecognizerDelegate {
 
     private func setupGestures() {
         contentView.gestureRecognizers?.forEach {
-                contentView.removeGestureRecognizer($0)
-            }
+            contentView.removeGestureRecognizer($0)
+        }
         swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipe(_:)))
         swipeLeft.direction = .left
         swipeLeft.delegate = self
@@ -59,14 +58,14 @@ class CalendarCell: UICollectionViewCell, UIGestureRecognizerDelegate {
         }
     }
 
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    func gestureRecognizer(_: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith _: UIGestureRecognizer) -> Bool {
         return true
     }
 }
 
 extension UIView {
     func findCollectionView() -> UICollectionView? {
-        var view = self.superview
+        var view = superview
         while view != nil {
             if let cv = view as? UICollectionView {
                 return cv

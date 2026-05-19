@@ -1,7 +1,6 @@
 import UIKit
 
 extension UIView {
-
     func applyLiquidGlassEffect() {
         if subviews.contains(where: { $0 is UIVisualEffectView }) {
             return
@@ -16,7 +15,6 @@ extension UIView {
 
 @available(iOS 17.0, *)
 private extension UIView {
-
     func applyGlassEffect_iOS17() {
         let glassView = UIVisualEffectView(effect: nil)
         glassView.translatesAutoresizingMaskIntoConstraints = false
@@ -41,9 +39,7 @@ private extension UIView {
 }
 
 private extension UIView {
-
     func applyCardEffect_Legacy() {
-
         backgroundColor = UIColor.secondarySystemBackground
 
         layer.cornerRadius = 12

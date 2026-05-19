@@ -1,7 +1,6 @@
 import Foundation
 
 final class AIResponseRouter {
-
     static let shared = AIResponseRouter()
     private init() {}
 
@@ -17,17 +16,15 @@ final class AIResponseRouter {
         prompt: String,
         conversationID: UUID?
     ) async -> String {
-
         switch intent {
-
         case .generateScript:
             return await callGemini(
                 prompt: prompt,
                 conversationID: conversationID
             )
 
-            // Refinement / chat → Apple → Gemini fallback
-        case . generateTitle, .generateDescription, .chat:
+        // Refinement / chat → Apple → Gemini fallback
+        case .generateTitle, .generateDescription, .chat:
             do {
                 let reply = try await AppleIntelligenceManager.shared.askSafely(
                     prompt: prompt
@@ -48,7 +45,6 @@ final class AIResponseRouter {
         prompt: String,
         conversationID: UUID?
     ) async -> String {
-
         await withCheckedContinuation { continuation in
             GeminiManager.shared.generateContent(
                 prompt: prompt,
@@ -63,13 +59,11 @@ final class AIResponseRouter {
 }
 
 extension AIResponseRouter {
-
     func classifyIntent(
         message: String,
         conversationID: UUID?,
         platform: String? = nil
     ) async -> Intent {
-
         _ = platform.map { "Platform: \($0)" } ?? ""
 
         let prompt = """

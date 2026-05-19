@@ -1,7 +1,6 @@
 import UIKit
 
 class AfterSearchIdeasViewController: UIViewController {
-
     @IBOutlet var collectionView: UICollectionView!
 
     var keyword: String = ""
@@ -158,12 +157,11 @@ class AfterSearchIdeasViewController: UIViewController {
 }
 
 extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollectionViewDelegate {
-
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in _: UICollectionView) -> Int {
         return sections.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let sectionType = sections[section]
         switch sectionType {
         case .search:
@@ -199,9 +197,9 @@ extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollecti
                 withReuseIdentifier: "IdeaSearch",
                 for: indexPath
             ) as! IdeaSearch
-            header.textLabel.text = self.currentInputText
+            header.textLabel.text = currentInputText
 
-            header.configure(state: .afterSearch(showCross: !self.currentInputText.isEmpty))
+            header.configure(state: .afterSearch(showCross: !currentInputText.isEmpty))
 
             header.delegate = self
             return header
@@ -212,13 +210,13 @@ extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollecti
                 withReuseIdentifier: "headerCell",
                 for: indexPath
             ) as! HeaderView
-            header.configureHeader(text: "Search Results for \"\(self.keyword)\"")
+            header.configureHeader(text: "Search Results for \"\(keyword)\"")
             header.showChevron(false)
             return header
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(_: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let sectionType = sections[indexPath.section]
         switch sectionType {
         case .suggested:
@@ -227,7 +225,7 @@ extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollecti
             guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else { return }
             guard let destinationVC = navVC.topViewController as? ViewIdea else { return }
             destinationVC.idea = idea
-            self.navigationController?.pushViewController(destinationVC, animated: true)
+            navigationController?.pushViewController(destinationVC, animated: true)
         default:
             break
         }
@@ -236,17 +234,17 @@ extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollecti
 
 extension AfterSearchIdeasViewController: IdeaSearchDelegate {
     func didTapSearch(with keyword: String) {
-        self.currentInputText = keyword
+        currentInputText = keyword
 
         if keyword.isEmpty {
             // Keep the previous search results exactly as they are.
             // Reload collection view to force layout update and fix glitch when stack view is unhidden
-            self.collectionView.reloadData()
+            collectionView.reloadData()
             return
         }
 
         self.keyword = keyword
-        self.collectionView.reloadData()
+        collectionView.reloadData()
         performSearch(with: keyword)
     }
 }

@@ -1,7 +1,6 @@
 import Foundation
 
 final class ScheduleItemController {
-
     private let dealsController = DealsController()
     private let postsController = PostsController()
 
@@ -32,8 +31,8 @@ final class ScheduleItemController {
         async let dealsTask = dealsController.fetchDeals()
         async let postsTask = postsController.fetchPosts()
 
-        self.deals = try await dealsTask
-        self.posts = try await postsTask
+        deals = try await dealsTask
+        posts = try await postsTask
     }
 
     func scheduleItems(on date: Date) -> [ScheduleItem] {
@@ -49,7 +48,10 @@ final class ScheduleItemController {
 
             // Include individual deliverables if their deadline matches
             for deliverable in deal.deliverables {
-                if calendar.isDate(deliverable.deadline, inSameDayAs: date) {
+                if calendar.isDate(
+                    deliverable.deadline,
+                    inSameDayAs: date
+                ) {
                     allItems.append(.deal(deal: deal, deliverable: deliverable))
                 }
             }
@@ -58,7 +60,10 @@ final class ScheduleItemController {
         // 2. Process Posts
         for post in posts {
             // Include main post if deadline matches
-            if calendar.isDate(post.deadline, inSameDayAs: date) {
+            if calendar.isDate(
+                post.deadline,
+                inSameDayAs: date
+            ) {
                 allItems.append(.post(post: post, task: nil))
             }
 
@@ -76,10 +81,10 @@ final class ScheduleItemController {
     func completedScheduleItems(on date: Date) -> [ScheduleItem] {
         scheduleItems(on: date).filter { item in
             switch item {
-            case .deal(let deal, let deliverable):
+            case let .deal(deal, deliverable):
                 // If it's a deliverable, use its completion status. If it's the main deal, use the deal's completion status.
                 return deliverable?.isCompleted ?? deal.isManuallyCompleted
-            case .post(_, let task):
+            case let .post(_, task):
                 // If it's a task, use its status. If it's the main post, just return false (unless you add an isCompleted flag to Post)
                 return task?.isCompleted ?? false
             }

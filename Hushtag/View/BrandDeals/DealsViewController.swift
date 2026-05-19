@@ -1,11 +1,11 @@
-import UIKit
 import PostgREST
 import Supabase
-class DealsViewController: UIViewController {
+import UIKit
 
-    @IBOutlet weak var segmentControl: UISegmentedControl!
-    @IBOutlet weak var collectionView: UICollectionView!
-    @IBOutlet weak var searchBar: UISearchBar!
+class DealsViewController: UIViewController {
+    @IBOutlet var segmentControl: UISegmentedControl!
+    @IBOutlet var collectionView: UICollectionView!
+    @IBOutlet var searchBar: UISearchBar!
 
     var selected_Deal: Deal?
     var deals: [Deal] = []
@@ -46,6 +46,7 @@ class DealsViewController: UIViewController {
     var ongoingDeals: [Deal] {
         return deals.filter { !$0.isCompleted }
     }
+
     private var selectedSegmentIndex = 0
 
     var displayedDeals: [Deal] {
@@ -59,10 +60,10 @@ class DealsViewController: UIViewController {
 
         return baseDeals.filter {
             $0.name.lowercased().contains(query) ||
-            $0.email.lowercased().contains(query) ||
-            $0.platform.contains(where: {
-                $0.rawValue.lowercased().contains(query)
-            })
+                $0.email.lowercased().contains(query) ||
+                $0.platform.contains(where: {
+                    $0.rawValue.lowercased().contains(query)
+                })
         }
     }
 
@@ -141,9 +142,7 @@ class DealsViewController: UIViewController {
                 // print("Supabase insert failed:")
                 dump(error)
             }
-
         }
-
     }
 
     func registerCell() {
@@ -155,7 +154,6 @@ class DealsViewController: UIViewController {
 
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { [weak self] _, _ in
-
             let isCompleted = (self?.selectedSegmentIndex == 1)
 
             let estimatedHeight: CGFloat = isCompleted ? 100 : 200
@@ -210,15 +208,13 @@ class DealsViewController: UIViewController {
 }
 
 extension DealsViewController: UICollectionViewDataSource, UICollectionViewDelegate {
-
-    func collectionView(_ collectionView: UICollectionView,
-                        numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_: UICollectionView,
+                        numberOfItemsInSection _: Int) -> Int {
         return displayedDeals.count
     }
 
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
         let deal = displayedDeals[indexPath.item]
         let isCompletedTab = (selectedSegmentIndex == 1)
 
@@ -258,15 +254,14 @@ extension DealsViewController: UICollectionViewDataSource, UICollectionViewDeleg
 }
 
 extension DealsViewController: DealsInfoDelegate {
-    func dealsInfo(_ controller: DealsInfo, didUpdateDeal deal: Deal, at index: Int) {
+    func dealsInfo(_: DealsInfo, didUpdateDeal deal: Deal, at _: Int) {
         if let idx = deals.firstIndex(where: { $0.id == deal.id }) {
             deals[idx] = deal
             fetchDeals()
         }
     }
 
-    func dealsInfo(_ controller: DealsInfo, didDeleteDeal dealId: UUID) {
-
+    func dealsInfo(_: DealsInfo, didDeleteDeal dealId: UUID) {
         if let index = deals.firstIndex(where: { $0.id == dealId }) {
             deals.remove(at: index)
         }
@@ -275,17 +270,14 @@ extension DealsViewController: DealsInfoDelegate {
         collectionView.reloadData()
         updateEmptyState()
     }
-
 }
 
 extension DealsViewController: AddDealsDelegate {
-
     func addDealsViewController(
-        _ controller: AddDealsViewController,
+        _: AddDealsViewController,
         didUpdateDeal deal: Deal,
-        at index: Int
+        at _: Int
     ) {
-
         if let realIndex = deals.firstIndex(where: { $0.id == deal.id }) {
             deals[realIndex] = deal
         }
@@ -295,16 +287,15 @@ extension DealsViewController: AddDealsDelegate {
     }
 
     func addDealsViewController(
-        _ controller: AddDealsViewController,
-        didCreateDeal deal: Deal
+        _: AddDealsViewController,
+        didCreateDeal _: Deal
     ) {
         fetchDeals()
     }
 }
 
 extension DealsViewController: UISearchBarDelegate {
-
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+    func searchBar(_: UISearchBar, textDidChange searchText: String) {
         self.searchText = searchText
         isSearching = !searchText.isEmpty
         collectionView.reloadData()

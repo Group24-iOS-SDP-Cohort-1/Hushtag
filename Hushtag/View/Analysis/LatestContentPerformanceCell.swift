@@ -1,13 +1,12 @@
 import UIKit
 
 class LatestContentPerformanceCell: UICollectionViewCell {
-
-    @IBOutlet weak var thumbnailImageView: UIImageView!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var publishedLabel: UILabel!
-    @IBOutlet weak var likesLabel: UILabel!
-    @IBOutlet weak var viewsLabel: UILabel!
-    @IBOutlet weak var durationLabel: UILabel!
+    @IBOutlet var thumbnailImageView: UIImageView!
+    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var publishedLabel: UILabel!
+    @IBOutlet var likesLabel: UILabel!
+    @IBOutlet var viewsLabel: UILabel!
+    @IBOutlet var durationLabel: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -25,5 +24,4 @@ class LatestContentPerformanceCell: UICollectionViewCell {
         durationLabel.text = "\(data.duration_seconds) s"
         thumbnailImageView.loadImage(from: data.thumbnail)
     }
-
 }

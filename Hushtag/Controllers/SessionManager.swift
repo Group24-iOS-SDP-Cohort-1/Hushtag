@@ -1,10 +1,9 @@
+import Combine
 import Foundation
 import Supabase
-import Combine
 import UIKit
 
 class SessionManager: ObservableObject {
-
     static let shared = SessionManager()
     private init() {}
 
@@ -19,7 +18,7 @@ class SessionManager: ObservableObject {
     func restoreSession() async {
         do {
             let user = try await AuthManager.shared.getCurrentSession()
-            self.currentUser = user
+            currentUser = user
 
             await fetchPreferences()
             await preloadIdeas()
@@ -44,7 +43,6 @@ class SessionManager: ObservableObject {
     }
 
     func preloadIdeas() async {
-
         guard let prefs = userPreferences else {
             print("❌ No prefs found")
             return
@@ -59,14 +57,12 @@ class SessionManager: ObservableObject {
         do {
             // Wrap completion API into async/await
             let bundles: [ClusterIdea] = try await withCheckedThrowingContinuation { continuation in
-
                 SupabaseEdgeService.shared.fetchClusterIdeas(clusters: clusterStrings) { result in
                     switch result {
-
-                    case .success(let bundles):
+                    case let .success(bundles):
                         continuation.resume(returning: bundles)
 
-                    case .failure(let error):
+                    case let .failure(error):
                         continuation.resume(throwing: error)
                     }
                 }
@@ -74,7 +70,6 @@ class SessionManager: ObservableObject {
 
             // Convert bundles → Ideas
             let loadedIdeas: [Idea] = bundles.map { bundle in
-
                 let generatedKey = makeIdeaKey(
                     title: bundle.idea.title,
                     description: bundle.idea.description,
@@ -115,9 +110,9 @@ class SessionManager: ObservableObject {
     }
 
     func refreshProfileAndAvatar(with profile: Profile, image: UIImage?) {
-        self.currentProfile = profile
+        currentProfile = profile
         if let image = image {
-            self.profileImageCache = image
+            profileImageCache = image
         }
         NotificationCenter.default.post(name: .didUpdateProfile, object: nil)
     }
@@ -128,20 +123,20 @@ class SessionManager: ObservableObject {
         }
 
         let profile = try await ProfileController().fetchProfile()
-        self.currentProfile = profile
+        currentProfile = profile
 
         if let urlString = profile.avatarURL, let url = URL(string: urlString) {
             do {
                 let (data, _) = try await URLSession.shared.data(from: url)
-                self.profileImageCache = UIImage(data: data)
+                profileImageCache = UIImage(data: data)
             } catch {
                 print("Failed to load avatar image data:", error)
             }
         } else {
-            self.profileImageCache = nil
+            profileImageCache = nil
         }
 
-        return (profile, self.profileImageCache)
+        return (profile, profileImageCache)
     }
 }
 

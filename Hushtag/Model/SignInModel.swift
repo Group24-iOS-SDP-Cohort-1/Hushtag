@@ -2,9 +2,7 @@ import Foundation
 import GoogleSignIn
 
 class SignInModel {
-
     private func validateForSignup(email: String, password: String, fullName: String) throws {
-
         if email.isEmpty || password.isEmpty || fullName.isEmpty {
             throw AuthError.emptyFields
         }
@@ -19,7 +17,6 @@ class SignInModel {
     }
 
     private func validateForLogin(email: String, password: String) throws {
-
         if email.isEmpty || password.isEmpty {
             throw AuthError.emptyFields
         }
@@ -77,7 +74,6 @@ class SignInModel {
     }
 
     func disconnectYouTube() {
-
         GIDSignIn.sharedInstance.disconnect { error in
             if error != nil {
                 // print("Failed to disconnect Google")
@@ -85,7 +81,6 @@ class SignInModel {
                 // print("Successfully disconnected from Google")
             }
         }
-
     }
 }
 
@@ -99,19 +94,17 @@ struct ConnectYouTubeResult {
 }
 
 class SignInGoogle {
-
     @MainActor
     func startSignInWithGoogleFlow() async throws -> SignInGoogleResult {
-        try await withCheckedThrowingContinuation({ continuation in
+        try await withCheckedThrowingContinuation { continuation in
             self.signInWithGoogleFlow { result in
                 continuation.resume(with: result)
             }
-        })
+        }
     }
 
     @MainActor
     func signInWithGoogleFlow(completion: @escaping (Result<SignInGoogleResult, Error>) -> Void) {
-
         guard let topVC = UIApplication.topViewController else {
             let error = NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not find the top view controller."])
 
@@ -124,14 +117,12 @@ class SignInGoogle {
             hint: nil,
             additionalScopes: ["https://www.googleapis.com/auth/yt-analytics.readonly", "https://www.googleapis.com/auth/youtube.readonly", "https://www.googleapis.com/auth/youtube.upload"]
         ) { signInResult, error in
-
             if let error = error {
                 completion(.failure(error))
                 return
             }
 
             guard let user = signInResult?.user, let idToken = user.idToken else {
-
                 let tokenError = NSError(domain: "AuthError", code: -2, userInfo: [NSLocalizedDescriptionKey: "Failed to retrieve Google ID Token."])
 
                 completion(.failure(tokenError))
@@ -150,16 +141,15 @@ class SignInGoogle {
 
     @MainActor
     func startConnectYouTubeFlow() async throws -> ConnectYouTubeResult {
-        try await withCheckedThrowingContinuation({ continuation in
+        try await withCheckedThrowingContinuation { continuation in
             self.connectYouTubeFlow { result in
                 continuation.resume(with: result)
             }
-        })
+        }
     }
 
     @MainActor
     func connectYouTubeFlow(completion: @escaping (Result<ConnectYouTubeResult, Error>) -> Void) {
-
         guard let topVC = UIApplication.topViewController else {
             let error = NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not find the top view controller."])
             completion(.failure(error))
@@ -171,7 +161,6 @@ class SignInGoogle {
             hint: nil,
             additionalScopes: ["https://www.googleapis.com/auth/yt-analytics.readonly", "https://www.googleapis.com/auth/youtube.readonly", "https://www.googleapis.com/auth/youtube.upload"]
         ) { signInResult, error in
-
             if let error = error {
                 completion(.failure(error))
                 return
@@ -213,7 +202,6 @@ extension UIApplication {
 }
 
 extension String {
-
     func isValidEmail() -> Bool {
         let emailFormat = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         return NSPredicate(format: "SELF MATCHES %@", emailFormat)
@@ -222,7 +210,7 @@ extension String {
 
     func isStrongPassword() -> Bool {
         let passwordFormat =
-        "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}$"
+            "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}$"
         return NSPredicate(format: "SELF MATCHES %@", passwordFormat)
             .evaluate(with: self)
     }

@@ -1,6 +1,6 @@
 import Foundation
 
-struct Profile: Identifiable, Sendable {
+struct Profile: Identifiable {
     let id: UUID
     var fullName: String
     var email: String
@@ -8,7 +8,7 @@ struct Profile: Identifiable, Sendable {
     var isYouTubeConnected: Bool
 }
 
-nonisolated struct ProfileDB: Codable, Sendable {
+nonisolated struct ProfileDB: Codable {
     let id: UUID
     let user_id: UUID
     let full_name: String
@@ -17,12 +17,12 @@ nonisolated struct ProfileDB: Codable, Sendable {
     let is_youtube_connected: Bool?
 }
 
-nonisolated struct ProfileUpdatePayload: Encodable, Sendable {
+nonisolated struct ProfileUpdatePayload: Encodable {
     let full_name: String
     let avatar_url: String?
 }
 
-nonisolated struct ProfileInsertPayload: Encodable, Sendable {
+nonisolated struct ProfileInsertPayload: Encodable {
     let user_id: UUID
     let full_name: String
     let email: String

@@ -1,22 +1,20 @@
-import SwiftUI
 import Charts
+import SwiftUI
 
 struct OptimalTimeChart: View {
-
     let data: [ViewerActivity]
 
     let purpleColor = UIColor(named: "AccentColor")
 
-    // Use local timezone
+    /// Use local timezone
     var calendar: Calendar {
         var cal = Calendar.current
         cal.timeZone = TimeZone.current
         return cal
     }
 
-    // Aggregate views by weekday
+    /// Aggregate views by weekday
     var weekdayViews: [(day: String, views: Int)] {
-
         var map: [Int: Int] = [:]
 
         for item in data {
@@ -27,30 +25,25 @@ struct OptimalTimeChart: View {
         let orderedWeekdays = [1, 2, 3, 4, 5, 6, 7]
 
         return orderedWeekdays.map { weekday in
-
             let views = map[weekday] ?? 0
 
             let name =
-            calendar.shortWeekdaySymbols[weekday - 1].uppercased()
+                calendar.shortWeekdaySymbols[weekday - 1].uppercased()
 
             return (name, views)
         }
     }
 
-    // Determine best 2 days
+    /// Determine best 2 days
     var bestDays: Set<String> {
-
         let sorted = weekdayViews.sorted { $0.views > $1.views }
 
         return Set(sorted.prefix(2).map { $0.day })
     }
 
     var body: some View {
-
         VStack {
-
             Chart(weekdayViews, id: \.day) { item in
-
                 BarMark(
                     x: .value("Day", item.day),
                     y: .value("Views", item.views),
@@ -59,8 +52,8 @@ struct OptimalTimeChart: View {
                 .cornerRadius(4)
                 .foregroundStyle(
                     bestDays.contains(item.day)
-                    ? Color(uiColor: purpleColor ?? .white)
-                    : Color.gray.opacity(0.5)
+                        ? Color(uiColor: purpleColor ?? .white)
+                        : Color.gray.opacity(0.5)
                 )
             }
 
@@ -80,7 +73,6 @@ struct OptimalTimeChart: View {
             }
 
             .chartLegend(.hidden)
-
             .chartYScale(range: .plotDimension(padding: 5))
         }
         .padding(.horizontal, 10)

@@ -1,12 +1,11 @@
 import UIKit
 
 class ChatCell: UITableViewCell {
-
-    @IBOutlet weak var chatView: UIView!
-    @IBOutlet weak var chatLabel: UILabel!
-    @IBOutlet weak var leftSpacer: UIView!
-    @IBOutlet weak var rightSpacer: UIView!
-    @IBOutlet weak var starImage: UIImageView!
+    @IBOutlet var chatView: UIView!
+    @IBOutlet var chatLabel: UILabel!
+    @IBOutlet var leftSpacer: UIView!
+    @IBOutlet var rightSpacer: UIView!
+    @IBOutlet var starImage: UIImageView!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -14,7 +13,6 @@ class ChatCell: UITableViewCell {
     }
 
     func configure(with message: Message) {
-
         chatLabel.numberOfLines = 0
 
         if message.role == "user" {
@@ -41,5 +39,4 @@ class ChatCell: UITableViewCell {
             rightSpacer.isHidden = false
         }
     }
-
 }

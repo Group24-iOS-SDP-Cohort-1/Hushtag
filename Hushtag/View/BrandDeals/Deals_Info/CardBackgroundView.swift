@@ -1,7 +1,6 @@
 import UIKit
 
 final class CardBackgroundView: UICollectionReusableView {
-
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -13,7 +12,6 @@ final class CardBackgroundView: UICollectionReusableView {
     }
 
     private func setup() {
-
         backgroundColor = UIColor.white.withAlphaComponent(0.06)
         layer.masksToBounds = true
         applyLiquidGlassEffect()

@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct AudienceGenderChart: View {
-
     let malePercentage: Double
     let femalePercentage: Double
 
@@ -9,9 +8,7 @@ struct AudienceGenderChart: View {
         Color(uiColor: UIColor(named: "AccentColor") ?? .systemPurple)
 
     var body: some View {
-
         VStack(spacing: 18) {
-
             genderBar(
                 title: "Male",
                 value: malePercentage,
@@ -31,16 +28,14 @@ struct AudienceGenderChart: View {
     }
 
     // MARK: - Horizontal Gender Bar
+
     private func genderBar(
         title: String,
         value: Double,
         color: Color
     ) -> some View {
-
         VStack(alignment: .leading, spacing: 8) {
-
             HStack {
-
                 Text(title)
                     .font(.system(size: 14, weight: .bold))
                     .foregroundStyle(.gray)
@@ -53,9 +48,7 @@ struct AudienceGenderChart: View {
             }
 
             GeometryReader { geo in
-
                 ZStack(alignment: .leading) {
-
                     // Background Track
                     Capsule()
                         .fill(Color.gray.opacity(0.25))

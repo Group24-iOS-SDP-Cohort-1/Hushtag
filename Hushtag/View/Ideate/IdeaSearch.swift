@@ -5,14 +5,14 @@ protocol IdeaSearchDelegate: AnyObject {
 }
 
 class IdeaSearch: UICollectionReusableView {
-    @IBOutlet weak var textView: UIView!
-    @IBOutlet weak var textLabel: UITextField!
-    @IBOutlet weak var searchButton: UIButton!
-    @IBOutlet weak var textStack: UIStackView!
+    @IBOutlet var textView: UIView!
+    @IBOutlet var textLabel: UITextField!
+    @IBOutlet var searchButton: UIButton!
+    @IBOutlet var textStack: UIStackView!
 
-    @IBOutlet weak var mainHeadingStack: UIStackView!
+    @IBOutlet var mainHeadingStack: UIStackView!
 
-    @IBOutlet weak var crossButton: UIButton!
+    @IBOutlet var crossButton: UIButton!
     weak var delegate: IdeaSearchDelegate?
 
     enum SearchState {
@@ -51,7 +51,7 @@ class IdeaSearch: UICollectionReusableView {
             mainHeadingStack.isHidden = false
             crossButton.isHidden = true
 
-        case .afterSearch(let showCross):
+        case let .afterSearch(showCross):
             //            mainHeadingStack.isHidden = true
             //            subheadingStack.isHidden = true
             textStack.isHidden = true
@@ -73,7 +73,7 @@ class IdeaSearch: UICollectionReusableView {
         textLabel.resignFirstResponder()
     }
 
-    @IBAction func searchTap(_ sender: UIButton) {
+    @IBAction func searchTap(_: UIButton) {
         let keyword = textLabel.text ?? ""
         guard !keyword.isEmpty else {
             return
@@ -82,7 +82,7 @@ class IdeaSearch: UICollectionReusableView {
         delegate?.didTapSearch(with: keyword)
     }
 
-    @IBAction func crossTap(_ sender: UIButton) {
+    @IBAction func crossTap(_: UIButton) {
         textLabel.text = ""
         textLabel.resignFirstResponder()
         delegate?.didTapSearch(with: "")

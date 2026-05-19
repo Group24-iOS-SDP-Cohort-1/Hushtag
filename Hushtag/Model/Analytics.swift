@@ -40,7 +40,6 @@ nonisolated struct TopVideo: Codable {
 }
 
 nonisolated struct RevenueInsight: Codable {
-
     let estimated_ad_revenue: Double
     let gross_revenue: Double
     let ypp_revenue: Double
@@ -62,7 +61,6 @@ nonisolated struct AudienceDemographic: Codable {
 }
 
 nonisolated struct ViewerActivity: Codable, Identifiable {
-
     let id: UUID?
     let user_id: UUID
 
@@ -85,7 +83,6 @@ nonisolated struct ViewerActivity: Codable, Identifiable {
     }
 
     init(from decoder: Decoder) throws {
-
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         id = try container.decodeIfPresent(UUID.self, forKey: .id)

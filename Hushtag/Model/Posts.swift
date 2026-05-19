@@ -1,6 +1,6 @@
 import Foundation
 
-struct Post: Identifiable, Sendable {
+struct Post: Identifiable {
     let id: UUID?
     let name: String
     let platform: [Platform]
@@ -16,14 +16,15 @@ struct Post: Identifiable, Sendable {
         return tasks.allSatisfy { $0.isCompleted }
     }
 }
-struct Tasks: Identifiable, Sendable {
+
+struct Tasks: Identifiable {
     let id: UUID
     var name: String
     var deadline: Date
     var isCompleted: Bool
 }
 
-nonisolated struct PostDB: Codable, Sendable {
+nonisolated struct PostDB: Codable {
     let post_id: UUID
     let user_id: UUID
     let name: String
@@ -33,7 +34,7 @@ nonisolated struct PostDB: Codable, Sendable {
     var isCompleted: Bool
 }
 
-nonisolated struct PostInsertPayload: Codable, Sendable {
+nonisolated struct PostInsertPayload: Codable {
     let user_id: UUID
     let name: String
     let deadline: Date
@@ -42,7 +43,7 @@ nonisolated struct PostInsertPayload: Codable, Sendable {
     let isCompleted: Bool
 }
 
-nonisolated struct TaskDB: Codable, Sendable {
+nonisolated struct TaskDB: Codable {
     let id: UUID
     let post_id: UUID
     let name: String
@@ -50,46 +51,40 @@ nonisolated struct TaskDB: Codable, Sendable {
     var isCompleted: Bool
 }
 
-enum ScheduleItem: Identifiable, Sendable {
-
+enum ScheduleItem: Identifiable {
     case deal(deal: Deal, deliverable: Deliverable?)
     case post(post: Post, task: Tasks?)
 
     var id: UUID {
         switch self {
-        case .deal(let deal, let deliverable):
-
+        case let .deal(deal, deliverable):
             return deliverable?.id ?? deal.id
-        case .post(let post, let task):
-
+        case let .post(post, task):
             return task?.id ?? post.id ?? UUID()
         }
     }
 
     var effectiveDeadline: Date {
         switch self {
-        case .post(let post, let task):
-
+        case let .post(post, task):
             return task?.deadline ?? post.deadline
 
-        case .deal(let deal, let deliverable):
-
+        case let .deal(deal, deliverable):
             return deliverable?.deadline ?? deal.deadline
         }
     }
 
     var date: Date {
-
         return effectiveDeadline
     }
 
     func matches(post: Post, task: Tasks?) -> Bool {
-        guard case .post(let p, let t) = self else { return false }
+        guard case let .post(p, t) = self else { return false }
         return p.id == post.id && t?.id == task?.id
     }
 
     func matches(deal: Deal, deliverable: Deliverable?) -> Bool {
-        guard case .deal(let d, let del) = self else { return false }
+        guard case let .deal(d, del) = self else { return false }
         return d.id == deal.id && del?.id == deliverable?.id
     }
 }

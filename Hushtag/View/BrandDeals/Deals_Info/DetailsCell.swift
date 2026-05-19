@@ -1,10 +1,9 @@
 import UIKit
 
 final class DetailsCell: UICollectionViewCell {
-
-    @IBOutlet weak var iconImageView: UIImageView!
-    @IBOutlet weak var valueLabel: UILabel!
-    @IBOutlet weak var separatorView: UIView!
+    @IBOutlet var iconImageView: UIImageView!
+    @IBOutlet var valueLabel: UILabel!
+    @IBOutlet var separatorView: UIView!
 
     private var minHeightConstraint: NSLayoutConstraint?
 

@@ -1,14 +1,13 @@
-import UIKit
 import Supabase
+import UIKit
 
 final class ProfileTableViewController: UITableViewController {
+    @IBOutlet var profileImageView: UIImageView!
+    @IBOutlet var nameLabel: UILabel!
+    @IBOutlet var emailLabel: UILabel!
 
-    @IBOutlet weak var profileImageView: UIImageView!
-    @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var emailLabel: UILabel!
-
-    @IBOutlet weak var youtubeStatusLabel: UILabel!
-    @IBOutlet weak var youtubeStatusDot: UIView!
+    @IBOutlet var youtubeStatusLabel: UILabel!
+    @IBOutlet var youtubeStatusDot: UIView!
 
     private var profile: Profile?
 
@@ -18,7 +17,7 @@ final class ProfileTableViewController: UITableViewController {
         setupUI()
 
         if let cachedProfile = SessionManager.shared.currentProfile {
-            self.profile = cachedProfile
+            profile = cachedProfile
             Task {
                 let appUser = try? await AuthManager.shared.getCurrentSession()
                 await MainActor.run {
@@ -83,7 +82,7 @@ final class ProfileTableViewController: UITableViewController {
         emailLabel.text = profile.email
 
         if let image = image {
-            self.profileImageView.image = image
+            profileImageView.image = image
         } else if let urlString = profile.avatarURL, let url = URL(string: urlString) {
             loadImage(from: url)
         } else {
@@ -182,19 +181,18 @@ final class ProfileTableViewController: UITableViewController {
     func signOutTap() {
         let alert = UIAlertController(title: "Sign Out", message: "Are you sure you want to sign out?", preferredStyle: .actionSheet)
 
-        alert.addAction(UIAlertAction(title: "Sign Out", style: .destructive, handler: {[weak self] _ in
+        alert.addAction(UIAlertAction(title: "Sign Out", style: .destructive, handler: { [weak self] _ in
             self?.performSignOut()
         }))
 
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 
-        self.present(alert, animated: true)
+        present(alert, animated: true)
     }
 
     func performSignOut() {
         _Concurrency.Task { @MainActor in
             do {
-
                 try await AuthManager.shared.signOut()
                 // print("User signed out successfully")
 
@@ -215,17 +213,16 @@ final class ProfileTableViewController: UITableViewController {
             preferredStyle: .alert
         )
 
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: {[weak self] _ in
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { [weak self] _ in
             self?.performAccountDeletion()
         }))
 
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
 
-        self.present(alert, animated: true)
+        present(alert, animated: true)
     }
 
     private func forceClearLocalSession() {
-
         let keychainQuery: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword
         ]
@@ -249,7 +246,6 @@ final class ProfileTableViewController: UITableViewController {
 
     func performAccountDeletion() {
         Task { @MainActor in
-
             do {
                 try await SupabaseConfig.client.database.rpc("delete_user").execute()
                 // print("Backend deletion executed.")
@@ -258,11 +254,9 @@ final class ProfileTableViewController: UITableViewController {
             }
 
             do {
-
                 try await SupabaseConfig.client.auth.signOut(scope: .local)
                 // print("Graceful local sign out succeeded.")
             } catch {
-
                 // print("Graceful sign out failed. Applying manual purge...")
                 self.forceClearLocalSession()
             }
@@ -273,61 +267,59 @@ final class ProfileTableViewController: UITableViewController {
     }
 
     private func handleYouTubeTap() {
-            guard let profile = profile else { return }
+        guard let profile = profile else { return }
 
-            if profile.isYouTubeConnected {
-                let alert = UIAlertController(
-                    title: "Disconnect YouTube",
-                    message: "Are you sure you want to disconnect your YouTube account? You will stop receiving analytics.",
-                    preferredStyle: .alert
-                )
+        if profile.isYouTubeConnected {
+            let alert = UIAlertController(
+                title: "Disconnect YouTube",
+                message: "Are you sure you want to disconnect your YouTube account? You will stop receiving analytics.",
+                preferredStyle: .alert
+            )
 
-                alert.addAction(UIAlertAction(title: "Disconnect", style: .destructive, handler: { [weak self] _ in
-                    self?.performYouTubeDisconnect()
-                }))
+            alert.addAction(UIAlertAction(title: "Disconnect", style: .destructive, handler: { [weak self] _ in
+                self?.performYouTubeDisconnect()
+            }))
 
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-                present(alert, animated: true)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            present(alert, animated: true)
 
-            } else {
-                Task { @MainActor in
-                    do {
-
-                        self.youtubeStatusLabel.text = "Connecting..."
-                        self.youtubeStatusDot.backgroundColor = .systemYellow
-
-                        let signInModel = SignInModel()
-                        try await signInModel.connectYouTube()
-
-                        self.fetchProfile()
-                    } catch {
-                        // print("Failed to connect YouTube: \(error)")
-                        self.fetchProfile()
-                    }
-                }
-            }
-        }
-
-        private func performYouTubeDisconnect() {
+        } else {
             Task { @MainActor in
                 do {
-
-                    self.youtubeStatusLabel.text = "Disconnecting..."
+                    self.youtubeStatusLabel.text = "Connecting..."
                     self.youtubeStatusDot.backgroundColor = .systemYellow
 
-                    try await YouTubeController.shared.disconnectYouTubeBackend()
-
                     let signInModel = SignInModel()
-                    signInModel.disconnectYouTube()
+                    try await signInModel.connectYouTube()
 
                     self.fetchProfile()
-
                 } catch {
-                    print("Failed to disconnect YouTube backend: \(error)")
+                    // print("Failed to connect YouTube: \(error)")
                     self.fetchProfile()
                 }
             }
         }
+    }
+
+    private func performYouTubeDisconnect() {
+        Task { @MainActor in
+            do {
+                self.youtubeStatusLabel.text = "Disconnecting..."
+                self.youtubeStatusDot.backgroundColor = .systemYellow
+
+                try await YouTubeController.shared.disconnectYouTubeBackend()
+
+                let signInModel = SignInModel()
+                signInModel.disconnectYouTube()
+
+                self.fetchProfile()
+
+            } catch {
+                print("Failed to disconnect YouTube backend: \(error)")
+                self.fetchProfile()
+            }
+        }
+    }
 
     func prepareAndNavigateToPreferences() {
         Task { @MainActor in
@@ -354,23 +346,21 @@ final class ProfileTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        if indexPath.section == 1 && indexPath.row == 0 {
+        if indexPath.section == 1, indexPath.row == 0 {
             handleYouTubeTap()
-        } else if indexPath.section == 2 && indexPath.row == 0 {
+        } else if indexPath.section == 2, indexPath.row == 0 {
             // Settings
-        } else if indexPath.section == 2 && indexPath.row == 1 {
+        } else if indexPath.section == 2, indexPath.row == 1 {
             prepareAndNavigateToPreferences()
-        } else if indexPath.section == 3 && indexPath.row == 0 {
+        } else if indexPath.section == 3, indexPath.row == 0 {
             signOutTap()
-        } else if indexPath.section == 3 && indexPath.row == 1 {
+        } else if indexPath.section == 3, indexPath.row == 1 {
             deleteAccountTap()
         }
     }
-
 }
 
 extension ProfileTableViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-
     @objc private func profileImageTapped() {
         let picker = UIImagePickerController()
         picker.delegate = self
@@ -383,7 +373,7 @@ extension ProfileTableViewController: UIImagePickerControllerDelegate, UINavigat
         didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
     ) {
         if let image = info[.originalImage] as? UIImage {
-            self.profileImageView.image = image
+            profileImageView.image = image
             uploadImage(image)
         }
         picker.dismiss(animated: true)

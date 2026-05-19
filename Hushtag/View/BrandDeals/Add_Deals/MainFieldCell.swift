@@ -1,8 +1,7 @@
 import UIKit
 
 class MainFieldCell: UITableViewCell {
-
-    @IBOutlet weak var textField: UITextField!
+    @IBOutlet var textField: UITextField!
     override func awakeFromNib() {
         super.awakeFromNib()
         selectionStyle = .none

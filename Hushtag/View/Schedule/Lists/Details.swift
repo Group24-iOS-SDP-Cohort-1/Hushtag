@@ -1,8 +1,7 @@
 import UIKit
 
 class Details: UIViewController {
-
-    @IBOutlet weak var detailsView: UICollectionView!
+    @IBOutlet var detailsView: UICollectionView!
     var schedule: ScheduleItem?
     var onToggleTask: ((Post, Tasks) -> Void)?
     var onToggleMainPost: ((Post) -> Void)?
@@ -20,59 +19,55 @@ class Details: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(handleDealsDidChange), name: .dealsDidChange, object: nil)
     }
 
-    // In Details.swift
-        @objc private func handlePostsDidChange() {
-            Task {
-                do {
-                    let posts = try await postsController.fetchPosts()
-                    if case .post(let currentPost, let currentTask) = self.schedule {
-                        if let updatedPost = posts.first(where: { $0.id == currentPost.id }) {
+    /// In Details.swift
+    @objc private func handlePostsDidChange() {
+        Task {
+            do {
+                let posts = try await postsController.fetchPosts()
+                if case let .post(currentPost, currentTask) = self.schedule {
+                    if let updatedPost = posts.first(where: { $0.id == currentPost.id }) {
+                        // CHANGED: Safely handle if currentTask is nil
+                        let updatedTask = currentTask != nil ? (updatedPost.tasks.first(where: { $0.id == currentTask!.id }) ?? currentTask) : nil
 
-                            // CHANGED: Safely handle if currentTask is nil
-                            let updatedTask = currentTask != nil ? (updatedPost.tasks.first(where: { $0.id == currentTask!.id }) ?? currentTask) : nil
-
-                            await MainActor.run {
-                                self.schedule = .post(post: updatedPost, task: updatedTask)
-                                self.detailsView.reloadData()
-                            }
+                        await MainActor.run {
+                            self.schedule = .post(post: updatedPost, task: updatedTask)
+                            self.detailsView.reloadData()
                         }
                     }
-                } catch {
-                    print("Failed to fetch posts: \(error)")
                 }
+            } catch {
+                print("Failed to fetch posts: \(error)")
             }
         }
+    }
 
-        @objc private func handleDealsDidChange() {
-            Task {
-                do {
-                    let deals = try await dealsController.fetchDeals()
-                    if case .deal(let currentDeal, let currentDeliverable) = self.schedule {
-                        if let updatedDeal = deals.first(where: { $0.id == currentDeal.id }) {
+    @objc private func handleDealsDidChange() {
+        Task {
+            do {
+                let deals = try await dealsController.fetchDeals()
+                if case let .deal(currentDeal, currentDeliverable) = self.schedule {
+                    if let updatedDeal = deals.first(where: { $0.id == currentDeal.id }) {
+                        // CHANGED: Safely handle if currentDeliverable is nil
+                        let updatedDeliverable = currentDeliverable != nil ? (updatedDeal.deliverables.first(where: { $0.id == currentDeliverable!.id }) ?? currentDeliverable) : nil
 
-                            // CHANGED: Safely handle if currentDeliverable is nil
-                            let updatedDeliverable = currentDeliverable != nil ? (updatedDeal.deliverables.first(where: { $0.id == currentDeliverable!.id }) ?? currentDeliverable) : nil
-
-                            await MainActor.run {
-                                self.schedule = .deal(deal: updatedDeal, deliverable: updatedDeliverable)
-                                self.detailsView.reloadData()
-                            }
+                        await MainActor.run {
+                            self.schedule = .deal(deal: updatedDeal, deliverable: updatedDeliverable)
+                            self.detailsView.reloadData()
                         }
                     }
-                } catch {
-                    print("Failed to fetch deals: \(error)")
                 }
+            } catch {
+                print("Failed to fetch deals: \(error)")
             }
         }
+    }
 
     func generateLayout() -> UICollectionViewLayout {
-
         UICollectionViewCompositionalLayout { [weak self] section, _ in
             guard let self, let schedule = self.schedule else { return nil }
 
             // Sections 0 & 1 are horizontal cards for DEAL
             if case .deal = schedule, section == 0 || section == 1 {
-
                 let item = NSCollectionLayoutItem(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
@@ -96,7 +91,6 @@ class Details: UIViewController {
 
             // Section 0 is horizontal card for POST
             if case .post = schedule, section == 0 {
-
                 let item = NSCollectionLayoutItem(
                     layoutSize: .init(
                         widthDimension: .fractionalWidth(1),
@@ -140,12 +134,11 @@ class Details: UIViewController {
             let section = NSCollectionLayoutSection(group: group)
             section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
             return section
-
         }
     }
 
     private func updateTaskCompletion(taskIndex: Int, isCompleted: Bool) {
-        guard case .post(var post, _) = schedule,
+        guard case var .post(post, _) = schedule,
               taskIndex < post.tasks.count else { return }
 
         post.tasks[taskIndex].isCompleted = isCompleted
@@ -228,27 +221,26 @@ class Details: UIViewController {
         onToggleMainDeal?(deal)
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-            if segue.identifier == "editDeal" {
-                if let nav = segue.destination as? UINavigationController,
-                   let dest = nav.topViewController as? AddDealsViewController,
-                   case .deal(let deal, _) = schedule {
-                    dest.editingDeal = deal
-                    dest.editingIndex = 0
-                    dest.delegate = self
-                } else if let dest = segue.destination as? AddDealsViewController,
-                          case .deal(let deal, _) = schedule {
-                    dest.editingDeal = deal
-                    dest.editingIndex = 0
-                    dest.delegate = self
-                }
+    override func prepare(for segue: UIStoryboardSegue, sender _: Any?) {
+        if segue.identifier == "editDeal" {
+            if let nav = segue.destination as? UINavigationController,
+               let dest = nav.topViewController as? AddDealsViewController,
+               case let .deal(deal, _) = schedule {
+                dest.editingDeal = deal
+                dest.editingIndex = 0
+                dest.delegate = self
+            } else if let dest = segue.destination as? AddDealsViewController,
+                      case let .deal(deal, _) = schedule {
+                dest.editingDeal = deal
+                dest.editingIndex = 0
+                dest.delegate = self
             }
         }
-
+    }
 }
 
 extension Details: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in _: UICollectionView) -> Int {
         switch schedule {
         case .deal:
             return 3
@@ -258,32 +250,32 @@ extension Details: UICollectionViewDataSource {
             return 0
         }
     }
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+
+    func collectionView(_: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let schedule else { return 0 }
 
         if section == 0 {
             return 1
         }
         switch schedule {
-        case .deal(let deal, _):
+        case let .deal(deal, _):
             if section == 1 {
                 return 1
             }
             return deal.deliverables.count
 
-        case .post(let post, _):
+        case let .post(post, _):
             return post.tasks.count
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
         guard let schedule = schedule else {
             return UICollectionViewCell()
         }
 
         switch schedule {
-        case .deal(let deal, _):
+        case let .deal(deal, _):
             if indexPath.section == 0 {
                 let cell = collectionView.dequeueReusableCell(
                     withReuseIdentifier: "common_details",
@@ -293,7 +285,7 @@ extension Details: UICollectionViewDataSource {
                 // Add Main Toggle action directly on common_details cell. We can just use the status/circle button if it existed, but usually Section 0 does not have a status button. If it does, here's how to toggle it.
                 cell.onToggleCompletion = { [weak self] _ in
                     guard let self else { return }
-                    guard case .deal(let deal, _) = self.schedule else { return }
+                    guard case let .deal(deal, _) = self.schedule else { return }
 
                     Task {
                         await self.handleMainDealToggle(deal: deal)
@@ -313,7 +305,7 @@ extension Details: UICollectionViewDataSource {
 
                         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
                         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-                            guard case .deal(let deal, _) = self.schedule else { return }
+                            guard case let .deal(deal, _) = self.schedule else { return }
                             let dealId = deal.id
                             self.performDelete(dealId: dealId)
                         })
@@ -348,7 +340,7 @@ extension Details: UICollectionViewDataSource {
             cell.configureMultiple(with: deliverable)
             cell.onToggleCompletion = { [weak self] indexPath in
                 guard let self else { return }
-                guard case .deal(let deal, _) = self.schedule else { return }
+                guard case let .deal(deal, _) = self.schedule else { return }
 
                 let deliverable = deal.deliverables[indexPath.row]
 
@@ -363,8 +355,7 @@ extension Details: UICollectionViewDataSource {
             cell.applyLiquidGlassEffect()
             return cell
 
-        case .post(let post, _):
-
+        case let .post(post, _):
             if indexPath.section == 0 {
                 let cell = collectionView.dequeueReusableCell(
                     withReuseIdentifier: "common_details",
@@ -374,7 +365,7 @@ extension Details: UICollectionViewDataSource {
                 // Add Main Toggle action directly on common_details cell for Post.
                 cell.onToggleCompletion = { [weak self] _ in
                     guard let self else { return }
-                    guard case .post(let post, _) = self.schedule else { return }
+                    guard case let .post(post, _) = self.schedule else { return }
 
                     Task {
                         await self.handleMainPostToggle(post: post)
@@ -394,7 +385,7 @@ extension Details: UICollectionViewDataSource {
 
                         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
                         alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-                            guard case .post(let post, _) = self.schedule,
+                            guard case let .post(post, _) = self.schedule,
                                   let postId = post.id else { return }
                             self.performDelete(postId: postId)
                         })
@@ -419,7 +410,7 @@ extension Details: UICollectionViewDataSource {
             cell.configureMultiple(with: task)
             cell.onToggleCompletion = { [weak self] indexPath in
                 guard let self else { return }
-                guard case .post(let post, _) = self.schedule else { return }
+                guard case let .post(post, _) = self.schedule else { return }
 
                 let task = post.tasks[indexPath.row]
 
@@ -431,14 +422,11 @@ extension Details: UICollectionViewDataSource {
             cell.applyLiquidGlassEffect()
 
             return cell
-
         }
     }
-
 }
 
 extension UIViewController {
-
     var topMostViewController: UIViewController {
         if let presented = presentedViewController {
             return presented.topMostViewController
@@ -454,15 +442,15 @@ extension UIViewController {
 }
 
 extension Details: AddDealsDelegate {
-    func addDealsViewController(_ controller: AddDealsViewController, didCreateDeal deal: Deal) { }
+    func addDealsViewController(_: AddDealsViewController, didCreateDeal _: Deal) {}
 
-    func addDealsViewController(_ controller: AddDealsViewController, didUpdateDeal deal: Deal, at index: Int) {
-        guard case .deal(_, let currentDeliverable) = self.schedule else { return }
+    func addDealsViewController(_: AddDealsViewController, didUpdateDeal deal: Deal, at _: Int) {
+        guard case let .deal(_, currentDeliverable) = schedule else { return }
 
         // CHANGED: Handle optional deliverable
         let updatedDeliverable = currentDeliverable != nil ? (deal.deliverables.first(where: { $0.id == currentDeliverable!.id }) ?? currentDeliverable) : nil
 
-        self.schedule = .deal(deal: deal, deliverable: updatedDeliverable)
-        self.detailsView.reloadData()
+        schedule = .deal(deal: deal, deliverable: updatedDeliverable)
+        detailsView.reloadData()
     }
 }

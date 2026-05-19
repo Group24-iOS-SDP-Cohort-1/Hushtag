@@ -1,8 +1,7 @@
-import UIKit
 import Foundation
+import UIKit
 
 class AnalyticsIdeaDetailViewController: UIViewController {
-
     var analyticsIdea: AnalyticsIdea?
     var hasExistingScript: Bool = false
     var ideaMilestone: Int = 0
@@ -92,7 +91,7 @@ class AnalyticsIdeaDetailViewController: UIViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
         let metaLabel = UILabel()
-        metaLabel.text = "\(idea.format.uppercased()) • Virality: \(Int(idea.estimated_virality_score))"
+        metaLabel.text = "\(idea.format.uppercased()) • Virality: \(Int(idea.estimatedViralityScore))"
         metaLabel.font = .systemFont(ofSize: 13, weight: .semibold)
         metaLabel.textColor = .accent
         metaLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -117,7 +116,7 @@ class AnalyticsIdeaDetailViewController: UIViewController {
         let strategyCard = createCardView()
         let strategyTitle = createSectionTitle("Why it will work")
         let strategyLabel = UILabel()
-        strategyLabel.text = idea.why_it_will_work.joined(separator: "\n• ")
+        strategyLabel.text = idea.whyItWillWork.joined(separator: "\n• ")
         strategyLabel.text = "• " + (strategyLabel.text ?? "")
         strategyLabel.numberOfLines = 0
         strategyLabel.font = .systemFont(ofSize: 15, weight: .regular)
@@ -125,7 +124,7 @@ class AnalyticsIdeaDetailViewController: UIViewController {
         strategyLabel.translatesAutoresizingMaskIntoConstraints = false
 
         let emotionLabel = UILabel()
-        emotionLabel.text = "Target Emotion: \(idea.target_emotion)"
+        emotionLabel.text = "Target Emotion: \(idea.targetEmotion)"
         emotionLabel.font = .systemFont(ofSize: 14, weight: .medium)
         emotionLabel.translatesAutoresizingMaskIntoConstraints = false
 
@@ -158,7 +157,7 @@ class AnalyticsIdeaDetailViewController: UIViewController {
         hookLabel.translatesAutoresizingMaskIntoConstraints = false
 
         let openingLabel = UILabel()
-        openingLabel.text = idea.opening_30_seconds.joined(separator: "\n")
+        openingLabel.text = idea.opening30Seconds.joined(separator: "\n")
         openingLabel.numberOfLines = 0
         openingLabel.font = .systemFont(ofSize: 15, weight: .regular)
         openingLabel.textColor = .secondaryLabel
@@ -184,7 +183,7 @@ class AnalyticsIdeaDetailViewController: UIViewController {
         stackView.addArrangedSubview(hookCard)
 
         // 5. Thumbnail
-        if let thumb = idea.thumbnail_concept {
+        if let thumb = idea.thumbnailConcept {
             let thumbCard = createCardView()
             let thumbTitle = createSectionTitle("Thumbnail Concept")
 
@@ -237,10 +236,10 @@ class AnalyticsIdeaDetailViewController: UIViewController {
         rightCol.axis = .vertical
         rightCol.spacing = 16
 
-        leftCol.addArrangedSubview(createMetricCard(title: "CTR", value: "\(Int(idea.estimated_ctr * 100))%"))
-        leftCol.addArrangedSubview(createMetricCard(title: "Virality", value: "\(Int(idea.estimated_virality_score))/100"))
+        leftCol.addArrangedSubview(createMetricCard(title: "CTR", value: "\(Int(idea.estimatedCTR * 100))%"))
+        leftCol.addArrangedSubview(createMetricCard(title: "Virality", value: "\(Int(idea.estimatedViralityScore))/100"))
 
-        rightCol.addArrangedSubview(createMetricCard(title: "Retention", value: "\(Int(idea.estimated_retention * 100))%"))
+        rightCol.addArrangedSubview(createMetricCard(title: "Retention", value: "\(Int(idea.estimatedRetention * 100))%"))
         rightCol.addArrangedSubview(createMetricCard(title: "Difficulty", value: idea.difficulty.capitalized))
 
         gridStack.addArrangedSubview(leftCol)
@@ -426,20 +425,20 @@ class AnalyticsIdeaDetailViewController: UIViewController {
         guard let chatVC = storyboard.instantiateViewController(withIdentifier: "Chatbot") as? Chatbot else { return }
         chatVC.ideaId = idea.id
         chatVC.autoSendMessage = """
-Create a short creator-style script for this video idea:
+        Create a short creator-style script for this video idea:
 
-Title: "\(idea.title)"
-Description: "\(idea.hook)"
+        Title: "\(idea.title)"
+        Description: "\(idea.hook)"
 
-Structure:
-1. Hook (1 sentence)
-2. What happens (2–3 sentences)
-3. Twist or surprise (1 sentence)
-4. CTA (1 sentence)
+        Structure:
+        1. Hook (1 sentence)
+        2. What happens (2–3 sentences)
+        3. Twist or surprise (1 sentence)
+        4. CTA (1 sentence)
 
-Tone: casual, friendly, modern.
-Length: 15–20 seconds.
-"""
+        Tone: casual, friendly, modern.
+        Length: 15–20 seconds.
+        """
         navigationController?.pushViewController(chatVC, animated: true)
     }
 

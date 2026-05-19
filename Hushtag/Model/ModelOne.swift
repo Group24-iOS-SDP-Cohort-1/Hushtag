@@ -1,5 +1,5 @@
-import Foundation
 import CryptoKit
+import Foundation
 
 func makeIdeaKey(
     title: String,
@@ -12,12 +12,11 @@ func makeIdeaKey(
     return hash.map { String(format: "%02x", $0) }.joined()
 }
 
-struct LikedIds {
+enum LikedIds {
     static var likedIdeaIds: Set<String> = []
 }
 
 extension Date {
-
     private static let dayOnlyFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE"
@@ -55,7 +54,7 @@ extension Date {
 
     private static let timeOnlyFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "h:mm a"   // Example: 4:30 PM
+        formatter.dateFormat = "h:mm a" // Example: 4:30 PM
         formatter.locale = .current
         return formatter
     }()
@@ -86,19 +85,18 @@ extension Date {
 }
 
 extension Int {
-
     func formattedCount() -> String {
         let num = Double(self)
 
         switch num {
-        case 0..<1_000:
+        case 0 ..< 1000:
             return "\(self)"
 
-        case 1_000..<1_000_000:
-            return String(format: "%.1fK", num / 1_000)
+        case 1000 ..< 1_000_000:
+            return String(format: "%.1fK", num / 1000)
                 .replacingOccurrences(of: ".0", with: "")
 
-        case 1_000_000..<1_000_000_000:
+        case 1_000_000 ..< 1_000_000_000:
             return String(format: "%.1fM", num / 1_000_000)
                 .replacingOccurrences(of: ".0", with: "")
 

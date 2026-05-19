@@ -1,22 +1,20 @@
 import UIKit
 
 class Script_cell_ideate: UICollectionViewCell {
+    @IBOutlet var progressView: CircularProgressView!
 
-    @IBOutlet weak var progressView: CircularProgressView!
+    @IBOutlet var title: UILabel!
 
-    @IBOutlet weak var title: UILabel!
-
-    @IBOutlet weak var badgeStack: UIStackView!
+    @IBOutlet var badgeStack: UIStackView!
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.layer.cornerRadius = 12
+        layer.cornerRadius = 12
         applyLiquidGlassEffect()
         title.numberOfLines = 2
     }
 
     func configureCell(with script: ScriptedIdea) {
-
         // 1. Title
         if let realTitle = script.title, !realTitle.isEmpty {
             title.text = realTitle
@@ -45,13 +43,12 @@ class Script_cell_ideate: UICollectionViewCell {
     }
 
     func configureHashtags(_ hashtag: String) {
-
-        badgeStack.arrangedSubviews.forEach {
-            badgeStack.removeArrangedSubview($0)
-            $0.removeFromSuperview()
+        for arrangedSubview in badgeStack.arrangedSubviews {
+            badgeStack.removeArrangedSubview(arrangedSubview)
+            arrangedSubview.removeFromSuperview()
         }
 
-        let badge: Badges = Badges.loadFromNib()
+        let badge = Badges.loadFromNib()
 
         badge.configure(
             text: hashtag,

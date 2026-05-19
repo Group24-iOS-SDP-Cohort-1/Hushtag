@@ -1,16 +1,16 @@
 import UIKit
 
 class DealsCollectionViewCell: UICollectionViewCell {
-    @IBOutlet weak var cardView: UIView!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var deadlineValueLabel: UILabel!
-    @IBOutlet weak var deliverablesValueLabel: UILabel!
-    @IBOutlet weak var paymentValueLabel: UILabel!
-    @IBOutlet weak var nextDeliverableLabel: UILabel!
-    @IBOutlet weak var deadlineIconImageView: UIImageView!
-    @IBOutlet weak var bottomStackView: UIStackView!
-    @IBOutlet weak var navigationButton: UIButton!
-    @IBOutlet weak var captionLabel: UILabel!
+    @IBOutlet var cardView: UIView!
+    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var deadlineValueLabel: UILabel!
+    @IBOutlet var deliverablesValueLabel: UILabel!
+    @IBOutlet var paymentValueLabel: UILabel!
+    @IBOutlet var nextDeliverableLabel: UILabel!
+    @IBOutlet var deadlineIconImageView: UIImageView!
+    @IBOutlet var bottomStackView: UIStackView!
+    @IBOutlet var navigationButton: UIButton!
+    @IBOutlet var captionLabel: UILabel!
 
     var onTap: (() -> Void)?
     override func awakeFromNib() {

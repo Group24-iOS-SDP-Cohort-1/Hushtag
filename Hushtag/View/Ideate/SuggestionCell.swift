@@ -1,11 +1,10 @@
 import UIKit
 
 class SuggestionCell: UIView {
-    @IBOutlet weak var generateButton: UIButton!
+    @IBOutlet var generateButton: UIButton!
 
     override func awakeFromNib() {
         generateButton.layer.borderWidth = 1
         generateButton.layer.borderColor = UIColor.accent.cgColor
     }
-
 }

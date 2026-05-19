@@ -1,15 +1,14 @@
 import UIKit
 
 class WelcomeViewController: UIViewController {
+    @IBOutlet var signUp: UIButton!
+    @IBOutlet var loginButton: UIButton!
 
-    @IBOutlet weak var signUp: UIButton!
-    @IBOutlet weak var loginButton: UIButton!
-
-    @IBAction func signUpTapped(_ sender: UIButton) {
+    @IBAction func signUpTapped(_: UIButton) {
         print("Register tapped")
     }
 
-    @IBAction func loginTapped(_ sender: UIButton) {
+    @IBAction func loginTapped(_: UIButton) {
         print("Login tapped")
     }
 }

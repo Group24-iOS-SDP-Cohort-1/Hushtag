@@ -11,7 +11,8 @@ class LoadingOverlay {
     @MainActor
     func show() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first(where: { $0.isKeyWindow }) else {
+              let window = windowScene.windows.first(where: { $0.isKeyWindow })
+        else {
             return
         }
 
@@ -30,8 +31,8 @@ class LoadingOverlay {
         overlay.addSubview(indicator)
         window.addSubview(overlay)
 
-        self.overlayView = overlay
-        self.activityIndicator = indicator
+        overlayView = overlay
+        activityIndicator = indicator
     }
 
     @MainActor
@@ -54,7 +55,8 @@ class OpaqueLoadingScreen {
     @MainActor
     func show(message: String = "Finding the best ideas...") {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first(where: { $0.isKeyWindow }) else {
+              let window = windowScene.windows.first(where: { $0.isKeyWindow })
+        else {
             return
         }
 
@@ -90,9 +92,9 @@ class OpaqueLoadingScreen {
             container.centerYAnchor.constraint(equalTo: overlay.centerYAnchor)
         ])
 
-        self.overlayView = overlay
-        self.activityIndicator = indicator
-        self.messageLabel = label
+        overlayView = overlay
+        activityIndicator = indicator
+        messageLabel = label
     }
 
     @MainActor

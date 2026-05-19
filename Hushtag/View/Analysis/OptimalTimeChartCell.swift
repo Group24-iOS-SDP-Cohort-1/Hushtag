@@ -1,14 +1,12 @@
-import UIKit
 import SwiftUI
+import UIKit
 
 class OptimalTimeChartCell: UICollectionViewCell {
-
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var chartContainer: UIView!
+    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var chartContainer: UIView!
     private var hostingController: UIHostingController<OptimalTimeChart>?
 
     func configure(with activity: [ViewerActivity]) {
-
         guard !activity.isEmpty else {
             titleLabel.text = "Best time : N/A"
             setupChart(activity: [])
@@ -29,9 +27,8 @@ class OptimalTimeChartCell: UICollectionViewCell {
         let orderedWeekdays = [1, 2, 3, 4, 5, 6, 7]
 
         let weekdayData = orderedWeekdays.map { weekday -> (day: String, views: Int) in
-
             let name =
-            calendar.shortWeekdaySymbols[weekday - 1]
+                calendar.shortWeekdaySymbols[weekday - 1]
 
             let views = weekdayViews[weekday] ?? 0
 
@@ -64,7 +61,6 @@ class OptimalTimeChartCell: UICollectionViewCell {
     private func setupChart(
         activity: [ViewerActivity]
     ) {
-
         let chartView = OptimalTimeChart(
             data: activity
         )
@@ -72,7 +68,6 @@ class OptimalTimeChartCell: UICollectionViewCell {
         if let existingController = hostingController {
             existingController.rootView = chartView
         } else {
-
             let controller = UIHostingController(rootView: chartView)
             controller.view.backgroundColor = .clear
 

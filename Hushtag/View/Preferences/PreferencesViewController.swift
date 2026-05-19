@@ -1,8 +1,7 @@
-import UIKit
 import GoogleSignIn
+import UIKit
 
 protocol PreferenceCardSelectionDelegate: AnyObject {
-
     func preferenceCard(at index: Int, didChangeCompletion isCompleted: Bool)
     func preferenceCard(
         at key: String,
@@ -11,17 +10,16 @@ protocol PreferenceCardSelectionDelegate: AnyObject {
 }
 
 class PreferencesViewController: UIViewController {
-
-    @IBOutlet weak var preferencesCollectionView: UICollectionView!
-    @IBOutlet weak var progessBarOutlet: UIProgressView!
-    @IBOutlet weak var pageControlOutlet: UIPageControl!
-    @IBOutlet weak var skipSubmitButton: UIBarButtonItem!
+    @IBOutlet var preferencesCollectionView: UICollectionView!
+    @IBOutlet var progessBarOutlet: UIProgressView!
+    @IBOutlet var pageControlOutlet: UIPageControl!
+    @IBOutlet var skipSubmitButton: UIBarButtonItem!
 
     var preferenceItems: [PreferenceItem] = PreferencesData.items
     private var completedStates: [Bool] = []
     var initialPreference: UserPreference? // Optional passed from Profile
 
-    // Store user's selected string options here.
+    /// Store user's selected string options here.
     private var selectedOptions: [String: [String]] = [
         "Niche": [],
         "Platform": []
@@ -68,15 +66,13 @@ class PreferencesViewController: UIViewController {
         }
 
         updateProgressFromCompletedStates(animated: false)
-
     }
 
-    @IBAction func submitButton(_ sender: Any) {
-        self.skipSubmitButton.isEnabled = false
+    @IBAction func submitButton(_: Any) {
+        skipSubmitButton.isEnabled = false
 
         _Concurrency.Task { @MainActor in
             do {
-
                 try await controller.savePreferences(
                     dict: selectedOptions
                 )
@@ -155,7 +151,6 @@ class PreferencesViewController: UIViewController {
     }
 
     func updateProgressAndPagination(forIndex index: Int) {
-
         pageControlOutlet.currentPage = index
 
         updateSkipButton(for: index)
@@ -167,7 +162,6 @@ class PreferencesViewController: UIViewController {
     }
 
     func generateLayout() -> UICollectionViewLayout {
-
         let size = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .fractionalHeight(1.0)
@@ -194,7 +188,7 @@ class PreferencesViewController: UIViewController {
 
         section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
 
-        section.visibleItemsInvalidationHandler = { [weak self] (items, offset, env) in
+        section.visibleItemsInvalidationHandler = { [weak self] items, offset, env in
             guard let self = self else { return }
 
             let containerCenterX = offset.x + (env.container.contentSize.width / 2.0)
@@ -206,7 +200,6 @@ class PreferencesViewController: UIViewController {
             let page = nearest?.indexPath.item ?? 0
 
             DispatchQueue.main.async {
-
                 self.pageControlOutlet.numberOfPages = max(1, self.preferenceItems.count)
                 self.pageControlOutlet.currentPage = page
 
@@ -217,16 +210,12 @@ class PreferencesViewController: UIViewController {
             }
         }
 
-        let layout = UICollectionViewCompositionalLayout(section: section)
-
-        return layout
-
+        return UICollectionViewCompositionalLayout(section: section)
     }
-
 }
 
 extension PreferencesViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
         return preferenceItems.count
     }
 
@@ -277,7 +266,7 @@ extension PreferencesViewController: UICollectionViewDataSource {
 
 extension PreferencesViewController: PreferenceCardSelectionDelegate {
     func preferenceCard(at index: Int, didChangeCompletion isCompleted: Bool) {
-        guard index >= 0 && index < completedStates.count else { return }
+        guard index >= 0, index < completedStates.count else { return }
 
         if completedStates[index] != isCompleted {
             completedStates[index] = isCompleted
@@ -290,5 +279,4 @@ extension PreferencesViewController: PreferenceCardSelectionDelegate {
         // print(selectedOptions[key])
         // print("\n\n\(selectedOptions)")
     }
-
 }

@@ -1,17 +1,16 @@
 import UIKit
 
 class NicheCollectionCardViewCell: UICollectionViewCell {
-
     weak var delegate: PreferenceCardSelectionDelegate?
     var cardIndex: Int = -1
 
-    @IBOutlet weak var headingLabel: UILabel!
+    @IBOutlet var headingLabel: UILabel!
 
-    @IBOutlet weak var subheadingLabel: UILabel!
+    @IBOutlet var subheadingLabel: UILabel!
 
-    @IBOutlet weak var innerCollectionView: UICollectionView!
+    @IBOutlet var innerCollectionView: UICollectionView!
 
-    @IBOutlet weak var textFieldOutlet: UITextField!
+    @IBOutlet var textFieldOutlet: UITextField!
 
     var options: [String] = []
 
@@ -52,12 +51,11 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
         textFieldOutlet.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
     }
 
-    @objc func textFieldDidChange(_ textField: UITextField) {
+    @objc func textFieldDidChange(_: UITextField) {
         updateSelection()
     }
 
     private func notifyCompletionIfNeeded() {
-
         let selectedCount = innerCollectionView.indexPathsForSelectedItems?.count ?? 0
         let completed = selectedCount > 0
         delegate?.preferenceCard(at: cardIndex, didChangeCompletion: completed)
@@ -74,7 +72,6 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
             let optionText = options[indexPath.item]
 
             if optionText == otherOptionKey {
-
                 let rawText = textFieldOutlet.text ?? ""
 
                 let customItems = rawText.components(separatedBy: ",")
@@ -82,14 +79,11 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
                     .filter { !$0.isEmpty }
 
                 if !customItems.isEmpty {
-
                     selectedValues.append(contentsOf: customItems)
                 } else {
-
                     selectedValues.append(otherOptionKey)
                 }
             } else {
-
                 selectedValues.append(optionText)
             }
         }
@@ -115,7 +109,6 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
         textFieldOutlet.text = ""
         textFieldOutlet.isEnabled = false
         textFieldOutlet.alpha = 0.5
-
     }
 
     func preselectOptions(selected: [String]) {
@@ -130,7 +123,7 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
 
         for (itemIndex, option) in options.enumerated() {
             // If it's the "Other" option in the UI, we handle it below if there are unmatched strings
-            if option != otherOptionKey && selected.contains(option.lowercased()) {
+            if option != otherOptionKey, selected.contains(option.lowercased()) {
                 let indexPath = IndexPath(item: itemIndex, section: 0)
                 innerCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
             }
@@ -155,15 +148,14 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
     func registerCells() {
         innerCollectionView.register(UINib(nibName: "OptionsCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "optionsCell")
     }
-
 }
 
 extension NicheCollectionCardViewCell: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in _: UICollectionView) -> Int {
         return 1
     }
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
         return options.count
     }
 
@@ -197,7 +189,6 @@ extension NicheCollectionCardViewCell: UICollectionViewDataSource {
             textFieldOutlet.text = ""
         }
     }
-
 }
 
 func generateNicheLayout() -> UICollectionViewLayout {
@@ -216,13 +207,11 @@ func generateNicheLayout() -> UICollectionViewLayout {
 
     section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 0)
 
-    let layout = UICollectionViewCompositionalLayout(section: section)
-
-    return layout
+    return UICollectionViewCompositionalLayout(section: section)
 }
 
 extension NicheCollectionCardViewCell: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(_: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedOption = options[indexPath.item]
 
         if selectedOption == otherOptionKey {
@@ -233,7 +222,7 @@ extension NicheCollectionCardViewCell: UICollectionViewDelegate {
         notifyCompletionIfNeeded()
     }
 
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+    func collectionView(_: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let deselectedOption = options[indexPath.item]
 
         if deselectedOption == otherOptionKey {

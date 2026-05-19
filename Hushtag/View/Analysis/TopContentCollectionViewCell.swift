@@ -1,10 +1,9 @@
 import UIKit
 
 class TopContentCollectionViewCell: UICollectionViewCell {
-
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var viewsLabel: UILabel!
-    @IBOutlet weak var thumbnailImageView: UIImageView!
+    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var viewsLabel: UILabel!
+    @IBOutlet var thumbnailImageView: UIImageView!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -17,14 +16,11 @@ class TopContentCollectionViewCell: UICollectionViewCell {
         viewsLabel.text = "\(item.views.formattedCount()) views • \(item.published_at.dateAndMonth())"
         thumbnailImageView.loadImage(from: item.thumbnail)
     }
-
 }
 
-// to load thumbnail
+/// to load thumbnail
 extension UIImageView {
-
     func loadImage(from urlString: String) {
-
         guard let url = URL(string: urlString) else {
             return
         }

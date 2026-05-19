@@ -1,18 +1,18 @@
 import UIKit
 
 class HeaderButton: UICollectionReusableView {
-
-    @IBOutlet weak var headerLabel: UILabel!
-    @IBOutlet weak var backward: UIButton!
-    @IBOutlet weak var forward: UIButton!
+    @IBOutlet var headerLabel: UILabel!
+    @IBOutlet var backward: UIButton!
+    @IBOutlet var forward: UIButton!
 
     var onDateChanged: ((Date) -> Void)?
-    private var currentDate: Date = Date()
+    private var currentDate: Date = .init()
     override func awakeFromNib() {
         super.awakeFromNib()
         backward.addTarget(self, action: #selector(prevMonth), for: .touchUpInside)
         forward.addTarget(self, action: #selector(nextMonth), for: .touchUpInside)
     }
+
     func configure(text: String, date: Date) {
         headerLabel.text = text
         currentDate = date

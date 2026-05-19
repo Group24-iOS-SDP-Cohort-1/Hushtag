@@ -5,7 +5,6 @@ func generateTitleWithApple(
     userPrompt: String,
     conversationID: UUID?
 ) async -> String {
-
     let contextBlock: String
     if let script = script {
         contextBlock = """
@@ -43,7 +42,6 @@ func generateDescriptionWithApple(
     userPrompt: String,
     conversationID: UUID?
 ) async -> String {
-
     let contextBlock: String
     if let script = script {
         contextBlock = """

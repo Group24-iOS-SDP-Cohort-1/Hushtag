@@ -1,12 +1,11 @@
 import UIKit
 
 class HeaderView: UICollectionReusableView {
-
-    @IBOutlet weak var headerView: UILabel!
+    @IBOutlet var headerView: UILabel!
 
     var didTapChevron: (() -> Void)?
 
-    // Programmatic chevron if XIB is not updated or for easier management
+    /// Programmatic chevron if XIB is not updated or for easier management
     private let chevronButton: UIButton = {
         let button = UIButton(type: .system)
         let config = UIImage.SymbolConfiguration(pointSize: 14, weight: .semibold)

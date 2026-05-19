@@ -1,7 +1,6 @@
 import UIKit
 
 class Ideate1: UIViewController {
-
     var ideas: [Idea] = []
     var selectedIdea: Idea?
     var selectedIndexPath: IndexPath?
@@ -12,9 +11,9 @@ class Ideate1: UIViewController {
     var recentScripts: [ScriptedIdea] = []
     var likedIdeas: [Idea] = []
     private let scriptsController = ScriptedIdeasController()
-    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet var collectionView: UICollectionView!
 
-    @IBOutlet weak var profileImageView: UIImageView!
+    @IBOutlet var profileImageView: UIImageView!
     private let profileController = ProfileController()
 
     enum SectionType {
@@ -24,6 +23,7 @@ class Ideate1: UIViewController {
         case recent
         case suggested
     }
+
     var sections: [SectionType] {
         var list: [SectionType] = [.search, .chatbot]
         if !likedIdeas.isEmpty {
@@ -55,11 +55,16 @@ class Ideate1: UIViewController {
 
         setupGlobalKeyboardDismiss()
 
-        self.ideas = syncLikedState(SessionManager.shared.personalizedIdeas)
+        ideas = syncLikedState(SessionManager.shared.personalizedIdeas)
         // Fetch recent scripts
         fetchRecentScripts()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(fetchProfileButtonData), name: .didUpdateProfile, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(fetchProfileButtonData),
+            name: .didUpdateProfile,
+            object: nil
+        )
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -98,16 +103,16 @@ class Ideate1: UIViewController {
 
                 // Extract scripts from conversations that have them
                 let allScripts = conversations.compactMap { conversation -> ScriptedIdea? in
-                    guard let dbScript = conversation.scripted_ideas else { return nil }
+                    guard let dbScript = conversation.scriptedIdeas else { return nil }
                     return ScriptedIdea(
                         id: dbScript.id,
-                        chat_id: dbScript.chat_id,
+                        chatId: dbScript.chatId,
                         title: dbScript.title,
                         description: dbScript.description,
                         script: dbScript.script,
                         thumbnail: dbScript.thumbnail,
                         tags: dbScript.tags,
-                        idea_id: conversation.idea_id
+                        idea_id: conversation.ideaId
                     )
                 }
 
@@ -130,15 +135,22 @@ class Ideate1: UIViewController {
     }
 
     private func register() {
-        collectionView.register(UINib(nibName: "IdeaCells", bundle: nil), forCellWithReuseIdentifier: "ideaCell")
+        collectionView.register(UINib(nibName: "IdeaCells", bundle: nil),
+                                forCellWithReuseIdentifier: "ideaCell")
 
-        collectionView.register(UINib(nibName: "LikedCellsNew", bundle: nil), forCellWithReuseIdentifier: "likedCellsNew")
+        collectionView.register(UINib(nibName: "LikedCellsNew", bundle: nil),
+                                forCellWithReuseIdentifier: "likedCellsNew")
 
-        collectionView.register(UINib(nibName: "Script_cell_ideate", bundle: nil), forCellWithReuseIdentifier: "scriptCellIdeate")
+        collectionView.register(UINib(nibName: "Script_cell_ideate", bundle: nil),
+                                forCellWithReuseIdentifier: "scriptCellIdeate")
         // Use existing HeaderView
-        collectionView.register(UINib(nibName: "HeaderView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "headerCell")
+        collectionView.register(UINib(nibName: "HeaderView", bundle: nil),
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: "headerCell")
 
-        collectionView.register(UINib(nibName: "IdeaSearch", bundle: nil ), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "IdeaSearch")
+        collectionView.register(UINib(nibName: "IdeaSearch", bundle: nil),
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: "IdeaSearch")
     }
 
     private func setupGlobalKeyboardDismiss() {
@@ -153,7 +165,8 @@ class Ideate1: UIViewController {
 
     @objc private func handleLikeUpdate(_ notification: Notification) {
         guard let ideaKey = notification.object as? String,
-              let index = ideas.firstIndex(where: { $0.ideaKey == ideaKey }) else {
+              let index = ideas.firstIndex(where: { $0.ideaKey == ideaKey })
+        else {
             return
         }
 
@@ -173,21 +186,19 @@ class Ideate1: UIViewController {
         view.endEditing(true)
     }
 
-    @IBAction func viewLikedTap(_ sender: UIBarButtonItem) {
+    @IBAction func viewLikedTap(_: UIBarButtonItem) {
         let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
-        guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
-        guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
+        guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else { return }
+        guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else { return }
         destinationVC.pageTitle = "Liked Ideas"
-        self.navigationController?.pushViewController(destinationVC, animated: true)
+        navigationController?.pushViewController(destinationVC, animated: true)
     }
 
     func generateLayout() -> UICollectionViewLayout {
         return UICollectionViewCompositionalLayout { sectionIndex, _ in
-
             let sectionType = self.sections[sectionIndex]
 
             switch sectionType {
-
             case .search:
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
@@ -280,8 +291,8 @@ class Ideate1: UIViewController {
             }
         }
     }
-    func horizontalScrollingSection() -> NSCollectionLayoutSection {
 
+    func horizontalScrollingSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.95),
             heightDimension: .fractionalHeight(1.0)
@@ -382,19 +393,19 @@ class Ideate1: UIViewController {
         }
     }
 
-    @IBAction func profileTapped(_ sender: Any) {
+    @IBAction func profileTapped(_: Any) {
         let storyboard = UIStoryboard(name: "ProfileNew", bundle: nil)
         let destVC = storyboard.instantiateViewController(withIdentifier: "ProfileVC")
-        self.navigationController?.pushViewController(destVC, animated: true)
+        navigationController?.pushViewController(destVC, animated: true)
     }
 }
 
 extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in _: UICollectionView) -> Int {
         return sections.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let sectionType = sections[section]
 
         switch sectionType {
@@ -411,12 +422,11 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let sectionType = sections[indexPath.section]
 
         switch sectionType {
-
         case .chatbot:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "chatbotAssistant", for: indexPath)
             cell.applyLiquidGlassEffect()
@@ -466,9 +476,9 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         }
     }
 
-    func collectionView( _ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath
-    ) -> UICollectionReusableView {
-
+    func collectionView(_ collectionView: UICollectionView,
+                        viewForSupplementaryElementOfKind kind: String,
+                        at indexPath: IndexPath) -> UICollectionReusableView {
         guard kind == UICollectionView.elementKindSectionHeader else {
             return UICollectionReusableView()
         }
@@ -476,7 +486,6 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         let sectionType = sections[indexPath.section]
 
         switch sectionType {
-
         case .search:
             let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
@@ -499,7 +508,8 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
 
             header.didTapChevron = { [weak self] in
                 let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
-                guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else { return }
+                guard let navVC = storyboard.instantiateInitialViewController()
+                    as? UINavigationController else { return }
                 guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else { return }
                 destinationVC.pageTitle = "Liked Ideas"
                 self?.navigationController?.pushViewController(destinationVC, animated: true)
@@ -518,8 +528,8 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
 
             header.didTapChevron = { [weak self] in
                 let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
-                guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
-                guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else {return}
+                guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else { return }
+                guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else { return }
                 destinationVC.pageTitle = "Your Scripts"
                 self?.navigationController?.pushViewController(destinationVC, animated: true)
             }
@@ -541,17 +551,15 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-
+    func collectionView(_: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let sectionType = sections[indexPath.section]
 
         switch sectionType {
-
         case .chatbot:
             let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
             guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController,
                   let chatbotVC = navVC.topViewController as? Chatbot else { return }
-            self.navigationController?.pushViewController(chatbotVC, animated: true)
+            navigationController?.pushViewController(chatbotVC, animated: true)
 
         case .liked:
             if indexPath.row >= likedIdeas.count {
@@ -566,7 +574,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
 
             if let destinationVC = storyboard.instantiateViewController(withIdentifier: "IdeaVC") as? ViewIdea {
                 destinationVC.idea = idea
-                self.navigationController?.pushViewController(destinationVC, animated: true)
+                navigationController?.pushViewController(destinationVC, animated: true)
             }
 
         case .recent:
@@ -576,13 +584,15 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
                 let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
                 if let destinationVC = storyboard.instantiateViewController(withIdentifier: "IdeaVC") as? ViewIdea {
                     destinationVC.ideaId = ideaId
-                    self.navigationController?.pushViewController(destinationVC, animated: true)
+                    navigationController?.pushViewController(destinationVC, animated: true)
                 }
             } else {
                 let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
-                if let destinationVC = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas {
+                if let destinationVC =
+                    storyboard.instantiateViewController(withIdentifier: "scriptedIdea")
+                        as? ScriptedIdeas {
                     destinationVC.idea = script
-                    self.navigationController?.pushViewController(destinationVC, animated: true)
+                    navigationController?.pushViewController(destinationVC, animated: true)
                 }
             }
 
@@ -592,7 +602,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else { return }
             guard let destinationVC = navVC.topViewController as? ViewIdea else { return }
             destinationVC.idea = idea
-            self.navigationController?.pushViewController(destinationVC, animated: true)
+            navigationController?.pushViewController(destinationVC, animated: true)
 
         default:
             break
@@ -605,28 +615,27 @@ extension Notification.Name {
 }
 
 extension Ideate1: IdeaSearchDelegate {
-
     func didTapSearch(with keyword: String) {
-
         if keyword.isEmpty {
-            self.isSearching = false
-            self.ideas = syncLikedState(SessionManager.shared.personalizedIdeas)
+            isSearching = false
+            ideas = syncLikedState(SessionManager.shared.personalizedIdeas)
             collectionView.reloadData()
             return
         }
 
         let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
-        if let searchVC = storyboard.instantiateViewController(withIdentifier: "AfterSearchIdeasViewController") as? AfterSearchIdeasViewController {
+        if let searchVC = storyboard.instantiateViewController(
+            withIdentifier: "AfterSearchIdeasViewController"
+        )
+            as? AfterSearchIdeasViewController {
             searchVC.keyword = keyword
-            self.navigationController?.pushViewController(searchVC, animated: true)
+            navigationController?.pushViewController(searchVC, animated: true)
         }
     }
 }
 
 extension Ideate1: IdeaCellDelegate {
-
     func didToggleLikeFromFeed(for ideaKey: String) {
-
         let foundIdea = ideas.first(where: { $0.ideaKey == ideaKey }) ?? likedIdeas.first(where: { $0.ideaKey == ideaKey })
 
         guard var idea = foundIdea else {
@@ -649,7 +658,6 @@ extension Ideate1: IdeaCellDelegate {
                 }
 
                 await MainActor.run {
-
                     idea.liked = !isCurrentlyLiked
 
                     // Keep SessionManager in sync (VERY important)
@@ -661,7 +669,6 @@ extension Ideate1: IdeaCellDelegate {
                     let willDestroySection = self.likedIdeas.count == 1 && isCurrentlyLiked
 
                     if willCreateSection || willDestroySection {
-
                         if isCurrentlyLiked {
                             self.likedIdeas.removeAll { $0.ideaKey == ideaKey }
                             self.ideas.removeAll { $0.ideaKey == ideaKey }
@@ -677,14 +684,14 @@ extension Ideate1: IdeaCellDelegate {
                                           options: .transitionCrossDissolve,
                                           animations: { self.collectionView.reloadData() },
                                           completion: { _ in
-                            NotificationCenter.default.post(name: .didUpdateLikedStatus, object: ideaKey)
-                        })
+                                              NotificationCenter.default.post(name: .didUpdateLikedStatus, object: ideaKey)
+                                          })
                         return
                     }
 
                     guard let likedSectionIndex = self.sections.firstIndex(of: .liked),
-                          let suggestedSectionIndex = self.sections.firstIndex(of: .suggested) else {
-
+                          let suggestedSectionIndex = self.sections.firstIndex(of: .suggested)
+                    else {
                         if isCurrentlyLiked {
                             self.likedIdeas.removeAll { $0.ideaKey == ideaKey }
                             self.ideas.removeAll { $0.ideaKey == ideaKey }
@@ -749,7 +756,6 @@ extension Ideate1: IdeaCellDelegate {
 }
 
 extension Ideate1: LikedCellDelegate {
-
     func didTapDraftScript(for idea: Idea) {
         print("Draft tapped:", idea.title)
         // you already handle this elsewhere probably

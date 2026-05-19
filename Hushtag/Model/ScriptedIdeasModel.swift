@@ -1,9 +1,9 @@
 import Foundation
 
-// 1. The UI Model
-nonisolated struct ScriptedIdea: Identifiable, Codable, Sendable {
+/// 1. The UI Model
+nonisolated struct ScriptedIdea: Identifiable, Codable {
     let id: UUID
-    let chat_id: UUID
+    let chatId: UUID
     var title: String?
     var description: String?
     var script: String?
@@ -12,10 +12,10 @@ nonisolated struct ScriptedIdea: Identifiable, Codable, Sendable {
     let idea_id: UUID?
 }
 
-// 2. The Database Model
-nonisolated struct ScriptedIdeaDB: Codable, Sendable {
+/// 2. The Database Model
+nonisolated struct ScriptedIdeaDB: Codable {
     let id: UUID
-    let chat_id: UUID
+    let chatId: UUID
     let title: String?
     let description: String?
     let script: String?
@@ -24,9 +24,9 @@ nonisolated struct ScriptedIdeaDB: Codable, Sendable {
     let idea_id: UUID?
 }
 
-// 3. The Insert Payload
-nonisolated struct ScriptedIdeaInsertPayload: Codable, Sendable {
-    let user_id: UUID
+/// 3. The Insert Payload
+nonisolated struct ScriptedIdeaInsertPayload: Codable {
+    let userId: UUID
     let chat_id: UUID
     let title: String?
     let description: String?
@@ -37,7 +37,7 @@ nonisolated struct ScriptedIdeaInsertPayload: Codable, Sendable {
 
 nonisolated struct ChatMessageDB: Codable, Identifiable {
     let id: UUID
-    let conversation_id: UUID
+    let conversationId: UUID
     let role: Role
     let content: String
     let created_at: Date?
@@ -50,7 +50,7 @@ enum ScriptSection {
     case buttons
 }
 
-// 2. Insert Payload (Writing data)
+/// 2. Insert Payload (Writing data)
 nonisolated struct ChatMessageInsertPayload: Codable {
     let conversation_id: UUID
     let role: Role
@@ -62,8 +62,9 @@ nonisolated struct Message: Codable {
     let content: String
     var mark: String?
 }
+
 struct GeminiEdgeResponse: Decodable {
-    let conversation_id: String
+    let conversationId: String
     let message: GeminiResponse
 }
 
@@ -72,27 +73,27 @@ nonisolated struct GeminiResponse: Codable {
     let content: String
 }
 
-nonisolated struct Conversation: Codable, Sendable {
+nonisolated struct Conversation: Codable {
     let id: UUID
-    let user_id: UUID
+    let userId: UUID
     let title: String?
-    let created_at: Date?
-    let idea_id: UUID?
-    let scripted_ideas: ScriptedIdeaDB?
+    let createdAt: Date?
+    let ideaId: UUID?
+    let scriptedIdeas: ScriptedIdeaDB?
 
     var hasStar: Bool {
-        guard let idea = scripted_ideas else { return false }
+        guard let idea = scriptedIdeas else { return false }
 
         return idea.title != nil ||
-               idea.description != nil ||
-               idea.script != nil ||
-               idea.thumbnail != nil
+            idea.description != nil ||
+            idea.script != nil ||
+            idea.thumbnail != nil
     }
 }
 
 extension Conversation {
     var milestoneCount: Int {
-        guard let idea = scripted_ideas else { return 0 }
+        guard let idea = scriptedIdeas else { return 0 }
         var count = 0
         if idea.script != nil { count += 1 }
         if idea.title != nil { count += 1 }
@@ -103,8 +104,8 @@ extension Conversation {
 
 nonisolated struct ConversationInsertPayload: Codable {
     let id: UUID
-    let user_id: UUID
-    let idea_id: UUID?
+    let userId: UUID
+    let ideaId: UUID?
 }
 
 enum Role: String, Codable {

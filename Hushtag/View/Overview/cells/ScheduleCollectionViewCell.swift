@@ -1,11 +1,10 @@
 import UIKit
 
 class ScheduleCollectionViewCell: UICollectionViewCell {
-
-    @IBOutlet weak var timeLabel: UILabel!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var dayLabel: UILabel!
-    @IBOutlet weak var completedButton: UIButton!
+    @IBOutlet var timeLabel: UILabel!
+    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var dayLabel: UILabel!
+    @IBOutlet var completedButton: UIButton!
     weak var delegate: ScheduleCollectionViewCellDelegate?
     var indexPath: IndexPath?
 
@@ -20,7 +19,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         self.item = item
         dayLabel.text = item.effectiveDeadline.dayOnly()
         switch item {
-        case .post(let post, let task):
+        case let .post(post, task):
             if let task = task {
                 // It's a sub-task
                 titleLabel.text = task.name
@@ -35,7 +34,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
                 updateCompletedButton(isCompleted: post.isCompleted)
             }
 
-        case .deal(let deal, let deliverable):
+        case let .deal(deal, deliverable):
             if let deliverable = deliverable {
                 // It's a sub-deliverable
                 titleLabel.text = deliverable.name
@@ -57,9 +56,10 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         completedButton.setImage(UIImage(systemName: imageName), for: .normal)
     }
 
-    @IBAction func buttonTapped(_ sender: UIButton) {
+    @IBAction func buttonTapped(_: UIButton) {
         guard let item = item,
-              let indexPath = indexPath else {
+              let indexPath = indexPath
+        else {
             return
         }
 

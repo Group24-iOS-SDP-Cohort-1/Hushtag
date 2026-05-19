@@ -1,8 +1,9 @@
 import UIKit
+
 class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let viewControllers = self.viewControllers {
+        if let viewControllers = viewControllers {
             viewControllers[0].tabBarItem.title = "Ideate"
             viewControllers[0].tabBarItem.image = UIImage(systemName: "sparkles.2")
 

@@ -3,14 +3,12 @@ import UIKit
 protocol DealsInfoDelegate: AnyObject {
     func dealsInfo(_ controller: DealsInfo, didUpdateDeal deal: Deal, at index: Int)
     func dealsInfo(_ controller: DealsInfo, didDeleteDeal dealId: UUID)
-
 }
 
 class DealsInfo: UIViewController {
+    @IBOutlet var collectionView: UICollectionView!
 
-    @IBOutlet weak var collectionView: UICollectionView!
-
-    @IBOutlet weak var delete: UIBarButtonItem!
+    @IBOutlet var delete: UIBarButtonItem!
 
     var deals: Deal!
     var dealIndex: Int = -1
@@ -22,7 +20,7 @@ class DealsInfo: UIViewController {
     private let brandDealIdeasController = BrandDealIdeasController()
     private let scriptedIdeasController = ScriptedIdeasController()
 
-    @IBOutlet weak var completeButton: UIButton!
+    @IBOutlet var completeButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,37 +60,37 @@ class DealsInfo: UIViewController {
     }
 
     private func fetchLinkedIdeas() {
-            // We use Task to run the async network calls
-            Task {
-                do {
-                    // Step A: Get the mappings for this specific deal
-                    let mappings = try await brandDealIdeasController.fetchScriptsForDeal(dealId: deals.id)
+        // We use Task to run the async network calls
+        Task {
+            do {
+                // Step A: Get the mappings for this specific deal
+                let mappings = try await brandDealIdeasController.fetchScriptsForDeal(dealId: deals.id)
 
-                    // Extract just the UUIDs from the mappings
-                    let ideaIds = mappings.map { $0.scriptedIdeaId }
+                // Extract just the UUIDs from the mappings
+                let ideaIds = mappings.map { $0.scriptedIdeaId }
 
-                    // If there are no linked ideas, just reload the empty section and exit
-                    guard !ideaIds.isEmpty else {
-                        self.selectedIdeas = []
-                        await MainActor.run { self.collectionView.reloadData() }
-                        return
-                    }
-
-                    // Step B: Fetch the actual ScriptedIdea content using the extracted IDs
-                    let fetchedIdeas = try await scriptedIdeasController.fetchScripts(byIds: ideaIds)
-
-                    // Step C: Update the UI on the main thread
-                    await MainActor.run {
-                        self.selectedIdeas = fetchedIdeas
-                        self.collectionView.reloadData()
-                    }
-
-                } catch {
-                    print("❌ Failed to fetch linked ideas:", error)
-                    // Optional: Handle the error gracefully in your UI here
+                // If there are no linked ideas, just reload the empty section and exit
+                guard !ideaIds.isEmpty else {
+                    self.selectedIdeas = []
+                    await MainActor.run { self.collectionView.reloadData() }
+                    return
                 }
+
+                // Step B: Fetch the actual ScriptedIdea content using the extracted IDs
+                let fetchedIdeas = try await scriptedIdeasController.fetchScripts(byIds: ideaIds)
+
+                // Step C: Update the UI on the main thread
+                await MainActor.run {
+                    self.selectedIdeas = fetchedIdeas
+                    self.collectionView.reloadData()
+                }
+
+            } catch {
+                print("❌ Failed to fetch linked ideas:", error)
+                // Optional: Handle the error gracefully in your UI here
             }
         }
+    }
 
     private func updateButtonState() {
         if !deals.deliverables.isEmpty {
@@ -108,7 +106,7 @@ class DealsInfo: UIViewController {
         completeButton.setTitle(title, for: .normal)
     }
 
-    @IBAction func toggleCompletionStatus(_ sender: Any) {
+    @IBAction func toggleCompletionStatus(_: Any) {
         let newStatus = !deals.isManuallyCompleted
         deals.isManuallyCompleted = newStatus
         updateButtonState()
@@ -128,7 +126,7 @@ class DealsInfo: UIViewController {
         }
     }
 
-    @IBAction func editModal(_ sender: Any) {
+    @IBAction func editModal(_: Any) {
         let storyboard = UIStoryboard(name: "BrandDeals", bundle: nil)
 
         let vc = storyboard.instantiateViewController(
@@ -147,7 +145,7 @@ class DealsInfo: UIViewController {
         present(nav, animated: true)
     }
 
-    @IBAction func deleteDeal(_ sender: UIButton) {
+    @IBAction func deleteDeal(_: UIButton) {
         let alert = UIAlertController(
             title: "Delete Deal",
             message: "This deal will be permanently deleted.",
@@ -171,7 +169,6 @@ class DealsInfo: UIViewController {
                 try await DealsController().deleteDeal(dealId)
 
                 await MainActor.run {
-
                     self.delegate?.dealsInfo(self, didDeleteDeal: dealId)
                     self.navigationController?.popViewController(animated: true)
                 }
@@ -184,7 +181,6 @@ class DealsInfo: UIViewController {
 }
 
 extension DealsInfo {
-
     private var sections: [Section] {
         var result: [Section] = [.details]
 
@@ -202,19 +198,15 @@ extension DealsInfo {
 }
 
 extension DealsInfo {
-
     enum Section {
         case details
         case deliverables
         case selectedIdeas
-
     }
 }
 
 extension DealsInfo {
-
     private func configureCollectionView() {
-
         collectionView.backgroundColor = .clear
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -243,7 +235,6 @@ extension DealsInfo {
 
     private func configureLayout() {
         let layout = UICollectionViewCompositionalLayout { sectionIndex, _ in
-
             let section = self.sections[sectionIndex]
 
             if section == .details {
@@ -264,7 +255,7 @@ extension DealsInfo {
         collectionView.collectionViewLayout = layout
     }
 
-    // Kept for Details and Deliverables sections
+    /// Kept for Details and Deliverables sections
     private func makeCardSection(estimatedItemHeight: CGFloat) -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1),
@@ -301,53 +292,51 @@ extension DealsInfo {
         return section
     }
 
-    // UPDATED FUNCTION: Renamed and modified to remove background for ideas
+    /// UPDATED FUNCTION: Renamed and modified to remove background for ideas
     private func makeOrthogonalSection(estimatedItemHeight: CGFloat) -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-            let itemSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(1.0),
-                heightDimension: .fractionalHeight(1.0)
-            )
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(0.92),
+            heightDimension: .estimated(estimatedItemHeight)
+        )
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: groupSize,
+            subitems: [item]
+        )
 
-            let groupSize = NSCollectionLayoutSize(
-                widthDimension: .fractionalWidth(0.92),
-                heightDimension: .estimated(estimatedItemHeight)
-            )
-            let group = NSCollectionLayoutGroup.horizontal(
-                layoutSize: groupSize,
-                subitems: [item]
-            )
+        let section = NSCollectionLayoutSection(group: group)
 
-            let section = NSCollectionLayoutSection(group: group)
+        // 1. Change behavior to groupPaging (aligns to leading edge instead of center)
+        section.orthogonalScrollingBehavior = .groupPaging
+        section.interGroupSpacing = 12
 
-            // 1. Change behavior to groupPaging (aligns to leading edge instead of center)
-            section.orthogonalScrollingBehavior = .groupPaging
-            section.interGroupSpacing = 12
+        // 2. Add back the leading margin (16) so it aligns with your headers/other cards
+        section.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
 
-            // 2. Add back the leading margin (16) so it aligns with your headers/other cards
-            section.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+        let header = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(36)),
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+        )
+        // Adjust header to 0 since the section now handles the 16pt left margin
+        header.contentInsets = .init(top: 0, leading: 0, bottom: 4, trailing: 0)
+        section.boundarySupplementaryItems = [header]
 
-            let header = NSCollectionLayoutBoundarySupplementaryItem(
-                layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(36)),
-                elementKind: UICollectionView.elementKindSectionHeader,
-                alignment: .top
-            )
-            // Adjust header to 0 since the section now handles the 16pt left margin
-            header.contentInsets = .init(top: 0, leading: 0, bottom: 4, trailing: 0)
-            section.boundarySupplementaryItems = [header]
-
-            return section
-        }
+        return section
+    }
 }
 
 extension DealsInfo: UICollectionViewDataSource {
-
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in _: UICollectionView) -> Int {
         sections.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let type = sections[section]
 
         switch type {
@@ -359,11 +348,9 @@ extension DealsInfo: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
         let type = sections[indexPath.section]
 
         switch type {
-
         case .details:
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "DetailsCell",
@@ -427,23 +414,21 @@ extension DealsInfo: UICollectionViewDataSource {
             return cell
 
         case .selectedIdeas:
-                let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: "selectedIdeaCell",
-                    for: indexPath
-                ) as! ScriptsCell1
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "selectedIdeaCell",
+                for: indexPath
+            ) as! ScriptsCell1
 
-                // Grab the idea for this specific index
-                let idea = selectedIdeas[indexPath.item]
-                cell.configureCell(with: idea)
-                return cell
-
+            // Grab the idea for this specific index
+            let idea = selectedIdeas[indexPath.item]
+            cell.configureCell(with: idea)
+            return cell
         }
     }
 
     func collectionView(_ collectionView: UICollectionView,
                         viewForSupplementaryElementOfKind kind: String,
                         at indexPath: IndexPath) -> UICollectionReusableView {
-
         let header = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
             withReuseIdentifier: "headerCell",
@@ -456,7 +441,6 @@ extension DealsInfo: UICollectionViewDataSource {
         case .details: header.configureHeader(text: "Details")
         case .deliverables: header.configureHeader(text: "Deliverables")
         case .selectedIdeas: header.configureHeader(text: "Selected Ideas")
-
         }
 
         return header
@@ -464,8 +448,7 @@ extension DealsInfo: UICollectionViewDataSource {
 }
 
 extension DealsInfo: UICollectionViewDelegate {
-
-    func collectionView(_ collectionView: UICollectionView,
+    func collectionView(_: UICollectionView,
                         shouldSelectItemAt indexPath: IndexPath) -> Bool {
         let section = sections[indexPath.section]
         return section == .deliverables || section == .selectedIdeas
@@ -473,7 +456,6 @@ extension DealsInfo: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
-
         let section = sections[indexPath.section]
 
         if section == .selectedIdeas {
@@ -499,33 +481,29 @@ extension DealsInfo: UICollectionViewDelegate {
         if dealIndex >= 0 {
             delegate?.dealsInfo(self, didUpdateDeal: deals, at: dealIndex)
         }
-
     }
 }
 
 extension DealsInfo: AddDealsDelegate {
-
     func addDealsViewController(
-        _ controller: AddDealsViewController,
+        _: AddDealsViewController,
         didUpdateDeal deal: Deal,
-        at index: Int
+        at _: Int
     ) {
-
-        self.deals = deal
-        self.title = deal.name
-        self.updateButtonState()
-        self.collectionView.reloadData()
+        deals = deal
+        title = deal.name
+        updateButtonState()
+        collectionView.reloadData()
 
         if dealIndex >= 0 {
             delegate?.dealsInfo(self, didUpdateDeal: deal, at: -1)
-
         }
 
         dismiss(animated: true)
     }
 
     func addDealsViewController(
-        _ controller: AddDealsViewController,
-        didCreateDeal deal: Deal
+        _: AddDealsViewController,
+        didCreateDeal _: Deal
     ) {}
 }

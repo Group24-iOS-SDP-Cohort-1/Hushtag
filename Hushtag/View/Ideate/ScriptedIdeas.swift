@@ -6,9 +6,8 @@ extension Notification.Name {
 }
 
 class ScriptedIdeas: UIViewController {
-
     @IBOutlet var optionsBarButton: UIBarButtonItem!
-    @IBOutlet weak var ideaView: UICollectionView!
+    @IBOutlet var ideaView: UICollectionView!
     var isDescriptionExpanded = false
     var isScriptExpanded = false
     var isEditingMode = false
@@ -139,11 +138,9 @@ class ScriptedIdeas: UIViewController {
     }
 
     @objc func buttonTapped(_ sender: UIButton) {
-
         let section = sections[sender.tag]
 
         switch section {
-
         case .description:
             isDescriptionExpanded.toggle()
 
@@ -158,12 +155,12 @@ class ScriptedIdeas: UIViewController {
     }
 
     func registerCell() {
-
         ideaView.register(
             UINib(nibName: "HeaderView",
                   bundle: nil),
             forSupplementaryViewOfKind: "header",
-            withReuseIdentifier: "headerCell")
+            withReuseIdentifier: "headerCell"
+        )
     }
 
     private func setupMenu() {
@@ -219,7 +216,7 @@ class ScriptedIdeas: UIViewController {
         }
     }
 
-    @IBAction func draftClick(_ sender: Any) {
+    @IBAction func draftClick(_: Any) {
         navigateToChat()
     }
 
@@ -262,7 +259,7 @@ class ScriptedIdeas: UIViewController {
     }
 
     private func navigateToChat() {
-        guard let idea = self.idea else { return }
+        guard let idea = idea else { return }
 
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
 
@@ -271,12 +268,12 @@ class ScriptedIdeas: UIViewController {
         ) as? Chatbot else { return }
 
         // This is the important line
-        chatVC.conversationID = idea.chat_id
+        chatVC.conversationID = idea.chatId
 
-        self.navigationController?.pushViewController(chatVC, animated: true)
+        navigationController?.pushViewController(chatVC, animated: true)
     }
 
-    @IBAction func schedule(_ sender: Any) {
+    @IBAction func schedule(_: Any) {
         let storyboard = UIStoryboard(name: "AddPostViewController", bundle: nil)
         let modalVC = storyboard.instantiateViewController(withIdentifier: "AddPostNavVC")
         modalVC.modalPresentationStyle = .pageSheet
@@ -285,9 +282,7 @@ class ScriptedIdeas: UIViewController {
     }
 
     func generateLayout() -> UICollectionViewLayout {
-
-        let layout = UICollectionViewCompositionalLayout { sectionIndex, _ in
-
+        return UICollectionViewCompositionalLayout { sectionIndex, _ in
             let headerSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .estimated(50)
@@ -333,24 +328,22 @@ class ScriptedIdeas: UIViewController {
             }
             return section
         }
-        return layout
     }
 }
 
 extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in _: UICollectionView) -> Int {
         return sections.count
     }
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+
+    func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
         return 1
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
         let section = sections[indexPath.section]
 
         switch section {
-
         case .title:
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "title",
@@ -384,7 +377,6 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
             cell.readMoreButton.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
 
             switch section {
-
             case .description:
                 cell.configure(with: idea?.description ?? "")
 
@@ -426,7 +418,6 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-
         guard kind == "header" else { return UICollectionReusableView() }
 
         let headerView = collectionView.dequeueReusableSupplementaryView(

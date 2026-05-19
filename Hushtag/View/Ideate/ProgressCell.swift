@@ -1,54 +1,54 @@
 import UIKit
 
 class ProgressCell: UIView {
+    @IBOutlet var viewButton: UIButton!
 
-    @IBOutlet weak var viewButton: UIButton!
-
-    @IBOutlet weak var graphView: UIView!
+    @IBOutlet var graphView: UIView!
     var scriptedIdea: ScriptedIdea?
     var onViewIdeaTapped: (() -> Void)?
 
-        private let milestones: [String] = ["Script", "Title", "Description"]
-        private let typeOrder: [String] = ["script", "title", "description"]
+    private let milestones: [String] = ["Script", "Title", "Description"]
+    private let typeOrder: [String] = ["script", "title", "description"]
 
-        private let dotSize: CGFloat = 26
-        private let trackHeight: CGFloat = 3
-        private let horizontalInset: CGFloat = 16
+    private let dotSize: CGFloat = 26
+    private let trackHeight: CGFloat = 3
+    private let horizontalInset: CGFloat = 16
 
-        private let trackView: UIView = {
-            let v = UIView()
-            v.backgroundColor = UIColor.white.withAlphaComponent(0.12)
-            v.translatesAutoresizingMaskIntoConstraints = false
-            return v
-        }()
+    private let trackView: UIView = {
+        let v = UIView()
+        v.backgroundColor = UIColor.white.withAlphaComponent(0.12)
+        v.translatesAutoresizingMaskIntoConstraints = false
+        return v
+    }()
 
-        private let progressView: UIView = {
-            let v = UIView()
-            v.backgroundColor = UIColor.accent
-            v.translatesAutoresizingMaskIntoConstraints = false
-            return v
-        }()
-        override func awakeFromNib() {
-            super.awakeFromNib()
-            setupProgressBar()
-        }
-        private var milestoneDots: [UIView] = []
-        private var milestoneCheckmarks: [UIImageView] = []
-        private var milestoneLabels: [UILabel] = []
-        private var progressWidthConstraint: NSLayoutConstraint?
-        private var middleDotCenterXConstraints: [NSLayoutConstraint] = []
-        private var lastWidth: CGFloat = 0
+    private let progressView: UIView = {
+        let v = UIView()
+        v.backgroundColor = UIColor.accent
+        v.translatesAutoresizingMaskIntoConstraints = false
+        return v
+    }()
 
-        override init(frame: CGRect) {
-            super.init(frame: frame)
-        }
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        setupProgressBar()
+    }
 
-        required init?(coder: NSCoder) {
-            super.init(coder: coder)
-        }
+    private var milestoneDots: [UIView] = []
+    private var milestoneCheckmarks: [UIImageView] = []
+    private var milestoneLabels: [UILabel] = []
+    private var progressWidthConstraint: NSLayoutConstraint?
+    private var middleDotCenterXConstraints: [NSLayoutConstraint] = []
+    private var lastWidth: CGFloat = 0
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
 
     private func setupProgressBar() {
-
         graphView.addSubview(trackView)
         trackView.addSubview(progressView)
 
@@ -126,23 +126,24 @@ class ProgressCell: UIView {
             dot.centerYAnchor.constraint(equalTo: trackView.centerYAnchor).isActive = true
         }
     }
-        @IBAction func viewIdea(_ sender: Any) {
-            onViewIdeaTapped?()
-        }
 
-        override func layoutSubviews() {
-            super.layoutSubviews()
-            let width = graphView.bounds.width
-            guard width > 0, width != lastWidth else { return }
-            lastWidth = width
+    @IBAction func viewIdea(_: Any) {
+        onViewIdeaTapped?()
+    }
 
-            for (i, constraint) in middleDotCenterXConstraints.enumerated() {
-                let milestoneIndex = i + 1
-                let fraction = CGFloat(milestoneIndex) / CGFloat(milestones.count - 1)
-                let trackWidth = width - (horizontalInset * 2) - dotSize
-                constraint.constant = horizontalInset + (dotSize / 2) + trackWidth * fraction
-            }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let width = graphView.bounds.width
+        guard width > 0, width != lastWidth else { return }
+        lastWidth = width
+
+        for (i, constraint) in middleDotCenterXConstraints.enumerated() {
+            let milestoneIndex = i + 1
+            let fraction = CGFloat(milestoneIndex) / CGFloat(milestones.count - 1)
+            let trackWidth = width - (horizontalInset * 2) - dotSize
+            constraint.constant = horizontalInset + (dotSize / 2) + trackWidth * fraction
         }
+    }
 
     func configure(completedTypes: Set<String>) {
         if milestoneDots.isEmpty {
@@ -150,7 +151,7 @@ class ProgressCell: UIView {
         }
 
         let reordered = typeOrder.filter { completedTypes.contains($0) }
-                     + typeOrder.filter { !completedTypes.contains($0) }
+            + typeOrder.filter { !completedTypes.contains($0) }
 
         let completedCount = completedTypes.count
         let fraction: CGFloat = completedCount == 0 ? 0.001 :
@@ -163,27 +164,27 @@ class ProgressCell: UIView {
         )
         progressWidthConstraint?.isActive = true
 
-            for (index, dot) in milestoneDots.enumerated() {
-                guard index < reordered.count else { continue }
-                let type = reordered[index]
-                let isActive = completedTypes.contains(type)
+        for (index, dot) in milestoneDots.enumerated() {
+            guard index < reordered.count else { continue }
+            let type = reordered[index]
+            let isActive = completedTypes.contains(type)
 
-                milestoneLabels[index].text = type.capitalized
+            milestoneLabels[index].text = type.capitalized
 
-                UIView.animate(withDuration: 0.25) {
-                    dot.layer.borderColor = isActive ? UIColor.accent.cgColor : UIColor.systemGray3.cgColor
-                    dot.backgroundColor = isActive
-                        ? UIColor.accent
-                        : UIColor.systemGray5
-                    self.milestoneCheckmarks[index].alpha = isActive ? 1 : 0
-                    self.milestoneLabels[index].textColor = isActive ? UIColor.accent : .systemGray
-                    self.milestoneLabels[index].font = UIFont.systemFont(
-                        ofSize: 11,
-                        weight: isActive ? .semibold : .medium
-                    )
-                }
+            UIView.animate(withDuration: 0.25) {
+                dot.layer.borderColor = isActive ? UIColor.accent.cgColor : UIColor.systemGray3.cgColor
+                dot.backgroundColor = isActive
+                    ? UIColor.accent
+                    : UIColor.systemGray5
+                self.milestoneCheckmarks[index].alpha = isActive ? 1 : 0
+                self.milestoneLabels[index].textColor = isActive ? UIColor.accent : .systemGray
+                self.milestoneLabels[index].font = UIFont.systemFont(
+                    ofSize: 11,
+                    weight: isActive ? .semibold : .medium
+                )
             }
-
-            setNeedsLayout()
         }
+
+        setNeedsLayout()
     }
+}

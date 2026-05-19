@@ -1,9 +1,8 @@
 import UIKit
 
 class PreferencesCollectionViewCell: UICollectionViewCell {
-
-    @IBOutlet weak var Subheading: UILabel!
-    @IBOutlet weak var Heading: UILabel!
+    @IBOutlet var Subheading: UILabel!
+    @IBOutlet var Heading: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -11,18 +10,16 @@ class PreferencesCollectionViewCell: UICollectionViewCell {
     }
 
     func setupCardDesign() {
+        layer.cornerRadius = 15
+        layer.cornerCurve = .continuous
 
-        self.layer.cornerRadius = 15
-        self.layer.cornerCurve = .continuous
+        backgroundColor = .white
 
-        self.backgroundColor = .white
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.15
+        layer.shadowOffset = CGSize(width: 0, height: 0)
+        layer.shadowRadius = 6
 
-        self.layer.shadowColor = UIColor.black.cgColor
-        self.layer.shadowOpacity = 0.15
-        self.layer.shadowOffset = CGSize(width: 0, height: 0)
-        self.layer.shadowRadius = 6
-
-        self.layer.masksToBounds = false
+        layer.masksToBounds = false
     }
-
 }

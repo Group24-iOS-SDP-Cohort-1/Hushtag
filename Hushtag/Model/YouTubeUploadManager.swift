@@ -1,19 +1,18 @@
 import Foundation
-import UIKit
 import Supabase
+import UIKit
 
-struct GetResumableUrlResponse: Codable, Sendable {
+struct GetResumableUrlResponse: Codable {
     let resumableUploadUrl: String
     let uploadId: String
 }
 
-struct AttachThumbnailRequest: Codable, Sendable {
+struct AttachThumbnailRequest: Codable {
     let upload_id: String
     let youtube_video_id: String
 }
 
 class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate, URLSessionDataDelegate {
-
     static let shared = YouTubeUploadManager()
 
     private let backgroundSessionID = "com.learningxcode.Hushtag.youtube.background.upload"
@@ -41,7 +40,7 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
     // Optional: completion handler to call when background session finishes
     var backgroundCompletionHandler: (() -> Void)?
 
-    private override init() {
+    override private init() {
         super.init()
         // Initialize the session so delegates are attached immediately
         _ = urlSession
@@ -125,7 +124,6 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
 
                             // Start with initial compression
                             if var data = image.jpegData(compressionQuality: compression) {
-
                                 // 🔄 Iteratively compress until it fits under 1.9 MB
                                 while data.count > maxBytes && compression > 0.1 {
                                     compression -= 0.15 // Drop quality in chunks
@@ -172,7 +170,7 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
                     return
                 }
 
-                if !(200...299).contains(httpResponse.statusCode) {
+                if !(200 ... 299).contains(httpResponse.statusCode) {
                     if let errString = String(data: responseData, encoding: .utf8) {
                         print("❌ Handshake failed (\(httpResponse.statusCode)): \(errString)")
                     } else {
@@ -206,14 +204,14 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
 
     // MARK: - URLSession Delegates
 
-    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+    func urlSession(_: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         if responseData[dataTask.taskIdentifier] == nil {
             responseData[dataTask.taskIdentifier] = Data()
         }
         responseData[dataTask.taskIdentifier]?.append(data)
     }
 
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+    func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         let uploadId = task.taskDescription ?? ""
         let data = responseData[task.taskIdentifier] ?? Data()
         responseData.removeValue(forKey: task.taskIdentifier)
@@ -257,7 +255,7 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
                             let (data, response) = try await URLSession.shared.data(for: request)
 
                             if let httpResponse = response as? HTTPURLResponse {
-                                if (200...299).contains(httpResponse.statusCode) {
+                                if (200 ... 299).contains(httpResponse.statusCode) {
                                     print("✅ Thumbnail attachment and DB update triggered successfully!")
                                 } else {
                                     let errStr = String(data: data, encoding: .utf8) ?? "Unknown"
@@ -283,7 +281,7 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
         }
     }
 
-    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
+    func urlSessionDidFinishEvents(forBackgroundURLSession _: URLSession) {
         DispatchQueue.main.async {
             self.backgroundCompletionHandler?()
             self.backgroundCompletionHandler = nil

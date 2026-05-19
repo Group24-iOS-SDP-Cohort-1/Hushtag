@@ -1,15 +1,14 @@
 import UIKit
 
 class Schedule: UIViewController {
-
-    @IBOutlet weak var scheduleView: UICollectionView!
+    @IBOutlet var scheduleView: UICollectionView!
     private let scheduleController = ScheduleItemController()
     private let postsController = PostsController()
     private let dealsController = DealsController()
 
     private var todayItems: [ScheduleItem] = []
 
-    private var selectedDate: Date = Date()
+    private var selectedDate: Date = .init()
     private var weekDates: [Date] = []
     private var selectedScheduleItem: ScheduleItem?
     private var isYouTubeConnected: Bool = true
@@ -94,7 +93,7 @@ class Schedule: UIViewController {
         let container = UIView()
         container.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(container)
-        self.emptyStateView = container
+        emptyStateView = container
 
         NSLayoutConstraint.activate([
             container.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -235,7 +234,8 @@ class Schedule: UIViewController {
                 bundle: nil
             ),
             forSupplementaryViewOfKind: "header",
-            withReuseIdentifier: "headerCell")
+            withReuseIdentifier: "headerCell"
+        )
 
         scheduleView.register(
             UINib(
@@ -243,7 +243,8 @@ class Schedule: UIViewController {
                 bundle: nil
             ),
             forSupplementaryViewOfKind: "headerButton",
-            withReuseIdentifier: "header_button")
+            withReuseIdentifier: "header_button"
+        )
 
         NotificationCenter.default.addObserver(
             self,
@@ -258,7 +259,6 @@ class Schedule: UIViewController {
             name: .dealsDidChange,
             object: nil
         )
-
     }
 
     private func filterItems(for date: Date) {
@@ -267,7 +267,7 @@ class Schedule: UIViewController {
     }
 
     func generateLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewCompositionalLayout {
+        return UICollectionViewCompositionalLayout {
             section, _ in
             let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
 
@@ -276,7 +276,6 @@ class Schedule: UIViewController {
             let headerButton = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "headerButton", alignment: .top)
 
             if section == 0 {
-
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0 / 7.0), heightDimension: .fractionalHeight(1.0))
 
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -306,7 +305,6 @@ class Schedule: UIViewController {
 
             return section
         }
-        return layout
     }
 
     private func generateWeek(for date: Date) {
@@ -314,7 +312,7 @@ class Schedule: UIViewController {
 
         let startOfWeek = calendar.dateInterval(of: .weekOfYear, for: date)!.start
 
-        weekDates = (0..<7).compactMap {
+        weekDates = (0 ..< 7).compactMap {
             calendar.date(byAdding: .day, value: $0, to: startOfWeek)
         }
 
@@ -363,7 +361,6 @@ class Schedule: UIViewController {
         post: Post,
         task: Tasks
     ) async {
-
         let optimisticPost: Post = {
             var copy = post
             copy.tasks = post.tasks.map {
@@ -398,7 +395,6 @@ class Schedule: UIViewController {
             }
 
         } catch {
-
             scheduleController.replacePost(post)
             filterItems(for: selectedDate)
 
@@ -414,7 +410,6 @@ class Schedule: UIViewController {
         deal: Deal,
         deliverable: Deliverable
     ) async {
-
         let optimisticDeal: Deal = {
             var copy = deal
             copy.deliverables = deal.deliverables.map {
@@ -459,6 +454,7 @@ class Schedule: UIViewController {
             // print("❌ Failed to toggle deliverable:", error)
         }
     }
+
     private func handleMainPostToggle(post: Post) async {
         let optimisticPost: Post = {
             var copy = post
@@ -625,11 +621,11 @@ class Schedule: UIViewController {
 }
 
 extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in _: UICollectionView) -> Int {
         return 2
     }
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0 {
             return weekDates.count
         }
@@ -637,7 +633,6 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
         if indexPath.section == 0 {
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "calendar",
@@ -684,7 +679,6 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-
         if kind == "header", indexPath.section == 1 {
             let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: "header",
@@ -715,7 +709,6 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-
         if indexPath.section == 0 {
             selectedDate = weekDates[indexPath.row]
             todayItems = scheduleController.scheduleItems(on: selectedDate)
@@ -734,7 +727,7 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
         performSegue(withIdentifier: "goToDetails", sender: self)
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    override func prepare(for segue: UIStoryboardSegue, sender _: Any?) {
         if segue.identifier == "goToDetails" {
             let vc = segue.destination as! Details
             vc.schedule = selectedScheduleItem
@@ -788,20 +781,17 @@ extension Notification.Name {
 }
 
 extension Schedule: ScheduleCollectionViewCellDelegate {
-
-    func didTapCompleted(item: ScheduleItem, indexPath: IndexPath) {
-
+    func didTapCompleted(item: ScheduleItem, indexPath _: IndexPath) {
         Task {
             switch item {
-
-            case .post(let post, let task):
+            case let .post(post, task):
                 if let task = task {
                     await handleTaskToggle(post: post, task: task)
                 } else {
                     await handleMainPostToggle(post: post)
                 }
 
-            case .deal(let deal, let deliverable):
+            case let .deal(deal, deliverable):
                 if let deliverable = deliverable {
                     await handleDeliverableToggle(deal: deal, deliverable: deliverable)
                 } else {

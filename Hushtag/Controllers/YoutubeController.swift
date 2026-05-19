@@ -37,27 +37,42 @@ struct YoutubeIdeaGeneratorPayload: Codable {
 }
 
 struct AnalyticsIdea: Codable, Identifiable {
-    var id: UUID = UUID()
+    var id: UUID = .init()
+
     let title: String
     let hook: String
-    let why_it_will_work: [String]
-    let target_emotion: String
+    let whyItWillWork: [String]
+    let targetEmotion: String
     let format: String
-    let estimated_virality_score: Double
+    let estimatedViralityScore: Double
+
     struct ThumbnailConcept: Codable {
         let text: String
         let visual: String
     }
-    let thumbnail_concept: ThumbnailConcept?
-    let opening_30_seconds: [String]
-    let content_pillars: [String]
+
+    let thumbnailConcept: ThumbnailConcept?
+    let opening30Seconds: [String]
+    let contentPillars: [String]
     let risks: [String]
     let difficulty: String
-    let estimated_ctr: Double
-    let estimated_retention: Double
+    let estimatedCTR: Double
+    let estimatedRetention: Double
 
     enum CodingKeys: String, CodingKey {
-        case title, hook, why_it_will_work, target_emotion, format, estimated_virality_score, thumbnail_concept, opening_30_seconds, content_pillars, risks, difficulty, estimated_ctr, estimated_retention
+        case title
+        case hook
+        case whyItWillWork = "why_it_will_work"
+        case targetEmotion = "target_emotion"
+        case format
+        case estimatedViralityScore = "estimated_virality_score"
+        case thumbnailConcept = "thumbnail_concept"
+        case opening30Seconds = "opening_30_seconds"
+        case contentPillars = "content_pillars"
+        case risks
+        case difficulty
+        case estimatedCTR = "estimated_ctr"
+        case estimatedRetention = "estimated_retention"
     }
 }
 
@@ -67,7 +82,6 @@ struct YoutubeIdeaGeneratorResponse: Codable {
 }
 
 final class YouTubeController {
-
     static let shared = YouTubeController()
     private init() {}
 
@@ -76,7 +90,6 @@ final class YouTubeController {
     func saveYouTubeTokens(
         serverAuthCode: String
     ) async throws {
-
         let session = try await client.auth.session
         // print("🟢 SUPABASE AUTH OK: \(session.user.id)")
 
@@ -103,7 +116,6 @@ final class YouTubeController {
         startDate: String,
         endDate: String
     ) async throws -> Data {
-
         let session = try await client.auth.session
 
         let payload = AnalyticsRequestPayload(
@@ -112,8 +124,7 @@ final class YouTubeController {
             endDate: endDate
         )
 
-        let responseData: Data =
-        try await client.functions.invoke(
+        return try await client.functions.invoke(
             "youtube-auth",
             options: .init(
                 headers: [
@@ -123,8 +134,6 @@ final class YouTubeController {
             ),
             decode: { data, _ in data }
         )
-
-        return responseData
     }
 
     nonisolated struct ConnectionStatus: Decodable {
@@ -132,7 +141,6 @@ final class YouTubeController {
     }
 
     func checkYouTubeConnection() async -> Bool {
-
         do {
             let session = try await client.auth.session
 
@@ -156,7 +164,6 @@ final class YouTubeController {
         startDate: String,
         endDate: String
     ) async {
-
         print("📅 Start date being sent:", startDate)
         print("📅 End date being sent:", endDate)
 
@@ -191,21 +198,21 @@ final class YouTubeController {
     }
 
     func disconnectYouTubeBackend() async throws {
-            let session = try await client.auth.session
+        let session = try await client.auth.session
 
-            let payload = YouTubeAuthPayload(
-                action: "disconnect",
-                server_auth_code: ""
-            )
+        let payload = YouTubeAuthPayload(
+            action: "disconnect",
+            server_auth_code: ""
+        )
 
-            try await client.functions.invoke(
-                "youtube-auth",
-                options: .init(
-                    headers: ["Authorization": "Bearer \(session.accessToken)"],
-                    body: payload
-                )
+        try await client.functions.invoke(
+            "youtube-auth",
+            options: .init(
+                headers: ["Authorization": "Bearer \(session.accessToken)"],
+                body: payload
             )
-        }
+        )
+    }
 
     func generateIdeas(payload: YoutubeIdeaGeneratorPayload) async throws -> [AnalyticsIdea] {
         let session = try await client.auth.session

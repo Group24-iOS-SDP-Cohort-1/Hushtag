@@ -1,10 +1,9 @@
-import UIKit
-import SwiftUI
 import Charts
+import SwiftUI
+import UIKit
 
 class ViewIdea: UIViewController {
-
-    @IBOutlet weak var ideaView: UICollectionView!
+    @IBOutlet var ideaView: UICollectionView!
 
     var idea: Idea?
     var video: [Video] = []
@@ -21,9 +20,10 @@ class ViewIdea: UIViewController {
         ideaView.dataSource = self
         ideaView.setCollectionViewLayout(generateLayout(), animated: true)
         if idea == nil, let ideaId = ideaId {
-            self.idea = SessionManager.shared.personalizedIdeas.first(where: { $0.id == ideaId })
+            idea = SessionManager.shared.personalizedIdeas.first(where: { $0.id == ideaId })
         }
-}
+    }
+
     func checkForExistingScript() {
         guard let idea = idea else { return }
         Task {
@@ -61,39 +61,38 @@ class ViewIdea: UIViewController {
         checkForExistingScript()
     }
 
-        @IBAction func draftTap(_ sender: Any) {
-            guard let idea = idea else { return }
-            didTapDraftScript(for: idea)
+    @IBAction func draftTap(_: Any) {
+        guard let idea = idea else { return }
+        didTapDraftScript(for: idea)
+    }
 
+    func didTapDraftScript(for idea: Idea, conversationID: UUID? = nil) {
+        let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
+        guard let chatVC = storyboard.instantiateViewController(
+            withIdentifier: "Chatbot"
+        ) as? Chatbot else { return }
+        chatVC.ideaId = idea.id
+        if let conversationID = conversationID {
+            chatVC.conversationID = conversationID
+        } else {
+            chatVC.autoSendMessage = """
+            Create a short creator-style script for this video idea:
+
+            Title: "\(idea.title)"
+            Description: "\(idea.description)"
+
+            Structure:
+            1. Hook (1 sentence)
+            2. What happens (2–3 sentences)
+            3. Twist or surprise (1 sentence)
+            4. CTA (1 sentence)
+
+            Tone: casual, friendly, modern.
+            Length: 15–20 seconds.
+            """
         }
-
-        func didTapDraftScript(for idea: Idea, conversationID: UUID? = nil) {
-            let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
-            guard let chatVC = storyboard.instantiateViewController(
-                withIdentifier: "Chatbot"
-            ) as? Chatbot else { return }
-            chatVC.ideaId = idea.id
-            if let conversationID = conversationID {
-                chatVC.conversationID = conversationID
-            } else {
-                chatVC.autoSendMessage = """
-        Create a short creator-style script for this video idea:
-
-        Title: "\(idea.title)"
-        Description: "\(idea.description)"
-
-        Structure:
-        1. Hook (1 sentence)
-        2. What happens (2–3 sentences)
-        3. Twist or surprise (1 sentence)
-        4. CTA (1 sentence)
-
-        Tone: casual, friendly, modern.
-        Length: 15–20 seconds.
-        """
-            }
-            navigationController?.pushViewController(chatVC, animated: true)
-        }
+        navigationController?.pushViewController(chatVC, animated: true)
+    }
 
     func handleDraftScriptTap(for idea: Idea) {
         Task {
@@ -127,27 +126,26 @@ class ViewIdea: UIViewController {
     }
 
     func registerCell() {
-
         ideaView.register(
             UINib(nibName: "HeaderView",
                   bundle: nil),
             forSupplementaryViewOfKind: "header",
-            withReuseIdentifier: "headerCell")
+            withReuseIdentifier: "headerCell"
+        )
 
         ideaView.register(
             UINib(nibName: "IdeaProgressCollectionViewCell", bundle: nil),
             forCellWithReuseIdentifier: "cell"
         )
-
     }
 
     func generateLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewCompositionalLayout {
+        return UICollectionViewCompositionalLayout {
             section, _ in
             let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
 
             let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "header", alignment: .top)
-          if section == 0 {
+            if section == 0 {
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
                     heightDimension: .estimated(140)
@@ -164,7 +162,6 @@ class ViewIdea: UIViewController {
                 return section
             }
             if section == 1 {
-
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
                     heightDimension: .estimated(100)
@@ -193,7 +190,6 @@ class ViewIdea: UIViewController {
 
                 return section
             } else if section == 2 {
-
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
 
                 // create the item
@@ -212,7 +208,6 @@ class ViewIdea: UIViewController {
 
                 return section
             } else if section == 3 {
-
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
                     heightDimension: .estimated(70)
@@ -255,11 +250,9 @@ class ViewIdea: UIViewController {
 
             return section
         }
-        return layout
     }
 
     func statistics(with idea: Idea) -> [Int] {
-
         guard let videos = idea.videos, !videos.isEmpty else {
             print("No videos available")
             return []
@@ -279,18 +272,18 @@ class ViewIdea: UIViewController {
 }
 
 extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in _: UICollectionView) -> Int {
         return 5
     }
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+
+    func collectionView(_: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 2 {
             return 2
         }
         return 1
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
+    func collectionView(_: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section == 0 {
             let cell = ideaView.dequeueReusableCell(
                 withReuseIdentifier: "cell",
@@ -338,23 +331,23 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
 
             guard let idea = idea else { return cell }
 
-                // Use your existing stats function
-                let values = statistics(with: idea)
+            // Use your existing stats function
+            let values = statistics(with: idea)
 
-                // Safe guard
-                guard indexPath.row < values.count else { return cell }
+            // Safe guard
+            guard indexPath.row < values.count else { return cell }
 
-                // Labels match values
-                let symbols = ["eye", "hand.thumbsup"]
+            // Labels match values
+            let symbols = ["eye", "hand.thumbsup"]
 
-                let value = values[indexPath.row]
-                let symbol = symbols[indexPath.row]
+            let value = values[indexPath.row]
+            let symbol = symbols[indexPath.row]
 
-                cell.configureStatistic(value, symbol)
-                cell.view.layer.cornerRadius = 16
-                cell.view.layer.borderWidth = 0.5
-                cell.view.backgroundColor = UIColor.accent.withAlphaComponent(0.1)
-                cell.view.layer.borderColor = UIColor.accent.withAlphaComponent(1.0).cgColor
+            cell.configureStatistic(value, symbol)
+            cell.view.layer.cornerRadius = 16
+            cell.view.layer.borderWidth = 0.5
+            cell.view.backgroundColor = UIColor.accent.withAlphaComponent(0.1)
+            cell.view.layer.borderColor = UIColor.accent.withAlphaComponent(1.0).cgColor
             return cell
         } else if indexPath.section == 3 {
             let cell = ideaView.dequeueReusableCell(withReuseIdentifier: "gaps", for: indexPath) as! IdeaDetailsCollectionViewCell
@@ -363,12 +356,10 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
             return cell
         }
 
-        let cell = ideaView.dequeueReusableCell(withReuseIdentifier: "button", for: indexPath) as! IdeaDetailsCollectionViewCell
-        return cell
+        return ideaView.dequeueReusableCell(withReuseIdentifier: "button", for: indexPath) as! IdeaDetailsCollectionViewCell
     }
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-
         if kind == "header", indexPath.section == 2 {
             let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: "header",

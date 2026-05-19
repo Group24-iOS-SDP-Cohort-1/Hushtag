@@ -1,7 +1,6 @@
 import UIKit
 
 class CapsuleNotification: UIView {
-
     private let label = UILabel()
     private let iconImageView = UIImageView()
     private let stackView = UIStackView()
@@ -11,7 +10,8 @@ class CapsuleNotification: UIView {
         setupView()
     }
 
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -84,7 +84,8 @@ class CapsuleNotification: UIView {
     @MainActor
     static func show(message: String, iconName: String = "checkmark.circle.fill", duration: TimeInterval = 2.0) {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first(where: { $0.isKeyWindow }) else {
+              let window = windowScene.windows.first(where: { $0.isKeyWindow })
+        else {
             return
         }
 

@@ -1,7 +1,6 @@
 import UIKit
 
 extension UIViewController {
-
     func enableKeyboardDismissOnTap() {
         let tap = UITapGestureRecognizer(
             target: self,
@@ -52,7 +51,7 @@ extension String {
 
         // 3. PARSE BOLD (**text**)
         let boldRegex = try! NSRegularExpression(pattern: "\\*\\*(.*?)\\*\\*", options: [])
-        let matches = boldRegex.matches(in: self, options: [], range: NSRange(location: 0, length: self.utf16.count))
+        let matches = boldRegex.matches(in: self, options: [], range: NSRange(location: 0, length: utf16.count))
 
         for match in matches.reversed() {
             let fullRange = match.range

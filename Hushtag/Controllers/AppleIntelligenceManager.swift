@@ -1,15 +1,13 @@
 import Foundation
 import FoundationModels
 
-// Low-level Apple Foundation Model access.
-// This file ONLY knows how to talk to Apple safely.
+/// Low-level Apple Foundation Model access.
+/// This file ONLY knows how to talk to Apple safely.
 final class AppleIntelligenceManager {
-
     static let shared = AppleIntelligenceManager()
     private init() {}
 
     func askSafely(prompt: String) async throws -> String {
-
         // Platform availability check
         guard #available(iOS 18.0, *) else {
             throw AIError.unavailable

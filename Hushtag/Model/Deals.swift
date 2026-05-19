@@ -1,6 +1,6 @@
 import Foundation
 
-struct Deal: Identifiable, Sendable {
+struct Deal: Identifiable {
     let id: UUID
     let name: String
     let payment: Double
@@ -19,7 +19,8 @@ struct Deal: Identifiable, Sendable {
         return deliverables.allSatisfy { $0.isCompleted }
     }
 }
-struct Deliverable: Identifiable, Sendable {
+
+struct Deliverable: Identifiable {
     let id: UUID
     let dealId: UUID
     var name: String
@@ -27,7 +28,7 @@ struct Deliverable: Identifiable, Sendable {
     var isCompleted: Bool
 }
 
-nonisolated struct DealDB: Codable, Sendable {
+nonisolated struct DealDB: Codable {
     let dealId: UUID
     let userId: UUID
     let name: String
@@ -40,7 +41,7 @@ nonisolated struct DealDB: Codable, Sendable {
     var isCompleted: Bool
 }
 
-nonisolated struct DeliverableDB: Codable, Sendable {
+nonisolated struct DeliverableDB: Codable {
     let id: UUID
     let dealId: UUID
     let name: String
@@ -48,7 +49,7 @@ nonisolated struct DeliverableDB: Codable, Sendable {
     let isCompleted: Bool
 }
 
-nonisolated struct DealInsertPayload: Encodable, Sendable {
+nonisolated struct DealInsertPayload: Encodable {
     let userId: UUID
     let name: String
     let payment: Double

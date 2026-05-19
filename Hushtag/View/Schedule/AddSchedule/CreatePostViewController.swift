@@ -1,54 +1,55 @@
-import UIKit
 import PhotosUI
+import UIKit
 import UniformTypeIdentifiers
 
 class CreatePostViewController: UIViewController {
-
     // MARK: - Data
+
     private var selectedVideoURL: URL?
     private var selectedThumbnailURL: URL?
     private var selectedCategory: YouTubeCategory = .filmAndAnimation
     private var selectedPrivacy: String = "Public"
 
     enum YouTubeCategory: String, CaseIterable {
-        case filmAndAnimation   = "Film & Animation"
-        case autosAndVehicles   = "Autos & Vehicles"
-        case music              = "Music"
-        case petsAndAnimals     = "Pets & Animals"
-        case sports             = "Sports"
-        case gaming             = "Gaming"
-        case travelAndEvents    = "Travel & Events"
-        case peopleAndBlogs     = "People & Blogs"
-        case comedy             = "Comedy"
-        case entertainment      = "Entertainment"
-        case newsAndPolitics    = "News & Politics"
-        case howtoAndStyle      = "Howto & Style"
-        case education          = "Education"
-        case scienceAndTech     = "Science & Technology"
-        case nonprofits         = "Nonprofits & Activism"
+        case filmAndAnimation = "Film & Animation"
+        case autosAndVehicles = "Autos & Vehicles"
+        case music = "Music"
+        case petsAndAnimals = "Pets & Animals"
+        case sports = "Sports"
+        case gaming = "Gaming"
+        case travelAndEvents = "Travel & Events"
+        case peopleAndBlogs = "People & Blogs"
+        case comedy = "Comedy"
+        case entertainment = "Entertainment"
+        case newsAndPolitics = "News & Politics"
+        case howtoAndStyle = "Howto & Style"
+        case education = "Education"
+        case scienceAndTech = "Science & Technology"
+        case nonprofits = "Nonprofits & Activism"
 
         var categoryId: String {
             switch self {
-            case .filmAndAnimation:  return "1"
-            case .autosAndVehicles:  return "2"
-            case .music:             return "10"
-            case .petsAndAnimals:    return "15"
-            case .sports:            return "17"
-            case .gaming:            return "20"
-            case .travelAndEvents:   return "19"
-            case .peopleAndBlogs:    return "22"
-            case .comedy:            return "23"
-            case .entertainment:     return "24"
-            case .newsAndPolitics:   return "25"
-            case .howtoAndStyle:     return "26"
-            case .education:         return "27"
-            case .scienceAndTech:    return "28"
-            case .nonprofits:        return "29"
+            case .filmAndAnimation: return "1"
+            case .autosAndVehicles: return "2"
+            case .music: return "10"
+            case .petsAndAnimals: return "15"
+            case .sports: return "17"
+            case .gaming: return "20"
+            case .travelAndEvents: return "19"
+            case .peopleAndBlogs: return "22"
+            case .comedy: return "23"
+            case .entertainment: return "24"
+            case .newsAndPolitics: return "25"
+            case .howtoAndStyle: return "26"
+            case .education: return "27"
+            case .scienceAndTech: return "28"
+            case .nonprofits: return "29"
             }
         }
     }
 
     // MARK: - UI Components
+
     private let tableView = UITableView(frame: .zero, style: .insetGrouped)
 
     // Shared references to input fields from cells
@@ -85,6 +86,7 @@ class CreatePostViewController: UIViewController {
     ]
 
     // MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
@@ -115,6 +117,7 @@ class CreatePostViewController: UIViewController {
     }
 
     // MARK: - Layout & Navigation
+
     private func setupNavigationBar() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeTapped))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(doneTapped))
@@ -205,12 +208,12 @@ class CreatePostViewController: UIViewController {
         let shouldShowPublishAt = (selectedPrivacy == "Public")
         let hasPublishAt = currentFields.contains("Publish At")
 
-        if shouldShowPublishAt && !hasPublishAt {
+        if shouldShowPublishAt, !hasPublishAt {
             currentFields.append("Publish At")
             if let index = currentFields.firstIndex(of: "Publish At") {
                 tableView.insertRows(at: [IndexPath(row: index, section: Section.postDetails.rawValue)], with: .automatic)
             }
-        } else if !shouldShowPublishAt && hasPublishAt {
+        } else if !shouldShowPublishAt, hasPublishAt {
             if let index = currentFields.firstIndex(of: "Publish At") {
                 currentFields.remove(at: index)
                 tableView.deleteRows(at: [IndexPath(row: index, section: Section.postDetails.rawValue)], with: .automatic)
@@ -246,6 +249,7 @@ class CreatePostViewController: UIViewController {
     }
 
     // MARK: - Actions
+
     @objc private func uploadVideoTapped() {
         var config = PHPickerConfiguration()
         config.filter = .videos
@@ -322,13 +326,16 @@ class CreatePostViewController: UIViewController {
     }
 
     // MARK: - Keyboard
+
     private func setupKeyboardHandling() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
     }
 
-    @objc private func dismissKeyboard() { view.endEditing(true) }
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
 
     @objc func dismissPicker() {
         view.endEditing(true)
@@ -336,13 +343,13 @@ class CreatePostViewController: UIViewController {
 }
 
 // MARK: - UITableViewDataSource & Delegate
-extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
 
-    func numberOfSections(in tableView: UITableView) -> Int {
+extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
+    func numberOfSections(in _: UITableView) -> Int {
         return Section.allCases.count
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let sec = Section(rawValue: section) else { return 0 }
         switch sec {
         case .media: return 1
@@ -350,11 +357,11 @@ extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
         }
     }
 
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_: UITableView, heightForHeaderInSection _: Int) -> CGFloat {
         return 44
     }
 
-    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    func tableView(_: UITableView, titleForFooterInSection section: Int) -> String? {
         guard let sec = Section(rawValue: section) else { return nil }
         if sec == .postDetails {
             return "We will remind you 1 hr before"
@@ -362,7 +369,7 @@ extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
         return nil
     }
 
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func tableView(_: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let sec = Section(rawValue: section) else { return nil }
         let headerView = UIView()
         headerView.backgroundColor = .clear
@@ -399,35 +406,35 @@ extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
             // Video Config
             cell.uploadButton.addTarget(self, action: #selector(uploadVideoTapped), for: .touchUpInside)
             cell.removeButton.addTarget(self, action: #selector(removeVideoTapped), for: .touchUpInside)
-            self.uploadVideoButton = cell.uploadButton
-            self.videoPreviewLabel = cell.previewLabel
+            uploadVideoButton = cell.uploadButton
+            videoPreviewLabel = cell.previewLabel
 
             if let url = selectedVideoURL {
-                self.videoPreviewLabel?.text = "📹 \(url.lastPathComponent)"
-                self.videoPreviewLabel?.isHidden = false
+                videoPreviewLabel?.text = "📹 \(url.lastPathComponent)"
+                videoPreviewLabel?.isHidden = false
                 cell.removeButton.isHidden = false
-                self.uploadVideoButton?.setTitle("  Change Video", for: .normal)
+                uploadVideoButton?.setTitle("  Change Video", for: .normal)
             } else {
-                self.videoPreviewLabel?.isHidden = true
+                videoPreviewLabel?.isHidden = true
                 cell.removeButton.isHidden = true
-                self.uploadVideoButton?.setTitle("  Upload Video", for: .normal)
+                uploadVideoButton?.setTitle("  Upload Video", for: .normal)
             }
 
             // Thumbnail Config
             cell.thumbnailUploadButton.addTarget(self, action: #selector(uploadThumbnailTapped), for: .touchUpInside)
             cell.thumbnailRemoveButton.addTarget(self, action: #selector(removeThumbnailTapped), for: .touchUpInside)
-            self.uploadThumbnailButton = cell.thumbnailUploadButton
-            self.thumbnailPreviewLabel = cell.thumbnailPreviewLabel
+            uploadThumbnailButton = cell.thumbnailUploadButton
+            thumbnailPreviewLabel = cell.thumbnailPreviewLabel
 
             if let url = selectedThumbnailURL {
-                self.thumbnailPreviewLabel?.text = "🖼️ \(url.lastPathComponent)"
-                self.thumbnailPreviewLabel?.isHidden = false
+                thumbnailPreviewLabel?.text = "🖼️ \(url.lastPathComponent)"
+                thumbnailPreviewLabel?.isHidden = false
                 cell.thumbnailRemoveButton.isHidden = false
-                self.uploadThumbnailButton?.setTitle("  Change Thumbnail", for: .normal)
+                uploadThumbnailButton?.setTitle("  Change Thumbnail", for: .normal)
             } else {
-                self.thumbnailPreviewLabel?.isHidden = true
+                thumbnailPreviewLabel?.isHidden = true
                 cell.thumbnailRemoveButton.isHidden = true
-                self.uploadThumbnailButton?.setTitle("  Upload Thumbnail", for: .normal)
+                uploadThumbnailButton?.setTitle("  Upload Thumbnail", for: .normal)
             }
 
             return cell
@@ -476,7 +483,6 @@ extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
                 overlayButton.menu = menu
                 overlayButton.showsMenuAsPrimaryAction = true
                 cell.addOverlay(overlayButton)
-
             case "Privacy Status":
                 privacyTextField.placeholder = "Privacy Status"
                 privacyTextField.text = selectedPrivacy
@@ -508,7 +514,6 @@ extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
                 overlayButton.menu = menu
                 overlayButton.showsMenuAsPrimaryAction = true
                 cell.addOverlay(overlayButton)
-
             case "Publish At":
                 cell.textField.textAlignment = .right
                 cell.textField.text = dateFormatter.string(from: publishAtDatePicker.date)
@@ -535,6 +540,7 @@ extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 // MARK: - UITextViewDelegate
+
 extension CreatePostViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         if textView === titleTextView {
@@ -548,6 +554,7 @@ extension CreatePostViewController: UITextViewDelegate {
 }
 
 // MARK: - PHPickerViewControllerDelegate
+
 extension CreatePostViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true)
@@ -585,8 +592,8 @@ extension CreatePostViewController: PHPickerViewControllerDelegate {
 }
 
 // MARK: - Custom Cells
-private class PostFieldCell: UITableViewCell {
 
+private class PostFieldCell: UITableViewCell {
     let textField = UITextField()
     private let titleLabel = UILabel()
     private var sharedTextField: UITextField?
@@ -625,7 +632,10 @@ private class PostFieldCell: UITableViewCell {
         ])
     }
 
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     func resetAccessory() {
         textField.rightView = nil
@@ -659,8 +669,8 @@ private class PostFieldCell: UITableViewCell {
     }
 
     func install(textField shared: UITextField, title: String?) {
-        self.textField.isHidden = true
-        self.sharedTextField = shared
+        textField.isHidden = true
+        sharedTextField = shared
         shared.borderStyle = .none
         shared.backgroundColor = .clear
         shared.font = .systemFont(ofSize: 16)
@@ -673,13 +683,13 @@ private class PostFieldCell: UITableViewCell {
     }
 
     func install(view: UIView) {
-        self.textField.isHidden = true
-        self.customView = view
+        textField.isHidden = true
+        customView = view
         stackView.addArrangedSubview(view)
     }
 
     func addOverlay(_ button: UIButton) {
-        self.overlayMenuButton = button
+        overlayMenuButton = button
         button.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(button)
         NSLayoutConstraint.activate([
@@ -779,5 +789,8 @@ private class PostMediaCell: UITableViewCell {
         ])
     }
 
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }

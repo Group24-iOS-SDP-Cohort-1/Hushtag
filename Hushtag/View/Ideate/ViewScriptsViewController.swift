@@ -20,10 +20,11 @@ class ViewScriptsViewController: UIViewController {
     var isSearchBarEmpty: Bool {
         return searchController.searchBar.text?.isEmpty ?? true
     }
+
     var filteredMyScripts: [ScriptedIdea] = []
     var filteredLikedIdeas: [Idea] = []
 
-    @IBOutlet weak var scriptsCollectionView: UICollectionView!
+    @IBOutlet var scriptsCollectionView: UICollectionView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -95,16 +96,16 @@ class ViewScriptsViewController: UIViewController {
 
                 // Extract scripts from conversations that have them
                 let scripts = conversations.compactMap { conversation -> ScriptedIdea? in
-                    guard let dbScript = conversation.scripted_ideas else { return nil }
+                    guard let dbScript = conversation.scriptedIdeas else { return nil }
                     return ScriptedIdea(
                         id: dbScript.id,
-                        chat_id: dbScript.chat_id,
+                        chatId: dbScript.chatId,
                         title: dbScript.title,
                         description: dbScript.description,
                         script: dbScript.script,
                         thumbnail: dbScript.thumbnail,
                         tags: dbScript.tags,
-                        idea_id: conversation.idea_id
+                        idea_id: conversation.ideaId
                     )
                 }
 
@@ -149,7 +150,6 @@ class ViewScriptsViewController: UIViewController {
     }
 
     private func updateEmptyState() {
-
         // Separate Empty State logic for "Your Scripts"
         if pageTitle == "Chat History" || pageTitle == "Your Scripts" {
             if myScripts.isEmpty {
@@ -170,7 +170,7 @@ class ViewScriptsViewController: UIViewController {
         }
     }
 
-    // Helper to draw empty view
+    /// Helper to draw empty view
     private func showEmptyView(message: String, iconName: String) {
         let emptyView = UIView(frame: scriptsCollectionView.bounds)
 
@@ -200,12 +200,10 @@ class ViewScriptsViewController: UIViewController {
 
         scriptsCollectionView.backgroundView = emptyView
     }
-
 }
 
 extension ViewScriptsViewController: UICollectionViewDataSource {
-
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
         if pageTitle == "Chat History" || pageTitle == "Your Scripts" {
             // If searching, use filtered list. Else, use full list.
             return isFiltering ? filteredMyScripts.count : myScripts.count
@@ -215,7 +213,6 @@ extension ViewScriptsViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
         if pageTitle == "Chat History" || pageTitle == "Your Scripts" {
             let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "scriptedIdeas",
@@ -309,17 +306,12 @@ func generateScriptsLayout(title: String) -> UICollectionViewLayout {
         top: 10, leading: 10, bottom: 10, trailing: 10
     )
 
-    let layout = UICollectionViewCompositionalLayout(section: section)
-    return layout
-
+    return UICollectionViewCompositionalLayout(section: section)
 }
 
 extension ViewScriptsViewController: UICollectionViewDelegate {
-
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-
+    func collectionView(_: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if pageTitle == "Chat History" || pageTitle == "Your Scripts" {
-
             // Get the correct script based on search state
             let script: ScriptedIdea
             if isFiltering {
@@ -331,7 +323,7 @@ extension ViewScriptsViewController: UICollectionViewDelegate {
             let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
             if let destinationVC = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas {
                 destinationVC.idea = script
-                self.navigationController?.pushViewController(destinationVC, animated: true)
+                navigationController?.pushViewController(destinationVC, animated: true)
             }
             return
         }
@@ -339,9 +331,7 @@ extension ViewScriptsViewController: UICollectionViewDelegate {
 }
 
 extension ViewScriptsViewController: LikedCellDelegate {
-
     func didToggleLike(for ideaKey: String) {
-
         let sourceArray = isFiltering ? filteredLikedIdeas : likedIdeas
 
         guard let index = sourceArray.firstIndex(where: { $0.ideaKey == ideaKey }) else {
@@ -376,7 +366,6 @@ extension ViewScriptsViewController: LikedCellDelegate {
                 }
 
                 await MainActor.run {
-
                     // Remove from local lists if unliked
                     if isCurrentlyLiked {
                         self.likedIdeas.removeAll { $0.ideaKey == ideaKey }
@@ -398,7 +387,6 @@ extension ViewScriptsViewController: LikedCellDelegate {
     }
 
     func didTapDraftScript(for idea: Idea) {
-
         Task {
             do {
                 guard let ideaKey = idea.ideaKey else { return }
@@ -423,7 +411,6 @@ extension ViewScriptsViewController: LikedCellDelegate {
                 guard let finalConvoId = convoId else { return }
 
                 await MainActor.run {
-
                     let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
 
                     guard let vc = storyboard.instantiateViewController(
@@ -458,7 +445,6 @@ extension ViewScriptsViewController: LikedCellDelegate {
 }
 
 extension ViewScriptsViewController: UISearchResultsUpdating {
-
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
         filterContentForSearchText(searchBar.text!)
@@ -467,7 +453,6 @@ extension ViewScriptsViewController: UISearchResultsUpdating {
     func filterContentForSearchText(_ searchText: String) {
         // 1. Filter "Your Scripts"
         filteredMyScripts = myScripts.filter { (script: ScriptedIdea) -> Bool in
-
             if searchText.isEmpty { return true }
 
             // Check Title (User defined)
@@ -490,10 +475,10 @@ extension ViewScriptsViewController: UISearchResultsUpdating {
 
         // Update empty state based on search results if searching
         if isFiltering {
-            if (pageTitle == "Chat History" || pageTitle == "Your Scripts") && filteredMyScripts.isEmpty {
+            if pageTitle == "Chat History" || pageTitle == "Your Scripts", filteredMyScripts.isEmpty {
                 showEmptyView(message: "No results found", iconName: "magnifyingglass")
                 scriptsCollectionView.backgroundView?.isHidden = false
-            } else if pageTitle != "Chat History" && filteredLikedIdeas.isEmpty {
+            } else if pageTitle != "Chat History", filteredLikedIdeas.isEmpty {
                 showEmptyView(message: "No results found", iconName: "magnifyingglass")
                 scriptsCollectionView.backgroundView?.isHidden = false
             } else {
@@ -504,7 +489,7 @@ extension ViewScriptsViewController: UISearchResultsUpdating {
         }
     }
 
-    // Helper to determine if we are currently filtering
+    /// Helper to determine if we are currently filtering
     var isFiltering: Bool {
         return searchController.isActive && !isSearchBarEmpty
     }

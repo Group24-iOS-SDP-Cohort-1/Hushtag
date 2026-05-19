@@ -1,16 +1,15 @@
 import UIKit
 
 class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
-
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var textView: UIView!
-    @IBOutlet weak var textViewHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var textFieldView: UITextView!
-    @IBOutlet weak var textStack: UIStackView!
-    @IBOutlet weak var enterbutton: UIButton!
-    @IBOutlet weak var generateStack: UIStackView!
-    @IBOutlet weak var inputViewBottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var scriptedChats: UIBarButtonItem!
+    @IBOutlet var tableView: UITableView!
+    @IBOutlet var textView: UIView!
+    @IBOutlet var textViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var textFieldView: UITextView!
+    @IBOutlet var textStack: UIStackView!
+    @IBOutlet var enterbutton: UIButton!
+    @IBOutlet var generateStack: UIStackView!
+    @IBOutlet var inputViewBottomConstraint: NSLayoutConstraint!
+    @IBOutlet var scriptedChats: UIBarButtonItem!
     var latestScript: String?
     var messages: [Message] = []
     var autoSendMessage: String?
@@ -80,7 +79,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         ])
 
         if conversationID == nil {
-
             conversationID = UUID()
             print("New Conversation started:", conversationID!)
 
@@ -101,10 +99,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             do {
                 let history = try await controller.fetchMessages(for: conversationID ?? UUID())
                 let allIdeas = try await controller.fetchScript()
-                let idea = allIdeas.first { $0.chat_id == self.conversationID }
+                let idea = allIdeas.first { $0.chatId == self.conversationID }
 
                 let mapped = history.map { chat in
-
                     var message = Message(
                         role: chat.role.rawValue,
                         content: chat.content,
@@ -124,7 +121,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     return message
                 }
                 await MainActor.run {
-
                     if !mapped.isEmpty {
                         self.messages = mapped
                     }
@@ -165,7 +161,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         Task {
             do {
                 let allIdeas = try await controller.fetchScript()
-                guard let idea = allIdeas.first(where: { $0.chat_id == self.conversationID }) else {
+                guard let idea = allIdeas.first(where: { $0.chatId == self.conversationID }) else {
                     print("No scripted idea found for this conversation")
                     return
                 }
@@ -180,6 +176,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             }
         }
     }
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -207,11 +204,11 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         }
     }
 
-    @IBAction func scriptView(_ sender: Any) {
+    @IBAction func scriptView(_: Any) {
         let storyboard = UIStoryboard(name: "ChatHistory", bundle: nil)
-        guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else {return}
-        guard let destinationVC = navVC.topViewController as? ChatHistory else {return}
-        self.navigationController?.pushViewController(destinationVC, animated: true)
+        guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else { return }
+        guard let destinationVC = navVC.topViewController as? ChatHistory else { return }
+        navigationController?.pushViewController(destinationVC, animated: true)
     }
 
     func setupTapToDismiss() {
@@ -230,9 +227,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-
             let bottomPadding = view.safeAreaInsets.bottom
-            self.inputViewBottomConstraint.constant = keyboardSize.height - bottomPadding
+            inputViewBottomConstraint.constant = keyboardSize.height - bottomPadding
 
             UIView.animate(withDuration: 0.3) {
                 self.view.layoutIfNeeded()
@@ -242,8 +238,8 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         }
     }
 
-    @objc func keyboardWillHide(notification: NSNotification) {
-        self.inputViewBottomConstraint.constant = 8
+    @objc func keyboardWillHide(notification _: NSNotification) {
+        inputViewBottomConstraint.constant = 8
 
         UIView.animate(withDuration: 0.3) {
             self.view.layoutIfNeeded()
@@ -257,17 +253,18 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         }
     }
 
-    func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSections(in _: UITableView) -> Int {
         return 1
     }
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         return messages.count + 1
     }
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
-                let cell = tableView.dequeueReusableCell(
-                    withIdentifier: "PlatformCell",
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: "PlatformCell",
                 for: indexPath
             ) as! PlatformCellTableViewCell
             cell.onPlatformSelected = { [weak self] platform in
@@ -296,19 +293,17 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         cell.contentView.tag = messageIndex
 
         return cell
-
     }
 
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func tableView(_: UITableView, heightForHeaderInSection _: Int) -> CGFloat {
         return .leastNormalMagnitude
     }
 
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    func tableView(_: UITableView, heightForFooterInSection _: Int) -> CGFloat {
         return .leastNormalMagnitude
     }
 
     func textViewDidChange(_ textView: UITextView) {
-
         guard textView.font != nil else { return }
 
         let lineHeight = textView.font?.lineHeight ?? 0
@@ -324,7 +319,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         if contentHeight >= maxHeight {
             textViewHeightConstraint.constant = maxHeight
             textView.isScrollEnabled = true
-        } else if contentHeight < maxHeight && contentHeight > minHeight {
+        } else if contentHeight < maxHeight, contentHeight > minHeight {
             textViewHeightConstraint.constant = contentHeight
             textView.isScrollEnabled = false
         } else if contentHeight <= minHeight {
@@ -338,7 +333,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
     func sendMessage(_ text: String) {
-
         let userText = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !userText.isEmpty else { return }
         guard let conversationID = conversationID else { return }
@@ -400,9 +394,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             """
 
             switch intent {
-
             case .generateScript:
-
                 GeminiManager.shared.generateContent(
                     prompt: finalPrompt,
                     conversationID: conversationID
@@ -412,7 +404,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 }
 
             case .generateTitle:
-
                 let reply = await generateTitleWithApple(
                     script: self.latestScript,
                     userPrompt: finalPrompt, // ✅ FIX: pass full context
@@ -422,7 +413,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 self.handleBotReply(reply, source: "apple")
 
             case .generateDescription:
-
                 let reply = await generateDescriptionWithApple(
                     script: self.latestScript,
                     userPrompt: finalPrompt,
@@ -432,7 +422,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                 self.handleBotReply(reply, source: "apple")
 
             case .chat:
-
                 let reply = await AIResponseRouter.shared.respond(
                     intent: .chat,
                     prompt: finalPrompt,
@@ -444,8 +433,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         }
     }
 
-    func handleBotReply(_ replyText: String?, source: String) {
-
+    func handleBotReply(_ replyText: String?, source _: String) {
         if let replyText {
             Task {
                 do {
@@ -467,7 +455,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
         // UI updates on main thread (unchanged)
         DispatchQueue.main.async {
-
             // Remove "Thinking..."
             if !self.messages.isEmpty {
                 self.messages.removeLast()
@@ -491,7 +478,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         }
     }
 
-    @IBAction func sendButton(_ sender: Any) {
+    @IBAction func sendButton(_: Any) {
         let text = textFieldView.text.trimmingCharacters(in: .whitespacesAndNewlines)
         if !text.isEmpty {
             sendMessage(text)
@@ -510,7 +497,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
 
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
-        // Helper to add mark/unmark option
+        /// Helper to add mark/unmark option
         func addMarkAction(type: String) {
             let isMarked = message.mark == type
             if !isMarked && isTypeAlreadyMarked(type) {
@@ -524,7 +511,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     message.mark = nil
                     self.markedMessages[type]?.removeAll {
                         $0.content == message.content
-
                     }
                     self.updateProgressHeader()
                     if let chatID = self.conversationID {
@@ -567,7 +553,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     }
 
                     if self.isAllContentMarked() && !self.didShowFinalReadyMessage {
-
                         self.didShowFinalReadyMessage = true
 
                         let finalMessage = Message(
@@ -611,7 +596,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                         self.showScriptSuggestions()
                     case "thumbnail":
                         self.showScriptSuggestions()
-
                     default:
                         self.showScriptSuggestions()
                     }
@@ -624,8 +608,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         ["script", "title", "description"].forEach { addMarkAction(type: $0) }
 
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        self.present(alert, animated: true)
-
+        present(alert, animated: true)
     }
 
     func getUnmarkedTypes() -> [String] {
@@ -637,11 +620,11 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     func buildCleanHistory() -> [Message] {
         return messages.filter {
             $0.content != "Thinking..." &&
-            $0.role != "system"
+                $0.role != "system"
         }
     }
-    func showScriptSuggestions() {
 
+    func showScriptSuggestions() {
         // Remove previous buttons
         generateStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
@@ -656,7 +639,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         generateStack.isHidden = false
 
         for type in unmarkedTypes {
-
             let buttonTitle: String
 
             switch type {
@@ -673,7 +655,6 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
             if let view = Bundle.main
                 .loadNibNamed("SuggestionCell", owner: self)?
                 .first as? SuggestionCell {
-
                 view.generateButton.setTitle(buttonTitle, for: .normal)
                 view.generateButton.addTarget(
                     self,
@@ -700,5 +681,4 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         })
         progressHeader?.configure(completedTypes: completedTypes)
     }
-
 }

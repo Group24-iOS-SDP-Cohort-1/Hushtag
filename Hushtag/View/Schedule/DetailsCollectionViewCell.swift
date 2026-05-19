@@ -1,18 +1,18 @@
 import UIKit
 
 class DetailsCollectionViewCell: UICollectionViewCell {
-    @IBOutlet weak var mainName: UILabel!
-    @IBOutlet weak var platformLabel: UILabel!
-    @IBOutlet weak var remindersLabel: UILabel!
-    @IBOutlet weak var paymentLabel: UILabel!
-    @IBOutlet weak var phoneLabel: UILabel!
-    @IBOutlet weak var emailLabel: UILabel!
-    @IBOutlet weak var deliverableLabel: UILabel!
-    @IBOutlet weak var subNameLabel: UILabel!
-    @IBOutlet weak var deadlineLabel: UILabel!
-    @IBOutlet weak var statusButton: UIButton!
+    @IBOutlet var mainName: UILabel!
+    @IBOutlet var platformLabel: UILabel!
+    @IBOutlet var remindersLabel: UILabel!
+    @IBOutlet var paymentLabel: UILabel!
+    @IBOutlet var phoneLabel: UILabel!
+    @IBOutlet var emailLabel: UILabel!
+    @IBOutlet var deliverableLabel: UILabel!
+    @IBOutlet var subNameLabel: UILabel!
+    @IBOutlet var deadlineLabel: UILabel!
+    @IBOutlet var statusButton: UIButton!
 
-    @IBOutlet weak var moreAction: UIButton!
+    @IBOutlet var moreAction: UIButton!
     private let postsController = PostsController()
     var onToggleCompletion: ((IndexPath) -> Void)?
     var onDeleteTapped: (() -> Void)?
@@ -45,8 +45,8 @@ class DetailsCollectionViewCell: UICollectionViewCell {
         moreAction.menu = UIMenu(children: [editAction, deleteAction])
         moreAction.showsMenuAsPrimaryAction = true
     }
-    func configureCommon(with item: ScheduleItem) {
 
+    func configureCommon(with item: ScheduleItem) {
         [
             platformLabel,
             remindersLabel
@@ -56,8 +56,7 @@ class DetailsCollectionViewCell: UICollectionViewCell {
         }
 
         switch item {
-        case .post(let post, _):
-
+        case let .post(post, _):
             mainName.text = post.name
             if !post.platform.isEmpty {
                 platformLabel.text = "Platform: " + post.platform.map(\.rawValue).joined(separator: ", ")
@@ -78,8 +77,7 @@ class DetailsCollectionViewCell: UICollectionViewCell {
                 updateCompletionState(isCompleted: post.isCompleted)
             }
 
-        case .deal(let deal, _):
-
+        case let .deal(deal, _):
             mainName.text = deal.name
 
             platformLabel.text = deal.platform.map(\.rawValue).joined(separator: ", ")
@@ -92,7 +90,6 @@ class DetailsCollectionViewCell: UICollectionViewCell {
     }
 
     func DealDetails(with deal: Deal) {
-
         let completedCount = deal.deliverables.filter { $0.isCompleted }.count
         let totalCount = deal.deliverables.count
 
@@ -132,9 +129,9 @@ class DetailsCollectionViewCell: UICollectionViewCell {
         statusButton.setImage(image, for: .normal)
     }
 
-    @IBAction func didTapStatusButton(_ sender: UIButton) {
+    @IBAction func didTapStatusButton(_: UIButton) {
         guard let indexPath = indexPath else { return }
-            onToggleCompletion?(indexPath)
+        onToggleCompletion?(indexPath)
     }
 
     private func editTapped() {

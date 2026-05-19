@@ -8,12 +8,11 @@
 import UIKit
 
 class ChoosePlatformCollectionViewCell: UICollectionViewCell {
+    @IBOutlet var headingLabel: UILabel!
 
-    @IBOutlet weak var headingLabel: UILabel!
+    @IBOutlet var subheadingLabel: UILabel!
 
-    @IBOutlet weak var subheadingLabel: UILabel!
-
-    @IBOutlet weak var innerCollectionView: UICollectionView!
+    @IBOutlet var innerCollectionView: UICollectionView!
 
     weak var delegate: PreferenceCardSelectionDelegate?
     var cardIndex: Int = -1
@@ -81,11 +80,11 @@ class ChoosePlatformCollectionViewCell: UICollectionViewCell {
 }
 
 extension ChoosePlatformCollectionViewCell: UICollectionViewDataSource, UICollectionViewDelegate {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in _: UICollectionView) -> Int {
         return 1
     }
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
         return platformOptions.count
     }
 
@@ -103,11 +102,11 @@ extension ChoosePlatformCollectionViewCell: UICollectionViewDataSource, UICollec
         return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(_: UICollectionView, didSelectItemAt _: IndexPath) {
         updateSelection()
     }
 
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+    func collectionView(_: UICollectionView, didDeselectItemAt _: IndexPath) {
         updateSelection()
     }
 }

@@ -2,7 +2,6 @@ import UIKit
 
 @IBDesignable
 class CircularProgressView: UIView {
-
     private var progressLayer = CAShapeLayer()
     private var trackLayer = CAShapeLayer()
     private var percentageLabel = UILabel()
@@ -30,8 +29,8 @@ class CircularProgressView: UIView {
         percentageLabel.textColor = progressColor
         addSubview(percentageLabel)
 
-        self.backgroundColor = .clear
-        self.layer.cornerRadius = self.frame.size.width / 2
+        backgroundColor = .clear
+        layer.cornerRadius = frame.size.width / 2
     }
 
     override func layoutSubviews() {
@@ -70,7 +69,6 @@ class CircularProgressView: UIView {
     }
 
     func setProgress(value: Float) {
-
         currentProgress = value
         percentageLabel.text = "\(Int(value * 100))%"
 

@@ -1,7 +1,6 @@
 import UIKit
 
 class ChatHistory: UITableViewController {
-
     let controller = ScriptedIdeasController()
     var conversations: [Conversation] = []
     var sections: [(title: String, items: [Conversation])] = []
@@ -22,7 +21,7 @@ class ChatHistory: UITableViewController {
         fetchConversationList()
     }
 
-    @objc private func handleScriptDeleted(_ notification: Notification) {
+    @objc private func handleScriptDeleted(_: Notification) {
         fetchConversationList()
     }
 
@@ -32,7 +31,7 @@ class ChatHistory: UITableViewController {
                 let result = try await controller.fetchConversations()
 
                 let sorted = result.sorted {
-                    ($0.created_at ?? Date()) > ($1.created_at ?? Date())
+                    ($0.createdAt ?? Date()) > ($1.createdAt ?? Date())
                 }
 
                 let grouped = groupConversations(sorted)
@@ -52,11 +51,11 @@ class ChatHistory: UITableViewController {
         }
     }
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in _: UITableView) -> Int {
         return sections.count
     }
 
-    override func tableView(_ tableView: UITableView,
+    override func tableView(_: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
         return sections[section].items.count
     }
@@ -75,12 +74,12 @@ class ChatHistory: UITableViewController {
         return cell
     }
 
-    override func tableView(_ tableView: UITableView,
+    override func tableView(_: UITableView,
                             titleForHeaderInSection section: Int) -> String? {
         return sections[section].title
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
         let convo = sections[indexPath.section].items[indexPath.row]
 
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
@@ -91,34 +90,31 @@ class ChatHistory: UITableViewController {
 
         vc.conversationID = convo.id
 
-        guard let navigationController = self.navigationController else { return }
+        guard let navigationController = navigationController else { return }
 
         if let ideate1Index = navigationController.viewControllers.firstIndex(where: { $0 is Ideate1 }) {
-            let newStack = Array(navigationController.viewControllers[0...ideate1Index]) + [vc]
+            let newStack = Array(navigationController.viewControllers[0 ... ideate1Index]) + [vc]
             navigationController.setViewControllers(newStack, animated: true)
         } else {
             navigationController.pushViewController(vc, animated: true)
         }
     }
 
-    override func tableView(_ tableView: UITableView,
+    override func tableView(_: UITableView,
                             trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
-    -> UISwipeActionsConfiguration? {
-
+        -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(
             style: .destructive,
             title: "Delete"
         ) { [weak self] _, _, completion in
-
             guard let self = self else { return }
 
             let convo = self.sections[indexPath.section].items[indexPath.row]
 
             Task {
                 do {
-
                     // Delete related script first if it exists
-                    if let ideaId = convo.idea_id {
+                    if let ideaId = convo.ideaId {
                         try await self.controller.deleteScript(id: ideaId)
                     }
 
@@ -144,7 +140,6 @@ class ChatHistory: UITableViewController {
     }
 
     private func removeConversationFromDataSource(at indexPath: IndexPath) {
-
         sections[indexPath.section].items.remove(at: indexPath.row)
 
         if sections[indexPath.section].items.isEmpty {
@@ -175,13 +170,12 @@ class ChatHistory: UITableViewController {
     }
 
     func groupConversations(_ conversations: [Conversation])
-    -> [(title: String, items: [Conversation])] {
-
+        -> [(title: String, items: [Conversation])] {
         let calendar = Calendar.current
         var grouped: [String: [Conversation]] = [:]
 
         for convo in conversations {
-            guard let date = convo.created_at else { continue }
+            guard let date = convo.createdAt else { continue }
 
             let title: String
 
@@ -205,8 +199,8 @@ class ChatHistory: UITableViewController {
         return grouped
             .map { ($0.key, $0.value) }
             .sorted {
-                ($0.1.first?.created_at ?? Date()) >
-                ($1.1.first?.created_at ?? Date())
+                ($0.1.first?.createdAt ?? Date()) >
+                    ($1.1.first?.createdAt ?? Date())
             }
     }
 }

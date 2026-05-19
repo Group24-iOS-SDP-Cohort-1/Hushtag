@@ -5,7 +5,6 @@ protocol PremiumIdeaCellDelegate: AnyObject {
 }
 
 class PremiumIdeaCell: UICollectionViewCell {
-
     static let identifier = "PremiumIdeaCell"
     weak var delegate: PremiumIdeaCellDelegate?
 

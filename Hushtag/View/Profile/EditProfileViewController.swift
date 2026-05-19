@@ -1,16 +1,15 @@
-import UIKit
 import Supabase
+import UIKit
 
 protocol EditProfileDelegate: AnyObject {
     func profileDidUpdate()
 }
 
 final class EditProfileViewController: UIViewController,
-                                       UIImagePickerControllerDelegate,
-                                       UINavigationControllerDelegate {
-
-    @IBOutlet weak var profileImageView: UIImageView!
-    @IBOutlet weak var nameTextField: UITextField!
+    UIImagePickerControllerDelegate,
+    UINavigationControllerDelegate {
+    @IBOutlet var profileImageView: UIImageView!
+    @IBOutlet var nameTextField: UITextField!
 
     var profile: Profile?
     weak var delegate: EditProfileDelegate?
@@ -32,7 +31,7 @@ final class EditProfileViewController: UIViewController,
         }
 
         if let cachedImage = SessionManager.shared.profileImageCache {
-            self.profileImageView.image = cachedImage
+            profileImageView.image = cachedImage
         } else {
             loadAvatar()
         }
@@ -51,7 +50,8 @@ final class EditProfileViewController: UIViewController,
 
     private func loadAvatar() {
         guard let urlString = profile?.avatarURL,
-              let url = URL(string: urlString) else {
+              let url = URL(string: urlString)
+        else {
             return
         }
 
@@ -65,7 +65,7 @@ final class EditProfileViewController: UIViewController,
         }
     }
 
-    @IBAction func cancelButtonTapped(_ sender: UIBarButtonItem) {
+    @IBAction func cancelButtonTapped(_: UIBarButtonItem) {
         dismiss(animated: true)
     }
 
@@ -83,7 +83,6 @@ final class EditProfileViewController: UIViewController,
 
                 if let selectedImage = selectedImage,
                    let imageData = selectedImage.jpegData(compressionQuality: 0.8) {
-
                     let session = try await SupabaseConfig.client.auth.session
                     let userId = session.user.id.uuidString.lowercased()
 

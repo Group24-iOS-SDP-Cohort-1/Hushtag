@@ -1,18 +1,17 @@
 import UIKit
 
 class IdeaProgressCollectionViewCell: UICollectionViewCell {
+    @IBOutlet var view: UIView!
 
-    @IBOutlet weak var view: UIView!
+    @IBOutlet var progressBarContainer: UIView!
 
-    @IBOutlet weak var progressBarContainer: UIView!
-
-    @IBOutlet weak var viewYourDraft: UIButton!
+    @IBOutlet var viewYourDraft: UIButton!
 
     private var milestones = ["Script", "Title", "Description"]
-        private var currentMilestone: Int = -1
-        var onButtonTapped: (() -> Void)?
+    private var currentMilestone: Int = -1
+    var onButtonTapped: (() -> Void)?
 
-    // Replace these properties at the top
+    /// Replace these properties at the top
     private let trackView: UIView = {
         let v = UIView()
         v.backgroundColor = UIColor.white.withAlphaComponent(0.12)
@@ -27,7 +26,7 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
         return v
     }()
 
-    // Add this new property alongside milestoneDots/milestoneLabels
+    /// Add this new property alongside milestoneDots/milestoneLabels
     private var milestoneCheckmarks: [UIImageView] = []
 
     private let dotSize: CGFloat = 26
@@ -35,40 +34,40 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
     private let horizontalInset: CGFloat = 16
     // Update trackHeight
 
-        private var milestoneDots: [UIView] = []
-        private var milestoneLabels: [UILabel] = []
-        private var progressWidthConstraint: NSLayoutConstraint?
-        private var middleDotCenterXConstraints: [NSLayoutConstraint] = []
-        private var lastContainerWidth: CGFloat = 0
+    private var milestoneDots: [UIView] = []
+    private var milestoneLabels: [UILabel] = []
+    private var progressWidthConstraint: NSLayoutConstraint?
+    private var middleDotCenterXConstraints: [NSLayoutConstraint] = []
+    private var lastContainerWidth: CGFloat = 0
 
-        override func awakeFromNib() {
-            super.awakeFromNib()
+    override func awakeFromNib() {
+        super.awakeFromNib()
 
-            backgroundColor = .clear
-            contentView.backgroundColor = .clear
-            view.applyLiquidGlassEffect()
-            progressBarContainer.backgroundColor = .clear
+        backgroundColor = .clear
+        contentView.backgroundColor = .clear
+        view.applyLiquidGlassEffect()
+        progressBarContainer.backgroundColor = .clear
 
-            setupProgressBar()
-            setupButton()
+        setupProgressBar()
+        setupButton()
 
-            view.layer.cornerRadius = 16
-            view.clipsToBounds = true
+        view.layer.cornerRadius = 16
+        view.clipsToBounds = true
 
-            // Button styling
-            viewYourDraft.layer.cornerRadius = 20
-            viewYourDraft.backgroundColor = UIColor.accent.withAlphaComponent(0.15)
-            viewYourDraft.layer.borderWidth = 1
-            viewYourDraft.layer.borderColor = UIColor.accent.withAlphaComponent(0.6).cgColor
-            viewYourDraft.setTitleColor(UIColor.accent, for: .normal)
-            viewYourDraft.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
-        }
+        // Button styling
+        viewYourDraft.layer.cornerRadius = 20
+        viewYourDraft.backgroundColor = UIColor.accent.withAlphaComponent(0.15)
+        viewYourDraft.layer.borderWidth = 1
+        viewYourDraft.layer.borderColor = UIColor.accent.withAlphaComponent(0.6).cgColor
+        viewYourDraft.setTitleColor(UIColor.accent, for: .normal)
+        viewYourDraft.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+    }
 
-        private func setupButton() {
-            viewYourDraft.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-        }
+    private func setupButton() {
+        viewYourDraft.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+    }
 
-    // Replace setupProgressBar() entirely
+    /// Replace setupProgressBar() entirely
     private func setupProgressBar() {
         progressBarContainer.addSubview(trackView)
         trackView.addSubview(progressView)
@@ -91,7 +90,6 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
         progressWidthConstraint?.isActive = true
 
         for (index, milestone) in milestones.enumerated() {
-
             // Dot
             let dot = UIView()
             dot.layer.cornerRadius = dotSize / 2
@@ -145,7 +143,8 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
             }
         }
     }
-    // Replace layoutSubviews()
+
+    /// Replace layoutSubviews()
     override func layoutSubviews() {
         super.layoutSubviews()
 
@@ -160,9 +159,10 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
             constraint.constant = horizontalInset + (dotSize / 2) + trackWidth * fraction
         }
     }
-        @objc private func buttonTapped() {
-            onButtonTapped?()
-        }
+
+    @objc private func buttonTapped() {
+        onButtonTapped?()
+    }
 
     func configure(completedTypes: Set<String>, buttonTitle: String = "View Draft") {
         viewYourDraft.setTitle(buttonTitle, for: .normal)
@@ -172,7 +172,7 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
 
         // Reorder: marked types first, then unmarked
         let reordered = typeOrder.filter { completedTypes.contains($0) }
-                     + typeOrder.filter { !completedTypes.contains($0) }
+            + typeOrder.filter { !completedTypes.contains($0) }
 
         // Update labels
         for (index, label) in milestoneLabels.enumerated() {
@@ -212,5 +212,4 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
 
         setNeedsLayout()
     }
-
 }

@@ -2,11 +2,9 @@ import Foundation
 import Supabase
 
 final class LikedIdeasController {
-
     private let client = SupabaseConfig.client
 
     func likeIdea(_ idea: Idea) async throws {
-
         let session = try await client.auth.session
         let stats = averageStats(from: idea.videos)
 
@@ -28,7 +26,6 @@ final class LikedIdeasController {
     }
 
     func unlikeIdea(ideaKey: String) async throws {
-
         let session = try await client.auth.session
 
         try await client.database
@@ -40,7 +37,6 @@ final class LikedIdeasController {
     }
 
     func fetchLikedIdeas() async throws -> [Idea] {
-
         let session = try await client.auth.session
 
         let likedIdeasDB: [LikedIdeaDB] = try await client.database
@@ -82,7 +78,6 @@ final class LikedIdeasController {
     }
 
     func attachConvoId(to ideaKey: String, convoId: UUID) async throws {
-
         let session = try await client.auth.session
 
         try await client.database
@@ -96,7 +91,6 @@ final class LikedIdeasController {
     }
 
     func fetchConvoId(for ideaKey: String) async throws -> UUID? {
-
         let session = try await client.auth.session
 
         let response: [ConvoResponse] = try await client.database

@@ -1,18 +1,17 @@
 import UIKit
 
 class Signup: UIViewController {
-
-    var viewModel: SignInModel = SignInModel()
+    var viewModel: SignInModel = .init()
 
     var appUser: AppUser?
 
-    @IBOutlet weak var confirmPasswordTextField: UITextField!
-    @IBOutlet weak var passwordTextField: UITextField!
-    @IBOutlet weak var emailTextField: UITextField!
-    @IBOutlet weak var fullNameTextField: UITextField!
-    @IBOutlet weak var appleButton: UIButton!
-    @IBOutlet weak var facebookButton: UIButton!
-    @IBOutlet weak var googleButton: UIButton!
+    @IBOutlet var confirmPasswordTextField: UITextField!
+    @IBOutlet var passwordTextField: UITextField!
+    @IBOutlet var emailTextField: UITextField!
+    @IBOutlet var fullNameTextField: UITextField!
+    @IBOutlet var appleButton: UIButton!
+    @IBOutlet var facebookButton: UIButton!
+    @IBOutlet var googleButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,8 +44,7 @@ class Signup: UIViewController {
         textField.textColor = .white
     }
 
-    @IBAction func signUpTapped(_ sender: Any) {
-
+    @IBAction func signUpTapped(_: Any) {
         guard let email = emailTextField.text,
               let password = passwordTextField.text,
               let confirmPassword = confirmPasswordTextField.text,
@@ -77,17 +75,15 @@ class Signup: UIViewController {
                 self.showAlert(title: "Signup Failed", message: "An unknown error occurred")
             }
         }
-
     }
 
-    @IBAction func googleSignUpTapped(_ sender: UIButton) {
+    @IBAction func googleSignUpTapped(_: UIButton) {
         Task { @MainActor in
             LoadingOverlay.shared.show()
 
             defer { LoadingOverlay.shared.hide() }
 
             do {
-
                 let user = try await viewModel.signInWithGoogle()
 
                 self.appUser = user
@@ -101,9 +97,7 @@ class Signup: UIViewController {
             } catch {
                 // LoadingOverlay.shared.hide()
                 self.showAlert(title: "Sign Up Failed", message: AuthError.unknown.localizedDescription)
-
             }
         }
     }
-
 }

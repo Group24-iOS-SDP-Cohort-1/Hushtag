@@ -2,7 +2,6 @@ import Foundation
 import Supabase
 
 final class ProfileController {
-
     private let client = SupabaseConfig.client
 
     func fetchProfile() async throws -> Profile {
@@ -23,7 +22,6 @@ final class ProfileController {
         fullName: String,
         avatarURL: String?
     ) async throws -> Profile {
-
         let session = try await client.auth.session
 
         let payload = ProfileUpdatePayload(

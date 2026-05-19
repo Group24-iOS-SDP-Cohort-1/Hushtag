@@ -5,15 +5,16 @@ struct SearchResponse: Codable {
 }
 
 struct ClusterIdeaDTO: Codable, Identifiable {
-
     let clusterId: Int
     let theme: String
     let gaps: [String]
     let ideas: [GeminiIdeaDTO]
     let videos: [ClusteredVideo]
 
-    // SwiftUI Identifiable
-    var id: Int { clusterId }
+    /// SwiftUI Identifiable
+    var id: Int {
+        clusterId
+    }
 
     enum CodingKeys: String, CodingKey {
         case clusterId = "cluster_id"
@@ -41,7 +42,6 @@ struct GeminiIdeaDTO: Codable {
 }
 
 struct ClusteredVideo: Codable, Identifiable {
-
     let videoId: String
     let title: String
     let description: String
@@ -54,8 +54,10 @@ struct ClusteredVideo: Codable, Identifiable {
     let cluster: Int
     let isOutlier: Bool
 
-    // SwiftUI Identifiable
-    var id: String { videoId }
+    /// SwiftUI Identifiable
+    var id: String {
+        videoId
+    }
 
     enum CodingKeys: String, CodingKey {
         case videoId = "id"
@@ -79,14 +81,14 @@ struct YouTubeSearchRequest: Codable {
 extension ClusteredVideo {
     func toVideo() -> Video {
         return Video(
-            id: self.videoId,
-            title: self.title,
-            thumbnail: self.thumbnail ?? "",
-            channel: self.channel,
-            views: self.views,
-            likes: self.likes,
-            comments: self.comments,
-            publishedAt: self.publishedAt,
+            id: videoId,
+            title: title,
+            thumbnail: thumbnail ?? "",
+            channel: channel,
+            views: views,
+            likes: likes,
+            comments: comments,
+            publishedAt: publishedAt,
             link: nil // ClusteredVideo doesn't include link
         )
     }

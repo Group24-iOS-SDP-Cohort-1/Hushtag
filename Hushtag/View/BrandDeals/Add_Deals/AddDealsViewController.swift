@@ -3,11 +3,9 @@ import UIKit
 protocol AddDealsDelegate: AnyObject {
     func addDealsViewController(_ controller: AddDealsViewController, didCreateDeal deal: Deal)
     func addDealsViewController(_ controller: AddDealsViewController, didUpdateDeal deal: Deal, at index: Int)
-
 }
 
 class AddDealsViewController: UITableViewController {
-
     weak var delegate: AddDealsDelegate?
     private var deals: [Deal] = []
     var editingDeal: Deal?
@@ -15,8 +13,8 @@ class AddDealsViewController: UITableViewController {
     private let dealsController = DealsController()
     private var currentDeliverables: [Deliverable] = []
 
-    @IBOutlet weak var deadlinePicker: UIDatePicker!
-    @IBOutlet weak var reminderPicker: UIDatePicker!
+    @IBOutlet var deadlinePicker: UIDatePicker!
+    @IBOutlet var reminderPicker: UIDatePicker!
 
     private var deadlineDate: Date?
     private var reminderDate: Date?
@@ -62,7 +60,6 @@ class AddDealsViewController: UITableViewController {
         if let deal = editingDeal {
             currentDeliverables = deal.deliverables
         }
-
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -70,7 +67,6 @@ class AddDealsViewController: UITableViewController {
 
         tableView.layoutIfNeeded()
         prefillIfNeeded()
-
     }
 
     private func prefillIfNeeded() {
@@ -91,8 +87,8 @@ class AddDealsViewController: UITableViewController {
             setText("Reminder", value: dateFormatter.string(from: reminder))
             dateFormatter.timeStyle = .none
         }
-
     }
+
     private func setText(_ placeholder: String, value: String) {
         guard let row = fieldPlaceholders.firstIndex(of: placeholder) else { return }
         let ip = IndexPath(row: row, section: Section.mainFields.rawValue)
@@ -122,7 +118,9 @@ class AddDealsViewController: UITableViewController {
         view.endEditing(true)
     }
 
-    @objc private func closeTapped() { dismiss(animated: true) }
+    @objc private func closeTapped() {
+        dismiss(animated: true)
+    }
 
     @objc private func doneTapped() {
         // print("Done button tapped")
@@ -135,17 +133,17 @@ class AddDealsViewController: UITableViewController {
         }
 
         var fieldValues: [String] = []
-        for row in 0..<fieldPlaceholders.count {
+        for row in 0 ..< fieldPlaceholders.count {
             let ip = IndexPath(row: row, section: Section.mainFields.rawValue)
             let cell = tableView.cellForRow(at: ip) as? MainFieldCell
             fieldValues.append(cell?.textField.text ?? "")
         }
 
-        let brandName   = fieldValues[safe: 0] ?? ""
+        let brandName = fieldValues[safe: 0] ?? ""
         let platformRaw = fieldValues[safe: 1] ?? ""
-        let payRaw      = fieldValues[safe: 2] ?? ""
-        let phone       = fieldValues[safe: 3] ?? ""
-        let email       = fieldValues[safe: 4] ?? ""
+        let payRaw = fieldValues[safe: 2] ?? ""
+        let phone = fieldValues[safe: 3] ?? ""
+        let email = fieldValues[safe: 4] ?? ""
 
         let deal_id = editingDeal?.id ?? UUID()
         let deliverables = currentDeliverables
@@ -174,7 +172,6 @@ class AddDealsViewController: UITableViewController {
 
         _Concurrency.Task {
             do {
-
                 if editingDeal != nil {
                     let updatedDeal = try await dealsController.updateDeal(newDeal)
 
@@ -213,17 +210,17 @@ class AddDealsViewController: UITableViewController {
                 self.present(alert, animated: true)
             }
         }
-
     }
-    override func numberOfSections(in tableView: UITableView) -> Int {
+
+    override func numberOfSections(in _: UITableView) -> Int {
         return 2
     }
 
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_: UITableView, heightForHeaderInSection _: Int) -> CGFloat {
         return 70
     }
 
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    override func tableView(_: UITableView, heightForFooterInSection _: Int) -> CGFloat {
         return 0.1
     }
 
@@ -276,7 +273,7 @@ class AddDealsViewController: UITableViewController {
         return nil
     }
 
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_: UITableView, titleForHeaderInSection _: Int) -> String? {
         return nil
     }
 
@@ -295,18 +292,15 @@ class AddDealsViewController: UITableViewController {
         }
     }
 
-    override func tableView(_ tableView: UITableView,
+    override func tableView(_: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
-
         return section == Section.mainFields.rawValue
-        ? fieldPlaceholders.count
-        : currentDeliverables.count
-
+            ? fieldPlaceholders.count
+            : currentDeliverables.count
     }
 
     override func tableView(_ tableView: UITableView,
                             cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
         guard let sec = Section(rawValue: indexPath.section) else {
             return UITableViewCell()
         }
@@ -343,7 +337,6 @@ class AddDealsViewController: UITableViewController {
 
                 cell.textField.rightView = button
                 cell.textField.rightViewMode = .always
-
             case "Payment":
                 cell.textField.rightView = nil
                 cell.textField.rightViewMode = .never

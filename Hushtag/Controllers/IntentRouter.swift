@@ -9,7 +9,6 @@ enum Intent {
 
 @available(iOS 18.0, *)
 func classifyIntent(_ text: String) async throws -> Intent {
-
     let prompt = """
     Classify the user's intent into ONE category only:
     - generate_script

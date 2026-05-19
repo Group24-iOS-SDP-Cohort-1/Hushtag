@@ -12,7 +12,7 @@ struct UserPreference {
     let platform: [Platforms]
 }
 
-nonisolated struct PreferenceDB: Codable, Sendable {
+nonisolated struct PreferenceDB: Codable {
     let id: UUID
     let user_id: UUID
     let created_at: Date
@@ -53,7 +53,7 @@ struct PreferenceItem {
     let options: [String]
 }
 
-struct PreferencesData {
+enum PreferencesData {
     static let items: [PreferenceItem] = [
         PreferenceItem(
             id: 1,

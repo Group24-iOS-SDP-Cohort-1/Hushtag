@@ -1,10 +1,9 @@
 import UIKit
 
 class DynamicItemCell: UITableViewCell, UITextViewDelegate {
-
-    @IBOutlet weak var titleField: UITextView!
-    @IBOutlet weak var placeholderLabel: UILabel!
-    @IBOutlet weak var datePicker: UIDatePicker!
+    @IBOutlet var titleField: UITextView!
+    @IBOutlet var placeholderLabel: UILabel!
+    @IBOutlet var datePicker: UIDatePicker!
 
     var titleChanged: ((String) -> Void)?
     var dateChanged: ((Date) -> Void)?

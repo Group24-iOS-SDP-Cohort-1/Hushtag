@@ -1,15 +1,14 @@
 import UIKit
 
 class IdeaDetailsCollectionViewCell: UICollectionViewCell {
-
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var categoryLabel: UILabel!
-    @IBOutlet weak var gapLabel: UILabel!
-    @IBOutlet weak var badgeStack: UIStackView!
-    @IBOutlet weak var valuesLabel: UILabel!
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var view: UIView!
+    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var descriptionLabel: UILabel!
+    @IBOutlet var categoryLabel: UILabel!
+    @IBOutlet var gapLabel: UILabel!
+    @IBOutlet var badgeStack: UIStackView!
+    @IBOutlet var valuesLabel: UILabel!
+    @IBOutlet var imageView: UIImageView!
+    @IBOutlet var view: UIView!
 
     var idea: Idea?
     let controller = ScriptedIdeasController()
@@ -39,11 +38,10 @@ class IdeaDetailsCollectionViewCell: UICollectionViewCell {
     }
 
     func configureHashtag(_ hashtags: [String]) {
-
         // Remove old badges
-        badgeStack.arrangedSubviews.forEach {
-            badgeStack.removeArrangedSubview($0)
-            $0.removeFromSuperview()
+        for arrangedSubview in badgeStack.arrangedSubviews {
+            badgeStack.removeArrangedSubview(arrangedSubview)
+            arrangedSubview.removeFromSuperview()
         }
 
         badgeStack.axis = .vertical
@@ -53,26 +51,25 @@ class IdeaDetailsCollectionViewCell: UICollectionViewCell {
         var rowStack: UIStackView?
 
         for (index, tag) in hashtags.enumerated() {
-
             // New row every 3 badges
             if index % 3 == 0 {
                 rowStack = UIStackView()
                 rowStack?.axis = .horizontal
                 rowStack?.spacing = 8
                 rowStack?.alignment = .leading
-                rowStack?.distribution = .fill   // important fix
+                rowStack?.distribution = .fill // important fix
 
                 if let row = rowStack {
                     badgeStack.addArrangedSubview(row)
                 }
             }
 
-            let badge: Badges = Badges.loadFromNib()
+            let badge = Badges.loadFromNib()
 
             badge.configure(
                 text: "\(tag)",
-                color: UIColor(hex: "#a78bfa"),      // purple text — matches #a78bfa
-                cornerRadius: 12,                    // pill shape to match
+                color: UIColor(hex: "#a78bfa"), // purple text — matches #a78bfa
+                cornerRadius: 12, // pill shape to match
                 borderWidth: 1.0,
                 backgroundAlpha: 0.12
             )
@@ -88,7 +85,6 @@ class IdeaDetailsCollectionViewCell: UICollectionViewCell {
     }
 
     func expandDescriptionWithAI() async {
-
         guard let idea = idea else { return }
 
         let prompt = """
@@ -100,9 +96,8 @@ class IdeaDetailsCollectionViewCell: UICollectionViewCell {
         """
 
         do {
-
             let expanded =
-            try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
+                try await AppleIntelligenceManager.shared.askSafely(prompt: prompt)
             try await ScriptedIdeasController()
                 .updateExpandedDescription(
                     ideaID: idea.id,

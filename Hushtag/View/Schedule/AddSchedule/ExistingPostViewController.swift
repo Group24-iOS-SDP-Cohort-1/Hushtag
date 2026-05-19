@@ -1,8 +1,7 @@
 import UIKit
 
 class ExistingPostViewController: UIViewController {
-
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet var tableView: UITableView!
 
     private let scriptsController = ScriptedIdeasController()
     private var scripts: [ScriptedIdea] = []
@@ -25,16 +24,16 @@ class ExistingPostViewController: UIViewController {
             do {
                 let conversations = try await scriptsController.fetchConversations()
                 let fetchedScripts = conversations.compactMap { conversation -> ScriptedIdea? in
-                    guard let dbScript = conversation.scripted_ideas else { return nil }
+                    guard let dbScript = conversation.scriptedIdeas else { return nil }
                     return ScriptedIdea(
                         id: dbScript.id,
-                        chat_id: dbScript.chat_id,
+                        chatId: dbScript.chatId,
                         title: dbScript.title,
                         description: dbScript.description,
                         script: dbScript.script,
                         thumbnail: dbScript.thumbnail,
                         tags: dbScript.tags,
-                        idea_id: conversation.idea_id
+                        idea_id: conversation.ideaId
                     )
                 }
 
@@ -49,7 +48,7 @@ class ExistingPostViewController: UIViewController {
         }
     }
 
-    @IBAction func closeTapped(_ sender: Any) {
+    @IBAction func closeTapped(_: Any) {
         dismiss(animated: true)
     }
 
@@ -98,7 +97,7 @@ class ExistingPostViewController: UIViewController {
 }
 
 extension ExistingPostViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         return scripts.count
     }
 
@@ -119,11 +118,10 @@ extension ExistingPostViewController: UITableViewDelegate, UITableViewDataSource
         let storyboard = UIStoryboard(name: "CreatePost", bundle: nil)
         if let nav = storyboard.instantiateViewController(withIdentifier: "NavCreatePost") as? UINavigationController,
            let createVC = nav.topViewController as? CreatePostViewController {
-
             createVC.prefill(title: script.title, description: script.description)
 
             // Dismiss current selector then present create post
-            self.dismiss(animated: true) {
+            dismiss(animated: true) {
                 if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                    let rootVC = windowScene.windows.first?.rootViewController {
                     rootVC.present(nav, animated: true)

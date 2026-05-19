@@ -1,11 +1,10 @@
 import Foundation
 
 final class GeminiManager {
-
     static let shared = GeminiManager()
 
     private let functionURL =
-    "https://juuuwuydlgjhgwwabswy.supabase.co/functions/v1/chat-with-gemini"
+        "https://juuuwuydlgjhgwwabswy.supabase.co/functions/v1/chat-with-gemini"
 
     private let anonKey = SupabaseConfig.anonKey
 
@@ -38,7 +37,6 @@ final class GeminiManager {
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
 
         URLSession.shared.dataTask(with: request) { data, response, error in
-
             if let error = error {
                 print("❌ Network error:", error)
                 completion(nil)
@@ -56,7 +54,7 @@ final class GeminiManager {
             // Optional: read conversation id from headers
             if let httpResponse = response as? HTTPURLResponse {
                 let returnedConversationId =
-                httpResponse.value(forHTTPHeaderField: "X-Conversation-Id")
+                    httpResponse.value(forHTTPHeaderField: "X-Conversation-Id")
 
                 print("🧠 Conversation ID:", returnedConversationId ?? "nil")
             }

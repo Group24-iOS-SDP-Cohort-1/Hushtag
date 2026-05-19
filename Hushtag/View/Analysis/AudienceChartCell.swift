@@ -1,29 +1,28 @@
-import UIKit
 import SwiftUI
+import UIKit
 
 class AudienceChartCell: UICollectionViewCell {
+    @IBOutlet var chartContainer: UIView!
 
-    @IBOutlet weak var chartContainer: UIView!
+    @IBOutlet var followersLabel: UILabel!
 
-    @IBOutlet weak var followersLabel: UILabel!
+    @IBOutlet var followersChangeLabel: UILabel!
 
-    @IBOutlet weak var followersChangeLabel: UILabel!
+    @IBOutlet var ageLabel: UILabel!
 
-    @IBOutlet weak var ageLabel: UILabel!
-
-    @IBOutlet weak var postsLabel: UILabel!
+    @IBOutlet var postsLabel: UILabel!
 
     private var hostingController: UIHostingController<AudienceGenderChart>?
 
     func configure(with data: AudienceDemographic) {
         // A. Update the standard labels
         let followers =
-        data.subscribers_gained - data.subscribers_lost
+            data.subscribers_gained - data.subscribers_lost
 
         followersLabel.text = followers.formattedCount()
 
         ageLabel.text =
-        "\(data.top_age_group) years"
+            "\(data.top_age_group) years"
 
         // optional
         postsLabel.text = "-"
@@ -32,8 +31,8 @@ class AudienceChartCell: UICollectionViewCell {
         setupChart(male: data.male_percentage, female: data.female_percentage)
 
         let change =
-        Double(data.subscribers_gained -
-               data.subscribers_lost)
+            Double(data.subscribers_gained -
+                data.subscribers_lost)
 
         if change >= 0 {
             followersChangeLabel.text =
@@ -60,7 +59,6 @@ class AudienceChartCell: UICollectionViewCell {
         male: Double,
         female: Double
     ) {
-
         let chartView = AudienceGenderChart(
             malePercentage: male,
             femalePercentage: female
@@ -71,9 +69,8 @@ class AudienceChartCell: UICollectionViewCell {
             existingController.view.backgroundColor = .clear
             existingController.view.isOpaque = false
         } else {
-
             let controller =
-            UIHostingController(rootView: chartView)
+                UIHostingController(rootView: chartView)
 
             controller.view.backgroundColor = .clear
             controller.view.isOpaque = false
@@ -98,12 +95,11 @@ class AudienceChartCell: UICollectionViewCell {
 
         if clean.hasSuffix("k") {
             let number = clean.dropLast()
-            return (Double(number) ?? 0) * 1_000
+            return (Double(number) ?? 0) * 1000
         } else if clean.hasSuffix("m") {
             let number = clean.dropLast()
             return (Double(number) ?? 0) * 1_000_000
         }
         return Double(clean) ?? 0
     }
-
 }

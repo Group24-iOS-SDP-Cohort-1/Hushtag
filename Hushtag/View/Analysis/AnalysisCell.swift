@@ -1,13 +1,12 @@
 import UIKit
 
 class AnalysisCell: UICollectionViewCell {
+    @IBOutlet var analysisValue: UILabel!
+    @IBOutlet var analysisType: UILabel!
+    @IBOutlet var changeLabel: UILabel!
+    @IBOutlet var sfSymbol: UIImageView!
 
-    @IBOutlet weak var analysisValue: UILabel!
-    @IBOutlet weak var analysisType: UILabel!
-    @IBOutlet weak var changeLabel: UILabel!
-    @IBOutlet weak var sfSymbol: UIImageView!
-
-    //
+    ///
     override func awakeFromNib() {
         super.awakeFromNib()
         applyLiquidGlassEffect()
@@ -18,12 +17,10 @@ class AnalysisCell: UICollectionViewCell {
         data: Int,
         audience: AudienceMetrics
     ) {
-
         analysisValue.text = "\(data.formattedCount())"
         var title: String!
         var change: String!
         switch metric {
-
         case .views:
             title = "Views"
             change = "\(audience.views_change)%"

@@ -2,7 +2,6 @@ import Foundation
 import Supabase
 
 final class DealsController {
-
     private let client = SupabaseConfig.client
 
     func addDeal(_ deal: Deal) async throws -> Deal {
@@ -53,7 +52,6 @@ final class DealsController {
     }
 
     func fetchDeals() async throws -> [Deal] {
-
         let session = try await client.auth.session
 
         let deals: [DealDB] = try await client.database
@@ -135,7 +133,6 @@ final class DealsController {
         deliverableId: UUID,
         isCompleted: Bool
     ) async throws {
-
         try await client.database
             .from("deliverables")
             .update([
@@ -154,7 +151,6 @@ final class DealsController {
     }
 
     func deleteDeal(_ dealId: UUID) async throws {
-
         let session = try await client.auth.session
 
         try await client.database

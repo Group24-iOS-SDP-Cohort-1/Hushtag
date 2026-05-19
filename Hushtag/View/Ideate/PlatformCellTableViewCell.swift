@@ -1,16 +1,15 @@
 import UIKit
 
 class PlatformCellTableViewCell: UITableViewCell {
+    @IBOutlet var label: UILabel!
 
-    @IBOutlet weak var label: UILabel!
+    @IBOutlet var view: UIView!
 
-    @IBOutlet weak var view: UIView!
+    @IBOutlet var youtubebtn: UIButton!
 
-    @IBOutlet weak var youtubebtn: UIButton!
+    @IBOutlet var instagrambtn: UIButton!
 
-    @IBOutlet weak var instagrambtn: UIButton!
-
-    @IBOutlet weak var twitterbtn: UIButton!
+    @IBOutlet var twitterbtn: UIButton!
 
     private var allButtons: [UIButton] = []
     private var selectedButton: UIButton?
@@ -28,14 +27,13 @@ class PlatformCellTableViewCell: UITableViewCell {
         youtubebtn.setTitle("YouTube", for: .normal)
         instagrambtn.setTitle("Instagram", for: .normal)
         twitterbtn.setTitle("Twitter", for: .normal)
-
     }
 
     @objc func platformTapped(_ sender: UIButton) {
         guard sender != selectedButton else { return }
-        allButtons.forEach {
-            $0.backgroundColor = UIColor.systemGray4
-            $0.setTitleColor(.white, for: .normal)
+        for button in allButtons {
+            button.backgroundColor = UIColor.systemGray4
+            button.setTitleColor(.white, for: .normal)
         }
         sender.backgroundColor = UIColor.accent
         sender.setTitleColor(.white, for: .normal)
@@ -45,7 +43,6 @@ class PlatformCellTableViewCell: UITableViewCell {
     }
 
     func configure(selectedPlatform: String?) {
-
         // reset all
         youtubebtn.backgroundColor = .gray
         instagrambtn.backgroundColor = .gray

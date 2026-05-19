@@ -2,13 +2,11 @@ import Foundation
 import Supabase
 
 final class PreferencesController {
-
     private let client = SupabaseConfig.client
 
     func savePreferences(
         dict: [String: [String]]
     ) async throws {
-
         let session = try await client.auth.session
 
         let platformMapped = (dict["Platform"] ?? []).map {

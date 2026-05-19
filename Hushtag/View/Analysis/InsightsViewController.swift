@@ -1,8 +1,7 @@
 import UIKit
 
 class InsightsViewController: UIViewController {
-
-    @IBOutlet weak var insightIdeaView: UICollectionView!
+    @IBOutlet var insightIdeaView: UICollectionView!
 
     var ideas: [Idea] = []
     var analyticsIdeas: [AnalyticsIdea] = []
@@ -85,7 +84,7 @@ class InsightsViewController: UIViewController {
     }
 
     func generateLayout() -> UICollectionViewLayout {
-        let layout = UICollectionViewCompositionalLayout { _, _ in
+        return UICollectionViewCompositionalLayout { _, _ in
             let itemSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
                 heightDimension: .estimated(120)
@@ -105,19 +104,22 @@ class InsightsViewController: UIViewController {
 
             return section
         }
-        return layout
     }
 }
 
 extension InsightsViewController: UICollectionViewDelegate, UICollectionViewDataSource, PremiumIdeaCellDelegate {
-
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_: UICollectionView, numberOfItemsInSection _: Int) -> Int {
         return analyticsIdeas.isEmpty ? ideas.count : analyticsIdeas.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if !analyticsIdeas.isEmpty {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PremiumIdeaCell.identifier, for: indexPath) as! PremiumIdeaCell
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: PremiumIdeaCell.identifier,
+                for: indexPath
+            )
+                as! PremiumIdeaCell
             let analyticsIdea = analyticsIdeas[indexPath.row]
             cell.configure(with: analyticsIdea, isSaved: savedIdeaIDs.contains(analyticsIdea.id))
             cell.delegate = self
@@ -132,7 +134,7 @@ extension InsightsViewController: UICollectionViewDelegate, UICollectionViewData
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(_: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if !analyticsIdeas.isEmpty {
             let selectedIdea = analyticsIdeas[indexPath.row]
             let vc = AnalyticsIdeaDetailViewController()
@@ -168,7 +170,7 @@ extension InsightsViewController: UICollectionViewDelegate, UICollectionViewData
             description: analyticsIdea.hook,
             format: analyticsIdea.format,
             hashtags: [],
-            noveltyScore: Int(analyticsIdea.estimated_virality_score),
+            noveltyScore: Int(analyticsIdea.estimatedViralityScore),
             videos: nil,
             liked: !isCurrentlySaved
         )

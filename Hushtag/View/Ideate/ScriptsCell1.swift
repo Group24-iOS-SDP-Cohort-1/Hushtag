@@ -1,23 +1,22 @@
 import UIKit
 
 class ScriptsCell1: UICollectionViewCell {
+    @IBOutlet var Title: UILabel!
 
-    @IBOutlet weak var Title: UILabel!
+    @IBOutlet var Description: UILabel!
 
-    @IBOutlet weak var Description: UILabel!
+    @IBOutlet var progressView: CircularProgressView!
 
-    @IBOutlet weak var progressView: CircularProgressView!
-
-    @IBOutlet weak var badgeStack: UIStackView!
+    @IBOutlet var badgeStack: UIStackView!
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.layer.cornerRadius = 12
+        layer.cornerRadius = 12
         applyLiquidGlassEffect()
         Title.numberOfLines = 2
         Description.numberOfLines = 1
         Description.textColor = .secondaryLabel
-}
+    }
 
     func configureCell(with script: ScriptedIdea) {
         if let realTitle = script.title, !realTitle.isEmpty {
@@ -64,22 +63,22 @@ class ScriptsCell1: UICollectionViewCell {
     }
 
     private func configureHashtags(_ hashtags: [String]) {
-            badgeStack.arrangedSubviews.forEach {
-                badgeStack.removeArrangedSubview($0)
-                $0.removeFromSuperview()
-            }
-            for tag in hashtags {
-                let badge: Badges = Badges.loadFromNib()
-
-                badge.configure(
-                    text: tag,
-                    color: .white,
-                    cornerRadius: 12,
-                    borderWidth: 0.2,
-                    backgroundAlpha: 0.10
-                )
-
-                badgeStack.addArrangedSubview(badge)
-            }
+        for arrangedSubview in badgeStack.arrangedSubviews {
+            badgeStack.removeArrangedSubview(arrangedSubview)
+            arrangedSubview.removeFromSuperview()
         }
+        for tag in hashtags {
+            let badge = Badges.loadFromNib()
+
+            badge.configure(
+                text: tag,
+                color: .white,
+                cornerRadius: 12,
+                borderWidth: 0.2,
+                backgroundAlpha: 0.10
+            )
+
+            badgeStack.addArrangedSubview(badge)
+        }
+    }
 }

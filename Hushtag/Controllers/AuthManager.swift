@@ -1,6 +1,6 @@
+internal import _Helpers
 import Foundation
 import Supabase
-internal import _Helpers
 
 struct AppUser {
     let uid: String
@@ -9,7 +9,6 @@ struct AppUser {
 }
 
 class AuthManager {
-
     static let shared = AuthManager()
 
     private init() {}
@@ -23,18 +22,17 @@ class AuthManager {
 
         // Extract the full name from the metadata
         var fullName: String?
-        if case .string(let name) = metadata["full_name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
+        if case let .string(name) = metadata["full_name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
             fullName = name
-        } else if case .string(let name) = metadata["name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
+        } else if case let .string(name) = metadata["name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
             fullName = name
         }
 
         return AppUser(uid: session.user.id.uuidString, email: session.user.email, fullName: fullName)
     }
 
-    // New user registration with email id and password
+    /// New user registration with email id and password
     func registerNewUserWithEmail(email: String, password: String, fullName: String) async throws -> AppUser {
-
         let metadata: [String: AnyJSON] = [
             "full_name": .string(fullName)
         ]
@@ -53,9 +51,9 @@ class AuthManager {
 
         let metadata = session.user.userMetadata
         var fullName: String?
-        if case .string(let name) = metadata["full_name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
+        if case let .string(name) = metadata["full_name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
             fullName = name
-        } else if case .string(let name) = metadata["name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
+        } else if case let .string(name) = metadata["name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
             fullName = name
         }
 
@@ -67,9 +65,9 @@ class AuthManager {
 
         let metadata = session.user.userMetadata
         var fullName: String?
-        if case .string(let name) = metadata["full_name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
+        if case let .string(name) = metadata["full_name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
             fullName = name
-        } else if case .string(let name) = metadata["name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
+        } else if case let .string(name) = metadata["name"], !name.trimmingCharacters(in: .whitespaces).isEmpty {
             fullName = name
         }
 
@@ -81,7 +79,6 @@ class AuthManager {
     }
 
     func hasCompletedOnboarding() async -> Bool {
-
         guard let session = try? await client.auth.session else { return false }
 
         let metadata = session.user.userMetadata

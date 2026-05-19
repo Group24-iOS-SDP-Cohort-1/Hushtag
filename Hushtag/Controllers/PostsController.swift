@@ -2,11 +2,9 @@ import Foundation
 import Supabase
 
 final class PostsController {
-
     private let client = SupabaseConfig.client
 
     func addPost(_ post: Post) async throws -> Post {
-
         let session = try await client.auth.session
 
         let payload = PostInsertPayload(
@@ -51,7 +49,6 @@ final class PostsController {
     }
 
     func fetchPosts() async throws -> [Post] {
-
         let session = try await client.auth.session
         // print("FETCH UID:", session.user.id)
 
@@ -89,7 +86,6 @@ final class PostsController {
     }
 
     func updatePost(_ post: Post) async throws -> Post {
-
         let session = try await client.auth.session
 
         let payload = PostInsertPayload(
@@ -144,7 +140,6 @@ final class PostsController {
         taskId: UUID,
         isCompleted: Bool
     ) async throws {
-
         try await client.database
             .from("sub_tasks")
             .update(["isCompleted": isCompleted])

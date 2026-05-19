@@ -6,14 +6,14 @@ protocol LikedCellDelegate: AnyObject {
 }
 
 class LikedCellsNew: UICollectionViewCell {
-    @IBOutlet weak var ideaTitle: UILabel!
-    @IBOutlet weak var ideaView: UIView!
-    @IBOutlet weak var badgeStack: UIStackView!
+    @IBOutlet var ideaTitle: UILabel!
+    @IBOutlet var ideaView: UIView!
+    @IBOutlet var badgeStack: UIStackView!
 
     weak var delegate: LikedCellDelegate?
     var idea: Idea?
     var onLikeToggle: (() -> Void)?
-    @IBOutlet weak var likeButton: UIButton!
+    @IBOutlet var likeButton: UIButton!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -29,28 +29,27 @@ class LikedCellsNew: UICollectionViewCell {
     }
 
     private func configureHashtags(_ hashtags: [String]) {
-
-            badgeStack.arrangedSubviews.forEach {
-                badgeStack.removeArrangedSubview($0)
-                $0.removeFromSuperview()
-            }
-
-            for tag in hashtags {
-                let badge: Badges = Badges.loadFromNib()
-
-                badge.configure(
-                    text: tag,
-                    color: .white,
-                    cornerRadius: 12,
-                    borderWidth: 0.2,
-                    backgroundAlpha: 0.10
-                )
-
-                badgeStack.addArrangedSubview(badge)
-            }
+        for arrangedSubview in badgeStack.arrangedSubviews {
+            badgeStack.removeArrangedSubview(arrangedSubview)
+            arrangedSubview.removeFromSuperview()
         }
 
-    @IBAction func likeTapped(_ sender: UIButton) {
+        for tag in hashtags {
+            let badge = Badges.loadFromNib()
+
+            badge.configure(
+                text: tag,
+                color: .white,
+                cornerRadius: 12,
+                borderWidth: 0.2,
+                backgroundAlpha: 0.10
+            )
+
+            badgeStack.addArrangedSubview(badge)
+        }
+    }
+
+    @IBAction func likeTapped(_: UIButton) {
         guard let idea = idea else { return }
         delegate?.didToggleLike(for: idea.ideaKey ?? "")
     }
@@ -63,8 +62,7 @@ class LikedCellsNew: UICollectionViewCell {
     }
 
     @objc private func draftScriptTapped() {
-            guard let idea = idea else { return }
-            delegate?.didTapDraftScript(for: idea)
-   }
-
+        guard let idea = idea else { return }
+        delegate?.didTapDraftScript(for: idea)
+    }
 }

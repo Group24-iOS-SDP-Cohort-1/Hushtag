@@ -1,11 +1,10 @@
 import UIKit
 
 class ViewScriptsCell: UICollectionViewCell {
-
-    @IBOutlet weak var content: UILabel!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var readMoreButton: UIButton!
-    @IBOutlet weak var tagDealButton: UIButton!
+    @IBOutlet var content: UILabel!
+    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var readMoreButton: UIButton!
+    @IBOutlet var tagDealButton: UIButton!
 
     private var fullText: String = ""
     private var isExpanded = false

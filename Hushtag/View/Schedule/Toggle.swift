@@ -1,13 +1,11 @@
 import Foundation
 
-final class ToggleService {
-
+enum ToggleService {
     static func toggleTask(
         post: Post,
         task: Tasks,
         postsController: PostsController
     ) async throws -> Post {
-
         let newValue = !task.isCompleted
 
         var updatedPost = post
@@ -32,7 +30,6 @@ final class ToggleService {
         deliverable: Deliverable,
         dealsController: DealsController
     ) async throws -> Deal {
-
         let newValue = !deliverable.isCompleted
 
         var updatedDeal = deal
