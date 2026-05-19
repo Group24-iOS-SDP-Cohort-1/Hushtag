@@ -493,6 +493,9 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
         // message object corresponsding to that row
         var message = messages[row]
 
+        // User's own messages cannot be marked — only bot responses contain script/title/description
+        guard message.role != "user" else { return }
+
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
 
         /// Helper to add mark/unmark option

@@ -172,6 +172,11 @@ class ProgressCell: UIView {
         )
         progressWidthConstraint?.isActive = true
 
+        // Show the view button only when at least one type has been marked
+        let hasAnyMarked = completedCount > 0
+        viewButton.isHidden = !hasAnyMarked
+        viewButton.isEnabled = hasAnyMarked
+
         for (index, dot) in milestoneDots.enumerated() {
             guard index < reordered.count else { continue }
             let type = reordered[index]

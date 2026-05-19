@@ -1,7 +1,7 @@
 import UIKit
 
 class PlatformCellTableViewCell: UITableViewCell {
-    @IBOutlet var label: UILabel!
+   
 
     @IBOutlet var view: UIView!
 
@@ -18,9 +18,8 @@ class PlatformCellTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        label.numberOfLines = 3
+
         view.backgroundColor = UIColor.systemGray4
-        label.textColor = .white
         view.layer.cornerRadius = 16
         allButtons = [youtubebtn, instagrambtn, twitterbtn]
         allButtons.forEach { $0.addTarget(self, action: #selector(platformTapped(_:)), for: .touchUpInside) }
