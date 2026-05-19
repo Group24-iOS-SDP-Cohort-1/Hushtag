@@ -160,6 +160,19 @@ final class YouTubeController {
         }
     }
 
+    func verifyYouTubeConnectionState(expectedState: Bool) async -> Bool {
+        var attempts = 0
+        while attempts < 5 {
+            try? await Task.sleep(nanoseconds: 1_000_000_000) // wait 1 second
+            let isConnected = await checkYouTubeConnection()
+            if isConnected == expectedState {
+                return isConnected
+            }
+            attempts += 1
+        }
+        return await checkYouTubeConnection()
+    }
+
     func restoreYouTubeConnectionIfNeeded(
         startDate: String,
         endDate: String

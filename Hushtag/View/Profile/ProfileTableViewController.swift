@@ -103,7 +103,7 @@ final class ProfileTableViewController: UITableViewController {
             youtubeStatusLabel.text = "Connected"
             youtubeStatusDot.backgroundColor = .systemGreen
         } else {
-            youtubeStatusLabel.text = "Not Connected"
+            youtubeStatusLabel.text = "Connect"
             youtubeStatusDot.backgroundColor = .systemRed
         }
     }
@@ -306,10 +306,14 @@ final class ProfileTableViewController: UITableViewController {
                     let signInModel = SignInModel()
                     try await signInModel.connectYouTube()
 
-                    self.fetchProfile()
+                    // Verify database state explicitly
+                    let confirmedState = await YouTubeController.shared.verifyYouTubeConnectionState(expectedState: true)
+                    SessionManager.shared.currentProfile?.isYouTubeConnected = confirmedState
+                    
+                    self.fetchProfile(forceRefresh: true)
                 } catch {
                     // print("Failed to connect YouTube: \(error)")
-                    self.fetchProfile()
+                    self.fetchProfile(forceRefresh: true)
                 }
             }
         }
@@ -326,11 +330,15 @@ final class ProfileTableViewController: UITableViewController {
                 let signInModel = SignInModel()
                 signInModel.disconnectYouTube()
 
-                self.fetchProfile()
+                // Verify database state explicitly
+                let confirmedState = await YouTubeController.shared.verifyYouTubeConnectionState(expectedState: false)
+                SessionManager.shared.currentProfile?.isYouTubeConnected = confirmedState
+                
+                self.fetchProfile(forceRefresh: true)
 
             } catch {
                 print("Failed to disconnect YouTube backend: \(error)")
-                self.fetchProfile()
+                self.fetchProfile(forceRefresh: true)
             }
         }
     }
