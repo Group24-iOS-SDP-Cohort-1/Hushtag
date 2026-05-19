@@ -18,10 +18,10 @@ class LatestContentPerformanceCell: UICollectionViewCell {
 
     func configure(with data: LatestContent) {
         titleLabel.text = data.title
-        publishedLabel.text = "\(data.published_at.monthAndYear())"
+        publishedLabel.text = "\(data.publishedAt.monthAndYear())"
         likesLabel.text = "\(data.likes)"
         viewsLabel.text = "\(data.views)"
-        durationLabel.text = "\(data.duration_seconds) s"
+        durationLabel.text = "\(data.durationSeconds) s"
         thumbnailImageView.loadImage(from: data.thumbnail)
     }
 }

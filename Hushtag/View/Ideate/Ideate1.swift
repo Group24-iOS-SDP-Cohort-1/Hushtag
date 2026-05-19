@@ -112,7 +112,7 @@ class Ideate1: UIViewController {
                         script: dbScript.script,
                         thumbnail: dbScript.thumbnail,
                         tags: dbScript.tags,
-                        idea_id: conversation.ideaId
+                        ideaId: conversation.ideaId
                     )
                 }
 
@@ -135,22 +135,32 @@ class Ideate1: UIViewController {
     }
 
     private func register() {
-        collectionView.register(UINib(nibName: "IdeaCells", bundle: nil),
-                                forCellWithReuseIdentifier: "ideaCell")
+        collectionView.register(
+            UINib(nibName: "IdeaCells", bundle: nil),
+            forCellWithReuseIdentifier: "ideaCell"
+        )
 
-        collectionView.register(UINib(nibName: "LikedCellsNew", bundle: nil),
-                                forCellWithReuseIdentifier: "likedCellsNew")
+        collectionView.register(
+            UINib(nibName: "LikedCellsNew", bundle: nil),
+            forCellWithReuseIdentifier: "likedCellsNew"
+        )
 
-        collectionView.register(UINib(nibName: "Script_cell_ideate", bundle: nil),
-                                forCellWithReuseIdentifier: "scriptCellIdeate")
+        collectionView.register(
+            UINib(nibName: "Script_cell_ideate", bundle: nil),
+            forCellWithReuseIdentifier: "scriptCellIdeate"
+        )
         // Use existing HeaderView
-        collectionView.register(UINib(nibName: "HeaderView", bundle: nil),
-                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                withReuseIdentifier: "headerCell")
+        collectionView.register(
+            UINib(nibName: "HeaderView", bundle: nil),
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "headerCell"
+        )
 
-        collectionView.register(UINib(nibName: "IdeaSearch", bundle: nil),
-                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                withReuseIdentifier: "IdeaSearch")
+        collectionView.register(
+            UINib(nibName: "IdeaSearch", bundle: nil),
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "IdeaSearch"
+        )
     }
 
     private func setupGlobalKeyboardDismiss() {
@@ -422,8 +432,10 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let sectionType = sections[indexPath.section]
 
         switch sectionType {
@@ -433,10 +445,12 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             return cell
 
         case .liked:
-            let cell = collectionView.dequeueReusableCell(
+            guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "likedCellsNew",
                 for: indexPath
-            ) as! LikedCellsNew
+            ) as? LikedCellsNew else {
+                return UICollectionViewCell()
+            }
 
             let idea: Idea
             idea = likedIdeas[indexPath.row]
@@ -447,10 +461,12 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             return cell
 
         case .recent:
-            let cell = collectionView.dequeueReusableCell(
+            guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "scriptCellIdeate",
                 for: indexPath
-            ) as! Script_cell_ideate
+            ) as? Script_cell_ideate else {
+                return UICollectionViewCell()
+            }
 
             if indexPath.row >= recentScripts.count {
                 print("❌ Index out of range prevented")
@@ -466,7 +482,11 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             return cell
 
         case .suggested:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideaCell", for: indexPath) as! IdeaCells
+            guard let cell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: "ideaCell", for: indexPath) as? IdeaCells
+            else {
+                return UICollectionViewCell()
+            }
             cell.configure(idea: ideas[indexPath.row])
             cell.delegate = self
             return cell
@@ -476,9 +496,11 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        viewForSupplementaryElementOfKind kind: String,
-                        at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
         guard kind == UICollectionView.elementKindSectionHeader else {
             return UICollectionReusableView()
         }
@@ -487,21 +509,25 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
 
         switch sectionType {
         case .search:
-            let header = collectionView.dequeueReusableSupplementaryView(
+            guard let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: "IdeaSearch",
                 for: indexPath
-            ) as! IdeaSearch
+            ) as? IdeaSearch else {
+                return UICollectionReusableView()
+            }
             header.configure(state: .ideateMain)
             header.delegate = self
             return header
 
         case .liked:
-            let header = collectionView.dequeueReusableSupplementaryView(
+            guard let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: "headerCell",
                 for: indexPath
-            ) as! HeaderView
+            ) as? HeaderView else {
+                return UICollectionReusableView()
+            }
 
             header.configureHeader(text: "Saved Ideas")
             header.showChevron(true)
@@ -518,17 +544,20 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             return header
 
         case .recent:
-            let header = collectionView.dequeueReusableSupplementaryView(
+            guard let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: "headerCell",
                 for: indexPath
-            ) as! HeaderView
+            ) as? HeaderView else {
+                return UICollectionReusableView()
+            }
             header.configureHeader(text: "Generated Posts")
             header.showChevron(true)
 
             header.didTapChevron = { [weak self] in
                 let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
-                guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else { return }
+                guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController
+                else { return }
                 guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else { return }
                 destinationVC.pageTitle = "Your Scripts"
                 self?.navigationController?.pushViewController(destinationVC, animated: true)
@@ -536,11 +565,13 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             return header
 
         case .suggested:
-            let header = collectionView.dequeueReusableSupplementaryView(
+            guard let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: "headerCell",
                 for: indexPath
-            ) as! HeaderView
+            ) as? HeaderView else {
+                return UICollectionReusableView()
+            }
             header.configureHeader(text: "Suggested For You")
             header.showChevron(false)
             header.isHidden = isSearching
@@ -580,7 +611,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
         case .recent:
             let script = recentScripts[indexPath.row]
 
-            if let ideaId = script.idea_id {
+            if let ideaId = script.ideaId {
                 let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
                 if let destinationVC = storyboard.instantiateViewController(withIdentifier: "IdeaVC") as? ViewIdea {
                     destinationVC.ideaId = ideaId
@@ -636,7 +667,8 @@ extension Ideate1: IdeaSearchDelegate {
 
 extension Ideate1: IdeaCellDelegate {
     func didToggleLikeFromFeed(for ideaKey: String) {
-        let foundIdea = ideas.first(where: { $0.ideaKey == ideaKey }) ?? likedIdeas.first(where: { $0.ideaKey == ideaKey })
+        let foundIdea = ideas.first(where: { $0.ideaKey == ideaKey }) ?? likedIdeas
+            .first(where: { $0.ideaKey == ideaKey })
 
         guard var idea = foundIdea else {
             print("❌ Idea not found")
@@ -679,13 +711,15 @@ extension Ideate1: IdeaCellDelegate {
                             self.likedIdeas.insert(idea, at: 0)
                         }
 
-                        UIView.transition(with: self.collectionView,
-                                          duration: 0.3,
-                                          options: .transitionCrossDissolve,
-                                          animations: { self.collectionView.reloadData() },
-                                          completion: { _ in
-                                              NotificationCenter.default.post(name: .didUpdateLikedStatus, object: ideaKey)
-                                          })
+                        UIView.transition(
+                            with: self.collectionView,
+                            duration: 0.3,
+                            options: .transitionCrossDissolve,
+                            animations: { self.collectionView.reloadData() },
+                            completion: { _ in
+                                NotificationCenter.default.post(name: .didUpdateLikedStatus, object: ideaKey)
+                            }
+                        )
                         return
                     }
 
@@ -705,53 +739,58 @@ extension Ideate1: IdeaCellDelegate {
                         return
                     }
 
-                    let oldIdeaRow = self.ideas.firstIndex(where: { $0.ideaKey == ideaKey })
-                    let oldLikedRow = self.likedIdeas.firstIndex(where: { $0.ideaKey == ideaKey })
-
-                    self.collectionView.performBatchUpdates({
-                        if isCurrentlyLiked {
-                            // UNLIKE → remove from liked, add back to suggested
-                            if let row = oldLikedRow {
-                                self.likedIdeas.remove(at: row)
-                                self.collectionView.deleteItems(at: [IndexPath(row: row, section: likedSectionIndex)])
-                            }
-
-                            // Safe cleanup in case it existed elsewhere
-                            if let row = oldIdeaRow {
-                                self.ideas.remove(at: row)
-                                self.collectionView.deleteItems(at: [IndexPath(row: row, section: suggestedSectionIndex)])
-                            }
-
-                            self.ideas.insert(idea, at: 0)
-                            self.collectionView.insertItems(at: [IndexPath(row: 0, section: suggestedSectionIndex)])
-
-                        } else {
-                            // LIKE → move from suggested → liked
-                            if let row = oldIdeaRow {
-                                self.ideas.remove(at: row)
-                                self.collectionView.deleteItems(at: [IndexPath(row: row, section: suggestedSectionIndex)])
-                            }
-
-                            if let row = oldLikedRow {
-                                self.likedIdeas.remove(at: row)
-                                self.collectionView.deleteItems(at: [IndexPath(row: row, section: likedSectionIndex)])
-                            }
-
-                            self.likedIdeas.insert(idea, at: 0)
-                            self.collectionView.insertItems(at: [IndexPath(row: 0, section: likedSectionIndex)])
-                        }
-                    }) { _ in
-                        NotificationCenter.default.post(
-                            name: .didUpdateLikedStatus,
-                            object: ideaKey
-                        )
-                    }
+                    self.applyLikeToggleBatchUpdates(
+                        idea: idea,
+                        ideaKey: ideaKey,
+                        isCurrentlyLiked: isCurrentlyLiked,
+                        likedSection: likedSectionIndex,
+                        suggestedSection: suggestedSectionIndex
+                    )
                 }
 
             } catch {
                 print("❌ Like toggle failed:", error)
             }
         }
+    }
+
+    private func applyLikeToggleBatchUpdates(
+        idea: Idea,
+        ideaKey: String,
+        isCurrentlyLiked: Bool,
+        likedSection: Int,
+        suggestedSection: Int
+    ) {
+        let oldIdeaRow = ideas.firstIndex(where: { $0.ideaKey == ideaKey })
+        let oldLikedRow = likedIdeas.firstIndex(where: { $0.ideaKey == ideaKey })
+
+        collectionView.performBatchUpdates({
+            if isCurrentlyLiked {
+                if let row = oldLikedRow {
+                    self.likedIdeas.remove(at: row)
+                    self.collectionView.deleteItems(at: [IndexPath(row: row, section: likedSection)])
+                }
+                if let row = oldIdeaRow {
+                    self.ideas.remove(at: row)
+                    self.collectionView.deleteItems(at: [IndexPath(row: row, section: suggestedSection)])
+                }
+                self.ideas.insert(idea, at: 0)
+                self.collectionView.insertItems(at: [IndexPath(row: 0, section: suggestedSection)])
+            } else {
+                if let row = oldIdeaRow {
+                    self.ideas.remove(at: row)
+                    self.collectionView.deleteItems(at: [IndexPath(row: row, section: suggestedSection)])
+                }
+                if let row = oldLikedRow {
+                    self.likedIdeas.remove(at: row)
+                    self.collectionView.deleteItems(at: [IndexPath(row: row, section: likedSection)])
+                }
+                self.likedIdeas.insert(idea, at: 0)
+                self.collectionView.insertItems(at: [IndexPath(row: 0, section: likedSection)])
+            }
+        }, completion: { _ in
+            NotificationCenter.default.post(name: .didUpdateLikedStatus, object: ideaKey)
+        })
     }
 }
 

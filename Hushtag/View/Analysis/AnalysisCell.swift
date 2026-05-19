@@ -23,19 +23,19 @@ class AnalysisCell: UICollectionViewCell {
         switch metric {
         case .views:
             title = "Views"
-            change = "\(audience.views_change)%"
+            change = "\(audience.viewsChange)%"
 
         case .likes:
             title = "Likes"
-            change = "\(audience.likes_change)%"
+            change = "\(audience.likesChange)%"
 
         case .watchTime:
             title = "Watch Time"
-            change = "\(audience.watch_time_change)%"
+            change = "\(audience.watchTimeChange)%"
 
         case .subscribers:
             title = "Subscribers"
-            change = "\(audience.subscribers_change)"
+            change = "\(audience.subscribersChange)"
         }
 
         analysisType.text = title

@@ -14,14 +14,14 @@ final class PreferencesController {
         }
 
         let payload = PreferenceInsertPayload(
-            user_id: session.user.id,
+            userId: session.user.id,
             niche: dict["Niche"] ?? [],
             platform: platformMapped
         )
 
         try await client.database
             .from("user_preferences")
-            .upsert(payload, onConflict: "user_id")
+            .upsert(payload, onConflict: "userId")
             .execute()
     }
 
@@ -32,7 +32,7 @@ final class PreferencesController {
         let preferences: [PreferenceDB] = try await client.database
             .from("user_preferences")
             .select()
-            .eq("user_id", value: session.user.id)
+            .eq("userId", value: session.user.id)
             .execute()
             .value
 
@@ -45,7 +45,7 @@ final class PreferencesController {
 
     private func mapToPreference(_ preference: PreferenceDB) -> UserPreference {
         UserPreference(
-            user_id: preference.user_id,
+            userId: preference.userId,
             niche: preference.niche ?? [],
             platform: preference.platform ?? []
         )

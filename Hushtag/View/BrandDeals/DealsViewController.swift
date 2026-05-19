@@ -7,7 +7,7 @@ class DealsViewController: UIViewController {
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var searchBar: UISearchBar!
 
-    var selected_Deal: Deal?
+    var selectedDeal: Deal?
     var deals: [Deal] = []
     private var isSearching = false
     private var searchText = ""
@@ -208,20 +208,26 @@ class DealsViewController: UIViewController {
 }
 
 extension DealsViewController: UICollectionViewDataSource, UICollectionViewDelegate {
-    func collectionView(_: UICollectionView,
-                        numberOfItemsInSection _: Int) -> Int {
+    func collectionView(
+        _: UICollectionView,
+        numberOfItemsInSection _: Int
+    ) -> Int {
         return displayedDeals.count
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let deal = displayedDeals[indexPath.item]
         let isCompletedTab = (selectedSegmentIndex == 1)
 
-        let cell = collectionView.dequeueReusableCell(
+        guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "ongoing_deal_cell",
             for: indexPath
-        ) as! DealsCollectionViewCell
+        ) as? DealsCollectionViewCell else {
+            return UICollectionViewCell()
+        }
 
         cell.configure(with: deal, isCompleted: isCompletedTab)
         cell.onTap = { [weak self] in

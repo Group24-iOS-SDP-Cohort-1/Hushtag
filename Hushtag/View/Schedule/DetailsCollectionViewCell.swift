@@ -89,7 +89,7 @@ class DetailsCollectionViewCell: UICollectionViewCell {
         }
     }
 
-    func DealDetails(with deal: Deal) {
+    func dealDetails(with deal: Deal) {
         let completedCount = deal.deliverables.filter { $0.isCompleted }.count
         let totalCount = deal.deliverables.count
 

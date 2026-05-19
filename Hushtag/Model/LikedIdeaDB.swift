@@ -2,7 +2,7 @@ import Foundation
 
 nonisolated struct LikedIdeaDB: Codable {
     let id: UUID
-    let user_id: UUID
+    let userId: UUID
     let ideaKey: String
     let title: String
     let description: String?
@@ -13,7 +13,7 @@ nonisolated struct LikedIdeaDB: Codable {
 
 nonisolated struct LikedIdeaInsertPayload: Codable {
     let id: UUID
-    let user_id: UUID
+    let userId: UUID
     let ideaKey: String
     let title: String
     let description: String?
@@ -23,5 +23,5 @@ nonisolated struct LikedIdeaInsertPayload: Codable {
 }
 
 nonisolated struct ConvoResponse: Codable {
-    let convo_id: UUID?
+    let convoId: UUID?
 }

@@ -54,8 +54,14 @@ class ProgressCell: UIView {
 
         // Track constraints (NO vertical alignment yet)
         NSLayoutConstraint.activate([
-            trackView.leadingAnchor.constraint(equalTo: graphView.leadingAnchor, constant: horizontalInset + dotSize / 2),
-            trackView.trailingAnchor.constraint(equalTo: graphView.trailingAnchor, constant: -(horizontalInset + dotSize / 2)),
+            trackView.leadingAnchor.constraint(
+                equalTo: graphView.leadingAnchor,
+                constant: horizontalInset + dotSize / 2
+            ),
+            trackView.trailingAnchor.constraint(
+                equalTo: graphView.trailingAnchor,
+                constant: -(horizontalInset + dotSize / 2)
+            ),
             trackView.heightAnchor.constraint(equalToConstant: trackHeight),
 
             progressView.leadingAnchor.constraint(equalTo: trackView.leadingAnchor),
@@ -106,9 +112,11 @@ class ProgressCell: UIView {
 
             switch index {
             case 0:
-                dot.leadingAnchor.constraint(equalTo: graphView.leadingAnchor, constant: horizontalInset).isActive = true
+                dot.leadingAnchor.constraint(equalTo: graphView.leadingAnchor, constant: horizontalInset)
+                    .isActive = true
             case milestones.count - 1:
-                dot.trailingAnchor.constraint(equalTo: graphView.trailingAnchor, constant: -horizontalInset).isActive = true
+                dot.trailingAnchor.constraint(equalTo: graphView.trailingAnchor, constant: -horizontalInset)
+                    .isActive = true
             default:
                 let centerX = dot.centerXAnchor.constraint(equalTo: graphView.leadingAnchor)
                 centerX.isActive = true
@@ -163,6 +171,11 @@ class ProgressCell: UIView {
             multiplier: max(fraction, 0.001)
         )
         progressWidthConstraint?.isActive = true
+
+        // Show the view button only when at least one type has been marked
+        let hasAnyMarked = completedCount > 0
+        viewButton.isHidden = !hasAnyMarked
+        viewButton.isEnabled = hasAnyMarked
 
         for (index, dot) in milestoneDots.enumerated() {
             guard index < reordered.count else { continue }

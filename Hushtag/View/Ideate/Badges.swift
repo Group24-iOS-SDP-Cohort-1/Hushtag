@@ -7,7 +7,10 @@ class Badges: UIView {
 
     static func loadFromNib() -> Badges {
         let nib = UINib(nibName: "Badges", bundle: nil)
-        return nib.instantiate(withOwner: nil, options: nil).first as! Badges
+        guard let view = nib.instantiate(withOwner: nil, options: nil).first as? Badges else {
+            return Badges()
+        }
+        return view
     }
 
     override func awakeFromNib() {

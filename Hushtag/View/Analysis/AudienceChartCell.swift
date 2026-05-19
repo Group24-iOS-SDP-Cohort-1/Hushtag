@@ -17,22 +17,22 @@ class AudienceChartCell: UICollectionViewCell {
     func configure(with data: AudienceDemographic) {
         // A. Update the standard labels
         let followers =
-            data.subscribers_gained - data.subscribers_lost
+            data.subscribersGained - data.subscribersLost
 
         followersLabel.text = followers.formattedCount()
 
         ageLabel.text =
-            "\(data.top_age_group) years"
+            "\(data.topAgeGroup) years"
 
         // optional
         postsLabel.text = "-"
 
         // B. Embed the Chart
-        setupChart(male: data.male_percentage, female: data.female_percentage)
+        setupChart(male: data.malePercentage, female: data.femalePercentage)
 
         let change =
-            Double(data.subscribers_gained -
-                data.subscribers_lost)
+            Double(data.subscribersGained -
+                data.subscribersLost)
 
         if change >= 0 {
             followersChangeLabel.text =

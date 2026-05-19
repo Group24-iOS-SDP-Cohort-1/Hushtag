@@ -24,7 +24,7 @@ class Script_cell_ideate: UICollectionViewCell {
         }
 
         // 2. Badge Logic
-        if script.idea_id != nil {
+        if script.ideaId != nil {
             configureHashtags("Idea")
         } else {
             configureHashtags("Chatbot")

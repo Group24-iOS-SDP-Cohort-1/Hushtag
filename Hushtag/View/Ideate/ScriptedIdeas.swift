@@ -56,7 +56,7 @@ class ScriptedIdeas: UIViewController {
         ideaView.delegate = self
         ideaView.dataSource = self
         ideaView.setCollectionViewLayout(generateLayout(), animated: true)
-        guard let _ = idea else {
+        guard idea != nil else {
             print("No idea received.")
             return
         }
@@ -156,8 +156,10 @@ class ScriptedIdeas: UIViewController {
 
     func registerCell() {
         ideaView.register(
-            UINib(nibName: "HeaderView",
-                  bundle: nil),
+            UINib(
+                nibName: "HeaderView",
+                bundle: nil
+            ),
             forSupplementaryViewOfKind: "header",
             withReuseIdentifier: "headerCell"
         )
@@ -173,7 +175,11 @@ class ScriptedIdeas: UIViewController {
         let editAction = UIAction(title: "Edit", image: UIImage(systemName: "pencil")) { [weak self] _ in
             self?.toggleEditMode()
         }
-        let deleteAction = UIAction(title: "Delete Script", image: UIImage(systemName: "trash"), attributes: .destructive) { [weak self] _ in
+        let deleteAction = UIAction(
+            title: "Delete Script",
+            image: UIImage(systemName: "trash"),
+            attributes: .destructive
+        ) { [weak self] _ in
             self?.confirmDelete()
         }
 
@@ -221,7 +227,11 @@ class ScriptedIdeas: UIViewController {
     }
 
     private func confirmDelete() {
-        let alert = UIAlertController(title: "Delete Script", message: "Are you sure? This cannot be undone.", preferredStyle: .alert)
+        let alert = UIAlertController(
+            title: "Delete Script",
+            message: "Are you sure? This cannot be undone.",
+            preferredStyle: .alert
+        )
 
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in
@@ -340,15 +350,19 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
         return 1
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let section = sections[indexPath.section]
 
         switch section {
         case .title:
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "title",
-                for: indexPath
-            ) as! ViewScriptsCell
+            guard let cell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: "title", for: indexPath) as? ViewScriptsCell
+            else {
+                return UICollectionViewCell()
+            }
 
             cell.configureTitle(with: idea?.title ?? "")
             cell.setEditingMode(isEditingMode, isTitle: true)
@@ -358,20 +372,22 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
             return cell
 
         case .buttons:
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "buttons",
-                for: indexPath
-            ) as! ViewScriptsCell
+            guard let cell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: "buttons", for: indexPath) as? ViewScriptsCell
+            else {
+                return UICollectionViewCell()
+            }
 
             setupTagDealMenu(for: cell)
 
             return cell
 
         default:
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "content",
-                for: indexPath
-            ) as! ViewScriptsCell
+            guard let cell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: "content", for: indexPath) as? ViewScriptsCell
+            else {
+                return UICollectionViewCell()
+            }
 
             cell.readMoreButton.tag = indexPath.section
             cell.readMoreButton.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
@@ -417,14 +433,20 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
         guard kind == "header" else { return UICollectionReusableView() }
 
-        let headerView = collectionView.dequeueReusableSupplementaryView(
+        guard let headerView = collectionView.dequeueReusableSupplementaryView(
             ofKind: "header",
             withReuseIdentifier: "headerCell",
             for: indexPath
-        ) as! HeaderView
+        ) as? HeaderView else {
+            return UICollectionReusableView()
+        }
 
         let section = sections[indexPath.section]
 
@@ -489,7 +511,10 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
                         if let onUntagged = self.onDealUntagged {
                             self.dismiss(animated: true, completion: onUntagged)
                         } else {
-                            CapsuleNotification.show(message: "Unmarked from \(deal.name)", iconName: "bookmark.slash.fill")
+                            CapsuleNotification.show(
+                                message: "Unmarked from \(deal.name)",
+                                iconName: "bookmark.slash.fill"
+                            )
                         }
                     }
                 } else {
@@ -507,7 +532,11 @@ extension ScriptedIdeas: UICollectionViewDelegate, UICollectionViewDataSource {
             } catch {
                 print("Error toggling tag deal status: \(error)")
                 DispatchQueue.main.async {
-                    let alert = UIAlertController(title: "Error", message: "Failed to update deal tag. Please try again.", preferredStyle: .alert)
+                    let alert = UIAlertController(
+                        title: "Error",
+                        message: "Failed to update deal tag. Please try again.",
+                        preferredStyle: .alert
+                    )
                     alert.addAction(UIAlertAction(title: "OK", style: .default))
                     self.present(alert, animated: true)
                 }

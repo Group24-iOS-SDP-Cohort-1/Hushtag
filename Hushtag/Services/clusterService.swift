@@ -4,11 +4,8 @@ final class SupabaseEdgeService {
     static let shared = SupabaseEdgeService()
     private init() {}
 
-    private let url = URL(string:
-        "https://juuuwuydlgjhgwwabswy.supabase.co/functions/v1/preference-search")!
-
-    private let anonKey =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1dXV3dXlkbGdqaGd3d2Fic3d5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwMTEwMzAsImV4cCI6MjA4NDU4NzAzMH0.qTJ2zoIj3uBR5tSOp8-J-dU0ZPJIE_XKkw23zP4-sRg"
+    private let url = URL(string: Keys.preferenceSearch)!
+    private let anonKey = Keys.anonKey
 
     func fetchClusterIdeas(
         clusters: [String],

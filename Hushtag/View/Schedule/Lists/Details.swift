@@ -15,8 +15,18 @@ class Details: UIViewController {
         detailsView.dataSource = self
         detailsView.setCollectionViewLayout(generateLayout(), animated: false)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(handlePostsDidChange), name: .postsDidChange, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleDealsDidChange), name: .dealsDidChange, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handlePostsDidChange),
+            name: .postsDidChange,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDealsDidChange),
+            name: .dealsDidChange,
+            object: nil
+        )
     }
 
     /// In Details.swift
@@ -27,7 +37,8 @@ class Details: UIViewController {
                 if case let .post(currentPost, currentTask) = self.schedule {
                     if let updatedPost = posts.first(where: { $0.id == currentPost.id }) {
                         // CHANGED: Safely handle if currentTask is nil
-                        let updatedTask = currentTask != nil ? (updatedPost.tasks.first(where: { $0.id == currentTask!.id }) ?? currentTask) : nil
+                        let updatedTask = currentTask != nil ?
+                            (updatedPost.tasks.first(where: { $0.id == currentTask!.id }) ?? currentTask) : nil
 
                         await MainActor.run {
                             self.schedule = .post(post: updatedPost, task: updatedTask)
@@ -48,7 +59,9 @@ class Details: UIViewController {
                 if case let .deal(currentDeal, currentDeliverable) = self.schedule {
                     if let updatedDeal = deals.first(where: { $0.id == currentDeal.id }) {
                         // CHANGED: Safely handle if currentDeliverable is nil
-                        let updatedDeliverable = currentDeliverable != nil ? (updatedDeal.deliverables.first(where: { $0.id == currentDeliverable!.id }) ?? currentDeliverable) : nil
+                        let updatedDeliverable = currentDeliverable != nil ?
+                            (updatedDeal.deliverables
+                                .first(where: { $0.id == currentDeliverable!.id }) ?? currentDeliverable) : nil
 
                         await MainActor.run {
                             self.schedule = .deal(deal: updatedDeal, deliverable: updatedDeliverable)
@@ -269,160 +282,188 @@ extension Details: UICollectionViewDataSource {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         guard let schedule = schedule else {
             return UICollectionViewCell()
         }
 
         switch schedule {
         case let .deal(deal, _):
-            if indexPath.section == 0 {
-                let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: "common_details",
-                    for: indexPath
-                ) as! DetailsCollectionViewCell
-                cell.indexPath = indexPath
-                // Add Main Toggle action directly on common_details cell. We can just use the status/circle button if it existed, but usually Section 0 does not have a status button. If it does, here's how to toggle it.
-                cell.onToggleCompletion = { [weak self] _ in
-                    guard let self else { return }
-                    guard case let .deal(deal, _) = self.schedule else { return }
-
-                    Task {
-                        await self.handleMainDealToggle(deal: deal)
-                    }
-                }
-
-                cell.configureCommon(with: schedule)
-                cell.onDeleteTapped = { [weak self] in
-                    guard let self else { return }
-
-                    DispatchQueue.main.async {
-                        let alert = UIAlertController(
-                            title: "Delete Deal?",
-                            message: "This will permanently delete the deal and all its deliverables.",
-                            preferredStyle: .alert
-                        )
-
-                        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-                            guard case let .deal(deal, _) = self.schedule else { return }
-                            let dealId = deal.id
-                            self.performDelete(dealId: dealId)
-                        })
-
-                        self.topMostViewController.present(alert, animated: true)
-                    }
-                }
-                cell.onEditTapped = { [weak self] in
-                    self?.performSegue(withIdentifier: "editDeal", sender: self)
-                }
-
-                return cell
-            }
-
-            if indexPath.section == 1 {
-                let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: "deal_details",
-                    for: indexPath
-                ) as! DetailsCollectionViewCell
-                cell.DealDetails(with: deal)
-
-                return cell
-            }
-
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "multiple_details",
-                for: indexPath
-            ) as! DetailsCollectionViewCell
-
-            let deliverable = deal.deliverables[indexPath.row]
-            cell.indexPath = indexPath
-            cell.configureMultiple(with: deliverable)
-            cell.onToggleCompletion = { [weak self] indexPath in
-                guard let self else { return }
-                guard case let .deal(deal, _) = self.schedule else { return }
-
-                let deliverable = deal.deliverables[indexPath.row]
-
-                Task {
-                    await self.handleDeliverableToggle(
-                        deal: deal,
-                        deliverable: deliverable
-                    )
-                }
-            }
-
-            cell.applyLiquidGlassEffect()
-            return cell
-
+            return dealCell(at: indexPath, deal: deal, schedule: schedule, in: collectionView)
         case let .post(post, _):
-            if indexPath.section == 0 {
-                let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: "common_details",
-                    for: indexPath
-                ) as! DetailsCollectionViewCell
-                cell.indexPath = indexPath
-                // Add Main Toggle action directly on common_details cell for Post.
-                cell.onToggleCompletion = { [weak self] _ in
-                    guard let self else { return }
-                    guard case let .post(post, _) = self.schedule else { return }
+            return postCell(at: indexPath, post: post, schedule: schedule, in: collectionView)
+        }
+    }
 
-                    Task {
-                        await self.handleMainPostToggle(post: post)
-                    }
-                }
+    // MARK: - Cell helpers
 
-                cell.configureCommon(with: schedule)
-                cell.onDeleteTapped = { [weak self] in
-                    guard let self else { return }
+    private func dealCell(
+        at indexPath: IndexPath,
+        deal: Deal,
+        schedule: ScheduleItem,
+        in collectionView: UICollectionView
+    ) -> UICollectionViewCell {
+        if indexPath.section == 0 {
+            return dealCommonCell(at: indexPath, schedule: schedule, in: collectionView)
+        }
 
-                    DispatchQueue.main.async {
-                        let alert = UIAlertController(
-                            title: "Delete Post?",
-                            message: "This will permanently delete the post and all its tasks.",
-                            preferredStyle: .alert
-                        )
-
-                        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                        alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-                            guard case let .post(post, _) = self.schedule,
-                                  let postId = post.id else { return }
-                            self.performDelete(postId: postId)
-                        })
-
-                        self.topMostViewController.present(alert, animated: true)
-                    }
-                }
-                cell.onEditTapped = { [weak self] in
-                    self?.performSegue(withIdentifier: "editPost", sender: self)
-                }
-
-                return cell
-            }
-
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "multiple_details",
+        if indexPath.section == 1 {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "deal_details",
                 for: indexPath
-            ) as! DetailsCollectionViewCell
-
-            let task = post.tasks[indexPath.row]
-            cell.indexPath = indexPath
-            cell.configureMultiple(with: task)
-            cell.onToggleCompletion = { [weak self] indexPath in
-                guard let self else { return }
-                guard case let .post(post, _) = self.schedule else { return }
-
-                let task = post.tasks[indexPath.row]
-
-                Task {
-                    await self.handleTaskToggle(post: post, task: task)
-                }
+            ) as? DetailsCollectionViewCell else {
+                return UICollectionViewCell()
             }
-
-            cell.applyLiquidGlassEffect()
-
+            cell.dealDetails(with: deal)
             return cell
         }
+
+        return dealDeliverableCell(at: indexPath, deal: deal, in: collectionView)
+    }
+
+    private func dealCommonCell(
+        at indexPath: IndexPath,
+        schedule: ScheduleItem,
+        in collectionView: UICollectionView
+    ) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "common_details",
+            for: indexPath
+        ) as? DetailsCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        cell.indexPath = indexPath
+        cell.onToggleCompletion = { [weak self] _ in
+            guard let self else { return }
+            guard case let .deal(deal, _) = self.schedule else { return }
+            Task { await self.handleMainDealToggle(deal: deal) }
+        }
+        cell.configureCommon(with: schedule)
+        cell.onDeleteTapped = { [weak self] in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                let alert = UIAlertController(
+                    title: "Delete Deal?",
+                    message: "This will permanently delete the deal and all its deliverables.",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+                    guard case let .deal(deal, _) = self.schedule else { return }
+                    self.performDelete(dealId: deal.id)
+                })
+                self.topMostViewController.present(alert, animated: true)
+            }
+        }
+        cell.onEditTapped = { [weak self] in
+            self?.performSegue(withIdentifier: "editDeal", sender: self)
+        }
+        return cell
+    }
+
+    private func dealDeliverableCell(
+        at indexPath: IndexPath,
+        deal: Deal,
+        in collectionView: UICollectionView
+    ) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "multiple_details",
+            for: indexPath
+        ) as? DetailsCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        let deliverable = deal.deliverables[indexPath.row]
+        cell.indexPath = indexPath
+        cell.configureMultiple(with: deliverable)
+        cell.onToggleCompletion = { [weak self] indexPath in
+            guard let self else { return }
+            guard case let .deal(deal, _) = self.schedule else { return }
+            let deliverable = deal.deliverables[indexPath.row]
+            Task { await self.handleDeliverableToggle(deal: deal, deliverable: deliverable) }
+        }
+        cell.applyLiquidGlassEffect()
+        return cell
+    }
+
+    private func postCell(
+        at indexPath: IndexPath,
+        post: Post,
+        schedule: ScheduleItem,
+        in collectionView: UICollectionView
+    ) -> UICollectionViewCell {
+        if indexPath.section == 0 {
+            return postCommonCell(at: indexPath, schedule: schedule, in: collectionView)
+        }
+        return postTaskCell(at: indexPath, post: post, in: collectionView)
+    }
+
+    private func postCommonCell(
+        at indexPath: IndexPath,
+        schedule: ScheduleItem,
+        in collectionView: UICollectionView
+    ) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "common_details",
+            for: indexPath
+        ) as? DetailsCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        cell.indexPath = indexPath
+        // Add Main Toggle action directly on common_details cell for Post.
+        cell.onToggleCompletion = { [weak self] _ in
+            guard let self else { return }
+            guard case let .post(post, _) = self.schedule else { return }
+            Task { await self.handleMainPostToggle(post: post) }
+        }
+        cell.configureCommon(with: schedule)
+        cell.onDeleteTapped = { [weak self] in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                let alert = UIAlertController(
+                    title: "Delete Post?",
+                    message: "This will permanently delete the post and all its tasks.",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+                    guard case let .post(post, _) = self.schedule,
+                          let postId = post.id else { return }
+                    self.performDelete(postId: postId)
+                })
+                self.topMostViewController.present(alert, animated: true)
+            }
+        }
+        cell.onEditTapped = { [weak self] in
+            self?.performSegue(withIdentifier: "editPost", sender: self)
+        }
+        return cell
+    }
+
+    private func postTaskCell(
+        at indexPath: IndexPath,
+        post: Post,
+        in collectionView: UICollectionView
+    ) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "multiple_details",
+            for: indexPath
+        ) as? DetailsCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        let task = post.tasks[indexPath.row]
+        cell.indexPath = indexPath
+        cell.configureMultiple(with: task)
+        cell.onToggleCompletion = { [weak self] indexPath in
+            guard let self else { return }
+            guard case let .post(post, _) = self.schedule else { return }
+            let task = post.tasks[indexPath.row]
+            Task { await self.handleTaskToggle(post: post, task: task) }
+        }
+        cell.applyLiquidGlassEffect()
+        return cell
     }
 }
 
@@ -448,7 +489,8 @@ extension Details: AddDealsDelegate {
         guard case let .deal(_, currentDeliverable) = schedule else { return }
 
         // CHANGED: Handle optional deliverable
-        let updatedDeliverable = currentDeliverable != nil ? (deal.deliverables.first(where: { $0.id == currentDeliverable!.id }) ?? currentDeliverable) : nil
+        let updatedDeliverable = currentDeliverable != nil ?
+            (deal.deliverables.first(where: { $0.id == currentDeliverable!.id }) ?? currentDeliverable) : nil
 
         schedule = .deal(deal: deal, deliverable: updatedDeliverable)
         detailsView.reloadData()

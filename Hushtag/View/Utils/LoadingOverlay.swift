@@ -25,7 +25,12 @@ class LoadingOverlay {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.color = .white
         indicator.center = overlay.center
-        indicator.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin, .flexibleTopMargin, .flexibleBottomMargin]
+        indicator.autoresizingMask = [
+            .flexibleLeftMargin,
+            .flexibleRightMargin,
+            .flexibleTopMargin,
+            .flexibleBottomMargin
+        ]
         indicator.startAnimating()
 
         overlay.addSubview(indicator)
@@ -102,11 +107,11 @@ class OpaqueLoadingScreen {
         guard let overlay = overlayView else { return }
         UIView.animate(withDuration: 0.3, animations: {
             overlay.alpha = 0
-        }) { _ in
+        }, completion: { _ in
             overlay.removeFromSuperview()
             self.overlayView = nil
             self.activityIndicator = nil
             self.messageLabel = nil
-        }
+        })
     }
 }

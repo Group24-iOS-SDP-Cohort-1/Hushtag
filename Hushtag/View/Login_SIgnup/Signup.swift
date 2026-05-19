@@ -62,7 +62,11 @@ class Signup: UIViewController {
         Task { @MainActor in
             LoadingOverlay.shared.show()
             do {
-                let user = try await viewModel.registerNewUserWithEmail(email: email, password: password, fullName: fullName)
+                let user = try await viewModel.registerNewUserWithEmail(
+                    email: email,
+                    password: password,
+                    fullName: fullName
+                )
 
                 self.appUser = user
                 self.navigateToPreferencesScreen()

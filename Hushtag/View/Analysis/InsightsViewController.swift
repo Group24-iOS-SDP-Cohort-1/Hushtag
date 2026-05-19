@@ -50,8 +50,8 @@ class InsightsViewController: UIViewController {
                         views: video.views,
                         likes: video.likes,
                         comments: 0,
-                        duration: video.duration_seconds,
-                        publishedAt: ISO8601DateFormatter().string(from: video.published_at)
+                        duration: video.durationSeconds,
+                        publishedAt: ISO8601DateFormatter().string(from: video.publishedAt)
                     )
                 }
 
@@ -112,21 +112,29 @@ extension InsightsViewController: UICollectionViewDelegate, UICollectionViewData
         return analyticsIdeas.isEmpty ? ideas.count : analyticsIdeas.count
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         if !analyticsIdeas.isEmpty {
-            let cell = collectionView.dequeueReusableCell(
+            guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: PremiumIdeaCell.identifier,
                 for: indexPath
-            )
-                as! PremiumIdeaCell
+            ) as? PremiumIdeaCell else {
+                return UICollectionViewCell()
+            }
             let analyticsIdea = analyticsIdeas[indexPath.row]
             cell.configure(with: analyticsIdea, isSaved: savedIdeaIDs.contains(analyticsIdea.id))
             cell.delegate = self
             return cell
         } else {
             // Fallback for old ideas. Also use PremiumIdeaCell
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PremiumIdeaCell.identifier, for: indexPath) as! PremiumIdeaCell
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: PremiumIdeaCell.identifier,
+                for: indexPath
+            ) as? PremiumIdeaCell else {
+                return UICollectionViewCell()
+            }
             let idea = ideas[indexPath.row]
             cell.configure(with: idea)
             cell.delegate = self
@@ -143,7 +151,9 @@ extension InsightsViewController: UICollectionViewDelegate, UICollectionViewData
         } else {
             let selectedIdea = ideas[indexPath.row]
             let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
-            let vc = storyboard.instantiateViewController(withIdentifier: "IdeaVC") as! ViewIdea
+            guard let vc = storyboard.instantiateViewController(withIdentifier: "IdeaVC") as? ViewIdea else {
+                return
+            }
             vc.idea = selectedIdea
             navigationController?.pushViewController(vc, animated: true)
         }

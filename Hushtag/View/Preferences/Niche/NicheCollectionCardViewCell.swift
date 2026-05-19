@@ -146,7 +146,10 @@ class NicheCollectionCardViewCell: UICollectionViewCell {
     }
 
     func registerCells() {
-        innerCollectionView.register(UINib(nibName: "OptionsCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "optionsCell")
+        innerCollectionView.register(
+            UINib(nibName: "OptionsCollectionViewCell", bundle: nil),
+            forCellWithReuseIdentifier: "optionsCell"
+        )
     }
 }
 
@@ -159,10 +162,17 @@ extension NicheCollectionCardViewCell: UICollectionViewDataSource {
         return options.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let optionText: String = options[indexPath.item]
 
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "optionsCell", for: indexPath) as! OptionsCollectionViewCell
+        guard let cell = collectionView
+            .dequeueReusableCell(withReuseIdentifier: "optionsCell", for: indexPath) as? OptionsCollectionViewCell
+        else {
+            return UICollectionViewCell()
+        }
         cell.configureCell(with: optionText)
 
         // Force the visual update for pre-selected cells

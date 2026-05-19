@@ -43,11 +43,13 @@ class CircularProgressView: UIView {
         trackLayer.removeFromSuperlayer()
         progressLayer.removeFromSuperlayer()
 
-        let circularPath = UIBezierPath(arcCenter: CGPoint(x: frame.size.width / 2.0, y: frame.size.height / 2.0),
-                                        radius: (frame.size.width - 4) / 2,
-                                        startAngle: CGFloat(-Double.pi / 2),
-                                        endAngle: CGFloat(3 * Double.pi / 2),
-                                        clockwise: true)
+        let circularPath = UIBezierPath(
+            arcCenter: CGPoint(x: frame.size.width / 2.0, y: frame.size.height / 2.0),
+            radius: (frame.size.width - 4) / 2,
+            startAngle: CGFloat(-Double.pi / 2),
+            endAngle: CGFloat(3 * Double.pi / 2),
+            clockwise: true
+        )
 
         trackLayer.path = circularPath.cgPath
         trackLayer.fillColor = UIColor.clear.cgColor

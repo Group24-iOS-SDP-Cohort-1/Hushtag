@@ -9,7 +9,7 @@ nonisolated struct ScriptedIdea: Identifiable, Codable {
     var script: String?
     var thumbnail: String?
     var tags: [String]?
-    let idea_id: UUID?
+    let ideaId: UUID?
 }
 
 /// 2. The Database Model
@@ -21,13 +21,13 @@ nonisolated struct ScriptedIdeaDB: Codable {
     let script: String?
     let thumbnail: String?
     let tags: [String]?
-    let idea_id: UUID?
+    let ideaId: UUID?
 }
 
 /// 3. The Insert Payload
 nonisolated struct ScriptedIdeaInsertPayload: Codable {
     let userId: UUID
-    let chat_id: UUID
+    let chatId: UUID
     let title: String?
     let description: String?
     let script: String?
@@ -40,7 +40,7 @@ nonisolated struct ChatMessageDB: Codable, Identifiable {
     let conversationId: UUID
     let role: Role
     let content: String
-    let created_at: Date?
+    let createdAt: Date?
 }
 
 enum ScriptSection {
@@ -52,7 +52,7 @@ enum ScriptSection {
 
 /// 2. Insert Payload (Writing data)
 nonisolated struct ChatMessageInsertPayload: Codable {
-    let conversation_id: UUID
+    let conversationId: UUID
     let role: Role
     let content: String
 }

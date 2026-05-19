@@ -36,8 +36,16 @@ class AfterSearchIdeasViewController: UIViewController {
 
     private func registerCells() {
         collectionView.register(UINib(nibName: "IdeaCells", bundle: nil), forCellWithReuseIdentifier: "ideaCell")
-        collectionView.register(UINib(nibName: "IdeaSearch", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "IdeaSearch")
-        collectionView.register(UINib(nibName: "HeaderView", bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "headerCell")
+        collectionView.register(
+            UINib(nibName: "IdeaSearch", bundle: nil),
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "IdeaSearch"
+        )
+        collectionView.register(
+            UINib(nibName: "HeaderView", bundle: nil),
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: "headerCell"
+        )
     }
 
     private func setupGlobalKeyboardDismiss() {
@@ -171,20 +179,31 @@ extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollecti
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let sectionType = sections[indexPath.section]
         switch sectionType {
         case .search:
             return UICollectionViewCell()
         case .suggested:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ideaCell", for: indexPath) as! IdeaCells
+            guard let cell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: "ideaCell", for: indexPath) as? IdeaCells
+            else {
+                return UICollectionViewCell()
+            }
             cell.configure(idea: ideas[indexPath.row])
             cell.delegate = self
             return cell
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
         guard kind == UICollectionView.elementKindSectionHeader else {
             return UICollectionReusableView()
         }
@@ -192,11 +211,13 @@ extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollecti
         let sectionType = sections[indexPath.section]
         switch sectionType {
         case .search:
-            let header = collectionView.dequeueReusableSupplementaryView(
+            guard let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: "IdeaSearch",
                 for: indexPath
-            ) as! IdeaSearch
+            ) as? IdeaSearch else {
+                return UICollectionReusableView()
+            }
             header.textLabel.text = currentInputText
 
             header.configure(state: .afterSearch(showCross: !currentInputText.isEmpty))
@@ -205,11 +226,13 @@ extension AfterSearchIdeasViewController: UICollectionViewDataSource, UICollecti
             return header
 
         case .suggested:
-            let header = collectionView.dequeueReusableSupplementaryView(
+            guard let header = collectionView.dequeueReusableSupplementaryView(
                 ofKind: kind,
                 withReuseIdentifier: "headerCell",
                 for: indexPath
-            ) as! HeaderView
+            ) as? HeaderView else {
+                return UICollectionReusableView()
+            }
             header.configureHeader(text: "Search Results for \"\(keyword)\"")
             header.showChevron(false)
             return header
@@ -271,7 +294,8 @@ extension AfterSearchIdeasViewController: IdeaCellDelegate {
                 await MainActor.run {
                     ideas[index].liked = !isCurrentlyLiked
 
-                    if let smIndex = SessionManager.shared.personalizedIdeas.firstIndex(where: { $0.ideaKey == ideaKey }) {
+                    if let smIndex = SessionManager.shared.personalizedIdeas
+                        .firstIndex(where: { $0.ideaKey == ideaKey }) {
                         SessionManager.shared.personalizedIdeas[smIndex].liked = !isCurrentlyLiked
                     }
 
@@ -279,7 +303,10 @@ extension AfterSearchIdeasViewController: IdeaCellDelegate {
 
                     guard let suggestedSectionIndex = sections.firstIndex(of: .suggested) else { return }
 
-                    if let cell = collectionView.cellForItem(at: IndexPath(row: index, section: suggestedSectionIndex)) as? IdeaCells {
+                    if let cell = collectionView.cellForItem(at: IndexPath(
+                        row: index,
+                        section: suggestedSectionIndex
+                    )) as? IdeaCells {
                         cell.configure(idea: ideas[index])
                     }
                 }

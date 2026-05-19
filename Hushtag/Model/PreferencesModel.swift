@@ -1,21 +1,21 @@
 import Foundation
 
 nonisolated struct PreferenceInsertPayload: Codable {
-    let user_id: UUID
+    let userId: UUID
     let niche: [String]
     let platform: [String]
 }
 
 struct UserPreference {
-    let user_id: UUID
+    let userId: UUID
     let niche: [Niche]
     let platform: [Platforms]
 }
 
 nonisolated struct PreferenceDB: Codable {
     let id: UUID
-    let user_id: UUID
-    let created_at: Date
+    let userId: UUID
+    let createdAt: Date
     let niche: [Niche]?
     let platform: [Platforms]?
 }

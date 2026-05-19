@@ -75,8 +75,14 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             // Track runs between dot centers, vertically centred in dot area
             trackView.centerYAnchor.constraint(equalTo: progressBarContainer.topAnchor, constant: dotSize / 2),
-            trackView.leadingAnchor.constraint(equalTo: progressBarContainer.leadingAnchor, constant: horizontalInset + dotSize / 2),
-            trackView.trailingAnchor.constraint(equalTo: progressBarContainer.trailingAnchor, constant: -(horizontalInset + dotSize / 2)),
+            trackView.leadingAnchor.constraint(
+                equalTo: progressBarContainer.leadingAnchor,
+                constant: horizontalInset + dotSize / 2
+            ),
+            trackView.trailingAnchor.constraint(
+                equalTo: progressBarContainer.trailingAnchor,
+                constant: -(horizontalInset + dotSize / 2)
+            ),
             trackView.heightAnchor.constraint(equalToConstant: trackHeight),
 
             progressView.leadingAnchor.constraint(equalTo: trackView.leadingAnchor),
@@ -135,9 +141,11 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
 
             switch index {
             case 0:
-                dot.leadingAnchor.constraint(equalTo: progressBarContainer.leadingAnchor, constant: horizontalInset).isActive = true
+                dot.leadingAnchor.constraint(equalTo: progressBarContainer.leadingAnchor, constant: horizontalInset)
+                    .isActive = true
             case milestones.count - 1:
-                dot.trailingAnchor.constraint(equalTo: progressBarContainer.trailingAnchor, constant: -horizontalInset).isActive = true
+                dot.trailingAnchor.constraint(equalTo: progressBarContainer.trailingAnchor, constant: -horizontalInset)
+                    .isActive = true
             default:
                 dot.centerXAnchor.constraint(equalTo: progressBarContainer.centerXAnchor).isActive = true
             }

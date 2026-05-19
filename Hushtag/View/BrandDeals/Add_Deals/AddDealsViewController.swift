@@ -45,8 +45,18 @@ class AddDealsViewController: UITableViewController {
             tableView.sectionHeaderTopPadding = 0
         }
 
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(closeTapped))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(doneTapped))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            title: "Close",
+            style: .plain,
+            target: self,
+            action: #selector(closeTapped)
+        )
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "Done",
+            style: .plain,
+            target: self,
+            action: #selector(doneTapped)
+        )
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
@@ -126,7 +136,11 @@ class AddDealsViewController: UITableViewController {
         // print("Done button tapped")
 
         if let reminderDate = reminderDate, let deadlineDate = deadlineDate, reminderDate >= deadlineDate {
-            let alert = UIAlertController(title: "Invalid Reminder", message: "Reminder date must be before the deadline.", preferredStyle: .alert)
+            let alert = UIAlertController(
+                title: "Invalid Reminder",
+                message: "Reminder date must be before the deadline.",
+                preferredStyle: .alert
+            )
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             present(alert, animated: true)
             return
@@ -145,7 +159,7 @@ class AddDealsViewController: UITableViewController {
         let phone = fieldValues[safe: 3] ?? ""
         let email = fieldValues[safe: 4] ?? ""
 
-        let deal_id = editingDeal?.id ?? UUID()
+        let dealId = editingDeal?.id ?? UUID()
         let deliverables = currentDeliverables
 
         let platforms: [Platform] = platformRaw
@@ -159,7 +173,7 @@ class AddDealsViewController: UITableViewController {
         let paymentValue = Double(sanitizedPay) ?? 0
 
         let newDeal = Deal(
-            id: deal_id,
+            id: dealId,
             name: brandName.isEmpty ? "Untitled Brand" : brandName,
             payment: paymentValue,
             mobileNumber: Int64(phone) ?? 0,
@@ -278,39 +292,54 @@ class AddDealsViewController: UITableViewController {
     }
 
     @objc private func addDeliverableTapped() {
-        let newDeliverable = Deliverable(id: UUID(), dealId: editingDeal?.id ?? UUID(), name: "", deadline: Date(), isCompleted: false)
+        let newDeliverable = Deliverable(
+            id: UUID(),
+            dealId: editingDeal?.id ?? UUID(),
+            name: "",
+            deadline: Date(),
+            isCompleted: false
+        )
         currentDeliverables.append(newDeliverable)
 
         let indexPath = IndexPath(row: currentDeliverables.count - 1, section: Section.deliverables.rawValue)
         tableView.insertRows(at: [indexPath], with: .automatic)
     }
 
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    override func tableView(
+        _ tableView: UITableView,
+        commit editingStyle: UITableViewCell.EditingStyle,
+        forRowAt indexPath: IndexPath
+    ) {
         if indexPath.section == Section.deliverables.rawValue, editingStyle == .delete {
             currentDeliverables.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
 
-    override func tableView(_: UITableView,
-                            numberOfRowsInSection section: Int) -> Int {
+    override func tableView(
+        _: UITableView,
+        numberOfRowsInSection section: Int
+    ) -> Int {
         return section == Section.mainFields.rawValue
             ? fieldPlaceholders.count
             : currentDeliverables.count
     }
 
-    override func tableView(_ tableView: UITableView,
-                            cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(
+        _ tableView: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
         guard let sec = Section(rawValue: indexPath.section) else {
             return UITableViewCell()
         }
 
         switch sec {
         case .mainFields:
-            let cell = tableView.dequeueReusableCell(
-                withIdentifier: "MainFieldCell",
-                for: indexPath
-            ) as! MainFieldCell
+            guard let cell = tableView
+                .dequeueReusableCell(withIdentifier: "MainFieldCell", for: indexPath) as? MainFieldCell
+            else {
+                return UITableViewCell()
+            }
 
             let placeholder = fieldPlaceholders[indexPath.row]
             cell.textField.placeholder = placeholder
@@ -368,10 +397,11 @@ class AddDealsViewController: UITableViewController {
             return cell
 
         case .deliverables:
-            let cell = tableView.dequeueReusableCell(
-                withIdentifier: "DynamicItemCell",
-                for: indexPath
-            ) as! DynamicItemCell
+            guard let cell = tableView
+                .dequeueReusableCell(withIdentifier: "DynamicItemCell", for: indexPath) as? DynamicItemCell
+            else {
+                return UITableViewCell()
+            }
 
             let deliverable = currentDeliverables[indexPath.row]
             cell.configure(title: deliverable.name, placeholder: "Deliverable title", date: deliverable.deadline)

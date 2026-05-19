@@ -175,7 +175,11 @@ class Schedule: UIViewController {
                 }
             } catch {
                 await MainActor.run {
-                    let alert = UIAlertController(title: "Connection Failed", message: error.localizedDescription, preferredStyle: .alert)
+                    let alert = UIAlertController(
+                        title: "Connection Failed",
+                        message: error.localizedDescription,
+                        preferredStyle: .alert
+                    )
                     alert.addAction(UIAlertAction(title: "OK", style: .default))
                     self.present(alert, animated: true)
                 }
@@ -184,7 +188,10 @@ class Schedule: UIViewController {
     }
 
     private func setupRightBarButton() {
-        let existingPostAction = UIAction(title: "Existing Post", image: UIImage(systemName: "doc.text")) { [weak self] _ in
+        let existingPostAction = UIAction(
+            title: "Existing Post",
+            image: UIImage(systemName: "doc.text")
+        ) { [weak self] _ in
             self?.handleExistingPost()
         }
 
@@ -267,21 +274,37 @@ class Schedule: UIViewController {
     }
 
     func generateLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout {
-            section, _ in
-            let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
+        return UICollectionViewCompositionalLayout { section, _ in
+            let headerSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(50)
+            )
 
-            let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "header", alignment: .top)
+            let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: headerSize,
+                elementKind: "header",
+                alignment: .top
+            )
 
-            let headerButton = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "headerButton", alignment: .top)
+            let headerButton = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: headerSize,
+                elementKind: "headerButton",
+                alignment: .top
+            )
 
             if section == 0 {
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0 / 7.0), heightDimension: .fractionalHeight(1.0))
+                let itemSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0 / 7.0),
+                    heightDimension: .fractionalHeight(1.0)
+                )
 
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
 
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(70))
+                let groupSize = NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .estimated(70)
+                )
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 7)
 
                 let section = NSCollectionLayoutSection(group: group)
@@ -291,12 +314,18 @@ class Schedule: UIViewController {
                 return section
             }
 
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+            let itemSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(1.0)
+            )
 
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             item.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 7, bottom: 7, trailing: 7)
 
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(110))
+            let groupSize = NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(110)
+            )
             let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, repeatingSubitem: item, count: 1)
 
             let section = NSCollectionLayoutSection(group: group)
@@ -632,12 +661,16 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
         return todayItems.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         if indexPath.section == 0 {
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "calendar",
-                for: indexPath
-            ) as! CalendarCell
+            guard let cell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: "calendar", for: indexPath) as? CalendarCell
+            else {
+                return UICollectionViewCell()
+            }
 
             let date = weekDates[indexPath.row]
             let calendar = Calendar.current
@@ -666,10 +699,12 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
             return UICollectionViewCell()
         }
 
-        let cell = collectionView.dequeueReusableCell(
+        guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "upcoming_schedule",
             for: indexPath
-        ) as! ScheduleCollectionViewCell
+        ) as? ScheduleCollectionViewCell else {
+            return UICollectionViewCell()
+        }
 
         let item = todayItems[indexPath.row]
         cell.delegate = self
@@ -678,24 +713,32 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
         return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
         if kind == "header", indexPath.section == 1 {
-            let headerView = collectionView.dequeueReusableSupplementaryView(
+            guard let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: "header",
                 withReuseIdentifier: "headerCell",
                 for: indexPath
-            ) as! HeaderView
+            ) as? HeaderView else {
+                return UICollectionReusableView()
+            }
 
             headerView.configureHeader(text: "Activities Overview")
             return headerView
         }
 
         if kind == "headerButton", indexPath.section == 0 {
-            let headerView = collectionView.dequeueReusableSupplementaryView(
+            guard let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: "headerButton",
                 withReuseIdentifier: "header_button",
                 for: indexPath
-            ) as! HeaderButton
+            ) as? HeaderButton else {
+                return UICollectionReusableView()
+            }
 
             headerView.configure(text: currentMonthText, date: selectedDate)
 
@@ -729,7 +772,7 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
 
     override func prepare(for segue: UIStoryboardSegue, sender _: Any?) {
         if segue.identifier == "goToDetails" {
-            let vc = segue.destination as! Details
+            guard let vc = segue.destination as? Details else { return }
             vc.schedule = selectedScheduleItem
 
             // Task Toggle
@@ -737,7 +780,8 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
                 Task {
                     await self?.handleTaskToggle(post: post, task: task)
                     if let updatedPost = self?.scheduleController.getPost(id: post.id) {
-                        await MainActor.run { vc?.schedule = .post(post: updatedPost, task: nil); vc?.detailsView.reloadData() }
+                        await MainActor
+                            .run { vc?.schedule = .post(post: updatedPost, task: nil); vc?.detailsView.reloadData() }
                     }
                 }
             }
@@ -746,7 +790,8 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
                 Task {
                     await self?.handleMainPostToggle(post: post)
                     if let updatedPost = self?.scheduleController.getPost(id: post.id) {
-                        await MainActor.run { vc?.schedule = .post(post: updatedPost, task: nil); vc?.detailsView.reloadData() }
+                        await MainActor
+                            .run { vc?.schedule = .post(post: updatedPost, task: nil); vc?.detailsView.reloadData() }
                     }
                 }
             }
@@ -755,7 +800,10 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
                 Task {
                     await self?.handleDeliverableToggle(deal: deal, deliverable: deliverable)
                     if let updatedDeal = self?.scheduleController.getDeal(id: deal.id) {
-                        await MainActor.run { vc?.schedule = .deal(deal: updatedDeal, deliverable: nil); vc?.detailsView.reloadData() }
+                        await MainActor
+                            .run {
+                                vc?.schedule = .deal(deal: updatedDeal, deliverable: nil); vc?.detailsView.reloadData()
+                            }
                     }
                 }
             }
@@ -764,7 +812,10 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
                 Task {
                     await self?.handleMainDealToggle(deal: deal)
                     if let updatedDeal = self?.scheduleController.getDeal(id: deal.id) {
-                        await MainActor.run { vc?.schedule = .deal(deal: updatedDeal, deliverable: nil); vc?.detailsView.reloadData() }
+                        await MainActor
+                            .run {
+                                vc?.schedule = .deal(deal: updatedDeal, deliverable: nil); vc?.detailsView.reloadData()
+                            }
                     }
                 }
             }

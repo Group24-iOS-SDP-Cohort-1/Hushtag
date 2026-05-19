@@ -33,7 +33,7 @@ class ExistingPostViewController: UIViewController {
                         script: dbScript.script,
                         thumbnail: dbScript.thumbnail,
                         tags: dbScript.tags,
-                        idea_id: conversation.ideaId
+                        ideaId: conversation.ideaId
                     )
                 }
 

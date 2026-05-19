@@ -128,7 +128,11 @@ class PreferencesViewController: UIViewController {
                 print("Failed to update onboarding status or save preferences: \(error)")
                 self.skipSubmitButton.isEnabled = true
 
-                let alert = UIAlertController(title: "Save Failed", message: "We were unable to save your preferences. Please try again.", preferredStyle: .alert)
+                let alert = UIAlertController(
+                    title: "Save Failed",
+                    message: "We were unable to save your preferences. Please try again.",
+                    preferredStyle: .alert
+                )
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
             }
@@ -157,8 +161,14 @@ class PreferencesViewController: UIViewController {
     }
 
     func registerCells() {
-        preferencesCollectionView.register(UINib(nibName: "NicheCollectionCardViewCell", bundle: nil), forCellWithReuseIdentifier: "nicheCard")
-        preferencesCollectionView.register(UINib(nibName: "ChoosePlatformCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "platformCard")
+        preferencesCollectionView.register(
+            UINib(nibName: "NicheCollectionCardViewCell", bundle: nil),
+            forCellWithReuseIdentifier: "nicheCard"
+        )
+        preferencesCollectionView.register(
+            UINib(nibName: "ChoosePlatformCollectionViewCell", bundle: nil),
+            forCellWithReuseIdentifier: "platformCard"
+        )
     }
 
     func generateLayout() -> UICollectionViewLayout {
@@ -219,11 +229,19 @@ extension PreferencesViewController: UICollectionViewDataSource {
         return preferenceItems.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let item = preferenceItems[indexPath.item]
 
         if indexPath.item == 1 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "platformCard", for: indexPath) as! ChoosePlatformCollectionViewCell
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "platformCard",
+                for: indexPath
+            ) as? ChoosePlatformCollectionViewCell else {
+                return UICollectionViewCell()
+            }
             cell.configureCell(with: item)
 
             // Preselect based on our fetched data
@@ -237,7 +255,11 @@ extension PreferencesViewController: UICollectionViewDataSource {
             return cell
         }
 
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "nicheCard", for: indexPath) as! NicheCollectionCardViewCell
+        guard let cell = collectionView
+            .dequeueReusableCell(withReuseIdentifier: "nicheCard", for: indexPath) as? NicheCollectionCardViewCell
+        else {
+            return UICollectionViewCell()
+        }
         cell.configureCell(with: item)
 
         // Preselect based on our fetched data

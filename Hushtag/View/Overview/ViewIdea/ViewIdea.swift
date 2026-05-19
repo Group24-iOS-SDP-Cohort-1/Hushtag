@@ -127,8 +127,10 @@ class ViewIdea: UIViewController {
 
     func registerCell() {
         ideaView.register(
-            UINib(nibName: "HeaderView",
-                  bundle: nil),
+            UINib(
+                nibName: "HeaderView",
+                bundle: nil
+            ),
             forSupplementaryViewOfKind: "header",
             withReuseIdentifier: "headerCell"
         )
@@ -140,116 +142,103 @@ class ViewIdea: UIViewController {
     }
 
     func generateLayout() -> UICollectionViewLayout {
-        return UICollectionViewCompositionalLayout {
-            section, _ in
-            let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
-
-            let headerItem = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize, elementKind: "header", alignment: .top)
-            if section == 0 {
+        return UICollectionViewCompositionalLayout { section, _ in
+            switch section {
+            case 0: return self.progressCardLayout()
+            case 1: return self.basicInfoLayout()
+            case 2: return self.statisticsLayout()
+            case 3: return self.hashtagLayout()
+            default:
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(140)
+                    heightDimension: .fractionalHeight(1.0)
                 )
-                let item = NSCollectionLayoutItem(layoutSize: itemSize)
-                let group = NSCollectionLayoutGroup.horizontal(
-                    layoutSize: itemSize,
-                    subitems: [item]
-                )
-                let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = NSDirectionalEdgeInsets(
-                    top: 8, leading: 20, bottom: 15, trailing: 20
-                )
-                return section
-            }
-            if section == 1 {
-                let itemSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(100)
-                )
-
-                let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
-                let groupSize = NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(100)
-                )
-
-                let group = NSCollectionLayoutGroup.horizontal(
-                    layoutSize: groupSize,
-                    subitems: [item]
-                )
-
-                let section = NSCollectionLayoutSection(group: group)
-
-                section.contentInsets = NSDirectionalEdgeInsets(
-                    top: 0,
-                    leading: 20,
-                    bottom: 0,
-                    trailing: 20
-                )
-
-                return section
-            } else if section == 2 {
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-
-                // create the item
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
-
-                // create the group
-                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.45), heightDimension: .estimated(110))
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
-
-                // create the section
-                let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
-                section.orthogonalScrollingBehavior = .continuous
-                section.boundarySupplementaryItems = [headerItem]
-
-                return section
-            } else if section == 3 {
-                let itemSize = NSCollectionLayoutSize(
+                let groupSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .estimated(70)
+                    heightDimension: .fractionalHeight(0.25)
                 )
-
-                let item = NSCollectionLayoutItem(layoutSize: itemSize)
-
                 let group = NSCollectionLayoutGroup.horizontal(
-                    layoutSize: itemSize,
-                    subitems: [item]
+                    layoutSize: groupSize, repeatingSubitem: item, count: 7
                 )
-
-                let section = NSCollectionLayoutSection(group: group)
-
-                section.contentInsets = NSDirectionalEdgeInsets(
-                    top: 0,
-                    leading: 20,
-                    bottom: 0,
-                    trailing: 20
-                )
-
-                section.boundarySupplementaryItems = [headerItem]
-
-                return section
+                let sec = NSCollectionLayoutSection(group: group)
+                sec.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+                return sec
             }
-
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-
-            // create the item
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
-
-            // create the group
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.25))
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 7)
-
-            // create the section
-            let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
-
-            return section
         }
+    }
+
+    private func progressCardLayout() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(140)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: itemSize, subitems: [item])
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 20, bottom: 15, trailing: 20)
+        return section
+    }
+
+    private func basicInfoLayout() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(100)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(100)
+        )
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+        return section
+    }
+
+    private func statisticsLayout() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .fractionalHeight(1.0)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(0.45),
+            heightDimension: .estimated(110)
+        )
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 1)
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50)
+        )
+        let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize, elementKind: "header", alignment: .top
+        )
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+        section.orthogonalScrollingBehavior = .continuous
+        section.boundarySupplementaryItems = [headerItem]
+        return section
+    }
+
+    private func hashtagLayout() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .estimated(70)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: itemSize, subitems: [item])
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50)
+        )
+        let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize, elementKind: "header", alignment: .top
+        )
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+        section.boundarySupplementaryItems = [headerItem]
+        return section
     }
 
     func statistics(with idea: Idea) -> [Int] {
@@ -285,10 +274,11 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
 
     func collectionView(_: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section == 0 {
-            let cell = ideaView.dequeueReusableCell(
-                withReuseIdentifier: "cell",
-                for: indexPath
-            ) as! IdeaProgressCollectionViewCell
+            guard let cell = ideaView
+                .dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? IdeaProgressCollectionViewCell
+            else {
+                return UICollectionViewCell()
+            }
 
             _ = Set(
                 [("script", ideaMilestone >= 1), ("title", ideaMilestone >= 2), ("description", ideaMilestone >= 3)]
@@ -313,7 +303,14 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
             }
             return cell
         } else if indexPath.section == 1 {
-            let cell = ideaView.dequeueReusableCell(withReuseIdentifier: "basicInfo", for: indexPath) as! IdeaDetailsCollectionViewCell
+            guard let cell = ideaView
+                .dequeueReusableCell(
+                    withReuseIdentifier: "basicInfo",
+                    for: indexPath
+                ) as? IdeaDetailsCollectionViewCell
+            else {
+                return UICollectionViewCell()
+            }
             if let idea = idea {
                 cell.configure(with: idea)
             }
@@ -327,7 +324,14 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
 
             return cell
         } else if indexPath.section == 2 {
-            let cell = ideaView.dequeueReusableCell(withReuseIdentifier: "statistics", for: indexPath) as! IdeaDetailsCollectionViewCell
+            guard let cell = ideaView
+                .dequeueReusableCell(
+                    withReuseIdentifier: "statistics",
+                    for: indexPath
+                ) as? IdeaDetailsCollectionViewCell
+            else {
+                return UICollectionViewCell()
+            }
 
             guard let idea = idea else { return cell }
 
@@ -350,31 +354,49 @@ extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
             cell.view.layer.borderColor = UIColor.accent.withAlphaComponent(1.0).cgColor
             return cell
         } else if indexPath.section == 3 {
-            let cell = ideaView.dequeueReusableCell(withReuseIdentifier: "gaps", for: indexPath) as! IdeaDetailsCollectionViewCell
+            guard let cell = ideaView
+                .dequeueReusableCell(withReuseIdentifier: "gaps", for: indexPath) as? IdeaDetailsCollectionViewCell
+            else {
+                return UICollectionViewCell()
+            }
 
             cell.configureHashtag(idea?.hashtags ?? [])
             return cell
         }
 
-        return ideaView.dequeueReusableCell(withReuseIdentifier: "button", for: indexPath) as! IdeaDetailsCollectionViewCell
+        guard let cell = ideaView
+            .dequeueReusableCell(withReuseIdentifier: "button", for: indexPath) as? IdeaDetailsCollectionViewCell
+        else {
+            return UICollectionViewCell()
+        }
+
+        return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
         if kind == "header", indexPath.section == 2 {
-            let headerView = collectionView.dequeueReusableSupplementaryView(
+            guard let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: "header",
                 withReuseIdentifier: "headerCell",
                 for: indexPath
-            ) as! HeaderView
+            ) as? HeaderView else {
+                return UICollectionReusableView()
+            }
 
             headerView.configureHeader(text: "Performance Statistics")
             return headerView
         } else if kind == "header", indexPath.section == 3 {
-            let headerView = collectionView.dequeueReusableSupplementaryView(
+            guard let headerView = collectionView.dequeueReusableSupplementaryView(
                 ofKind: "header",
                 withReuseIdentifier: "headerCell",
                 for: indexPath
-            ) as! HeaderView
+            ) as? HeaderView else {
+                return UICollectionReusableView()
+            }
 
             headerView.configureHeader(text: "Trending Hashtags")
             return headerView

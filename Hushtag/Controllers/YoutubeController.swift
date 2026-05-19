@@ -3,7 +3,7 @@ import Supabase
 
 struct YouTubeAuthPayload: Codable {
     let action: String
-    let server_auth_code: String
+    let serverAuthCode: String
 }
 
 struct AnalyticsRequestPayload: Codable {
@@ -95,7 +95,7 @@ final class YouTubeController {
 
         let payload = YouTubeAuthPayload(
             action: "exchange_and_save_tokens",
-            server_auth_code: serverAuthCode
+            serverAuthCode: serverAuthCode
         )
 
         // print("🚀 Sending tokens to unified YouTube function...")
@@ -137,7 +137,7 @@ final class YouTubeController {
     }
 
     nonisolated struct ConnectionStatus: Decodable {
-        let is_youtube_connected: Bool?
+        let isYoutubeConnected: Bool?
     }
 
     func checkYouTubeConnection() async -> Bool {
@@ -146,18 +146,31 @@ final class YouTubeController {
 
             let status: ConnectionStatus = try await client.database
                 .from("profiles")
-                .select("is_youtube_connected")
-                .eq("user_id", value: session.user.id)
+                .select("isYoutubeConnected")
+                .eq("userId", value: session.user.id)
                 .single()
                 .execute()
                 .value
 
-            return status.is_youtube_connected ?? false
+            return status.isYoutubeConnected ?? false
 
         } catch {
             // print("YouTube connection check Failed or Not Found: \(error)")
             return false
         }
+    }
+
+    func verifyYouTubeConnectionState(expectedState: Bool) async -> Bool {
+        var attempts = 0
+        while attempts < 5 {
+            try? await Task.sleep(nanoseconds: 1_000_000_000) // wait 1 second
+            let isConnected = await checkYouTubeConnection()
+            if isConnected == expectedState {
+                return isConnected
+            }
+            attempts += 1
+        }
+        return await checkYouTubeConnection()
     }
 
     func restoreYouTubeConnectionIfNeeded(
@@ -202,7 +215,7 @@ final class YouTubeController {
 
         let payload = YouTubeAuthPayload(
             action: "disconnect",
-            server_auth_code: ""
+            serverAuthCode: ""
         )
 
         try await client.functions.invoke(

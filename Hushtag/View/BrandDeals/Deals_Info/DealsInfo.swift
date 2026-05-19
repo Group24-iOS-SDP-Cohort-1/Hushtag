@@ -129,9 +129,9 @@ class DealsInfo: UIViewController {
     @IBAction func editModal(_: Any) {
         let storyboard = UIStoryboard(name: "BrandDeals", bundle: nil)
 
-        let vc = storyboard.instantiateViewController(
+        guard let vc = storyboard.instantiateViewController(
             withIdentifier: "AddDealsViewController"
-        ) as! AddDealsViewController
+        ) as? AddDealsViewController else { return }
 
         vc.editingDeal = deals
         vc.editingIndex = dealIndex
@@ -346,16 +346,19 @@ extension DealsInfo: UICollectionViewDataSource {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let type = sections[indexPath.section]
 
         switch type {
         case .details:
-            let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "DetailsCell",
-                for: indexPath
-            ) as! DetailsCell
+            guard let cell = collectionView
+                .dequeueReusableCell(withReuseIdentifier: "DetailsCell", for: indexPath) as? DetailsCell
+            else {
+                return UICollectionViewCell()
+            }
 
             let isLast = indexPath.item == 3
 
@@ -371,10 +374,12 @@ extension DealsInfo: UICollectionViewDataSource {
             return cell
 
         case .deliverables:
-            let cell = collectionView.dequeueReusableCell(
+            guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: DeliverableCell.reuseId,
                 for: indexPath
-            ) as! DeliverableCell
+            ) as? DeliverableCell else {
+                return UICollectionViewCell()
+            }
 
             let isLast = indexPath.item == deals.deliverables.count - 1
             let deliverable = deals.deliverables[indexPath.item]
@@ -414,10 +419,12 @@ extension DealsInfo: UICollectionViewDataSource {
             return cell
 
         case .selectedIdeas:
-            let cell = collectionView.dequeueReusableCell(
+            guard let cell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: "selectedIdeaCell",
                 for: indexPath
-            ) as! ScriptsCell1
+            ) as? ScriptsCell1 else {
+                return UICollectionViewCell()
+            }
 
             // Grab the idea for this specific index
             let idea = selectedIdeas[indexPath.item]
@@ -426,14 +433,18 @@ extension DealsInfo: UICollectionViewDataSource {
         }
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        viewForSupplementaryElementOfKind kind: String,
-                        at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
+        guard let header = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
             withReuseIdentifier: "headerCell",
             for: indexPath
-        ) as! HeaderView
+        ) as? HeaderView else {
+            return UICollectionReusableView()
+        }
 
         let type = sections[indexPath.section]
 
@@ -448,20 +459,25 @@ extension DealsInfo: UICollectionViewDataSource {
 }
 
 extension DealsInfo: UICollectionViewDelegate {
-    func collectionView(_: UICollectionView,
-                        shouldSelectItemAt indexPath: IndexPath) -> Bool {
+    func collectionView(
+        _: UICollectionView,
+        shouldSelectItemAt indexPath: IndexPath
+    ) -> Bool {
         let section = sections[indexPath.section]
         return section == .deliverables || section == .selectedIdeas
     }
 
-    func collectionView(_ collectionView: UICollectionView,
-                        didSelectItemAt indexPath: IndexPath) {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        didSelectItemAt indexPath: IndexPath
+    ) {
         let section = sections[indexPath.section]
 
         if section == .selectedIdeas {
             let idea = selectedIdeas[indexPath.item]
             let storyboard = UIStoryboard(name: "Ideate", bundle: nil)
-            guard let vc = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas else { return }
+            guard let vc = storyboard.instantiateViewController(withIdentifier: "scriptedIdea") as? ScriptedIdeas
+            else { return }
             vc.idea = idea
             vc.isModal = true
             vc.onDealUntagged = { [weak self] in

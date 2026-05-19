@@ -25,8 +25,8 @@ struct Tasks: Identifiable {
 }
 
 nonisolated struct PostDB: Codable {
-    let post_id: UUID
-    let user_id: UUID
+    let postId: UUID
+    let userId: UUID
     let name: String
     let deadline: Date
     let platform: [Platform]
@@ -35,7 +35,7 @@ nonisolated struct PostDB: Codable {
 }
 
 nonisolated struct PostInsertPayload: Codable {
-    let user_id: UUID
+    let userId: UUID
     let name: String
     let deadline: Date
     let platform: [String]
@@ -45,7 +45,7 @@ nonisolated struct PostInsertPayload: Codable {
 
 nonisolated struct TaskDB: Codable {
     let id: UUID
-    let post_id: UUID
+    let postId: UUID
     let name: String
     let deadline: Date
     var isCompleted: Bool

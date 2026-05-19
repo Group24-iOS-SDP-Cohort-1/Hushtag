@@ -3,8 +3,7 @@ import Foundation
 final class GeminiManager {
     static let shared = GeminiManager()
 
-    private let functionURL =
-        "https://juuuwuydlgjhgwwabswy.supabase.co/functions/v1/chat-with-gemini"
+    private let functionURL = Keys.chatWithGemini
 
     private let anonKey = SupabaseConfig.anonKey
 
@@ -31,7 +30,7 @@ final class GeminiManager {
         // Request body
         let body: [String: String] = [
             "prompt": prompt,
-            "conversation_id": conversationID.uuidString
+            "conversationId": conversationID.uuidString
         ]
 
         request.httpBody = try? JSONSerialization.data(withJSONObject: body)
