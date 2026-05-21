@@ -81,6 +81,15 @@ nonisolated struct Conversation: Codable {
     let ideaId: UUID?
     let scriptedIdeas: ScriptedIdeaDB?
 
+    enum CodingKeys: String, CodingKey {
+        case id
+        case userId
+        case title
+        case createdAt
+        case ideaId
+        case scriptedIdeas = "scripted_ideas"
+    }
+
     var hasStar: Bool {
         guard let idea = scriptedIdeas else { return false }
 
@@ -119,4 +128,13 @@ enum Role: String, Codable {
         case .system: return "system"
         }
     }
+}
+
+nonisolated struct IdeaInsertPayload: Codable {
+    let id: UUID
+    let title: String
+    let description: String
+    let format: String
+    let hashtags: [String]
+    let noveltyScore: Int
 }

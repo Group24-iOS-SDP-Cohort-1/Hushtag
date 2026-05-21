@@ -37,7 +37,14 @@ struct YoutubeIdeaGeneratorPayload: Codable {
 }
 
 struct AnalyticsIdea: Codable, Identifiable {
-    var id: UUID = .init()
+    var id: UUID {
+        deterministicUUID(
+            title: title,
+            description: hook,
+            format: format,
+            hashtags: []
+        )
+    }
 
     let title: String
     let hook: String

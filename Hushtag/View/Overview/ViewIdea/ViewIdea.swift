@@ -67,31 +67,41 @@ class ViewIdea: UIViewController {
     }
 
     func didTapDraftScript(for idea: Idea, conversationID: UUID? = nil) {
-        let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
-        guard let chatVC = storyboard.instantiateViewController(
-            withIdentifier: "Chatbot"
-        ) as? Chatbot else { return }
-        chatVC.ideaId = idea.id
-        if let conversationID = conversationID {
-            chatVC.conversationID = conversationID
-        } else {
-            chatVC.autoSendMessage = """
-            Create a short creator-style script for this video idea:
+        Task {
+            do {
+                try await ScriptedIdeasController().insertIdeaIfNeeded(idea: idea)
+            } catch {
+                print("⚠️ Failed to insert idea:", error)
+            }
 
-            Title: "\(idea.title)"
-            Description: "\(idea.description)"
+            await MainActor.run {
+                let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
+                guard let chatVC = storyboard.instantiateViewController(
+                    withIdentifier: "Chatbot"
+                ) as? Chatbot else { return }
+                chatVC.ideaId = idea.id
+                if let conversationID = conversationID {
+                    chatVC.conversationID = conversationID
+                } else {
+                    chatVC.autoSendMessage = """
+                    Create a short creator-style script for this video idea:
 
-            Structure:
-            1. Hook (1 sentence)
-            2. What happens (2–3 sentences)
-            3. Twist or surprise (1 sentence)
-            4. CTA (1 sentence)
+                    Title: "\(idea.title)"
+                    Description: "\(idea.description)"
 
-            Tone: casual, friendly, modern.
-            Length: 15–20 seconds.
-            """
+                    Structure:
+                    1. Hook (1 sentence)
+                    2. What happens (2–3 sentences)
+                    3. Twist or surprise (1 sentence)
+                    4. CTA (1 sentence)
+
+                    Tone: casual, friendly, modern.
+                    Length: 15–20 seconds.
+                    """
+                }
+                self.navigationController?.pushViewController(chatVC, animated: true)
+            }
         }
-        navigationController?.pushViewController(chatVC, animated: true)
     }
 
     func handleDraftScriptTap(for idea: Idea) {

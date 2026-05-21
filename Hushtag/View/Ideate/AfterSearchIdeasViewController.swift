@@ -134,8 +134,14 @@ class AfterSearchIdeasViewController: UIViewController {
                             format: geminiIdea.format,
                             hashtags: geminiIdea.hashtags
                         )
+                        let stableId = deterministicUUID(
+                            title: geminiIdea.title,
+                            description: geminiIdea.description,
+                            format: geminiIdea.format,
+                            hashtags: geminiIdea.hashtags
+                        )
                         return Idea(
-                            id: UUID(),
+                            id: stableId,
                             ideaKey: key,
                             title: geminiIdea.title,
                             description: geminiIdea.description,

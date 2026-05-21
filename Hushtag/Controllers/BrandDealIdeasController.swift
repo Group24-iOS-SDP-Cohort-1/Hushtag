@@ -11,8 +11,8 @@ final class BrandDealIdeasController {
         return try await client.database
             .from("brand_deal_ideas")
             .select()
-            .eq("user_id", value: session.user.id)
-            .eq("scripted_idea_id", value: scriptedIdeaId)
+            .eq("userId", value: session.user.id)
+            .eq("scriptedIdeaId", value: scriptedIdeaId)
             .execute()
             .value
     }
@@ -41,9 +41,9 @@ final class BrandDealIdeasController {
         try await client.database
             .from("brand_deal_ideas")
             .delete()
-            .eq("user_id", value: session.user.id)
-            .eq("deal_id", value: dealId)
-            .eq("scripted_idea_id", value: scriptedIdeaId)
+            .eq("userId", value: session.user.id)
+            .eq("dealId", value: dealId)
+            .eq("scriptedIdeaId", value: scriptedIdeaId)
             .execute()
     }
 
@@ -54,8 +54,8 @@ final class BrandDealIdeasController {
         return try await client.database
             .from("brand_deal_ideas")
             .select()
-            .eq("user_id", value: session.user.id)
-            .eq("deal_id", value: dealId)
+            .eq("userId", value: session.user.id)
+            .eq("dealId", value: dealId)
             .execute()
             .value
     }

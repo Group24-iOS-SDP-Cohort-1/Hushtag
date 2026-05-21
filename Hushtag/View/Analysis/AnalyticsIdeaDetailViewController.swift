@@ -408,25 +408,54 @@ class AnalyticsIdeaDetailViewController: UIViewController {
 
     @objc private func didTapDraftScript() {
         guard let idea = analyticsIdea else { return }
-        let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
-        guard let chatVC = storyboard.instantiateViewController(withIdentifier: "Chatbot") as? Chatbot else { return }
-        chatVC.ideaId = idea.id
-        chatVC.autoSendMessage = """
-        Create a short creator-style script for this video idea:
 
-        Title: "\(idea.title)"
-        Description: "\(idea.hook)"
+        let ideaKey = makeIdeaKey(
+            title: idea.title,
+            description: idea.hook,
+            format: idea.format,
+            hashtags: []
+        )
+        let convertedIdea = Idea(
+            id: idea.id,
+            ideaKey: ideaKey,
+            title: idea.title,
+            description: idea.hook,
+            format: idea.format,
+            hashtags: [],
+            noveltyScore: Int(idea.estimatedViralityScore),
+            videos: nil,
+            liked: false
+        )
 
-        Structure:
-        1. Hook (1 sentence)
-        2. What happens (2–3 sentences)
-        3. Twist or surprise (1 sentence)
-        4. CTA (1 sentence)
+        Task {
+            do {
+                try await ScriptedIdeasController().insertIdeaIfNeeded(idea: convertedIdea)
+            } catch {
+                print("⚠️ Failed to insert analytics idea:", error)
+            }
 
-        Tone: casual, friendly, modern.
-        Length: 15–20 seconds.
-        """
-        navigationController?.pushViewController(chatVC, animated: true)
+            await MainActor.run {
+                let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
+                guard let chatVC = storyboard.instantiateViewController(withIdentifier: "Chatbot") as? Chatbot else { return }
+                chatVC.ideaId = idea.id
+                chatVC.autoSendMessage = """
+                Create a short creator-style script for this video idea:
+
+                Title: "\(idea.title)"
+                Description: "\(idea.hook)"
+
+                Structure:
+                1. Hook (1 sentence)
+                2. What happens (2–3 sentences)
+                3. Twist or surprise (1 sentence)
+                4. CTA (1 sentence)
+
+                Tone: casual, friendly, modern.
+                Length: 15–20 seconds.
+                """
+                self.navigationController?.pushViewController(chatVC, animated: true)
+            }
+        }
     }
 
     func checkForExistingScript() {

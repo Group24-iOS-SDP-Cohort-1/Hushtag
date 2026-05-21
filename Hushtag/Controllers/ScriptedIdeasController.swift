@@ -312,14 +312,36 @@ final class ScriptedIdeasController {
     ) async throws {
         let session = try await client.auth.session
 
+        // Fetch existing scripted idea first if any to avoid overwriting other fields with NULL
+        let existingResult: [ScriptedIdeaDB] = try await client.database
+            .from("scripted_ideas")
+            .select()
+            .eq("chatId", value: chatID.uuidString)
+            .limit(1)
+            .execute()
+            .value
+
+        let existing = existingResult.first
+
+        // Prepare updated values by merging existing with target field update
+        var title = existing?.title
+        var description = existing?.description
+        var script = existing?.script
+        var thumbnail = existing?.thumbnail
+
+        if field == "title" { title = value }
+        else if field == "description" { description = value }
+        else if field == "script" { script = value }
+        else if field == "thumbnail" { thumbnail = value }
+
         let payload = ScriptedIdeaInsertPayload(
             userId: session.user.id,
             chatId: chatID,
-            title: field == "title" ? value : nil,
-            description: field == "description" ? value : nil,
-            script: field == "script" ? value : nil,
-            thumbnail: field == "thumbnail" ? value : nil,
-            hashtags: nil
+            title: title,
+            description: description,
+            script: script,
+            thumbnail: thumbnail,
+            hashtags: existing?.tags
         )
 
         try await client.database
@@ -348,6 +370,22 @@ final class ScriptedIdeasController {
             .from("conversations")
             .update(["platform": platform])
             .eq("id", value: id.uuidString)
+            .execute()
+    }
+
+    func insertIdeaIfNeeded(idea: Idea) async throws {
+        let payload = IdeaInsertPayload(
+            id: idea.id,
+            title: idea.title,
+            description: idea.description,
+            format: idea.format,
+            hashtags: idea.hashtags,
+            noveltyScore: idea.noveltyScore
+        )
+
+        try await client.database
+            .from("ideas")
+            .upsert(payload)
             .execute()
     }
 }

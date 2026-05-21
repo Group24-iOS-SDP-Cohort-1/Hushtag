@@ -85,23 +85,18 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
     }
 
     private func loadConversationHistory() {
-        if conversationID == nil {
-            conversationID = UUID()
-            print("New Conversation started:", conversationID!)
-            Task {
-                do {
-                    _ = try await controller.addConversation(id: conversationID ?? UUID(), ideaId: ideaId)
-                    print("Conversation created")
-                } catch {
-                    print("Failed to create conversation:", error)
-                }
-            }
-        } else {
-            print("📌 Opening existing conversation:", conversationID!)
-        }
-
         Task {
             do {
+                if conversationID == nil {
+                    let newConvoID = UUID()
+                    conversationID = newConvoID
+                    print("New Conversation started:", newConvoID)
+                    _ = try await controller.addConversation(id: newConvoID, ideaId: ideaId)
+                    print("Conversation created")
+                } else {
+                    print("📌 Opening existing conversation:", conversationID!)
+                }
+
                 let history = try await controller.fetchMessages(for: conversationID ?? UUID())
                 let allIdeas = try await controller.fetchScript()
                 let idea = allIdeas.first { $0.chatId == self.conversationID }
@@ -137,7 +132,7 @@ class Chatbot: UIViewController, UITableViewDelegate, UITableViewDataSource, UIT
                     }
                 }
             } catch {
-                print(" Failed loading conversation:", error)
+                print("❌ Failed loading/creating conversation:", error)
             }
         }
     }
