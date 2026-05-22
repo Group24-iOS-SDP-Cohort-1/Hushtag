@@ -138,3 +138,12 @@ nonisolated struct IdeaInsertPayload: Codable {
     let hashtags: [String]
     let noveltyScore: Int
 }
+
+nonisolated struct IdeaFromDB: Codable {
+    let id: UUID
+    let title: String
+    let description: String?
+    let format: String?
+    let hashtags: [String]?
+    let noveltyScore: Int?
+}

@@ -142,10 +142,20 @@ class ViewScriptsViewController: UIViewController {
         Task {
             do {
                 let ideas = try await likedIdeasController.fetchLikedIdeas()
+                let personalizedIdeas = SessionManager.shared.personalizedIdeas
+
+                let mergedIdeas = ideas.map { liked in
+                    if let personalized = personalizedIdeas.first(where: { $0.ideaKey == liked.ideaKey }) {
+                        var updated = personalized
+                        updated.liked = true
+                        return updated
+                    }
+                    return liked
+                }
 
                 await MainActor.run {
-                    self.likedIdeas = ideas
-                    self.filteredLikedIdeas = ideas
+                    self.likedIdeas = mergedIdeas
+                    self.filteredLikedIdeas = mergedIdeas
                     self.scriptsCollectionView.reloadData()
                     self.updateEmptyState()
                 }

@@ -80,8 +80,13 @@ class Ideate1: UIViewController {
 
                 let personalizedIdeas = SessionManager.shared.personalizedIdeas
 
-                let syncedLikedIdeas = fetchedLikedIdeas.compactMap { liked in
-                    personalizedIdeas.first(where: { $0.ideaKey == liked.ideaKey })
+                let syncedLikedIdeas = fetchedLikedIdeas.map { liked in
+                    if let personalized = personalizedIdeas.first(where: { $0.ideaKey == liked.ideaKey }) {
+                        var updated = personalized
+                        updated.liked = true
+                        return updated
+                    }
+                    return liked
                 }
 
                 await MainActor.run {

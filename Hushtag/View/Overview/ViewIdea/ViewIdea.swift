@@ -1,4 +1,5 @@
 import Charts
+import Supabase
 import SwiftUI
 import UIKit
 
@@ -20,7 +21,95 @@ class ViewIdea: UIViewController {
         ideaView.dataSource = self
         ideaView.setCollectionViewLayout(generateLayout(), animated: true)
         if idea == nil, let ideaId = ideaId {
+            // First try local cache
             idea = SessionManager.shared.personalizedIdeas.first(where: { $0.id == ideaId })
+
+            // If not found locally, fetch from Supabase
+            if idea == nil {
+                fetchIdeaFromSupabase(ideaId: ideaId)
+            }
+        }
+
+        // Enrich idea with full video/hashtag data from local cache if it came
+        // from liked_ideas (which strips videos to nil on fetch)
+        if let current = idea, current.videos == nil, let ideaKey = current.ideaKey {
+            if let enriched = SessionManager.shared.personalizedIdeas
+                .first(where: { $0.ideaKey == ideaKey }) {
+                // Preserve liked state but use full data
+                var full = enriched
+                full.liked = current.liked
+                idea = full
+            }
+        }
+    }
+
+    private func fetchIdeaFromSupabase(ideaId: UUID) {
+        Task {
+            do {
+                // Try fetching from the ideas table directly
+                let result: [IdeaFromDB] = try await SupabaseConfig.client.database
+                    .from("ideas")
+                    .select()
+                    .eq("id", value: ideaId.uuidString)
+                    .limit(1)
+                    .execute()
+                    .value
+
+                if let fetched = result.first {
+                    var idea = Idea(
+                        id: fetched.id,
+                        ideaKey: nil,
+                        title: fetched.title,
+                        description: fetched.description ?? "",
+                        format: fetched.format ?? "",
+                        hashtags: fetched.hashtags ?? [],
+                        noveltyScore: fetched.noveltyScore ?? 0,
+                        videos: nil,
+                        liked: false
+                    )
+
+                    // Enrich with full video/hashtag data from local cache or liked_ideas
+                    if let enriched = SessionManager.shared.personalizedIdeas
+                        .first(where: { $0.title == fetched.title }) {
+                        idea = Idea(
+                            id: fetched.id,
+                            ideaKey: enriched.ideaKey,
+                            title: enriched.title,
+                            description: enriched.description,
+                            format: enriched.format,
+                            hashtags: enriched.hashtags,
+                            noveltyScore: enriched.noveltyScore,
+                            videos: enriched.videos,
+                            liked: enriched.liked
+                        )
+                    } else {
+                        // Try enriching from liked_ideas (which has stored views/likes)
+                        let likedIdeas = try await LikedIdeasController().fetchLikedIdeas()
+                        if let likedMatch = likedIdeas.first(where: { $0.title == fetched.title }) {
+                            idea = likedMatch
+                        }
+                    }
+
+                    await MainActor.run {
+                        self.idea = idea
+                        self.ideaView.reloadData()
+                        self.checkForExistingScript()
+                    }
+                    return
+                }
+
+                // Fallback: try fetching from liked_ideas
+                let likedIdeas = try await LikedIdeasController().fetchLikedIdeas()
+                if let matched = likedIdeas.first(where: { $0.id == ideaId }) {
+                    await MainActor.run {
+                        self.idea = matched
+                        self.ideaView.reloadData()
+                        self.checkForExistingScript()
+                    }
+                }
+            } catch {
+                print("⚠️ Failed to fetch idea from Supabase:", error)
+            }
         }
     }
 
@@ -28,10 +117,44 @@ class ViewIdea: UIViewController {
         guard let idea = idea else { return }
         Task {
             do {
-                let script = try await ScriptedIdeasController().fetchScriptByIdeaId(ideaId: idea.id)
-                let conversation = try await ScriptedIdeasController().fetchConversation(for: idea.id)
+                let controller = ScriptedIdeasController()
+                var script = try await controller.fetchScriptByIdeaId(ideaId: idea.id)
+                var conversation = try await controller.fetchConversation(for: idea.id)
 
-                DispatchQueue.main.async {
+                // Fallback: if not found by idea.id (e.g. liked_ideas gives random UUIDs),
+                // look up the real UUID from the ideas table by matching title
+                if script == nil && conversation == nil {
+                    let matchingIdeas: [IdeaFromDB] = try await SupabaseConfig.client.database
+                        .from("ideas")
+                        .select()
+                        .eq("title", value: idea.title)
+                        .limit(1)
+                        .execute()
+                        .value
+
+                    if let realIdea = matchingIdeas.first, realIdea.id != idea.id {
+                        script = try await controller.fetchScriptByIdeaId(ideaId: realIdea.id)
+                        conversation = try await controller.fetchConversation(for: realIdea.id)
+
+                        // Update our idea's reference so Draft Script also works correctly
+                        await MainActor.run {
+                            self.idea = Idea(
+                                id: realIdea.id,
+                                ideaKey: idea.ideaKey,
+                                title: idea.title,
+                                description: idea.description,
+                                format: idea.format,
+                                hashtags: idea.hashtags,
+                                noveltyScore: idea.noveltyScore,
+                                videos: idea.videos,
+                                expandedDescription: idea.expandedDescription,
+                                liked: idea.liked
+                            )
+                        }
+                    }
+                }
+
+                await MainActor.run {
                     self.hasExistingScript = script != nil
                     self.hasStartedConversation = conversation != nil
                     self.currentConversationID = conversation?.id
@@ -156,8 +279,16 @@ class ViewIdea: UIViewController {
             switch section {
             case 0: return self.progressCardLayout()
             case 1: return self.basicInfoLayout()
-            case 2: return self.statisticsLayout()
-            case 3: return self.hashtagLayout()
+            case 2:
+                if self.shouldShowStats() {
+                    return self.statisticsLayout()
+                }
+                return self.emptyLayout()
+            case 3:
+                if self.shouldShowHashtags() {
+                    return self.hashtagLayout()
+                }
+                return self.emptyLayout()
             default:
                 let itemSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
@@ -177,6 +308,26 @@ class ViewIdea: UIViewController {
                 return sec
             }
         }
+    }
+
+    private func shouldShowStats() -> Bool {
+        let stats = idea.flatMap { statistics(with: $0) } ?? []
+        return !stats.isEmpty
+    }
+
+    private func shouldShowHashtags() -> Bool {
+        return !(idea?.hashtags ?? []).isEmpty
+    }
+
+    private func emptyLayout() -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1.0),
+            heightDimension: .absolute(0)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: itemSize, subitems: [item])
+        let section = NSCollectionLayoutSection(group: group)
+        return section
     }
 
     private func progressCardLayout() -> NSCollectionLayoutSection {
@@ -272,12 +423,20 @@ class ViewIdea: UIViewController {
 
 extension ViewIdea: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSections(in _: UICollectionView) -> Int {
+        if !shouldShowStats() && !shouldShowHashtags() {
+            return 2 // Only show draft status (0) and basic info (1)
+        }
         return 5
     }
 
     func collectionView(_: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 2 {
+            if !shouldShowStats() { return 0 }
             return 2
+        }
+        if section == 3 {
+            if !shouldShowHashtags() { return 0 }
+            return 1
         }
         return 1
     }
