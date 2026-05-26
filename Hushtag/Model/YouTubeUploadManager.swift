@@ -59,96 +59,122 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
 
     /// Main entry point to upload a video
     func uploadVideo(request: VideoUploadRequest) {
-        let videoURL = request.videoURL
-        let thumbnailURL = request.thumbnailURL
-        let title = request.title
-        let description = request.description
-        let tags = request.tags
-        let categoryId = request.categoryId
-        let privacyStatus = request.privacyStatus
-        let publishAt = request.publishAt
         Task {
             do {
-                // 1. Copy video to Documents directory for robust background networking compliance
-                let documentsDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                let persistentVideoURL = documentsDir.appendingPathComponent(videoURL.lastPathComponent)
-
-                if FileManager.default.fileExists(atPath: persistentVideoURL.path) {
-                    try? FileManager.default.removeItem(at: persistentVideoURL)
-                }
-                try FileManager.default.copyItem(at: videoURL, to: persistentVideoURL)
-
-                // 4. Fetch JWT and manually construct multipart handshake
+                let persistentVideoURL = try copyVideoToPersistentStorage(from: request.videoURL)
                 let session = try await SupabaseConfig.client.auth.session
                 let jwtToken = session.accessToken
                 print("🔑 RAW JWT: \(jwtToken)")
                 let boundary = "Boundary-\(UUID().uuidString)"
-
-                let urlString = "https://juuuwuydlgjhgwwabswy.supabase.co/functions/v1/youtube-upload"
-                var request = URLRequest(url: URL(string: urlString)!)
-                request.httpMethod = "POST"
-                request.setValue("Bearer \(jwtToken)", forHTTPHeaderField: "Authorization")
-                await request.setValue(SupabaseConfig.anonKey, forHTTPHeaderField: "apikey")
-                request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-
-                // 5. Assemble Multipart Data
-                let isoFormatter = ISO8601DateFormatter()
-                let finalPrivacy = publishAt != nil ? "private" : privacyStatus.lowercased()
-
-                let parameters: [String: String] = [
-                    "title": title,
-                    "description": description ?? "",
-                    "tags": tags != nil ? "[\(tags!.map { "\"\($0)\"" }.joined(separator: ","))]" : "[]",
-                    "categoryId": categoryId,
-                    "privacyStatus": finalPrivacy,
-                    "publishAt": publishAt != nil ? isoFormatter.string(from: publishAt!) : "",
-                    "localVideoFilename": persistentVideoURL.lastPathComponent
-                ]
-
-                var body = buildMultipartBody(
-                    parameters: parameters,
-                    thumbnailURL: thumbnailURL,
-                    boundary: boundary
+                let parameters = buildUploadParameters(
+                    request: request,
+                    persistentVideoURL: persistentVideoURL
                 )
-
-                request.httpBody = body
-
-                // 7. Fire Handshake to Edge Function
-                let (responseData, responseURL) = try await URLSession.shared.data(for: request)
-
-                guard let httpResponse = responseURL as? HTTPURLResponse else {
-                    print("Invalid response from handshake")
-                    return
-                }
-
-                if !(200 ... 299).contains(httpResponse.statusCode) {
-                    if let errString = String(data: responseData, encoding: .utf8) {
-                        print("❌ Handshake failed (\(httpResponse.statusCode)): \(errString)")
-                    } else {
-                        print("❌ Handshake failed with status code: \(httpResponse.statusCode)")
-                    }
-                    return
-                }
-
-                let resumableData = try JSONDecoder().decode(GetResumableUrlResponse.self, from: responseData)
-
+                guard let resumableData = try await performHandshake(
+                    jwtToken: jwtToken,
+                    boundary: boundary,
+                    parameters: parameters,
+                    thumbnailURL: request.thumbnailURL
+                ) else { return }
                 guard let uploadUrl = URL(string: resumableData.resumableUploadUrl) else {
                     print("Invalid Resumable URL returned from backend")
                     return
                 }
-
-                // 6. Start Native Background Video Upload
                 var uploadRequest = URLRequest(url: uploadUrl)
                 uploadRequest.httpMethod = "PUT"
-
                 let uploadTask = urlSession.uploadTask(with: uploadRequest, fromFile: persistentVideoURL)
                 uploadTask.taskDescription = resumableData.uploadId
                 uploadTask.resume()
-
                 print("🚀 Native Video Upload Task started with ID: \(resumableData.uploadId)")
-
             } catch {
                 print("❌ Failed to orchestrate upload process: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    // MARK: - Private Helpers
+
+    private func copyVideoToPersistentStorage(from videoURL: URL) throws -> URL {
+        let documentsDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let persistentVideoURL = documentsDir.appendingPathComponent(videoURL.lastPathComponent)
+        if FileManager.default.fileExists(atPath: persistentVideoURL.path) {
+            try? FileManager.default.removeItem(at: persistentVideoURL)
+        }
+        try FileManager.default.copyItem(at: videoURL, to: persistentVideoURL)
+        return persistentVideoURL
+    }
+
+    private func buildUploadParameters(
+        request: VideoUploadRequest,
+        persistentVideoURL: URL
+    ) -> [String: String] {
+        let isoFormatter = ISO8601DateFormatter()
+        let finalPrivacy = request.publishAt != nil ? "private" : request.privacyStatus.lowercased()
+        return [
+            "title": request.title,
+            "description": request.description ?? "",
+            "tags": request.tags != nil ? "[\(request.tags!.map { "\"\($0)\"" }.joined(separator: ","))]" : "[]",
+            "categoryId": request.categoryId,
+            "privacyStatus": finalPrivacy,
+            "publishAt": request.publishAt != nil ? isoFormatter.string(from: request.publishAt!) : "",
+            "localVideoFilename": persistentVideoURL.lastPathComponent
+        ]
+    }
+
+    private func performHandshake(
+        jwtToken: String,
+        boundary: String,
+        parameters: [String: String],
+        thumbnailURL: URL?
+    ) async throws -> GetResumableUrlResponse? {
+        let urlString = "https://juuuwuydlgjhgwwabswy.supabase.co/functions/v1/youtube-upload"
+        var handshakeRequest = URLRequest(url: URL(string: urlString)!)
+        handshakeRequest.httpMethod = "POST"
+        handshakeRequest.setValue("Bearer \(jwtToken)", forHTTPHeaderField: "Authorization")
+        await handshakeRequest.setValue(SupabaseConfig.anonKey, forHTTPHeaderField: "apikey")
+        handshakeRequest.setValue(
+            "multipart/form-data; boundary=\(boundary)",
+            forHTTPHeaderField: "Content-Type"
+        )
+        handshakeRequest.httpBody = buildMultipartBody(
+            parameters: parameters,
+            thumbnailURL: thumbnailURL,
+            boundary: boundary
+        )
+        let (responseData, responseURL) = try await URLSession.shared.data(for: handshakeRequest)
+        guard let httpResponse = responseURL as? HTTPURLResponse else {
+            print("Invalid response from handshake")
+            return nil
+        }
+        if !(200 ... 299).contains(httpResponse.statusCode) {
+            if let errString = String(data: responseData, encoding: .utf8) {
+                print("❌ Handshake failed (\(httpResponse.statusCode)): \(errString)")
+            } else {
+                print("❌ Handshake failed with status code: \(httpResponse.statusCode)")
+            }
+            return nil
+        }
+        return try JSONDecoder().decode(GetResumableUrlResponse.self, from: responseData)
+    }
+
+    private func attachThumbnailToVideo(uploadId: String, videoId: String) async throws {
+        let session = try await SupabaseConfig.client.auth.session
+        let jwtToken = session.accessToken
+        let urlString = "https://juuuwuydlgjhgwwabswy.supabase.co/functions/v1/set-youtube-thumbnail"
+        var thumbnailRequest = URLRequest(url: URL(string: urlString)!)
+        thumbnailRequest.httpMethod = "POST"
+        thumbnailRequest.setValue("Bearer \(jwtToken)", forHTTPHeaderField: "Authorization")
+        await thumbnailRequest.setValue(SupabaseConfig.anonKey, forHTTPHeaderField: "apikey")
+        thumbnailRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let reqBody = AttachThumbnailRequest(uploadId: uploadId, youtubeVideoId: videoId)
+        thumbnailRequest.httpBody = try JSONEncoder().encode(reqBody)
+        let (data, response) = try await URLSession.shared.data(for: thumbnailRequest)
+        if let httpResponse = response as? HTTPURLResponse {
+            if (200 ... 299).contains(httpResponse.statusCode) {
+                print("✅ Thumbnail attachment and DB update triggered successfully!")
+            } else {
+                let errStr = String(data: data, encoding: .utf8) ?? "Unknown"
+                print("❌ Thumbnail Edge Function failed (\(httpResponse.statusCode)): \(errStr)")
             }
         }
     }
@@ -230,40 +256,9 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
                    let videoId = json["id"] as? String {
                     print("✅ Uploaded video ID: \(videoId)")
 
-                    // Call Edge Function to finalize thumbnail attachment via Supabase
-                    // Call Edge Function to finalize thumbnail attachment via Supabase
                     Task {
                         do {
-                            // 1. Get a fresh auth token
-                            let session = try await SupabaseConfig.client.auth.session
-                            let jwtToken = session.accessToken
-
-                            // 2. Use the hardcoded production URL (Matching the exact spelling of your function)
-                            let urlString =
-                                "https://juuuwuydlgjhgwwabswy.supabase.co/functions/v1/set-youtube-thumbnail"
-                            var request = URLRequest(url: URL(string: urlString)!)
-                            request.httpMethod = "POST"
-
-                            // 3. Set standard Supabase headers
-                            request.setValue("Bearer \(jwtToken)", forHTTPHeaderField: "Authorization")
-                            await request.setValue(SupabaseConfig.anonKey, forHTTPHeaderField: "apikey")
-                            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-                            // 4. Encode your existing struct into the body
-                            let reqBody = AttachThumbnailRequest(uploadId: uploadId, youtubeVideoId: videoId)
-                            request.httpBody = try JSONEncoder().encode(reqBody)
-
-                            // 5. Fire the request
-                            let (data, response) = try await URLSession.shared.data(for: request)
-
-                            if let httpResponse = response as? HTTPURLResponse {
-                                if (200 ... 299).contains(httpResponse.statusCode) {
-                                    print("✅ Thumbnail attachment and DB update triggered successfully!")
-                                } else {
-                                    let errStr = String(data: data, encoding: .utf8) ?? "Unknown"
-                                    print("❌ Thumbnail Edge Function failed (\(httpResponse.statusCode)): \(errStr)")
-                                }
-                            }
+                            try await attachThumbnailToVideo(uploadId: uploadId, videoId: videoId)
                         } catch {
                             print("❌ Failed to orchestrate thumbnail request: \(error)")
                         }

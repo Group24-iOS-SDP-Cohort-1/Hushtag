@@ -13,17 +13,17 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
 
     /// Replace these properties at the top
     private let trackView: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor.white.withAlphaComponent(0.12)
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
+        let view = UIView()
+        view.backgroundColor = UIColor.white.withAlphaComponent(0.12)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
     private let progressView: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor.accent
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
+        let view = UIView()
+        view.backgroundColor = UIColor.accent
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
     /// Add this new property alongside milestoneDots/milestoneLabels
@@ -96,59 +96,63 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
         progressWidthConstraint?.isActive = true
 
         for (index, milestone) in milestones.enumerated() {
-            // Dot
-            let dot = UIView()
-            dot.layer.cornerRadius = dotSize / 2
-            dot.layer.borderWidth = 2
-            dot.layer.borderColor = UIColor.systemGray3.cgColor
-            dot.backgroundColor = .clear
-            dot.translatesAutoresizingMaskIntoConstraints = false
-            progressBarContainer.addSubview(dot)
-            milestoneDots.append(dot)
+            setupMilestoneView(index: index, milestone: milestone)
+        }
+    }
 
-            // Checkmark inside dot
-            let config = UIImage.SymbolConfiguration(pointSize: 11, weight: .semibold)
-            let checkmark = UIImageView(image: UIImage(systemName: "checkmark", withConfiguration: config))
-            checkmark.tintColor = .white
-            checkmark.contentMode = .scaleAspectFit
-            checkmark.translatesAutoresizingMaskIntoConstraints = false
-            checkmark.alpha = 0
-            dot.addSubview(checkmark)
-            milestoneCheckmarks.append(checkmark)
+    private func setupMilestoneView(index: Int, milestone: String) {
+        // Dot
+        let dot = UIView()
+        dot.layer.cornerRadius = dotSize / 2
+        dot.layer.borderWidth = 2
+        dot.layer.borderColor = UIColor.systemGray3.cgColor
+        dot.backgroundColor = .clear
+        dot.translatesAutoresizingMaskIntoConstraints = false
+        progressBarContainer.addSubview(dot)
+        milestoneDots.append(dot)
 
-            // Label
-            let label = UILabel()
-            label.text = milestone
-            label.font = UIFont.systemFont(ofSize: 11, weight: .medium)
-            label.textColor = .systemGray
-            label.textAlignment = .center
-            label.translatesAutoresizingMaskIntoConstraints = false
-            progressBarContainer.addSubview(label)
-            milestoneLabels.append(label)
+        // Checkmark inside dot
+        let config = UIImage.SymbolConfiguration(pointSize: 11, weight: .semibold)
+        let checkmark = UIImageView(image: UIImage(systemName: "checkmark", withConfiguration: config))
+        checkmark.tintColor = .white
+        checkmark.contentMode = .scaleAspectFit
+        checkmark.translatesAutoresizingMaskIntoConstraints = false
+        checkmark.alpha = 0
+        dot.addSubview(checkmark)
+        milestoneCheckmarks.append(checkmark)
 
-            NSLayoutConstraint.activate([
-                dot.widthAnchor.constraint(equalToConstant: dotSize),
-                dot.heightAnchor.constraint(equalToConstant: dotSize),
-                dot.topAnchor.constraint(equalTo: progressBarContainer.topAnchor),
+        // Label
+        let label = UILabel()
+        label.text = milestone
+        label.font = UIFont.systemFont(ofSize: 11, weight: .medium)
+        label.textColor = .systemGray
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        progressBarContainer.addSubview(label)
+        milestoneLabels.append(label)
 
-                checkmark.centerXAnchor.constraint(equalTo: dot.centerXAnchor),
-                checkmark.centerYAnchor.constraint(equalTo: dot.centerYAnchor),
+        NSLayoutConstraint.activate([
+            dot.widthAnchor.constraint(equalToConstant: dotSize),
+            dot.heightAnchor.constraint(equalToConstant: dotSize),
+            dot.topAnchor.constraint(equalTo: progressBarContainer.topAnchor),
 
-                label.topAnchor.constraint(equalTo: dot.bottomAnchor, constant: 6),
-                label.centerXAnchor.constraint(equalTo: dot.centerXAnchor),
-                label.widthAnchor.constraint(equalToConstant: 80)
-            ])
+            checkmark.centerXAnchor.constraint(equalTo: dot.centerXAnchor),
+            checkmark.centerYAnchor.constraint(equalTo: dot.centerYAnchor),
 
-            switch index {
-            case 0:
-                dot.leadingAnchor.constraint(equalTo: progressBarContainer.leadingAnchor, constant: horizontalInset)
-                    .isActive = true
-            case milestones.count - 1:
-                dot.trailingAnchor.constraint(equalTo: progressBarContainer.trailingAnchor, constant: -horizontalInset)
-                    .isActive = true
-            default:
-                dot.centerXAnchor.constraint(equalTo: progressBarContainer.centerXAnchor).isActive = true
-            }
+            label.topAnchor.constraint(equalTo: dot.bottomAnchor, constant: 6),
+            label.centerXAnchor.constraint(equalTo: dot.centerXAnchor),
+            label.widthAnchor.constraint(equalToConstant: 80)
+        ])
+
+        switch index {
+        case 0:
+            dot.leadingAnchor.constraint(equalTo: progressBarContainer.leadingAnchor, constant: horizontalInset)
+                .isActive = true
+        case milestones.count - 1:
+            dot.trailingAnchor.constraint(equalTo: progressBarContainer.trailingAnchor, constant: -horizontalInset)
+                .isActive = true
+        default:
+            dot.centerXAnchor.constraint(equalTo: progressBarContainer.centerXAnchor).isActive = true
         }
     }
 
@@ -160,8 +164,8 @@ class IdeaProgressCollectionViewCell: UICollectionViewCell {
         guard width > 0, width != lastContainerWidth else { return }
         lastContainerWidth = width
 
-        for (i, constraint) in middleDotCenterXConstraints.enumerated() {
-            let milestoneIndex = i + 1
+        for (index, constraint) in middleDotCenterXConstraints.enumerated() {
+            let milestoneIndex = index + 1
             let fraction = CGFloat(milestoneIndex) / CGFloat(milestones.count - 1)
             let trackWidth = width - (horizontalInset * 2) - dotSize
             constraint.constant = horizontalInset + (dotSize / 2) + trackWidth * fraction

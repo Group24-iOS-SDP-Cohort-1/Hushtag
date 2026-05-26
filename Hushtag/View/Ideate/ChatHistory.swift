@@ -88,19 +88,19 @@ class ChatHistory: UITableViewController {
 
         let storyboard = UIStoryboard(name: "Chatbot", bundle: nil)
 
-        guard let vc = storyboard.instantiateViewController(
+        guard let viewController = storyboard.instantiateViewController(
             withIdentifier: "Chatbot"
         ) as? Chatbot else { return }
 
-        vc.conversationID = convo.id
+        viewController.conversationID = convo.id
 
         guard let navigationController = navigationController else { return }
 
         if let ideate1Index = navigationController.viewControllers.firstIndex(where: { $0 is Ideate1 }) {
-            let newStack = Array(navigationController.viewControllers[0 ... ideate1Index]) + [vc]
+            let newStack = Array(navigationController.viewControllers[0 ... ideate1Index]) + [viewController]
             navigationController.setViewControllers(newStack, animated: true)
         } else {
-            navigationController.pushViewController(vc, animated: true)
+            navigationController.pushViewController(viewController, animated: true)
         }
     }
 

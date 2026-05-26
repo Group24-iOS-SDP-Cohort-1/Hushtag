@@ -79,20 +79,20 @@ enum ScheduleItem: Identifiable {
     }
 
     func matches(post: Post, task: Tasks?) -> Bool {
-        guard case let .post(p, t) = self else { return false }
-        return p.id == post.id && t?.id == task?.id
+        guard case let .post(postItem, taskItem) = self else { return false }
+        return postItem.id == post.id && taskItem?.id == task?.id
     }
 
     func matches(deal: Deal, deliverable: Deliverable?) -> Bool {
-        guard case let .deal(d, del) = self else { return false }
-        return d.id == deal.id && del?.id == deliverable?.id
+        guard case let .deal(dealItem, del) = self else { return false }
+        return dealItem.id == deal.id && del?.id == deliverable?.id
     }
 }
 
 enum Platform: String, Codable, CaseIterable {
     case instagram
     case youtube
-    case x
+    case twitter = "x"
     case pinterest
     case others
 
@@ -100,7 +100,7 @@ enum Platform: String, Codable, CaseIterable {
         switch self {
         case .instagram: return "Instagram"
         case .youtube: return "YouTube"
-        case .x: return "X"
+        case .twitter: return "X"
         case .pinterest: return "Pinterest"
         case .others: return "Others"
         }

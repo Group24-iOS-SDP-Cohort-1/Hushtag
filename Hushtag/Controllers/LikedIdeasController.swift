@@ -49,23 +49,26 @@ final class LikedIdeasController {
         return likedIdeasDB.map { mapToIdea($0) }
     }
 
-    private func mapToIdea(_ db: LikedIdeaDB) -> Idea {
+    private func mapToIdea(_ database: LikedIdeaDB) -> Idea {
         // If views/likes are stored (from search ideas), create a synthetic video
         // so the Performance Statistics section renders correctly.
         // Analytics ideas save with 0/0, so they remain videos: nil → stats hidden.
-        let views = db.views ?? 0
-        let likes = db.likes ?? 0
+        let views = database.views ?? 0
+        let likes = database.likes ?? 0
         let videos: [Video]? = (views > 0 || likes > 0)
-            ? [Video(id: "avg", title: "Average", thumbnail: "", channel: "", views: views, likes: likes, comments: 0, publishedAt: "", link: nil)]
+            ? [Video(
+                id: "avg", title: "Average", thumbnail: "", channel: "", views: views, likes: likes,
+                comments: 0, publishedAt: "", link: nil
+            )]
             : nil
 
         return Idea(
             id: UUID(),
-            ideaKey: db.ideaKey,
-            title: db.title,
-            description: db.description ?? "",
+            ideaKey: database.ideaKey,
+            title: database.title,
+            description: database.description ?? "",
             format: "",
-            hashtags: db.hashtags ?? [],
+            hashtags: database.hashtags ?? [],
             noveltyScore: 0,
             videos: videos,
             liked: true

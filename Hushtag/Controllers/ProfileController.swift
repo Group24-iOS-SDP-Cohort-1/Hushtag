@@ -44,13 +44,13 @@ final class ProfileController {
         return mapToProfile(profile)
     }
 
-    private func mapToProfile(_ db: ProfileDB) -> Profile {
+    private func mapToProfile(_ profileDB: ProfileDB) -> Profile {
         Profile(
-            id: db.userId,
-            fullName: db.fullName,
-            email: db.email,
-            avatarURL: db.avatarUrl,
-            isYouTubeConnected: db.isYoutubeConnected ?? false
+            id: profileDB.userId,
+            fullName: profileDB.fullName,
+            email: profileDB.email,
+            avatarURL: profileDB.avatarUrl,
+            isYouTubeConnected: profileDB.isYoutubeConnected ?? false
         )
     }
 }

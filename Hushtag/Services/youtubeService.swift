@@ -3,11 +3,11 @@ import Foundation
 enum AppConfig {
 
     static func value(for key: String) -> String {
-        
+
         guard let path = Bundle.main.path(forResource: "keys", ofType: "plist"),
               let plist = NSDictionary(contentsOfFile: path),
               let value = plist[key] as? String else {
-            
+
             fatalError("Missing key: \(key)")
         }
 

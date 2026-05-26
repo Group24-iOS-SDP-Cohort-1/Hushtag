@@ -23,7 +23,7 @@ nonisolated struct PreferenceDB: Codable {
 enum Platforms: String, Codable, CustomStringConvertible {
     case youtube
     case instagram
-    case x
+    case twitter = "x"
     var description: String {
         rawValue
     }
