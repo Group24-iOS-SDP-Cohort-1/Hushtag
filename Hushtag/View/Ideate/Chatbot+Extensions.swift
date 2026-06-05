@@ -225,6 +225,7 @@ extension Chatbot {
             self.messages.append(Message(role: "bot", content: replyText))
             self.tableView.reloadData()
             self.scrollToBottom()
+            self.maybeStartOnboarding()
         }
     }
 }
@@ -304,6 +305,9 @@ extension Chatbot {
         if self.isAllContentMarked() && !self.didShowFinalReadyMessage {
             self.showPostReadyAlert()
         }
+
+        // Notify onboarding overlay that user successfully selected a type
+        self.onboardingOverlay?.notifyUserCompletedSelection()
 
         self.showScriptSuggestions()
     }

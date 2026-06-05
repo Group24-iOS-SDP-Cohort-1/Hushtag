@@ -32,6 +32,9 @@ class Chatbot: UIViewController, UITextViewDelegate {
     var didShowFinalReadyMessage = false
     var conversationID: UUID?
 
+    // MARK: - Onboarding
+    var onboardingOverlay: ChatbotOnboardingOverlay?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
@@ -288,3 +291,59 @@ class Chatbot: UIViewController, UITextViewDelegate {
         }
     }
 }
+
+// MARK: - Onboarding
+
+extension Chatbot {
+    /// Starts the long-press onboarding overlay the first time a bot message appears.
+    /// - Safe to call multiple times; guards on completion flag and overlay already active.
+    func maybeStartOnboarding() {
+        // Only trigger if this is the FIRST bot message in the current conversation
+        let botMessagesCount = messages.filter { $0.role == "bot" }.count
+        guard botMessagesCount == 1 else { return }
+        
+        // Ensure we don't present multiple overlays
+        guard onboardingOverlay == nil else { return }
+
+        // Find the first bot message index
+        guard let firstBotIndex = messages.firstIndex(where: { $0.role == "bot" }) else { return }
+
+        // The table row = firstBotIndex + 1 (row 0 is the platform cell)
+        let rowIndexPath = IndexPath(row: firstBotIndex + 1, section: 0)
+
+        // Give the table enough time to finish the scrollToBottom animation (~0.3s)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { [weak self] in
+            guard let self = self else { return }
+            guard let cell = self.tableView.cellForRow(at: rowIndexPath) as? ChatCell else { return }
+
+            let overlay = ChatbotOnboardingOverlay()
+
+            overlay.onDidActivate = { [weak self] in
+                self?.setOnboardingUIEnabled(false)
+            }
+
+            overlay.onCompleted = { [weak self] in
+                self?.setOnboardingUIEnabled(true)
+                self?.onboardingOverlay = nil
+            }
+
+            self.onboardingOverlay = overlay
+            overlay.present(in: self.view, cell: cell)
+        }
+    }
+
+    /// Disables (or re-enables) the input bar and navigation controls during onboarding.
+    /// The overlay's touch-blocker view already handles the table area.
+    private func setOnboardingUIEnabled(_ enabled: Bool) {
+        textFieldView.isUserInteractionEnabled = enabled
+        enterbutton.isEnabled = enabled
+        generateStack.isUserInteractionEnabled = enabled
+        scriptedChats.isEnabled = enabled
+
+        UIView.animate(withDuration: 0.2) {
+            self.textView.alpha = enabled ? 1.0 : 0.35
+            self.generateStack.alpha = enabled ? 1.0 : 0.35
+        }
+    }
+}
+
