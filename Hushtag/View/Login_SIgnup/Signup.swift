@@ -9,29 +9,28 @@ class Signup: UIViewController {
     @IBOutlet var passwordTextField: UITextField!
     @IBOutlet var emailTextField: UITextField!
     @IBOutlet var fullNameTextField: UITextField!
-    @IBOutlet var appleButton: UIButton!
-    @IBOutlet var facebookButton: UIButton!
     @IBOutlet var googleButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         styleSocialButton(googleButton)
-        styleSocialButton(facebookButton)
-        styleSocialButton(appleButton)
         styleTextField(emailTextField)
         styleTextField(passwordTextField)
         styleTextField(confirmPasswordTextField)
         styleTextField(fullNameTextField)
 
         enableKeyboardDismissOnTap()
-
         googleButton.addTarget(self, action: #selector(googleSignUpTapped), for: .touchUpInside)
     }
 
     func styleSocialButton(_ button: UIButton) {
-        button.backgroundColor = UIColor(white: 0.95, alpha: 1)
-        button.layer.cornerRadius = 14
+        button.contentHorizontalAlignment = .center
+        button.imageView?.contentMode = .scaleAspectFit
+
+        button.layer.cornerRadius = 10
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.white.cgColor
         button.clipsToBounds = true
     }
 
