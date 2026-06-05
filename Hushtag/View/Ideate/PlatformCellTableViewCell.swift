@@ -1,7 +1,6 @@
 import UIKit
 
 class PlatformCellTableViewCell: UITableViewCell {
-   
 
     @IBOutlet var view: UIView!
 

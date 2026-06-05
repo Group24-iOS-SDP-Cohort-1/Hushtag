@@ -7,8 +7,8 @@ class Details: UIViewController {
     var onToggleMainPost: ((Post) -> Void)?
     var onToggleDeliverable: ((Deal, Deliverable) -> Void)?
     var onToggleMainDeal: ((Deal) -> Void)?
-    private let postsController = PostsController()
-    private let dealsController = DealsController()
+    let postsController = PostsController()
+    let dealsController = DealsController()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,75 +79,83 @@ class Details: UIViewController {
         UICollectionViewCompositionalLayout { [weak self] section, _ in
             guard let self, let schedule = self.schedule else { return nil }
 
-            // Sections 0 & 1 are horizontal cards for DEAL
             if case .deal = schedule, section == 0 || section == 1 {
-                let item = NSCollectionLayoutItem(
-                    layoutSize: .init(
-                        widthDimension: .fractionalWidth(1),
-                        heightDimension: .fractionalHeight(1)
-                    )
-                )
-
-                let group = NSCollectionLayoutGroup.horizontal(
-                    layoutSize: .init(
-                        widthDimension: .fractionalWidth(0.9),
-                        heightDimension: .estimated(90)
-                    ),
-                    subitems: [item]
-                )
-
-                let section = NSCollectionLayoutSection(group: group)
-                section.orthogonalScrollingBehavior = .continuous
-                section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
-                return section
+                return self.dealLayoutSection()
             }
 
-            // Section 0 is horizontal card for POST
             if case .post = schedule, section == 0 {
-                let item = NSCollectionLayoutItem(
-                    layoutSize: .init(
-                        widthDimension: .fractionalWidth(1),
-                        heightDimension: .fractionalHeight(1)
-                    )
-                )
-                item.contentInsets = .init(top: 2, leading: 7, bottom: 2, trailing: 7)
-
-                let group = NSCollectionLayoutGroup.horizontal(
-                    layoutSize: .init(
-                        widthDimension: .fractionalWidth(0.9),
-                        heightDimension: .estimated(120)
-                    ),
-                    subitems: [item]
-                )
-
-                let section = NSCollectionLayoutSection(group: group)
-                section.orthogonalScrollingBehavior = .continuous
-                section.contentInsets = .init(top: 10, leading: 20, bottom: 10, trailing: 20)
-                return section
+                return self.postLayoutSection()
             }
 
-            // Everything else → vertical list / grid
-            // Everything else → vertical list / grid
-            let item = NSCollectionLayoutItem(
-                layoutSize: .init(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .fractionalHeight(1)
-                )
-            )
-            item.contentInsets = .init(top: 7, leading: 7, bottom: 7, trailing: 7)
-
-            let group = NSCollectionLayoutGroup.vertical(
-                layoutSize: .init(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .estimated(100)
-                ),
-                subitems: [item]
-            )
-
-            let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
-            return section
+            return self.defaultLayoutSection()
         }
+    }
+
+    private func dealLayoutSection() -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(
+            layoutSize: .init(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .fractionalHeight(1)
+            )
+        )
+
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: .init(
+                widthDimension: .fractionalWidth(0.9),
+                heightDimension: .estimated(90)
+            ),
+            subitems: [item]
+        )
+
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .continuous
+        section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
+        return section
+    }
+
+    private func postLayoutSection() -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(
+            layoutSize: .init(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .fractionalHeight(1)
+            )
+        )
+        item.contentInsets = .init(top: 2, leading: 7, bottom: 2, trailing: 7)
+
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: .init(
+                widthDimension: .fractionalWidth(0.9),
+                heightDimension: .estimated(120)
+            ),
+            subitems: [item]
+        )
+
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .continuous
+        section.contentInsets = .init(top: 10, leading: 20, bottom: 10, trailing: 20)
+        return section
+    }
+
+    private func defaultLayoutSection() -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(
+            layoutSize: .init(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .fractionalHeight(1)
+            )
+        )
+        item.contentInsets = .init(top: 7, leading: 7, bottom: 7, trailing: 7)
+
+        let group = NSCollectionLayoutGroup.vertical(
+            layoutSize: .init(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .estimated(100)
+            ),
+            subitems: [item]
+        )
+
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = .init(top: 0, leading: 20, bottom: 0, trailing: 20)
+        return section
     }
 
     private func updateTaskCompletion(taskIndex: Int, isCompleted: Bool) {
@@ -160,7 +168,7 @@ class Details: UIViewController {
         detailsView.reloadItems(at: [IndexPath(row: taskIndex, section: 1)])
     }
 
-    private func performDelete(postId: UUID) {
+    func performDelete(postId: UUID) {
         Task {
             do {
                 try await postsController.deletePost(postId: postId)
@@ -189,7 +197,7 @@ class Details: UIViewController {
         }
     }
 
-    private func performDelete(dealId: UUID) {
+    func performDelete(dealId: UUID) {
         Task {
             do {
                 try await dealsController.deleteDeal(dealId)
@@ -218,19 +226,19 @@ class Details: UIViewController {
         }
     }
 
-    private func handleTaskToggle(post: Post, task: Tasks) async {
+    func handleTaskToggle(post: Post, task: Tasks) async {
         onToggleTask?(post, task)
     }
 
-    private func handleMainPostToggle(post: Post) async {
+    func handleMainPostToggle(post: Post) async {
         onToggleMainPost?(post)
     }
 
-    private func handleDeliverableToggle(deal: Deal, deliverable: Deliverable) async {
+    func handleDeliverableToggle(deal: Deal, deliverable: Deliverable) async {
         onToggleDeliverable?(deal, deliverable)
     }
 
-    private func handleMainDealToggle(deal: Deal) async {
+    func handleMainDealToggle(deal: Deal) async {
         onToggleMainDeal?(deal)
     }
 
@@ -249,250 +257,5 @@ class Details: UIViewController {
                 dest.delegate = self
             }
         }
-    }
-}
-
-extension Details: UICollectionViewDataSource {
-    func numberOfSections(in _: UICollectionView) -> Int {
-        switch schedule {
-        case .deal:
-            return 3
-        case .post:
-            return 2
-        default:
-            return 0
-        }
-    }
-
-    func collectionView(_: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let schedule else { return 0 }
-
-        if section == 0 {
-            return 1
-        }
-        switch schedule {
-        case let .deal(deal, _):
-            if section == 1 {
-                return 1
-            }
-            return deal.deliverables.count
-
-        case let .post(post, _):
-            return post.tasks.count
-        }
-    }
-
-    func collectionView(
-        _ collectionView: UICollectionView,
-        cellForItemAt indexPath: IndexPath
-    ) -> UICollectionViewCell {
-        guard let schedule = schedule else {
-            return UICollectionViewCell()
-        }
-
-        switch schedule {
-        case let .deal(deal, _):
-            return dealCell(at: indexPath, deal: deal, schedule: schedule, in: collectionView)
-        case let .post(post, _):
-            return postCell(at: indexPath, post: post, schedule: schedule, in: collectionView)
-        }
-    }
-
-    // MARK: - Cell helpers
-
-    private func dealCell(
-        at indexPath: IndexPath,
-        deal: Deal,
-        schedule: ScheduleItem,
-        in collectionView: UICollectionView
-    ) -> UICollectionViewCell {
-        if indexPath.section == 0 {
-            return dealCommonCell(at: indexPath, schedule: schedule, in: collectionView)
-        }
-
-        if indexPath.section == 1 {
-            guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: "deal_details",
-                for: indexPath
-            ) as? DetailsCollectionViewCell else {
-                return UICollectionViewCell()
-            }
-            cell.dealDetails(with: deal)
-            return cell
-        }
-
-        return dealDeliverableCell(at: indexPath, deal: deal, in: collectionView)
-    }
-
-    private func dealCommonCell(
-        at indexPath: IndexPath,
-        schedule: ScheduleItem,
-        in collectionView: UICollectionView
-    ) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "common_details",
-            for: indexPath
-        ) as? DetailsCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        cell.indexPath = indexPath
-        cell.onToggleCompletion = { [weak self] _ in
-            guard let self else { return }
-            guard case let .deal(deal, _) = self.schedule else { return }
-            Task { await self.handleMainDealToggle(deal: deal) }
-        }
-        cell.configureCommon(with: schedule)
-        cell.onDeleteTapped = { [weak self] in
-            guard let self else { return }
-            DispatchQueue.main.async {
-                let alert = UIAlertController(
-                    title: "Delete Deal?",
-                    message: "This will permanently delete the deal and all its deliverables.",
-                    preferredStyle: .alert
-                )
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-                    guard case let .deal(deal, _) = self.schedule else { return }
-                    self.performDelete(dealId: deal.id)
-                })
-                self.topMostViewController.present(alert, animated: true)
-            }
-        }
-        cell.onEditTapped = { [weak self] in
-            self?.performSegue(withIdentifier: "editDeal", sender: self)
-        }
-        return cell
-    }
-
-    private func dealDeliverableCell(
-        at indexPath: IndexPath,
-        deal: Deal,
-        in collectionView: UICollectionView
-    ) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "multiple_details",
-            for: indexPath
-        ) as? DetailsCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        let deliverable = deal.deliverables[indexPath.row]
-        cell.indexPath = indexPath
-        cell.configureMultiple(with: deliverable)
-        cell.onToggleCompletion = { [weak self] indexPath in
-            guard let self else { return }
-            guard case let .deal(deal, _) = self.schedule else { return }
-            let deliverable = deal.deliverables[indexPath.row]
-            Task { await self.handleDeliverableToggle(deal: deal, deliverable: deliverable) }
-        }
-        cell.applyLiquidGlassEffect()
-        return cell
-    }
-
-    private func postCell(
-        at indexPath: IndexPath,
-        post: Post,
-        schedule: ScheduleItem,
-        in collectionView: UICollectionView
-    ) -> UICollectionViewCell {
-        if indexPath.section == 0 {
-            return postCommonCell(at: indexPath, schedule: schedule, in: collectionView)
-        }
-        return postTaskCell(at: indexPath, post: post, in: collectionView)
-    }
-
-    private func postCommonCell(
-        at indexPath: IndexPath,
-        schedule: ScheduleItem,
-        in collectionView: UICollectionView
-    ) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "common_details",
-            for: indexPath
-        ) as? DetailsCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        cell.indexPath = indexPath
-        // Add Main Toggle action directly on common_details cell for Post.
-        cell.onToggleCompletion = { [weak self] _ in
-            guard let self else { return }
-            guard case let .post(post, _) = self.schedule else { return }
-            Task { await self.handleMainPostToggle(post: post) }
-        }
-        cell.configureCommon(with: schedule)
-        cell.onDeleteTapped = { [weak self] in
-            guard let self else { return }
-            DispatchQueue.main.async {
-                let alert = UIAlertController(
-                    title: "Delete Post?",
-                    message: "This will permanently delete the post and all its tasks.",
-                    preferredStyle: .alert
-                )
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-                    guard case let .post(post, _) = self.schedule,
-                          let postId = post.id else { return }
-                    self.performDelete(postId: postId)
-                })
-                self.topMostViewController.present(alert, animated: true)
-            }
-        }
-        cell.onEditTapped = { [weak self] in
-            self?.performSegue(withIdentifier: "editPost", sender: self)
-        }
-        return cell
-    }
-
-    private func postTaskCell(
-        at indexPath: IndexPath,
-        post: Post,
-        in collectionView: UICollectionView
-    ) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "multiple_details",
-            for: indexPath
-        ) as? DetailsCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        let task = post.tasks[indexPath.row]
-        cell.indexPath = indexPath
-        cell.configureMultiple(with: task)
-        cell.onToggleCompletion = { [weak self] indexPath in
-            guard let self else { return }
-            guard case let .post(post, _) = self.schedule else { return }
-            let task = post.tasks[indexPath.row]
-            Task { await self.handleTaskToggle(post: post, task: task) }
-        }
-        cell.applyLiquidGlassEffect()
-        return cell
-    }
-}
-
-extension UIViewController {
-    var topMostViewController: UIViewController {
-        if let presented = presentedViewController {
-            return presented.topMostViewController
-        }
-        if let nav = self as? UINavigationController {
-            return nav.visibleViewController?.topMostViewController ?? nav
-        }
-        if let tab = self as? UITabBarController {
-            return tab.selectedViewController?.topMostViewController ?? tab
-        }
-        return self
-    }
-}
-
-extension Details: AddDealsDelegate {
-    func addDealsViewController(_: AddDealsViewController, didCreateDeal _: Deal) {}
-
-    func addDealsViewController(_: AddDealsViewController, didUpdateDeal deal: Deal, at _: Int) {
-        guard case let .deal(_, currentDeliverable) = schedule else { return }
-
-        // CHANGED: Handle optional deliverable
-        let updatedDeliverable = currentDeliverable != nil ?
-            (deal.deliverables.first(where: { $0.id == currentDeliverable!.id }) ?? currentDeliverable) : nil
-
-        schedule = .deal(deal: deal, deliverable: updatedDeliverable)
-        detailsView.reloadData()
     }
 }

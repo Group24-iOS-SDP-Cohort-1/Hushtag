@@ -10,14 +10,14 @@ class ViewScriptsCell: UICollectionViewCell {
     private var isExpanded = false
 
     lazy var editableTextView: UITextView = {
-        let tv = UITextView()
-        tv.translatesAutoresizingMaskIntoConstraints = false
-        tv.isScrollEnabled = false
-        tv.backgroundColor = UIColor.systemGray6.withAlphaComponent(0.5)
-        tv.layer.cornerRadius = 8
-        tv.isHidden = true
-        tv.delegate = self
-        return tv
+        let textView = UITextView()
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.isScrollEnabled = false
+        textView.backgroundColor = UIColor.systemGray6.withAlphaComponent(0.5)
+        textView.layer.cornerRadius = 8
+        textView.isHidden = true
+        textView.delegate = self
+        return textView
     }()
 
     var textChangedHandler: ((String) -> Void)?
@@ -93,8 +93,8 @@ class ViewScriptsCell: UICollectionViewCell {
 
         var view = superview
         while view != nil {
-            if let cv = view as? UICollectionView {
-                cv.performBatchUpdates(nil)
+            if let collectionView = view as? UICollectionView {
+                collectionView.performBatchUpdates(nil)
                 break
             }
             view = view?.superview
@@ -110,8 +110,8 @@ extension ViewScriptsCell: UITextViewDelegate {
         UIView.setAnimationsEnabled(false)
         var view = superview
         while view != nil {
-            if let cv = view as? UICollectionView {
-                cv.performBatchUpdates(nil)
+            if let collectionView = view as? UICollectionView {
+                collectionView.performBatchUpdates(nil)
                 break
             }
             view = view?.superview

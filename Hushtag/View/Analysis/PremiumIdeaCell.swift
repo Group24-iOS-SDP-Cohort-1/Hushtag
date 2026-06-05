@@ -9,38 +9,38 @@ class PremiumIdeaCell: UICollectionViewCell {
     weak var delegate: PremiumIdeaCellDelegate?
 
     private let containerView: UIView = {
-        let v = UIView()
-        v.layer.cornerRadius = 10
-        v.translatesAutoresizingMaskIntoConstraints = false
-        v.clipsToBounds = true
-        return v
+        let view = UIView()
+        view.layer.cornerRadius = 10
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.clipsToBounds = true
+        return view
     }()
 
     private let titleLabel: UILabel = {
-        let l = UILabel()
-        l.font = .systemFont(ofSize: 18, weight: .semibold)
-        l.textColor = .label
-        l.numberOfLines = 2
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 18, weight: .semibold)
+        label.textColor = .label
+        label.numberOfLines = 2
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
 
     private let subtitleLabel: UILabel = {
-        let l = UILabel()
-        l.font = .systemFont(ofSize: 15, weight: .regular)
-        l.textColor = .secondaryLabel
-        l.numberOfLines = 3
-        l.translatesAutoresizingMaskIntoConstraints = false
-        return l
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 15, weight: .regular)
+        label.textColor = .secondaryLabel
+        label.numberOfLines = 3
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
     }()
 
     let bookmarkButton: UIButton = {
-        let b = UIButton(type: .system)
+        let button = UIButton(type: .system)
         let config = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
-        b.setImage(UIImage(systemName: "bookmark", withConfiguration: config), for: .normal)
-        b.tintColor = .secondaryLabel
-        b.translatesAutoresizingMaskIntoConstraints = false
-        return b
+        button.setImage(UIImage(systemName: "bookmark", withConfiguration: config), for: .normal)
+        button.tintColor = .secondaryLabel
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
     }()
 
     override init(frame: CGRect) {

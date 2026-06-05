@@ -9,7 +9,7 @@ final class ProfileTableViewController: UITableViewController {
     @IBOutlet var youtubeStatusLabel: UILabel!
     @IBOutlet var youtubeStatusDot: UIView!
 
-    private var profile: Profile?
+    var profile: Profile?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,7 +64,7 @@ final class ProfileTableViewController: UITableViewController {
         fetchProfile(forceRefresh: false)
     }
 
-    private func fetchProfile(forceRefresh: Bool = false) {
+    func fetchProfile(forceRefresh: Bool = false) {
         Task {
             do {
                 async let profileTask = SessionManager.shared.getProfileAndAvatar(forceRefresh: forceRefresh)
@@ -186,200 +186,6 @@ final class ProfileTableViewController: UITableViewController {
         title = "Profile"
         youtubeStatusDot.layer.cornerRadius = youtubeStatusDot.frame.width / 2
         youtubeStatusDot.clipsToBounds = true
-    }
-
-    func signOutTap() {
-        let alert = UIAlertController(
-            title: "Sign Out",
-            message: "Are you sure you want to sign out?",
-            preferredStyle: .actionSheet
-        )
-
-        alert.addAction(UIAlertAction(title: "Sign Out", style: .destructive, handler: { [weak self] _ in
-            self?.performSignOut()
-        }))
-
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-
-        present(alert, animated: true)
-    }
-
-    func performSignOut() {
-        _Concurrency.Task { @MainActor in
-            do {
-                try await AuthManager.shared.signOut()
-                // print("User signed out successfully")
-
-                SessionManager.shared.clearSession()
-                self.navigateToLoginScreen()
-
-            } catch {
-                // print("Error signing out: \(error)")
-                self.showAlert(title: "Error", message: "Could not sign out. Please try again.")
-            }
-        }
-    }
-
-    func deleteAccountTap() {
-        let alert = UIAlertController(
-            title: "Delete Account",
-            message: "Are you sure you want to permanently delete your account? This action cannot be undone.",
-            preferredStyle: .alert
-        )
-
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { [weak self] _ in
-            self?.performAccountDeletion()
-        }))
-
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-
-        present(alert, animated: true)
-    }
-
-    private func forceClearLocalSession() {
-        let keychainQuery: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword
-        ]
-
-        let status = SecItemDelete(keychainQuery as CFDictionary)
-        if status == errSecSuccess || status == errSecItemNotFound {
-            // print("Keychain wiped successfully.")
-        } else {
-            // print("Keychain wipe returned status: \(status)")
-        }
-
-        let defaults = UserDefaults.standard
-        for key in defaults.dictionaryRepresentation().keys {
-            if key.lowercased().contains("supabase") || key.lowercased().contains("gotrue") {
-                defaults.removeObject(forKey: key)
-            }
-        }
-
-        // print("Nuclear option executed: Local session data destroyed.")
-    }
-
-    func performAccountDeletion() {
-        Task { @MainActor in
-            do {
-                try await SupabaseConfig.client.database.rpc("delete_user").execute()
-                // print("Backend deletion executed.")
-            } catch {
-                // print("Backend deletion finished (expected auth error): \(error.localizedDescription)")
-            }
-
-            do {
-                try await SupabaseConfig.client.auth.signOut(scope: .local)
-                // print("Graceful local sign out succeeded.")
-            } catch {
-                // print("Graceful sign out failed. Applying manual purge...")
-                self.forceClearLocalSession()
-            }
-
-            SessionManager.shared.clearSession()
-            self.navigateToLoginScreen()
-        }
-    }
-
-    private func handleYouTubeTap() {
-        guard let profile = profile else { return }
-
-        if profile.isYouTubeConnected {
-            let alert = UIAlertController(
-                title: "Disconnect YouTube",
-                message: "Are you sure you want to disconnect your YouTube account? You will stop receiving analytics.",
-                preferredStyle: .alert
-            )
-
-            alert.addAction(UIAlertAction(title: "Disconnect", style: .destructive, handler: { [weak self] _ in
-                self?.performYouTubeDisconnect()
-            }))
-
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            present(alert, animated: true)
-
-        } else {
-            Task { @MainActor in
-                do {
-                    self.youtubeStatusLabel.text = "Connecting..."
-                    self.youtubeStatusDot.backgroundColor = .systemYellow
-
-                    let signInModel = SignInModel()
-                    try await signInModel.connectYouTube()
-
-                    // Verify database state explicitly
-                    let confirmedState = await YouTubeController.shared.verifyYouTubeConnectionState(expectedState: true)
-                    SessionManager.shared.currentProfile?.isYouTubeConnected = confirmedState
-                    
-                    self.fetchProfile(forceRefresh: true)
-                } catch {
-                    // print("Failed to connect YouTube: \(error)")
-                    self.fetchProfile(forceRefresh: true)
-                }
-            }
-        }
-    }
-
-    private func performYouTubeDisconnect() {
-        Task { @MainActor in
-            do {
-                self.youtubeStatusLabel.text = "Disconnecting..."
-                self.youtubeStatusDot.backgroundColor = .systemYellow
-
-                try await YouTubeController.shared.disconnectYouTubeBackend()
-
-                let signInModel = SignInModel()
-                signInModel.disconnectYouTube()
-
-                // Verify database state explicitly
-                let confirmedState = await YouTubeController.shared.verifyYouTubeConnectionState(expectedState: false)
-                SessionManager.shared.currentProfile?.isYouTubeConnected = confirmedState
-                
-                self.fetchProfile(forceRefresh: true)
-
-            } catch {
-                print("Failed to disconnect YouTube backend: \(error)")
-                self.fetchProfile(forceRefresh: true)
-            }
-        }
-    }
-
-    func prepareAndNavigateToPreferences() {
-        Task { @MainActor in
-            do {
-                let preferencesController = PreferencesController()
-                let preferences = try await preferencesController.fetchPreferences()
-
-                navigateToPreferences(with: preferences)
-            } catch {
-                // If no preferences found or error, just navigate with nil
-                navigateToPreferences(with: nil)
-            }
-        }
-    }
-
-    private func navigateToPreferences(with preferences: UserPreference?) {
-        let storyboard = UIStoryboard(name: "Preferences", bundle: nil)
-        if let preferencesVC = storyboard
-            .instantiateViewController(withIdentifier: "PreferenceVC") as? PreferencesViewController {
-            preferencesVC.initialPreference = preferences
-            navigationController?.pushViewController(preferencesVC, animated: true)
-        }
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        if indexPath.section == 1, indexPath.row == 0 {
-            handleYouTubeTap()
-        } else if indexPath.section == 2, indexPath.row == 0 {
-            // Settings
-        } else if indexPath.section == 2, indexPath.row == 1 {
-            prepareAndNavigateToPreferences()
-        } else if indexPath.section == 3, indexPath.row == 0 {
-            signOutTap()
-        } else if indexPath.section == 3, indexPath.row == 1 {
-            deleteAccountTap()
-        }
     }
 }
 

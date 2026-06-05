@@ -17,7 +17,7 @@ struct ClusterIdeaDTO: Codable, Identifiable {
     }
 
     enum CodingKeys: String, CodingKey {
-        case clusterId = "clusterId"
+        case clusterId
         case theme
         case gaps
         case ideas

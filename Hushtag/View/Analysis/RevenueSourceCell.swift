@@ -11,29 +11,29 @@ class RevenueSourceCell: UICollectionViewCell {
 
     func configure(metric: RevenueType, data: Double) {
         var title = ""
-        var sf = ""
+        var symbolName = ""
 
         switch metric {
         case .ads:
             title = "Estimated Ad Revenue"
-            sf = "play.rectangle.fill"
+            symbolName = "play.rectangle.fill"
 
         case .paidContent:
             title = "From Paid Content"
-            sf = "hand.thumbsup.fill"
+            symbolName = "hand.thumbsup.fill"
 
         case .ypp:
             title = "Creator's Share from YPP"
-            sf = "person.2.fill"
+            symbolName = "person.2.fill"
 
         case .collaboration:
             title = "Collaboration Revenue"
-            sf = "briefcase.fill"
+            symbolName = "briefcase.fill"
         }
 
         nameLabel.numberOfLines = 0
         nameLabel.text = title
         amountLabel.text = "Rs. \(data)"
-        sfSymbol.image = UIImage(systemName: sf)
+        sfSymbol.image = UIImage(systemName: symbolName)
     }
 }

@@ -36,7 +36,7 @@ class PreferencesViewController: UIViewController {
         if let prefs = initialPreference {
             selectedOptions["Niche"] = prefs.niche.map { $0.rawValue }
             selectedOptions["Platform"] = prefs.platform.map {
-                $0 == .x ? "x (twitter)" : $0.rawValue
+                $0 == .twitter ? "x (twitter)" : $0.rawValue
             }
 
             if completedStates.count > 0 {
@@ -80,47 +80,7 @@ class PreferencesViewController: UIViewController {
                 try await AuthManager.shared.completeOnboarding()
 
                 // Only navigate away on success
-                if let nav = self.navigationController, nav.viewControllers.count > 1 {
-                    OpaqueLoadingScreen.shared
-                        .show(message: "Loading...")
-                    await SessionManager.shared.restoreSession()
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "yyyy-MM-dd"
-
-                    let endDate = formatter.string(from: Date())
-
-                    let startDate = formatter.string(
-                        from: Calendar.current.date(byAdding: .day, value: -30, to: Date())!
-                    )
-
-                    await YouTubeController.shared.restoreYouTubeConnectionIfNeeded(
-                        startDate: startDate,
-                        endDate: endDate
-                    )
-                    OpaqueLoadingScreen.shared
-                        .hide()
-                    nav.popViewController(animated: true)
-                } else {
-                    OpaqueLoadingScreen.shared
-                        .show(message: "Loading...")
-                    await SessionManager.shared.restoreSession()
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "yyyy-MM-dd"
-
-                    let endDate = formatter.string(from: Date())
-
-                    let startDate = formatter.string(
-                        from: Calendar.current.date(byAdding: .day, value: -30, to: Date())!
-                    )
-
-                    await YouTubeController.shared.restoreYouTubeConnectionIfNeeded(
-                        startDate: startDate,
-                        endDate: endDate
-                    )
-                    OpaqueLoadingScreen.shared
-                        .hide()
-                    self.navigateToHomeScreen()
-                }
+                await self.restoreSessionAndNavigate()
 
                 self.skipSubmitButton.isEnabled = true
 
@@ -136,6 +96,27 @@ class PreferencesViewController: UIViewController {
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
             }
+        }
+    }
+
+    private func restoreSessionAndNavigate() async {
+        OpaqueLoadingScreen.shared.show(message: "Loading...")
+        await SessionManager.shared.restoreSession()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let endDate = formatter.string(from: Date())
+        let startDate = formatter.string(
+            from: Calendar.current.date(byAdding: .day, value: -30, to: Date())!
+        )
+        await YouTubeController.shared.restoreYouTubeConnectionIfNeeded(
+            startDate: startDate,
+            endDate: endDate
+        )
+        OpaqueLoadingScreen.shared.hide()
+        if let nav = self.navigationController, nav.viewControllers.count > 1 {
+            nav.popViewController(animated: true)
+        } else {
+            self.navigateToHomeScreen()
         }
     }
 
@@ -203,8 +184,8 @@ class PreferencesViewController: UIViewController {
 
             let containerCenterX = offset.x + (env.container.contentSize.width / 2.0)
 
-            let nearest = items.min { a, b in
-                abs(a.frame.midX - containerCenterX) < abs(b.frame.midX - containerCenterX)
+            let nearest = items.min { lhsItem, rhsItem in
+                abs(lhsItem.frame.midX - containerCenterX) < abs(rhsItem.frame.midX - containerCenterX)
             }
 
             let page = nearest?.indexPath.item ?? 0

@@ -15,17 +15,17 @@ class ProgressCell: UIView {
     private let horizontalInset: CGFloat = 16
 
     private let trackView: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor.white.withAlphaComponent(0.12)
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
+        let view = UIView()
+        view.backgroundColor = UIColor.white.withAlphaComponent(0.12)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
     private let progressView: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor.accent
-        v.translatesAutoresizingMaskIntoConstraints = false
-        return v
+        let view = UIView()
+        view.backgroundColor = UIColor.accent
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
     override func awakeFromNib() {
@@ -72,7 +72,20 @@ class ProgressCell: UIView {
         progressWidthConstraint = progressView.widthAnchor.constraint(equalTo: trackView.widthAnchor, multiplier: 0.001)
         progressWidthConstraint?.isActive = true
 
-        // CREATE DOTS FIRST
+        setupDots()
+
+        // ✅ NOW ALIGN EVERYTHING TOGETHER (AFTER DOTS EXIST)
+        guard let firstDot = milestoneDots.first else { return }
+
+        trackView.centerYAnchor.constraint(equalTo: firstDot.centerYAnchor).isActive = true
+        trackView.centerYAnchor.constraint(equalTo: graphView.topAnchor, constant: 15).isActive = true
+
+        for dot in milestoneDots {
+            dot.centerYAnchor.constraint(equalTo: trackView.centerYAnchor).isActive = true
+        }
+    }
+
+    private func setupDots() {
         for (index, milestone) in milestones.enumerated() {
             let dot = UIView()
             dot.layer.cornerRadius = dotSize / 2
@@ -123,16 +136,6 @@ class ProgressCell: UIView {
                 middleDotCenterXConstraints.append(centerX)
             }
         }
-
-        // ✅ NOW ALIGN EVERYTHING TOGETHER (AFTER DOTS EXIST)
-        guard let firstDot = milestoneDots.first else { return }
-
-        trackView.centerYAnchor.constraint(equalTo: firstDot.centerYAnchor).isActive = true
-        trackView.centerYAnchor.constraint(equalTo: graphView.topAnchor, constant: 15).isActive = true
-
-        for dot in milestoneDots {
-            dot.centerYAnchor.constraint(equalTo: trackView.centerYAnchor).isActive = true
-        }
     }
 
     @IBAction func viewIdea(_: Any) {
@@ -145,8 +148,8 @@ class ProgressCell: UIView {
         guard width > 0, width != lastWidth else { return }
         lastWidth = width
 
-        for (i, constraint) in middleDotCenterXConstraints.enumerated() {
-            let milestoneIndex = i + 1
+        for (index, constraint) in middleDotCenterXConstraints.enumerated() {
+            let milestoneIndex = index + 1
             let fraction = CGFloat(milestoneIndex) / CGFloat(milestones.count - 1)
             let trackWidth = width - (horizontalInset * 2) - dotSize
             constraint.constant = horizontalInset + (dotSize / 2) + trackWidth * fraction
