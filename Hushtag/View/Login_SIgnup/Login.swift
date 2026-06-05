@@ -9,14 +9,10 @@ class Login: UIViewController {
 
     @IBOutlet var passwordTextField: UITextField!
     @IBOutlet var emailTextField: UITextField!
-    @IBOutlet var appleButton: UIButton!
-    @IBOutlet var facebookButton: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
 
         styleSocialButton(googleButton)
-        styleSocialButton(facebookButton)
-        styleSocialButton(appleButton)
         styleTextField(emailTextField)
         styleTextField(passwordTextField)
 
@@ -24,9 +20,13 @@ class Login: UIViewController {
     }
 
     func styleSocialButton(_ button: UIButton) {
-        button.backgroundColor = UIColor(white: 0.95, alpha: 1)
-        button.layer.cornerRadius = 14
-        button.clipsToBounds = true
+        button.contentHorizontalAlignment = .center
+        button.imageView?.contentMode = .scaleAspectFit
+
+        button.layer.cornerRadius = 10
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.white.cgColor
+        button.clipsToBounds = true 
     }
 
     func styleTextField(_ textField: UITextField) {
