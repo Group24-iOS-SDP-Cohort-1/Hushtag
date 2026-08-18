@@ -82,7 +82,7 @@ extension ProfileTableViewController {
     }
 
     func handleYouTubeTap() {
-        guard let profile = self.value(forKey: "profile") as? Profile else { return }
+        guard let profile = self.profile else { return }
 
         if profile.isYouTubeConnected {
             let alert = UIAlertController(
@@ -112,9 +112,9 @@ extension ProfileTableViewController {
                     )
                     SessionManager.shared.currentProfile?.isYouTubeConnected = confirmedState
 
-                    self.perform(NSSelectorFromString("fetchProfileWithForceRefresh:"), with: true)
+                    self.fetchProfile(forceRefresh: true)
                 } catch {
-                    self.perform(NSSelectorFromString("fetchProfileWithForceRefresh:"), with: true)
+                    self.fetchProfile(forceRefresh: true)
                 }
             }
         }
@@ -136,9 +136,9 @@ extension ProfileTableViewController {
                 )
                 SessionManager.shared.currentProfile?.isYouTubeConnected = confirmedState
 
-                self.perform(NSSelectorFromString("fetchProfileWithForceRefresh:"), with: true)
+                self.fetchProfile(forceRefresh: true)
             } catch {
-                self.perform(NSSelectorFromString("fetchProfileWithForceRefresh:"), with: true)
+                self.fetchProfile(forceRefresh: true)
             }
         }
     }
