@@ -112,7 +112,7 @@ extension Ideate1: UICollectionViewDataSource, UICollectionViewDelegate {
             let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
             guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else { return }
             guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else { return }
-            destinationVC.pageTitle = "Liked Ideas"
+            destinationVC.pageTitle = "Saved Ideas"
             self?.navigationController?.pushViewController(destinationVC, animated: true)
         }
         return header

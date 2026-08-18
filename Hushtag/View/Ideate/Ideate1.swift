@@ -71,6 +71,11 @@ class Ideate1: UIViewController {
         Task {
             do {
                 let fetchedLikedIdeas = try await likedIdeasController.fetchLikedIdeas()
+                
+                // Populate global LikedIds state
+                let fetchedKeys = fetchedLikedIdeas.compactMap { $0.ideaKey }
+                LikedIds.likedIdeaIds = Set(fetchedKeys)
+                
                 let personalizedIdeas = SessionManager.shared.personalizedIdeas
                 let syncedLikedIdeas = fetchedLikedIdeas.map { liked in
                     if let personalized = personalizedIdeas.first(where: { $0.ideaKey == liked.ideaKey }) {
@@ -82,6 +87,7 @@ class Ideate1: UIViewController {
                 }
                 await MainActor.run {
                     self.likedIdeas = syncedLikedIdeas
+                    self.ideas = self.syncLikedState(SessionManager.shared.personalizedIdeas)
                     self.collectionView.reloadData()
                 }
             } catch {
@@ -170,19 +176,23 @@ class Ideate1: UIViewController {
         let storyboard = UIStoryboard(name: "ViewScripts", bundle: nil)
         guard let navVC = storyboard.instantiateInitialViewController() as? UINavigationController else { return }
         guard let destinationVC = navVC.topViewController as? ViewScriptsViewController else { return }
-        destinationVC.pageTitle = "Liked Ideas"
+        destinationVC.pageTitle = "Saved Ideas"
         navigationController?.pushViewController(destinationVC, animated: true)
     }
 
     func syncLikedState(_ ideas: [Idea]) -> [Idea] {
         let likedKeys = LikedIds.likedIdeaIds
-        return ideas.map { idea in
-            var updated = idea
+        return ideas.compactMap { idea in
             guard let key = idea.ideaKey else {
+                var updated = idea
                 updated.liked = false
                 return updated
             }
-            updated.liked = likedKeys.contains(key)
+            if likedKeys.contains(key) {
+                return nil
+            }
+            var updated = idea
+            updated.liked = false
             return updated
         }
     }

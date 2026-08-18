@@ -132,6 +132,19 @@ extension ViewScriptsViewController: UICollectionViewDelegate {
             }
             return
         }
+
+        let idea: Idea
+        if isFiltering {
+            idea = filteredLikedIdeas[indexPath.row]
+        } else {
+            idea = likedIdeas[indexPath.row]
+        }
+
+        let storyboard = UIStoryboard(name: "ViewIdea", bundle: nil)
+        if let destinationVC = storyboard.instantiateViewController(withIdentifier: "IdeaVC") as? ViewIdea {
+            destinationVC.idea = idea
+            navigationController?.pushViewController(destinationVC, animated: true)
+        }
     }
 }
 
