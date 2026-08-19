@@ -268,6 +268,7 @@ extension Chatbot {
         message.mark = nil
         self.markedMessages[type]?.removeAll { $0.content == message.content }
         self.updateProgressHeader()
+        self.showScriptSuggestions()
         guard let chatID = self.conversationID else { return }
         Task {
             do {
@@ -283,7 +284,6 @@ extension Chatbot {
         if let oldType = message.mark {
             self.markedMessages[oldType]?.removeAll { $0.content == message.content }
         }
-        self.generateStack.isHidden = false
         message.mark = type
         self.markedMessages[type]?.append(message)
         self.updateProgressHeader()
@@ -342,15 +342,16 @@ extension Chatbot {
 
 extension Chatbot {
     func showScriptSuggestions() {
-        generateStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
-
+        let markedCount = markedMessages.values.reduce(0) { $0 + $1.count }
         let unmarkedTypes = getUnmarkedTypes()
-        if unmarkedTypes.isEmpty {
-            generateStack.isHidden = true
+
+        // Only show suggestions when at least ONE item is marked, and there are still unmarked items remaining
+        if markedCount == 0 || unmarkedTypes.isEmpty {
+            hideSuggestions(animated: true)
             return
         }
 
-        generateStack.isHidden = false
+        generateStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
         for type in unmarkedTypes {
             let buttonTitle: String
@@ -375,5 +376,29 @@ extension Chatbot {
         }
 
         generateStack.layoutIfNeeded()
+        showSuggestions(animated: true)
+    }
+
+    func hideSuggestions(animated: Bool = true) {
+        generateStack.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        generateStack.isHidden = true
+        suggestionScrollView?.isHidden = true
+        suggestionHeightConstraint?.constant = 0
+        if animated {
+            UIView.animate(withDuration: 0.25) {
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+
+    func showSuggestions(animated: Bool = true) {
+        generateStack.isHidden = false
+        suggestionScrollView?.isHidden = false
+        suggestionHeightConstraint?.constant = 50
+        if animated {
+            UIView.animate(withDuration: 0.25) {
+                self.view.layoutIfNeeded()
+            }
+        }
     }
 }

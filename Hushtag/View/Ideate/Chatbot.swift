@@ -8,6 +8,8 @@ class Chatbot: UIViewController, UITextViewDelegate {
     @IBOutlet var textStack: UIStackView!
     @IBOutlet var enterbutton: UIButton!
     @IBOutlet var generateStack: UIStackView!
+    @IBOutlet var suggestionScrollView: UIScrollView?
+    @IBOutlet var suggestionHeightConstraint: NSLayoutConstraint?
     @IBOutlet var inputViewBottomConstraint: NSLayoutConstraint!
     @IBOutlet var scriptedChats: UIBarButtonItem!
     var latestScript: String?
@@ -56,7 +58,7 @@ class Chatbot: UIViewController, UITextViewDelegate {
         tableView.contentInset = UIEdgeInsets(top: 125, left: 0, bottom: 0, right: 0)
         tableView.scrollIndicatorInsets = UIEdgeInsets(top: 125, left: 0, bottom: 0, right: 0)
 
-        generateStack.isHidden = true
+        hideSuggestions(animated: false)
         tableView.register(
             UINib(nibName: "PlatformCellTableViewCell", bundle: nil),
             forCellReuseIdentifier: "PlatformCell"
@@ -143,6 +145,7 @@ class Chatbot: UIViewController, UITextViewDelegate {
             }
             self.updateProgressHeader()
         }
+        self.showScriptSuggestions()
         self.tableView.reloadData()
         self.scrollToBottom()
         if let text = self.autoSendMessage {
@@ -240,7 +243,7 @@ class Chatbot: UIViewController, UITextViewDelegate {
     @objc func generateButtonTapped(_ sender: UIButton) {
         guard let title = sender.currentTitle else { return }
         sendMessage(title)
-        generateStack.isHidden = true
+        hideSuggestions(animated: true)
     }
 
     // MARK: - Keyboard
@@ -336,11 +339,13 @@ extension Chatbot {
         textFieldView.isUserInteractionEnabled = enabled
         enterbutton.isEnabled = enabled
         generateStack.isUserInteractionEnabled = enabled
+        suggestionScrollView?.isUserInteractionEnabled = enabled
         scriptedChats.isEnabled = enabled
 
         UIView.animate(withDuration: 0.2) {
             self.textView.alpha = enabled ? 1.0 : 0.35
             self.generateStack.alpha = enabled ? 1.0 : 0.35
+            self.suggestionScrollView?.alpha = enabled ? 1.0 : 0.35
         }
     }
 }

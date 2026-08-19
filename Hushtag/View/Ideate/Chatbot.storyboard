@@ -169,6 +169,8 @@
                         <outlet property="generateStack" destination="ThS-3f-STF" id="LYE-gM-tYu"/>
                         <outlet property="inputViewBottomConstraint" destination="k1n-mV-YhR" id="Zk7-Q1-VyW"/>
                         <outlet property="scriptedChats" destination="cl6-nn-yxF" id="GJk-2s-0rT"/>
+                        <outlet property="suggestionHeightConstraint" destination="dUF-CU-izN" id="H8G-2v-QpL"/>
+                        <outlet property="suggestionScrollView" destination="Nuj-q1-pSo" id="S2A-1b-Cde"/>
                         <outlet property="tableView" destination="SNm-vA-oEx" id="atz-bq-0XL"/>
                         <outlet property="textFieldView" destination="juk-cQ-ZRr" id="04H-c9-m8i"/>
                         <outlet property="textStack" destination="ygC-V6-BK5" id="sFp-bj-J8W"/>
