@@ -290,9 +290,7 @@ class Chatbot: UIViewController, UITextViewDelegate {
             tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
         }
     }
-}
-
-// MARK: - Onboarding
+}// MARK: - Onboarding
 
 extension Chatbot {
     /// Starts the long-press onboarding overlay the first time a bot message appears.

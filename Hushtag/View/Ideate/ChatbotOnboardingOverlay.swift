@@ -110,7 +110,7 @@ final class ChatbotOnboardingOverlay {
         view.layer.borderColor   = UIColor.white.cgColor
     }
 
-    // MARK: - Touch Blocker
+    // MARK: - Touch Blocker & Tap to Dismiss
 
     private func addTouchBlocker(in hostView: UIView) {
         let blocker = OnboardingTouchBlockerView(frame: hostView.bounds)
@@ -118,6 +118,10 @@ final class ChatbotOnboardingOverlay {
         blocker.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         blocker.passThroughRect = cellContentRect
         blocker.alpha = 0
+        
+        let blockerTap = UITapGestureRecognizer(target: self, action: #selector(handleTapDismiss))
+        blocker.addGestureRecognizer(blockerTap)
+        
         hostView.addSubview(blocker)
         self.blockerView = blocker
         UIView.animate(withDuration: 0.3) { blocker.alpha = 1 }
@@ -131,9 +135,13 @@ final class ChatbotOnboardingOverlay {
         // Wrapper view holds card + arrow together so they animate/dismiss as one
         let wrapper = UIView()
         wrapper.backgroundColor = .clear
-        wrapper.isUserInteractionEnabled = false
+        wrapper.isUserInteractionEnabled = true
         wrapper.alpha = 0
         wrapper.translatesAutoresizingMaskIntoConstraints = false
+        
+        let tooltipTap = UITapGestureRecognizer(target: self, action: #selector(handleTapDismiss))
+        wrapper.addGestureRecognizer(tooltipTap)
+        
         hostView.addSubview(wrapper)
         self.tooltipWrapper = wrapper
 
@@ -233,6 +241,12 @@ final class ChatbotOnboardingOverlay {
         showSuccessAndDismiss()
     }
 
+    // MARK: - Tap to Dismiss
+
+    @objc private func handleTapDismiss() {
+        dismiss()
+    }
+
     // MARK: - Dismiss
 
     func dismiss() {
@@ -248,6 +262,7 @@ final class ChatbotOnboardingOverlay {
             self.blockerView = nil
             self.tooltipWrapper = nil
             self.successCard = nil
+            self.onCompleted?()
         })
     }
 
