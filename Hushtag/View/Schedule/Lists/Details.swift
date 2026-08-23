@@ -127,6 +127,37 @@ class Details: UIViewController {
         }
     }
 
+    func performDeleteYouTubeUpload(upload: YouTubeUpload) {
+        Task {
+            do {
+                try await YouTubeUploadController().deleteUpload(
+                    uploadId: upload.id,
+                    youtubeVideoId: upload.youtubeVideoId
+                )
+
+                // Notify Schedule to reload
+                await MainActor.run {
+                    NotificationCenter.default.post(
+                        name: .scheduleDidChange,
+                        object: nil
+                    )
+                    self.dismiss(animated: true)
+                }
+
+            } catch {
+                await MainActor.run {
+                    let alert = UIAlertController(
+                        title: "Failed to Delete Video",
+                        message: error.localizedDescription,
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(alert, animated: true)
+                }
+            }
+        }
+    }
+
     func handleDeliverableToggle(deal: Deal, deliverable: Deliverable) async {
         onToggleDeliverable?(deal, deliverable)
     }

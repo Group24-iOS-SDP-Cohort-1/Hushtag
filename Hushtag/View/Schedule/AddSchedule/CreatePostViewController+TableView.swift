@@ -6,10 +6,16 @@ import UniformTypeIdentifiers
 
 extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
     func numberOfSections(in _: UITableView) -> Int {
+        if editingUpload != nil {
+            return 1
+        }
         return Section.allCases.count
     }
 
     func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if editingUpload != nil {
+            return currentFields.count
+        }
         guard let sec = Section(rawValue: section) else { return 0 }
         switch sec {
         case .media: return 1
@@ -22,6 +28,9 @@ extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_: UITableView, titleForFooterInSection section: Int) -> String? {
+        if editingUpload != nil {
+            return "We will remind you 1 hr before"
+        }
         guard let sec = Section(rawValue: section) else { return nil }
         if sec == .postDetails {
             return "We will remind you 1 hr before"
@@ -30,7 +39,6 @@ extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let sec = Section(rawValue: section) else { return nil }
         let headerView = UIView()
         headerView.backgroundColor = .clear
 
@@ -40,11 +48,16 @@ extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         headerView.addSubview(titleLabel)
 
-        switch sec {
-        case .media:
-            titleLabel.text = "Media"
-        case .postDetails:
+        if editingUpload != nil {
             titleLabel.text = "Post Details"
+        } else {
+            guard let sec = Section(rawValue: section) else { return nil }
+            switch sec {
+            case .media:
+                titleLabel.text = "Media"
+            case .postDetails:
+                titleLabel.text = "Post Details"
+            }
         }
 
         NSLayoutConstraint.activate([
@@ -57,6 +70,12 @@ extension CreatePostViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if editingUpload != nil {
+            guard let cell = tableView
+                .dequeueReusableCell(withIdentifier: "PostFieldCell", for: indexPath) as? PostFieldCell
+            else { return UITableViewCell() }
+            return configurePostDetailsCell(cell, at: indexPath)
+        }
         guard let sec = Section(rawValue: indexPath.section) else { return UITableViewCell() }
         switch sec {
         case .media:

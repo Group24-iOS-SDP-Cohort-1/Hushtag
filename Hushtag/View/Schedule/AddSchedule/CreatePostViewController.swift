@@ -9,6 +9,7 @@ class CreatePostViewController: UIViewController {
     var selectedThumbnailURL: URL?
     var selectedCategory: YouTubeCategory = .filmAndAnimation
     var selectedPrivacy: String = "Public"
+    var editingUpload: YouTubeUpload?
 
     enum YouTubeCategory: String, CaseIterable {
         case filmAndAnimation = "Film & Animation"
@@ -90,7 +91,7 @@ class CreatePostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
-        title = "New Post"
+        title = editingUpload != nil ? "Edit Post" : "New Post"
 
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .short
@@ -102,6 +103,27 @@ class CreatePostViewController: UIViewController {
         buildLayout()
         setupNavigationBar()
         setupKeyboardHandling()
+
+        if let editingUpload = editingUpload {
+            titleTextView.text = editingUpload.title
+            titlePlaceholder.isHidden = !editingUpload.title.isEmpty
+            descriptionTextView.text = editingUpload.description ?? ""
+            descriptionPlaceholder.isHidden = !(editingUpload.description ?? "").isEmpty
+            if let tags = editingUpload.tags, !tags.isEmpty {
+                tagsTextView.text = tags.joined(separator: ", ")
+                tagsPlaceholder.isHidden = true
+            }
+            if let catId = editingUpload.categoryId,
+               let cat = YouTubeCategory.allCases.first(where: { $0.categoryId == catId }) {
+                selectedCategory = cat
+            }
+            selectedPrivacy = editingUpload.privacyStatus?.capitalized ?? "Public"
+            privacyTextField.text = selectedPrivacy
+            if let pubAt = editingUpload.publishAt {
+                publishAtDatePicker.date = pubAt
+            }
+            updateFieldsBasedOnPrivacy()
+        }
     }
 
     func prefill(title: String?, description: String?) {
@@ -141,7 +163,7 @@ class CreatePostViewController: UIViewController {
             currentFields.append("Publish At")
             if let index = currentFields.firstIndex(of: "Publish At") {
                 tableView.insertRows(
-                    at: [IndexPath(row: index, section: Section.postDetails.rawValue)],
+                    at: [IndexPath(row: index, section: editingUpload != nil ? 0 : Section.postDetails.rawValue)],
                     with: .automatic
                 )
             }
@@ -149,7 +171,7 @@ class CreatePostViewController: UIViewController {
             if let index = currentFields.firstIndex(of: "Publish At") {
                 currentFields.remove(at: index)
                 tableView.deleteRows(
-                    at: [IndexPath(row: index, section: Section.postDetails.rawValue)],
+                    at: [IndexPath(row: index, section: editingUpload != nil ? 0 : Section.postDetails.rawValue)],
                     with: .automatic
                 )
             }
@@ -199,7 +221,7 @@ class CreatePostViewController: UIViewController {
         var missingFields = [String]()
 
         if title.isEmpty { missingFields.append("Title") }
-        if selectedVideoURL == nil { missingFields.append("Video") }
+        if editingUpload == nil && selectedVideoURL == nil { missingFields.append("Video") }
 
         if !missingFields.isEmpty {
             let message = "Please provide the following mandatory fields: \(missingFields.joined(separator: ", "))"
@@ -215,6 +237,35 @@ class CreatePostViewController: UIViewController {
             .filter { !$0.isEmpty }
 
         let publishAt: Date? = currentFields.contains("Publish At") ? publishAtDatePicker.date : nil
+
+        if let editingUpload = editingUpload {
+            Task {
+                do {
+                    try await YouTubeUploadController().updateUpload(
+                        uploadId: editingUpload.id,
+                        youtubeVideoId: editingUpload.youtubeVideoId,
+                        title: title,
+                        description: description.isEmpty ? nil : description,
+                        tags: parsedTags.isEmpty ? nil : parsedTags,
+                        categoryId: selectedCategory.categoryId,
+                        privacyStatus: selectedPrivacy,
+                        publishAt: publishAt
+                    )
+
+                    await MainActor.run {
+                        NotificationCenter.default.post(name: .scheduleDidChange, object: nil)
+                        self.dismiss(animated: true)
+                    }
+                } catch {
+                    await MainActor.run {
+                        let alert = UIAlertController(title: "Update Failed", message: error.localizedDescription, preferredStyle: .alert)
+                        alert.addAction(UIAlertAction(title: "OK", style: .default))
+                        self.present(alert, animated: true)
+                    }
+                }
+            }
+            return
+        }
 
         if let videoURL = selectedVideoURL {
             YouTubeUploadManager.shared.uploadVideo(request: VideoUploadRequest(

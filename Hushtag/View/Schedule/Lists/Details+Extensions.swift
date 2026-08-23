@@ -5,6 +5,8 @@ extension Details: UICollectionViewDataSource {
         switch schedule {
         case .deal:
             return 3
+        case .youtubeUpload:
+            return 1
         default:
             return 0
         }
@@ -23,7 +25,7 @@ extension Details: UICollectionViewDataSource {
             }
             return deal.deliverables.count
         case .youtubeUpload:
-            return 0
+            return 1
         }
     }
 
@@ -38,8 +40,8 @@ extension Details: UICollectionViewDataSource {
         switch schedule {
         case let .deal(deal, _):
             return dealCell(at: indexPath, deal: deal, schedule: schedule, in: collectionView)
-        case .youtubeUpload:
-            return UICollectionViewCell()
+        case let .youtubeUpload(upload):
+            return youtubeCommonCell(at: indexPath, upload: upload, schedule: schedule, in: collectionView)
         }
     }
 
@@ -106,6 +108,49 @@ extension Details: UICollectionViewDataSource {
         cell.onEditTapped = { [weak self] in
             self?.performSegue(withIdentifier: "editDeal", sender: self)
         }
+        return cell
+    }
+
+    private func youtubeCommonCell(
+        at indexPath: IndexPath,
+        upload: YouTubeUpload,
+        schedule: ScheduleItem,
+        in collectionView: UICollectionView
+    ) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "common_details",
+            for: indexPath
+        ) as? DetailsCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        cell.indexPath = indexPath
+        cell.configureCommon(with: schedule)
+        cell.statusButton?.isHidden = true
+
+        cell.onDeleteTapped = { [weak self] in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                let alert = UIAlertController(
+                    title: "Delete YouTube Video?",
+                    message: "This will permanently delete this video from YouTube and your schedule.",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
+                    self.performDeleteYouTubeUpload(upload: upload)
+                })
+                self.topMostViewController.present(alert, animated: true)
+            }
+        }
+
+        cell.onEditTapped = { [weak self] in
+            guard let self else { return }
+            let editVC = CreatePostViewController()
+            editVC.editingUpload = upload
+            let nav = UINavigationController(rootViewController: editVC)
+            self.present(nav, animated: true)
+        }
+
         return cell
     }
 

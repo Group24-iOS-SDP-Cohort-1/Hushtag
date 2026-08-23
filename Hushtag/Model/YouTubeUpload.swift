@@ -5,6 +5,8 @@ nonisolated struct YouTubeUpload: Identifiable, Codable, Sendable {
     let userId: UUID?
     let title: String
     let description: String?
+    let tags: [String]?
+    let categoryId: String?
     let publishAt: Date?
     let createdAt: Date?
     let uploadStatus: String?
@@ -17,6 +19,8 @@ nonisolated struct YouTubeUpload: Identifiable, Codable, Sendable {
         case userId
         case title
         case description
+        case tags
+        case categoryId
         case publishAt
         case createdAt
         case uploadStatus
