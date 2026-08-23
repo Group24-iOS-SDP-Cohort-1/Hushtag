@@ -118,7 +118,9 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
               !todayItems.isEmpty else { return }
 
         selectedScheduleItem = todayItems[indexPath.row]
-        performSegue(withIdentifier: "goToDetails", sender: self)
+        if case .deal = selectedScheduleItem {
+            performSegue(withIdentifier: "goToDetails", sender: self)
+        }
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender _: Any?) {
@@ -169,6 +171,8 @@ extension Schedule: ScheduleCollectionViewCellDelegate {
                 } else {
                     await handleMainDealToggle(deal: deal)
                 }
+            case .youtubeUpload:
+                break
             }
         }
     }

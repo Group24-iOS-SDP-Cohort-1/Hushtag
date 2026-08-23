@@ -51,13 +51,16 @@ nonisolated struct TaskDB: Codable {
     var isCompleted: Bool
 }
 
-enum ScheduleItem: Identifiable {
+enum ScheduleItem: Identifiable, Sendable {
     case deal(deal: Deal, deliverable: Deliverable?)
+    case youtubeUpload(upload: YouTubeUpload)
 
     var id: UUID {
         switch self {
         case let .deal(deal, deliverable):
             return deliverable?.id ?? deal.id
+        case let .youtubeUpload(upload):
+            return upload.id
         }
     }
 
@@ -65,6 +68,8 @@ enum ScheduleItem: Identifiable {
         switch self {
         case let .deal(deal, deliverable):
             return deliverable?.deadline ?? deal.deadline
+        case let .youtubeUpload(upload):
+            return upload.effectiveDate
         }
     }
 

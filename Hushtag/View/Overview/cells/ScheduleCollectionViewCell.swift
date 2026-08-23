@@ -33,6 +33,12 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
                 // set completed status based on deal.isCompleted
                 updateCompletedButton(isCompleted: deal.isCompleted)
             }
+
+        case let .youtubeUpload(upload):
+            titleLabel.text = "YouTube: \(upload.title)"
+            timeLabel.text = upload.effectiveDate.timeOnly()
+            let isCompleted = (upload.uploadStatus == "completed")
+            updateCompletedButton(isCompleted: isCompleted)
         }
     }
 

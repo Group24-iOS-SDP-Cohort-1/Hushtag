@@ -2,12 +2,12 @@ import Foundation
 import Supabase
 import UIKit
 
-struct GetResumableUrlResponse: Codable {
+nonisolated struct GetResumableUrlResponse: Codable, Sendable {
     let resumableUploadUrl: String
     let uploadId: String
 }
 
-struct AttachThumbnailRequest: Codable {
+nonisolated struct AttachThumbnailRequest: Codable, Sendable {
     let uploadId: String
     let youtubeVideoId: String
 
@@ -17,7 +17,7 @@ struct AttachThumbnailRequest: Codable {
     }
 }
 
-struct VideoUploadRequest {
+nonisolated struct VideoUploadRequest: Sendable {
     let videoURL: URL
     let thumbnailURL: URL?
     let title: String
@@ -91,6 +91,10 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
                 uploadTask.taskDescription = resumableData.uploadId
                 uploadTask.resume()
                 print("🚀 Native Video Upload Task started with ID: \(resumableData.uploadId)")
+
+                await MainActor.run {
+                    NotificationCenter.default.post(name: .scheduleDidChange, object: nil)
+                }
             } catch {
                 print("❌ Failed to orchestrate upload process: \(error.localizedDescription)")
             }
@@ -264,6 +268,9 @@ class YouTubeUploadManager: NSObject, URLSessionDelegate, URLSessionTaskDelegate
                     Task {
                         do {
                             try await attachThumbnailToVideo(uploadId: uploadId, videoId: videoId)
+                            await MainActor.run {
+                                NotificationCenter.default.post(name: .scheduleDidChange, object: nil)
+                            }
                         } catch {
                             print("❌ Failed to orchestrate thumbnail request: \(error)")
                         }

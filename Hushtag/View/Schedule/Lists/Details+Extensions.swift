@@ -22,6 +22,8 @@ extension Details: UICollectionViewDataSource {
                 return 1
             }
             return deal.deliverables.count
+        case .youtubeUpload:
+            return 0
         }
     }
 
@@ -36,6 +38,8 @@ extension Details: UICollectionViewDataSource {
         switch schedule {
         case let .deal(deal, _):
             return dealCell(at: indexPath, deal: deal, schedule: schedule, in: collectionView)
+        case .youtubeUpload:
+            return UICollectionViewCell()
         }
     }
 

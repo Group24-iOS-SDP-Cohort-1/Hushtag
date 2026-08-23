@@ -63,6 +63,20 @@ class DetailsCollectionViewCell: UICollectionViewCell {
             if statusButton != nil {
                 updateCompletionState(isCompleted: deal.isCompleted)
             }
+
+        case let .youtubeUpload(upload):
+            mainName.text = upload.title
+            platformLabel.text = "YouTube (\(upload.privacyStatus?.capitalized ?? "Public"))"
+            platformLabel.isHidden = false
+
+            if let pubAt = upload.publishAt {
+                remindersLabel.text = pubAt.timeOnly()
+                remindersLabel.isHidden = false
+            }
+
+            if statusButton != nil {
+                updateCompletionState(isCompleted: upload.uploadStatus == "completed")
+            }
         }
     }
 

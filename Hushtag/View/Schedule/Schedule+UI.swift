@@ -166,6 +166,12 @@ extension Schedule {
             name: .dealsDidChange,
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleScheduleDidChange),
+            name: .scheduleDidChange,
+            object: nil
+        )
     }
 
     func showEmptyStateInCollection(message: String, iconName: String) {

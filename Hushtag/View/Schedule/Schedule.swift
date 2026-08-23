@@ -56,6 +56,13 @@ class Schedule: UIViewController {
             name: .calendarSwipeRight,
             object: nil
         )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleScheduleDidChange),
+            name: .scheduleDidChange,
+            object: nil
+        )
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -198,6 +205,21 @@ class Schedule: UIViewController {
     }
 
     @objc func handleDealsDidChange() {
+        Task {
+            do {
+                try await scheduleController.load()
+                await MainActor.run {
+                    self.filterItems(for: self.selectedDate)
+                    self.updateEmptyState()
+                    self.scheduleView.reloadSections(IndexSet(integer: 1))
+                }
+            } catch {
+                // error
+            }
+        }
+    }
+
+    @objc func handleScheduleDidChange() {
         Task {
             do {
                 try await scheduleController.load()
