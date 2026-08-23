@@ -162,12 +162,6 @@ extension Schedule {
 
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(handlePostsDidChange),
-            name: .postsDidChange,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
             selector: #selector(handleDealsDidChange),
             name: .dealsDidChange,
             object: nil

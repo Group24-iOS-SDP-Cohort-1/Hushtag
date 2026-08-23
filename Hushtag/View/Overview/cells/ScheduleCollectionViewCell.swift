@@ -19,21 +19,6 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         self.item = item
         dayLabel.text = item.effectiveDeadline.dayOnly()
         switch item {
-        case let .post(post, task):
-            if let task = task {
-                // It's a sub-task
-                titleLabel.text = task.name
-                timeLabel.text = task.deadline.timeOnly()
-                // set completed status for task
-                updateCompletedButton(isCompleted: task.isCompleted)
-            } else {
-                // It's the MAIN Post
-                titleLabel.text = "Post: \(post.name)"
-                timeLabel.text = post.deadline.timeOnly()
-                // set completed status based on post.isCompleted
-                updateCompletedButton(isCompleted: post.isCompleted)
-            }
-
         case let .deal(deal, deliverable):
             if let deliverable = deliverable {
                 // It's a sub-deliverable

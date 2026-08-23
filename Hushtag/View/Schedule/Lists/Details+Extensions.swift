@@ -5,8 +5,6 @@ extension Details: UICollectionViewDataSource {
         switch schedule {
         case .deal:
             return 3
-        case .post:
-            return 2
         default:
             return 0
         }
@@ -24,9 +22,6 @@ extension Details: UICollectionViewDataSource {
                 return 1
             }
             return deal.deliverables.count
-
-        case let .post(post, _):
-            return post.tasks.count
         }
     }
 
@@ -41,8 +36,6 @@ extension Details: UICollectionViewDataSource {
         switch schedule {
         case let .deal(deal, _):
             return dealCell(at: indexPath, deal: deal, schedule: schedule, in: collectionView)
-        case let .post(post, _):
-            return postCell(at: indexPath, post: post, schedule: schedule, in: collectionView)
         }
     }
 
@@ -131,84 +124,6 @@ extension Details: UICollectionViewDataSource {
             guard case let .deal(deal, _) = self.schedule else { return }
             let deliverable = deal.deliverables[indexPath.row]
             Task { await self.handleDeliverableToggle(deal: deal, deliverable: deliverable) }
-        }
-        cell.applyLiquidGlassEffect()
-        return cell
-    }
-
-    private func postCell(
-        at indexPath: IndexPath,
-        post: Post,
-        schedule: ScheduleItem,
-        in collectionView: UICollectionView
-    ) -> UICollectionViewCell {
-        if indexPath.section == 0 {
-            return postCommonCell(at: indexPath, schedule: schedule, in: collectionView)
-        }
-        return postTaskCell(at: indexPath, post: post, in: collectionView)
-    }
-
-    private func postCommonCell(
-        at indexPath: IndexPath,
-        schedule: ScheduleItem,
-        in collectionView: UICollectionView
-    ) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "common_details",
-            for: indexPath
-        ) as? DetailsCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        cell.indexPath = indexPath
-        // Add Main Toggle action directly on common_details cell for Post.
-        cell.onToggleCompletion = { [weak self] _ in
-            guard let self else { return }
-            guard case let .post(post, _) = self.schedule else { return }
-            Task { await self.handleMainPostToggle(post: post) }
-        }
-        cell.configureCommon(with: schedule)
-        cell.onDeleteTapped = { [weak self] in
-            guard let self else { return }
-            DispatchQueue.main.async {
-                let alert = UIAlertController(
-                    title: "Delete Post?",
-                    message: "This will permanently delete the post and all its tasks.",
-                    preferredStyle: .alert
-                )
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                alert.addAction(UIAlertAction(title: "Delete", style: .destructive) { _ in
-                    guard case let .post(post, _) = self.schedule,
-                          let postId = post.id else { return }
-                    self.performDelete(postId: postId)
-                })
-                self.topMostViewController.present(alert, animated: true)
-            }
-        }
-        cell.onEditTapped = { [weak self] in
-            self?.performSegue(withIdentifier: "editPost", sender: self)
-        }
-        return cell
-    }
-
-    private func postTaskCell(
-        at indexPath: IndexPath,
-        post: Post,
-        in collectionView: UICollectionView
-    ) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: "multiple_details",
-            for: indexPath
-        ) as? DetailsCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        let task = post.tasks[indexPath.row]
-        cell.indexPath = indexPath
-        cell.configureMultiple(with: task)
-        cell.onToggleCompletion = { [weak self] indexPath in
-            guard let self else { return }
-            guard case let .post(post, _) = self.schedule else { return }
-            let task = post.tasks[indexPath.row]
-            Task { await self.handleTaskToggle(post: post, task: task) }
         }
         cell.applyLiquidGlassEffect()
         return cell

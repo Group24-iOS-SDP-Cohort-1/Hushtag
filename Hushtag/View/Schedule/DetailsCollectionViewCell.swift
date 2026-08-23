@@ -11,9 +11,7 @@ class DetailsCollectionViewCell: UICollectionViewCell {
     @IBOutlet var subNameLabel: UILabel!
     @IBOutlet var deadlineLabel: UILabel!
     @IBOutlet var statusButton: UIButton!
-
     @IBOutlet var moreAction: UIButton!
-    private let postsController = PostsController()
     var onToggleCompletion: ((IndexPath) -> Void)?
     var onDeleteTapped: (() -> Void)?
     var onEditTapped: (() -> Void)?
@@ -56,27 +54,6 @@ class DetailsCollectionViewCell: UICollectionViewCell {
         }
 
         switch item {
-        case let .post(post, _):
-            mainName.text = post.name
-            if !post.platform.isEmpty {
-                platformLabel.text = "Platform: " + post.platform.map(\.rawValue).joined(separator: ", ")
-                platformLabel.isHidden = false
-            }
-            if let reminders = post.reminder, !reminders.isEmpty {
-                remindersLabel.text = reminders
-                    .sorted()
-                    .map { $0.timeOnly() }
-                    .joined(separator: ", ")
-
-                remindersLabel.isHidden = false
-            } else {
-                remindersLabel.isHidden = true
-            }
-
-            if statusButton != nil {
-                updateCompletionState(isCompleted: post.isCompleted)
-            }
-
         case let .deal(deal, _):
             mainName.text = deal.name
 
@@ -104,12 +81,6 @@ class DetailsCollectionViewCell: UICollectionViewCell {
 
         deliverableLabel.text = "\(completedCount) / \(totalCount)"
         deliverableLabel.isHidden = false
-    }
-
-    func configureMultiple(with task: Tasks) {
-        subNameLabel.text = task.name
-        deadlineLabel.text = task.deadline.dateAndMonth()
-        updateCompletionState(isCompleted: task.isCompleted)
     }
 
     func configureMultiple(with deliverable: Deliverable) {

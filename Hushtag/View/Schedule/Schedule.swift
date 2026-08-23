@@ -3,7 +3,6 @@ import UIKit
 class Schedule: UIViewController {
     @IBOutlet var scheduleView: UICollectionView!
     let scheduleController = ScheduleItemController()
-    let postsController = PostsController()
     let dealsController = DealsController()
 
     var todayItems: [ScheduleItem] = []
@@ -187,21 +186,6 @@ class Schedule: UIViewController {
     }
 
     @objc func handleDealsDidChange() {
-        Task {
-            do {
-                try await scheduleController.load()
-                await MainActor.run {
-                    self.filterItems(for: self.selectedDate)
-                    self.updateEmptyState()
-                    self.scheduleView.reloadSections(IndexSet(integer: 1))
-                }
-            } catch {
-                // error
-            }
-        }
-    }
-
-    @objc func handlePostsDidChange() {
         Task {
             do {
                 try await scheduleController.load()

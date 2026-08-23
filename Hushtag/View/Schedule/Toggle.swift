@@ -1,30 +1,6 @@
 import Foundation
 
 enum ToggleService {
-    static func toggleTask(
-        post: Post,
-        task: Tasks,
-        postsController: PostsController
-    ) async throws -> Post {
-        let newValue = !task.isCompleted
-
-        var updatedPost = post
-        updatedPost.tasks = post.tasks.map {
-            var currentTask = $0
-            if currentTask.id == task.id {
-                currentTask.isCompleted = newValue
-            }
-            return currentTask
-        }
-
-        try await postsController.updateTaskCompletion(
-            taskId: task.id,
-            isCompleted: newValue
-        )
-
-        return updatedPost
-    }
-
     static func toggleDeliverable(
         deal: Deal,
         deliverable: Deliverable,
@@ -42,23 +18,6 @@ enum ToggleService {
         }
 
         return try await dealsController.updateDeal(updatedDeal)
-    }
-
-    static func toggleMainPost(
-        post: Post,
-        postsController: PostsController
-    ) async throws -> Post {
-        let newValue = !post.isCompleted
-
-        var updatedPost = post
-        updatedPost.isManuallyCompleted = newValue
-        updatedPost.tasks = post.tasks.map {
-            var currentTask = $0
-            currentTask.isCompleted = newValue
-            return currentTask
-        }
-
-        return try await postsController.updatePost(updatedPost)
     }
 
     static func toggleMainDeal(

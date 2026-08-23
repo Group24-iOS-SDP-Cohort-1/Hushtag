@@ -53,22 +53,16 @@ nonisolated struct TaskDB: Codable {
 
 enum ScheduleItem: Identifiable {
     case deal(deal: Deal, deliverable: Deliverable?)
-    case post(post: Post, task: Tasks?)
 
     var id: UUID {
         switch self {
         case let .deal(deal, deliverable):
             return deliverable?.id ?? deal.id
-        case let .post(post, task):
-            return task?.id ?? post.id ?? UUID()
         }
     }
 
     var effectiveDeadline: Date {
         switch self {
-        case let .post(post, task):
-            return task?.deadline ?? post.deadline
-
         case let .deal(deal, deliverable):
             return deliverable?.deadline ?? deal.deadline
         }
@@ -76,11 +70,6 @@ enum ScheduleItem: Identifiable {
 
     var date: Date {
         return effectiveDeadline
-    }
-
-    func matches(post: Post, task: Tasks?) -> Bool {
-        guard case let .post(postItem, taskItem) = self else { return false }
-        return postItem.id == post.id && taskItem?.id == task?.id
     }
 
     func matches(deal: Deal, deliverable: Deliverable?) -> Bool {

@@ -130,32 +130,6 @@ extension Schedule: UICollectionViewDelegate, UICollectionViewDataSource {
     }
 
     private func setupDetailsToggles(detailsVC: Details) {
-        // Task Toggle
-        detailsVC.onToggleTask = { [weak self, weak detailsVC] post, task in
-            Task {
-                await self?.handleTaskToggle(post: post, task: task)
-                if let updatedPost = self?.scheduleController.getPost(id: post.id) {
-                    await MainActor
-                        .run {
-                            detailsVC?.schedule = .post(post: updatedPost, task: nil)
-                            detailsVC?.detailsView.reloadData()
-                        }
-                }
-            }
-        }
-        // Main Post Toggle
-        detailsVC.onToggleMainPost = { [weak self, weak detailsVC] post in
-            Task {
-                await self?.handleMainPostToggle(post: post)
-                if let updatedPost = self?.scheduleController.getPost(id: post.id) {
-                    await MainActor
-                        .run {
-                            detailsVC?.schedule = .post(post: updatedPost, task: nil)
-                            detailsVC?.detailsView.reloadData()
-                        }
-                }
-            }
-        }
         // Deliverable Toggle
         detailsVC.onToggleDeliverable = { [weak self, weak detailsVC] deal, deliverable in
             Task {
@@ -189,13 +163,6 @@ extension Schedule: ScheduleCollectionViewCellDelegate {
     func didTapCompleted(item: ScheduleItem, indexPath _: IndexPath) {
         Task {
             switch item {
-            case let .post(post, task):
-                if let task = task {
-                    await handleTaskToggle(post: post, task: task)
-                } else {
-                    await handleMainPostToggle(post: post)
-                }
-
             case let .deal(deal, deliverable):
                 if let deliverable = deliverable {
                     await handleDeliverableToggle(deal: deal, deliverable: deliverable)
