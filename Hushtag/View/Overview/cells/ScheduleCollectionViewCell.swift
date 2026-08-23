@@ -20,6 +20,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         dayLabel.text = item.effectiveDeadline.dayOnly()
         switch item {
         case let .deal(deal, deliverable):
+            completedButton.isHidden = false
             if let deliverable = deliverable {
                 // It's a sub-deliverable
                 titleLabel.text = deliverable.name
@@ -35,10 +36,9 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
             }
 
         case let .youtubeUpload(upload):
+            completedButton.isHidden = true
             titleLabel.text = "YouTube: \(upload.title)"
             timeLabel.text = upload.effectiveDate.timeOnly()
-            let isCompleted = (upload.uploadStatus == "completed")
-            updateCompletedButton(isCompleted: isCompleted)
         }
     }
 
