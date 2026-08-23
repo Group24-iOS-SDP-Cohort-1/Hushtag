@@ -2,15 +2,9 @@ import UIKit
 
 class Schedule: UIViewController {
     @IBOutlet var scheduleView: UICollectionView!
-    let scheduleController = ScheduleItemController()
-    let postsController = PostsController()
-    let dealsController = DealsController()
-
-    var todayItems: [ScheduleItem] = []
 
     var selectedDate: Date = .init()
     var weekDates: [Date] = []
-    var selectedScheduleItem: ScheduleItem?
     var isYouTubeConnected: Bool = true
     var emptyStateView: UIView?
 
@@ -26,23 +20,6 @@ class Schedule: UIViewController {
         scheduleView.setCollectionViewLayout(generateLayout(), animated: true)
         registerCell()
         generateWeek(for: selectedDate)
-        filterItems(for: selectedDate)
-        updateEmptyState()
-        scheduleView.reloadSections(IndexSet(integer: 1))
-
-        Task {
-            do {
-                try await scheduleController.load()
-
-                await MainActor.run {
-                    self.filterItems(for: self.selectedDate)
-                    self.updateEmptyState()
-                    self.scheduleView.reloadSections(IndexSet(integer: 1))
-                }
-            } catch {
-                // print("Failed to load schedule items:", error)
-            }
-        }
 
         NotificationCenter.default.addObserver(
             self,
@@ -80,16 +57,12 @@ class Schedule: UIViewController {
             emptyStateView = nil
             scheduleView.isHidden = false
             setupRightBarButton()
+            scheduleView.reloadData()
         } else {
             showConnectYouTubePrompt()
             scheduleView.isHidden = true
             navigationItem.rightBarButtonItem = nil
         }
-    }
-
-    func filterItems(for date: Date) {
-        selectedDate = date
-        todayItems = scheduleController.scheduleItems(on: date)
     }
 
     func generateLayout() -> UICollectionViewLayout {
@@ -122,7 +95,7 @@ class Schedule: UIViewController {
                 )
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 7)
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 10, trailing: 20)
                 section.boundarySupplementaryItems = [headerButton]
                 return section
             }
@@ -132,14 +105,14 @@ class Schedule: UIViewController {
                 heightDimension: .fractionalHeight(1.0)
             )
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            item.contentInsets = NSDirectionalEdgeInsets(top: 7, leading: 7, bottom: 7, trailing: 7)
+            item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
             let groupSize = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .estimated(110)
+                heightDimension: .estimated(140)
             )
             let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, repeatingSubitem: item, count: 1)
             let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20)
+            section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 20, trailing: 20)
             section.boundarySupplementaryItems = [headerItem]
             return section
         }
@@ -163,19 +136,13 @@ class Schedule: UIViewController {
         guard let newDate = calendar.date(byAdding: .weekOfYear, value: value, to: selectedDate) else { return }
         selectedDate = newDate
         generateWeek(for: selectedDate)
-        filterItems(for: selectedDate)
-        scheduleView.performBatchUpdates {
-            scheduleView.reloadSections(IndexSet([0, 1]))
-        }
+        scheduleView.reloadData()
     }
 
     func changeMonth(to date: Date) {
         selectedDate = date
         generateWeek(for: selectedDate)
-        filterItems(for: selectedDate)
-        scheduleView.performBatchUpdates {
-            scheduleView.reloadSections(IndexSet([0, 1]))
-        }
+        scheduleView.reloadData()
     }
 
     @objc func handleCalendarLeft() {
@@ -185,52 +152,9 @@ class Schedule: UIViewController {
     @objc func handleCalendarRight() {
         changeWeek(by: -1)
     }
-
-    @objc func handleDealsDidChange() {
-        Task {
-            do {
-                try await scheduleController.load()
-                await MainActor.run {
-                    self.filterItems(for: self.selectedDate)
-                    self.updateEmptyState()
-                    self.scheduleView.reloadSections(IndexSet(integer: 1))
-                }
-            } catch {
-                // error
-            }
-        }
-    }
-
-    @objc func handlePostsDidChange() {
-        Task {
-            do {
-                try await scheduleController.load()
-                await MainActor.run {
-                    self.filterItems(for: self.selectedDate)
-                    self.updateEmptyState()
-                    self.scheduleView.reloadSections(IndexSet(integer: 1))
-                }
-            } catch {
-                // error
-            }
-        }
-    }
-
-    func updateEmptyState() {
-        if todayItems.isEmpty {
-            showEmptyStateInCollection(message: "No activities scheduled", iconName: "calendar.badge.exclamationmark")
-        } else {
-            if isYouTubeConnected {
-                scheduleView.backgroundView = nil
-            }
-        }
-    }
 }
 
 extension Notification.Name {
     static let calendarSwipeLeft = Notification.Name("calendarSwipeLeft")
     static let calendarSwipeRight = Notification.Name("calendarSwipeRight")
-    static let scheduleDidChange = Notification.Name("scheduleDidChange")
-    static let postsDidChange = Notification.Name("postsDidChange")
-    static let dealsDidChange = Notification.Name("dealsDidChange")
 }

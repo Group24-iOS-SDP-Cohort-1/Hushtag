@@ -2,14 +2,19 @@ import Foundation
 import Supabase
 import UIKit
 
-struct GetResumableUrlResponse: Codable {
+nonisolated struct GetResumableUrlResponse: Codable, Sendable {
     let resumableUploadUrl: String
     let uploadId: String
 }
 
-struct AttachThumbnailRequest: Codable {
+nonisolated struct AttachThumbnailRequest: Codable, Sendable {
     let uploadId: String
     let youtubeVideoId: String
+
+    enum CodingKeys: String, CodingKey {
+        case uploadId = "upload_id"
+        case youtubeVideoId = "youtube_video_id"
+    }
 }
 
 struct VideoUploadRequest {

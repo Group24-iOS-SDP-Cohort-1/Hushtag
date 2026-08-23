@@ -106,3 +106,7 @@ enum Platform: String, Codable, CaseIterable {
         }
     }
 }
+
+extension Notification.Name {
+    static let postsDidChange = Notification.Name("postsDidChange")
+}

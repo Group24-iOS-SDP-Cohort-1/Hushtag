@@ -45,7 +45,7 @@ extension Schedule {
         titleLabel.textColor = .white
 
         let descLabel = UILabel()
-        descLabel.text = "Connect your account to manage your schedule and see automated tasks."
+        descLabel.text = "Connect your YouTube account to schedule and upload videos directly."
         descLabel.font = .systemFont(ofSize: 16)
         descLabel.textColor = .secondaryLabel
         descLabel.textAlignment = .center
@@ -78,18 +78,6 @@ extension Schedule {
                     CapsuleNotification.show(message: "YouTube Connected!", iconName: "checkmark.circle.fill")
                     self.isYouTubeConnected = true
                     self.updateUIForConnectionStatus()
-
-                    Task {
-                        do {
-                            try await self.scheduleController.load()
-                            await MainActor.run {
-                                self.filterItems(for: self.selectedDate)
-                                self.scheduleView.reloadSections(IndexSet(integer: 1))
-                            }
-                        } catch {
-                            // error
-                        }
-                    }
                 }
             } catch {
                 await MainActor.run {
@@ -142,12 +130,8 @@ extension Schedule {
 
     func registerCell() {
         scheduleView.register(
-            UINib(nibName: "ScheduleCollectionViewCell", bundle: nil),
-            forCellWithReuseIdentifier: "upcoming_schedule"
-        )
-        scheduleView.register(
-            UINib(nibName: "DetailsCell", bundle: nil),
-            forCellWithReuseIdentifier: "schedule_detail"
+            UICollectionViewCell.self,
+            forCellWithReuseIdentifier: "scheduler_action_cell"
         )
         scheduleView.register(
             UINib(nibName: "HeaderView", bundle: nil),
@@ -159,53 +143,5 @@ extension Schedule {
             forSupplementaryViewOfKind: "headerButton",
             withReuseIdentifier: "header_button"
         )
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handlePostsDidChange),
-            name: .postsDidChange,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleDealsDidChange),
-            name: .dealsDidChange,
-            object: nil
-        )
-    }
-
-    func showEmptyStateInCollection(message: String, iconName: String) {
-        let emptyView = UIView(frame: scheduleView.bounds)
-
-        let imageView = UIImageView(image: UIImage(systemName: iconName))
-        imageView.tintColor = .tertiaryLabel
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-
-        let label = UILabel()
-        label.text = message
-        label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 18, weight: .medium)
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-
-        let stack = UIStackView(arrangedSubviews: [imageView, label])
-        stack.axis = .vertical
-        stack.spacing = 16
-        stack.alignment = .center
-        stack.translatesAutoresizingMaskIntoConstraints = false
-
-        emptyView.addSubview(stack)
-
-        NSLayoutConstraint.activate([
-            stack.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor),
-            stack.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor, constant: 50),
-            stack.leadingAnchor.constraint(equalTo: emptyView.leadingAnchor, constant: 40),
-            stack.trailingAnchor.constraint(equalTo: emptyView.trailingAnchor, constant: -40),
-            imageView.heightAnchor.constraint(equalToConstant: 40),
-            imageView.widthAnchor.constraint(equalToConstant: 40)
-        ])
-
-        scheduleView.backgroundView = emptyView
     }
 }

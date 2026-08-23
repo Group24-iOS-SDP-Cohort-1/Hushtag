@@ -60,3 +60,7 @@ nonisolated struct DealInsertPayload: Encodable {
     let platform: [String]
     let isCompleted: Bool
 }
+
+extension Notification.Name {
+    static let dealsDidChange = Notification.Name("dealsDidChange")
+}
