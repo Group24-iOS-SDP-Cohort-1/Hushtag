@@ -117,6 +117,7 @@ class DealsInfo: UIViewController {
 
                 await MainActor.run {
                     self.delegate?.dealsInfo(self, didUpdateDeal: self.deals, at: self.dealIndex)
+                    NotificationCenter.default.post(name: .dealsDidChange, object: nil)
                 }
             } catch {
                 // print("❌ Failed to update deal status:", error)

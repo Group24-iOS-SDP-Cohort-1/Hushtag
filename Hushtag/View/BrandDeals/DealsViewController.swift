@@ -112,6 +112,11 @@ class DealsViewController: UIViewController {
         )
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchDeals()
+    }
+
     @IBAction func segmentedAction(_ sender: UISegmentedControl) {
         selectedSegmentIndex = sender.selectedSegmentIndex
 

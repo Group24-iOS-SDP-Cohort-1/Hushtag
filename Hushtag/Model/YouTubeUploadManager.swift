@@ -10,6 +10,11 @@ struct GetResumableUrlResponse: Codable {
 struct AttachThumbnailRequest: Codable {
     let uploadId: String
     let youtubeVideoId: String
+
+    enum CodingKeys: String, CodingKey {
+        case uploadId = "upload_id"
+        case youtubeVideoId = "youtube_video_id"
+    }
 }
 
 struct VideoUploadRequest {

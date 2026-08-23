@@ -90,8 +90,11 @@ extension DealsInfo: UICollectionViewDataSource {
                         isCompleted: currentDealIsCompleted
                     )
 
-                    if self.dealIndex >= 0 {
-                        self.delegate?.dealsInfo(self, didUpdateDeal: self.deals, at: self.dealIndex)
+                    await MainActor.run {
+                        if self.dealIndex >= 0 {
+                            self.delegate?.dealsInfo(self, didUpdateDeal: self.deals, at: self.dealIndex)
+                        }
+                        NotificationCenter.default.post(name: .dealsDidChange, object: nil)
                     }
 
                 } catch {
@@ -178,10 +181,31 @@ extension DealsInfo: UICollectionViewDelegate {
         guard section == .deliverables else { return }
 
         deals.deliverables[indexPath.item].isCompleted.toggle()
+        let toggledDeliverable = deals.deliverables[indexPath.item]
         collectionView.reloadItems(at: [indexPath])
 
-        if dealIndex >= 0 {
-            delegate?.dealsInfo(self, didUpdateDeal: deals, at: dealIndex)
+        Task {
+            do {
+                try await DealsController().updateDeliverableStatus(
+                    deliverableId: toggledDeliverable.id,
+                    isCompleted: toggledDeliverable.isCompleted
+                )
+
+                let currentDealIsCompleted = deals.isCompleted
+                try await DealsController().updateDealStatus(
+                    dealId: deals.id,
+                    isCompleted: currentDealIsCompleted
+                )
+
+                await MainActor.run {
+                    if dealIndex >= 0 {
+                        delegate?.dealsInfo(self, didUpdateDeal: deals, at: dealIndex)
+                    }
+                    NotificationCenter.default.post(name: .dealsDidChange, object: nil)
+                }
+            } catch {
+                // error
+            }
         }
     }
 }

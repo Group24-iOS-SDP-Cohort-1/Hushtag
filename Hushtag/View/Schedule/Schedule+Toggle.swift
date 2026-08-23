@@ -33,6 +33,7 @@ extension Schedule {
 
             await MainActor.run {
                 scheduleView.reloadSections(IndexSet(integer: 1))
+                NotificationCenter.default.post(name: .dealsDidChange, object: nil)
             }
         } catch {
             scheduleController.replaceDeal(deal)
@@ -75,6 +76,7 @@ extension Schedule {
 
             await MainActor.run {
                 scheduleView.reloadSections(IndexSet(integer: 1))
+                NotificationCenter.default.post(name: .dealsDidChange, object: nil)
             }
         } catch {
             scheduleController.replaceDeal(deal)

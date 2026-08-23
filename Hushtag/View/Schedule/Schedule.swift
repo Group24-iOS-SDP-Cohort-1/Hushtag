@@ -61,6 +61,18 @@ class Schedule: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         checkConnectionStatus()
+        Task {
+            do {
+                try await scheduleController.load()
+                await MainActor.run {
+                    self.filterItems(for: self.selectedDate)
+                    self.updateEmptyState()
+                    self.scheduleView.reloadSections(IndexSet(integer: 1))
+                }
+            } catch {
+                // error
+            }
+        }
     }
 
     func checkConnectionStatus() {
