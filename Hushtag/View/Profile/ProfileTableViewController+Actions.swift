@@ -111,6 +111,7 @@ extension ProfileTableViewController {
                         expectedState: true
                     )
                     SessionManager.shared.currentProfile?.isYouTubeConnected = confirmedState
+                    NotificationCenter.default.post(name: .youtubeConnectionChanged, object: nil)
 
                     self.fetchProfile(forceRefresh: true)
                 } catch {
@@ -135,6 +136,7 @@ extension ProfileTableViewController {
                     expectedState: false
                 )
                 SessionManager.shared.currentProfile?.isYouTubeConnected = confirmedState
+                NotificationCenter.default.post(name: .youtubeConnectionChanged, object: nil)
 
                 self.fetchProfile(forceRefresh: true)
             } catch {

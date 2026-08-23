@@ -63,6 +63,18 @@ class Schedule: UIViewController {
             name: .scheduleDidChange,
             object: nil
         )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleYouTubeConnectionChanged),
+            name: .youtubeConnectionChanged,
+            object: nil
+        )
+    }
+
+    @objc func handleYouTubeConnectionChanged() {
+        checkConnectionStatus()
+        handleScheduleDidChange()
     }
 
     override func viewWillAppear(_ animated: Bool) {

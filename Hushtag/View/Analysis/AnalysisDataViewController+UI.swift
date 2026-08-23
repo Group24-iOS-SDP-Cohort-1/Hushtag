@@ -6,11 +6,12 @@ extension AnalysisDataViewController {
             let connected = await YouTubeController.shared.checkYouTubeConnection()
             await MainActor.run {
                 self.isYouTubeConnected = connected
-                self.updateUIForConnectionStatus()
                 if connected {
                     Task {
-                        await loadAllData()
+                        await self.loadAllData()
                     }
+                } else {
+                    self.updateUIForConnectionStatus()
                 }
             }
         }
@@ -18,13 +19,72 @@ extension AnalysisDataViewController {
 
     func updateUIForConnectionStatus() {
         if isYouTubeConnected {
-            emptyStateView?.removeFromSuperview()
-            emptyStateView = nil
-            analysisCollectionView.isHidden = false
+            if hasNoYouTubeData {
+                showNoDataView()
+            } else {
+                emptyStateView?.removeFromSuperview()
+                emptyStateView = nil
+                analysisCollectionView.isHidden = false
+            }
         } else {
             showConnectYouTubePrompt()
             analysisCollectionView.isHidden = true
         }
+    }
+
+    func showNoDataView() {
+        emptyStateView?.removeFromSuperview()
+        emptyStateView = nil
+
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(container)
+        emptyStateView = container
+
+        NSLayoutConstraint.activate([
+            container.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            container.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -30),
+            container.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+            container.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30)
+        ])
+
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        stackView.alignment = .center
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(stackView)
+
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: container.topAnchor),
+            stackView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            stackView.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+        ])
+
+        let imageView = UIImageView(image: UIImage(systemName: "chart.bar.xaxis"))
+        imageView.tintColor = UIColor(red: 0.545, green: 0.361, blue: 0.965, alpha: 1.0)
+        imageView.contentMode = .scaleAspectFit
+        imageView.preferredSymbolConfiguration = .init(pointSize: 60)
+
+        let titleLabel = UILabel()
+        titleLabel.text = "No Data in YouTube Account"
+        titleLabel.font = .systemFont(ofSize: 22, weight: .bold)
+        titleLabel.textColor = .white
+        titleLabel.textAlignment = .center
+
+        let descLabel = UILabel()
+        descLabel.text = "Your YouTube account is connected, but no video analytics or metrics were found yet."
+        descLabel.font = .systemFont(ofSize: 15)
+        descLabel.textColor = .secondaryLabel
+        descLabel.textAlignment = .center
+        descLabel.numberOfLines = 0
+
+        stackView.addArrangedSubview(imageView)
+        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(descLabel)
+
+        analysisCollectionView.isHidden = true
     }
 
     func showConnectYouTubePrompt() {

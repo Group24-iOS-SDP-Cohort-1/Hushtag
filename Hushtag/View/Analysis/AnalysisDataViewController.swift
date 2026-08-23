@@ -25,9 +25,18 @@ class AnalysisDataViewController: UIViewController {
         super.viewDidLoad()
         setupDates()
 
-        Task { await loadAllData() }
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleYouTubeConnectionChanged),
+            name: .youtubeConnectionChanged,
+            object: nil
+        )
 
         setupCollectionView()
+        checkConnectionStatus()
+    }
+
+    @objc func handleYouTubeConnectionChanged() {
         checkConnectionStatus()
     }
 
@@ -178,10 +187,31 @@ class AnalysisDataViewController: UIViewController {
 //            print("Error fetching viewer activity:", error)
 //        }
 //    }
+    var hasNoYouTubeData: Bool {
+        return audienceMetrics.isEmpty && latestContent.isEmpty && topVideos.isEmpty && viewerActivity.isEmpty
+    }
+
     func loadAllData() async {
         guard isYouTubeConnected else { return }
 
+        // 1. Clear previous account data in memory
+        await MainActor.run {
+            self.audienceMetrics = []
+            self.latestContent = []
+            self.topVideos = []
+            self.revenueInsight = []
+            self.audienceDemographic = []
+            self.viewerActivity = []
+        }
+
         do {
+            // 2. Trigger YouTube backend to pull fresh analytics for the connected channel
+            _ = try? await YouTubeController.shared.fetchAnalytics(
+                startDate: startDate,
+                endDate: endDate
+            )
+
+            // 3. Fetch newly synced records from database
             async let audience = controller.fetchAudienceMetrics(
                 startDate: startDate,
                 endDate: endDate
@@ -222,11 +252,23 @@ class AnalysisDataViewController: UIViewController {
             print(audienceDemographic)
 
             await MainActor.run {
-                self.analysisCollectionView.reloadData()
+                if self.hasNoYouTubeData {
+                    self.showNoDataView()
+                } else {
+                    self.emptyStateView?.removeFromSuperview()
+                    self.emptyStateView = nil
+                    self.analysisCollectionView.isHidden = false
+                    self.analysisCollectionView.reloadData()
+                }
             }
 
         } catch {
             print("Error loading analytics:", error)
+            await MainActor.run {
+                if self.hasNoYouTubeData {
+                    self.showNoDataView()
+                }
+            }
         }
     }
 
@@ -251,4 +293,8 @@ class AnalysisDataViewController: UIViewController {
             destination.latestContent = latestContent
         }
     }
+}
+
+extension Notification.Name {
+    static let youtubeConnectionChanged = Notification.Name("youtubeConnectionChanged")
 }
